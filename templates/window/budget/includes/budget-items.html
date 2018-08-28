@@ -1,0 +1,118 @@
+<div class="panel panel-items">
+    <div class="panel-heading ph-red"><i class="fa fa-cubes"></i> Produtos (ctrl+1)</div>
+    <div class="panel-body">
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="product_code">Código</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="product_code" name="product_code" placeholder="Código" data-to-mask="code">
+                    <span id="button-budget-product-code-search" class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <label for="product_name">Nome do Produto</label>
+                <div class="input-group">
+                    <input autocomplete="off" type="text" class="form-control" id="product_name" name="product_name" placeholder="Nome do Produto">
+                    <span id="button-budget-product-name-search" class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <div class="form-group">
+                <label for="product_stock">Tabela de Preço</label>
+                <div class="input-group">
+                    <select disabled class="selectpicker show-tick" id="price_id" name="price_id" title="-- Tabela de Preço --"></select>
+                    <span class="input-group-addon"><i class="fa fa-usd"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="product_stock">Estoque</label>
+                <div class="input-group">
+                    <input readonly type="text" class="form-control" id="product_stock" name="product_stock" placeholder="Estoque">
+                    <span class="budget-item-unit-code input-group-addon">UN</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="budget_item_quantity">Quantidade</label>
+                <div class="input-group">
+                    <input readonly type="text" class="form-control" id="budget_item_quantity" name="budget_item_quantity" placeholder="Quantidade" data-to-mask="integer" >
+                    <span class="budget-item-unit-code input-group-addon">UN</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="budget_item_aliquot_discount">Desconto %</label>
+                <input readonly type="text" class="form-control" id="budget_item_aliquot_discount" name="budget_item_aliquot_discount" placeholder="Desconto" data-to-mask="percent4"/>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="budget_item_value_discount">Desconto R$</label>
+                <input readonly type="text" class="form-control" id="budget_item_value_discount" name="budget_item_value_discount" placeholder="Desconto" data-to-mask="money"/>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="budget_item_value_total">Valor Total</label>
+                <input readonly type="text" class="form-control" id="budget_item_value_total" name="budget_item_value_total" placeholder="Total"/>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="button-budget-item-add">&nbsp;</label>
+                <button disabled id="button-budget-item-add" class="btn btn-green btn-block" type="button">
+                    <i class="fa fa-plus"></i> Adicionar
+                </button>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <table id="table-budget-items" class="table table-striped table-bordered table-hover dataTable">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Vl Unit R$</th>
+                    <th>Desc %</th>
+                    <th>Desc R$</th>
+                    <th>Vl Total</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="col-xs-12"><hr/></div>
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="budget_value">Total dos Itens</label>
+                <input readonly type="text" class="form-control" id="budget_value" name="budget_value" placeholder="Total dos Itens" />
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="budget_value_addition">Acréscimo R$</label>
+                <input readonly data-tab-to="budget_value_discount" type="text" class="form-control" id="budget_value_addition" name="budget_value_addition" placeholder="Acréscimo" data-to-mask="money" />
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="budget_value_discount">Desconto R$</label>
+                <input readonly type="text" class="form-control" id="budget_value_discount" name="budget_value_discount" placeholder="Desconto" data-to-mask="money" />
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="budget_value_total">Valor Total</label>
+                <input readonly type="text" class="form-control" id="budget_value_total" name="budget_value_total" placeholder="Valor Total" />
+            </div>
+        </div>
+    </div>
+</div>

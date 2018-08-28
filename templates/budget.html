@@ -1,0 +1,115 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="filter">
+            <form id="form-budget-filter">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="budget_company_id">Empresa</label>
+                            <select class="selectpicker show-tick" id="budget_company_id" title="-- Selecione a Empresa --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="budget_seller_code">Código</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="budget_seller_code" placeholder="Código" data-to-mask="code"/>
+                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="form-group">
+                            <label for="budget_seller_name">Representante</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="budget_seller_name" placeholder="Representante"/>
+                                <span id="button-budget-seller-remove" class="input-group-addon"><i class="fa fa-trash-o"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="budget_code">Orçamento</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="budget_code" placeholder="Código" />
+                                <span class="input-group-addon"><i class="fa fa-file-text-o"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="budget_start_date">Data Inicial</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="budget_start_date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="budget_end_date">Data Final</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="budget_end_date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="budget_search">Pesquisa Rápida</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="budget_search" placeholder="Pesquisar"/>
+                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <label>&nbsp;&nbsp;</label>
+                        <button type="submit" class="btn btn-block btn-custom">
+                            <i class="fa fa-refresh"></i> Atualizar
+                        </button>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <label>&nbsp;&nbsp;</label>
+                        <button id="button-budget-new" type="button" class="btn btn-block btn-green"{if $login->access->budget->add->value == 'N'} disabled{/if}>
+                            <i class="fa fa-plus"></i> Novo Pedido
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <table id="table-budgets" class="table-custom">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Vendedor</th>
+                    <th>ERP</th>
+                    <th>Documento</th>
+                    <th>Pessoa</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<footer>
+    <button data-action="filter-status" data-toggle="tooltip" title="Orçamento" class="btn btn-empty"><i class="fa fa-cloud txt-green"></i></button>
+    <button data-action="filter-status" data-toggle="tooltip" title="Pedido" class="btn btn-empty"><i class="fa fa-cloud txt-orange"></i></button>
+    <button data-action="filter-status" data-toggle="tooltip" title="Pedido Faturado" class="btn btn-empty"><i class="fa fa-cloud-download txt-orange"></i></button>
+    <button data-action="filter-status" data-toggle="tooltip" title="Dav" class="btn btn-empty"><i class="fa fa-cloud txt-blue"></i></button>
+    <button data-action="filter-status" data-toggle="tooltip" title="Dav Faturado" class="btn btn-empty"><i class="fa fa-cloud-download txt-blue"></i></button>
+    <div class="divider"></div>
+    <button data-action="filter-delivery" data-toggle="tooltip" title="Sem Entrega" class="btn btn-empty"><i class="fa fa-truck txt-gray"></i></button>
+    <button data-action="filter-delivery" data-toggle="tooltip" title="Com Entrega" class="btn btn-empty"><i class="fa fa-truck txt-blue"></i></button>
+    <div class="divider"></div>
+    <div data-label="budgets-count" data-toggle="tooltip" title="Pedidos" ><i class="fa fa-files-o"></i> 0</div>
+    <div class="divider"></div>
+    <div data-label="budgets-total" data-toggle="tooltip" title="Valor Total" ><i class="fa fa-money"></i> R$ 0,00</div>
+    <div class="divider"></div>
+    <div data-label="budgets-average" data-toggle="tooltip" title="Ticket Médio" ><i class="fa fa-bar-chart"></i> R$ 0,00</div>
+    <span class="pull-right">{$config->system->system_name} v{$config->system->system_version}</span>
+</footer>

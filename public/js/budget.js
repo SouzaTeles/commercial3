@@ -1,0 +1,324 @@
+$(document).ready(function(){
+
+    Keyboard.events();
+    Budget.events();
+    Budget.showCompanies(function(){
+        if( !!Budget.data.company_id ){
+            Budget.getList();
+        }
+    });
+
+    global.mask();
+    global.tooltip();
+    global.unLoader();
+
+});
+
+Keyboard = {
+    events: function(){
+        global.listener.simple_combo("ctrl n", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            Budget.new();
+        });
+    }
+};
+
+Budget = {
+    budgets: [],
+    type: {
+        'B': {
+            icon: 'file',
+            title: 'Orçamento',
+            color: 'green-light'
+        },
+        'P': {
+            icon: 'file-powerpoint-o',
+            title: 'Pedido de Venda',
+            color: 'orange'
+        },
+        'D': {
+            icon: 'file-text-o',
+            title: 'DAV',
+            color: 'blue'
+        }
+    },
+    origin: {
+        'D': {
+            icon: 'desktop',
+            title: 'Desktop',
+            color: 'blue-light',
+            class: 'desktop'
+        },
+        'M': {
+            icon: 'mobile',
+            title: 'Celular',
+            color: 'orange-light',
+            class: 'mobile'
+        }
+    },
+    status: {
+        'O': {
+            icon: 'cloud',
+            title: 'Aberto'
+        },
+        'L': {
+            icon: 'cloud',
+            title: 'Liberado'
+        },
+        'B': {
+            icon: 'cloud-download',
+            title: 'Faturado'
+        }
+    },
+    delivery: {
+        'Y': {
+            icon: 'truck',
+            title: 'Com Entrega',
+            color: 'blue-light'
+        },
+        'N': {
+            icon: 'truck',
+            title: 'Sem Entrega',
+            color: 'gray'
+        }
+    },
+    data: {
+        company_id: null,
+        seller_id: null,
+        start_date: global.today(),
+        end_date: global.today()
+    },
+    table: global.table({
+        selector: '#table-budgets',
+        searching: 1,
+        // scrollY: $(window).innerHeight()-372,
+        // scrollCollapse: 1,
+        noControls: [7,8],
+        order: [[0,'desc']]
+    }),
+    typeahead: {
+        items: 10,
+        delay: 500,
+        last: '',
+        timer: 0
+    },
+    actions: function(budget){
+        return(
+            '<div class="dropdown dropdown-budget dropdown-actions">' +
+                '<button class="btn btn-empty" type="button" data-toggle="dropdown">' +
+                    '<i class="fa fa-ellipsis-v"></i>' +
+                '</button>' +
+                '<ul class="dropdown-menu pull-right">' +
+                    '<li><a data-action="open" disabled="' + ( global.login.access.budget.open.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-folder-open-o"></i>Abrir</a></li>' +
+                    '<li><a data-action="clone" disabled="' + ( true || global.login.access.budget.clone.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-clone txt-orange"></i>Duplicar</a></li>' +
+                    '<li class="divider"></li>' +
+                    '<li><a data-action="beforePrint" disabled="' + ( global.login.access.budget.print.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-print txt-green"></i>Imprimir</a></li>' +
+                    '<li><a data-action="delivery" disabled="true" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-truck txt-blue"></i>Entrega</a></li>' +
+                    '<li><a data-action="mail" disabled="' + ( true || global.login.access.budget.mail.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-envelope-o txt-blue"></i>E-mail</a></li>' +
+                    '<li><a data-action="recover" disabled="' + ( true || global.login.access.budget.recover.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-unlock txt-red"></i>Recuperar Pedido</a></li>' +
+                    '<li><a data-action="order" disabled="' + ( true || global.login.access.budget.order.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-powerpoint-o txt-blue"></i>Exportar Pedido</a></li>' +
+                    '<li><a data-action="dav" disabled="' + ( true || global.login.access.budget.dav.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-text-o txt-orange"></i>Exportar Dav</a></li>' +
+                    '<li><a data-action="info" disabled="true" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-info txt-gray"></i>Informações</a></li>' +
+                    '<li class="divider"></li>' +
+                    '<li><a data-action="del" disabled="' + ( true || budget.budget.status != 'O' || global.login.access.budget.del.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-trash-o txt-red"></i>Apagar</a></li>' +
+                '</ul>' +
+            '</div>'
+        );
+    },
+    beforePrint: function(key){
+        var budget = Budget.budgets[key];
+        console.log(budget);
+        global.post({
+            url: global.uri.uri_public + 'api/modal.php?modal=modal-budget-print',
+            data: budget,
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                id: 'modal-budget-print',
+                class: 'modal-budget-print',
+                size: 'small',
+                icon: 'fa-print',
+                title: 'Imprimir Orçamento',
+                html: html,
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Fechar'
+                }]
+            });
+        });
+    },
+    events: function(){
+        $('#form-budget-filter').on('submit',function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            Budget.getList();
+        });
+        $('#budget_company_id').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            Budget.company = global.login.companies[clickedIndex-1];
+            Budget.data.company_id = Budget.company.company_id;
+            Budget.getList();
+        });
+        $('#budget_seller_code').keypress(function(e){
+            var keycode = e.keyCode || e.which;
+            if( keycode == '13' && $(this).val().length ){
+                e.preventDefault();
+                e.stopPropagation();
+                Seller.get({
+                    seller_code: $(this).val()
+                });
+            }
+        }).on('blur',function(){
+            if( $(this).attr('data-value').length ){
+                $(this).val($(this).attr('data-value'));
+            }
+        });
+        $('#budget_seller_name').on('keyup',function(){
+            if( $(this).val().length >= 3 && $(this).val() != Budget.typeahead.last ){
+                clearTimeout(Budget.typeahead.timer);
+                Budget.typeahead.last = $(this).val();
+                Budget.typeahead.timer = setTimeout(function(){
+                    global.autocomplete({
+                        items: 'all',
+                        selector: '#budget_seller_name',
+                        data: {
+                            limit: Budget.typeahead.items,
+                            person_name: $('#budget_seller_name').val(),
+                            person_category_id: global.config.person.seller_category_id
+                        },
+                        url: global.uri.uri_public_api + 'person.php?action=typeahead',
+                        callBack: function(item){
+                            Budget.data.seller_id = item.item_id;
+                            $('#budget_seller_code').val(item.item_code).attr('data-value',item.item_code);
+                            Budget.getList();
+                        }
+                    });
+                },Budget.typeahead.delay);
+            }
+        });
+        $('#button-budget-seller-remove').click(function(){
+            if( !!Budget.data.seller_id ){
+                Budget.data.seller_id = null;
+                $('#budget_seller_code').val('').attr('data-value','');
+                $('#budget_seller_name').val('').attr('data-value','');
+            }
+        });
+        if( !!global.login.person ){
+            Budget.data.seller_id = global.login.person_id;
+            $('#budget_seller_code').val(global.login.person.person_code).attr('data-value',global.login.person.person_code);
+            $('#budget_seller_name').val(global.login.person.person_name).attr('data-value',global.login.person.person_name);
+        }
+        $('#budget_start_date, #budget_end_date').datepicker({
+            format: 'dd/mm/yyyy'
+        }).blur(function(){
+            if( $(this).val().length != 10 ){
+                $(this).val(global.date2Br(global.today()));
+            }
+        }).val(global.date2Br(global.today()));
+        $('#budget_search').keyup(function(){
+            Budget.table.search(this.value).draw();
+        });
+        $('#button-budget-new').click(function(){
+            if( !Budget.data.company_id ){
+                global.validateMessage('Selecione a Empresa.');
+                return;
+            }
+            Budget.new();
+        });
+        Budget.table.on('draw',function(){
+            var $table = $('#table-budgets');
+            $table.find('a[disabled="false"]').click(function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                Budget[$(this).attr('data-action')]($(this).attr('data-key'),$(this).attr('data-id'));
+            });
+            $table.find('[data-toggle="tooltip"]').tooltip({container:'body'});
+            Budget.total();
+        });
+    },
+    getList: function(){
+        Budget.data.company_id = $('#budget_company_id').val();
+        if( !Budget.data.company_id ){
+            global.validateMessage('A empresa deverá ser selecionada.');
+        }
+        Budget.data.start_date = global.date2Us($('#budget_start_date').val());
+        Budget.data.end_date = global.date2Us($('#budget_end_date').val());
+        global.post({
+            url: global.uri.uri_public_api + 'budget.php?action=getList',
+            data: Budget.data,
+            dataType: 'json'
+        },function(budgets){
+            Budget.budgets = budgets;
+            Budget.showList();
+        });
+    },
+    new: function(){
+        global.window({
+            url: global.uri.uri_public + 'window.php?module=budget&action=new&company_id=' + Budget.company.company_id
+        });
+    },
+    open: function(key,id){
+        global.window({
+            url: global.uri.uri_public + 'window.php?module=budget&action=new&budget_id=' + id +'&company_id=' + Budget.company.company_id
+        });
+    },
+    print: function(params){
+        global.window({
+            url: global.uri.uri_public + 'window.php?module=budget&action=' + params.action + '&budget_id=' + params.budget_id,
+            width: params.width || 800,
+            height: params.height || 620
+        });
+    },
+    showCompanies: function(success){
+        if( !global.login.companies.length ){
+            global.validateMessage('Você não possui acesso as empresas. Procure o administrador do sistema.');
+        }
+        if( !global.login.prices.length ){
+            global.validateMessage('Você não possui acesso as tabelas de preço. Procure o administrador do sistema.');
+        }
+        $.each( global.login.companies, function(key,company){
+            $('#budget_company_id').append($('<option>',{
+                'value': company.company_id,
+                'selected': company.user_company_main == 'Y',
+                'data-content': '<i class="fa fa-stop" style="color:' + company.company_color + ';"></i> ' + ('0'+company.company_id).slice(-2) + ' - ' + company.company_name
+            }));
+            if( company.user_company_main == 'Y' ){
+                Budget.company = company;
+                Budget.data.company_id = company.company_id;
+            }
+        });
+        $('#budget_company_id').selectpicker('refresh');
+        if( success ) success();
+    },
+    showList: function(){
+        Budget.table.clear();
+        $.each( Budget.budgets, function(key, budget){
+            budget.key = key;
+            var type = Budget.type[budget.budget.status == 'O' ? 'B' : budget.budget.type];
+            var status = Budget.status[budget.budget.status];
+            var delivery = Budget.delivery[budget.budget.delivery];
+            Budget.table.row.add([
+                '<i data-toggle="tooltip" title="' + type.title + '" class="fa fa-' + status.icon + ' txt-' + type.color + '"></i><br/>' + budget.budget.code,
+                '<label>' + budget.seller.code + '</label><div class="seller">' + ( budget.seller.short_name || budget.seller.name ) + '</div>',
+                ( budget.budget.status == 'L' && budget.external.code ? budget.external.code : '--' ),
+                ( budget.document.code || '--' ),
+                '<div class="person-cover"' + ( budget.person.image ? 'style="background-image:url(' + budget.person.image + ')"' : '' ) + '></div><label>' + budget.person.code + '</label><div class="client">' + budget.person.name + '</div>',
+                '<span>' + budget.budget.value_total_order + '</span>R$ ' + global.float2Br(budget.budget.value_total),
+                '<span>' + budget.budget.date + '</span>' + budget.budget.date_formatted,
+                '<i data-toggle="tooltip" title="' + delivery.title + '" class="fa fa-' + delivery.icon + ' txt-' + delivery.color + '"></i>',
+                Budget.actions(budget)
+            ]);
+        });
+        Budget.table.draw();
+    },
+    total: function(){
+        var count = 0, total = 0;
+        $.each( Budget.table.rows({filter: 'applied'})[0], function(k,key){
+            count ++;
+            total += Budget.budgets[key].budget.value_total;
+        });
+        $('footer div[data-label="budgets-count"]').html('<i class="fa fa-files-o"></i> ' + count);
+        $('footer div[data-label="budgets-total"]').html('<i class="fa fa-money"></i> R$ ' + global.float2Br(total));
+        $('footer div[data-label="budgets-average"]').html('<i class="fa fa-bar-chart"></i> R$ ' + global.float2Br(total/(count||1)));
+    }
+};

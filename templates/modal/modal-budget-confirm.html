@@ -1,0 +1,7 @@
+<p>Deseja salvar o {$smarty.post.type} atual?</p>
+{if $smarty.post.stock > 0}
+    <div class="modal-box bd-red-light">
+        <b class="txt-red-light">Atenção!</b>
+        <p>Este orçamento contém {$smarty.post.stock} produto{if $smarty.post.stock > 1}s{/if} em falta no estoque!</p>
+    </div>
+{/if}

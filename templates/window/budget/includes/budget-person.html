@@ -1,0 +1,111 @@
+<div class="panel panel-person">
+    <div class="panel-heading ph-blue"><i class="fa fa-user"></i> Cliente (ctrl+2)</div>
+    <div class="panel-body">
+        <ul class="nav nav-tabs hidden">
+            <li class="active"><a href="#tab-person-1" data-toggle="tab"></a></li>
+            <li><a href="#tab-person-2" data-toggle="tab"></a></li>
+            <li><a href="#tab-person-3" data-toggle="tab"></a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab-person-1" class="tab-pane fade in active">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group form-group-file">
+                        <label for="file-image-person">Foto</label>
+                        <div id="person-image-cover" class="image-cover">
+                            <span class="text">Sem imagem</span>
+                            <button disabled id="button-image-person-web-cam" class="btn btn-blue"><i class="fa fa-camera"></i></button>
+                            <input data-disabled="true" type="file" id="file-image-person" accept=".jpg, .jpeg, .png|images/*" class="filestyle" data-buttonText="Procurar" data-buttonName="btn btn-block btn-green" data-iconName="fa fa-file-image-o" data-input="false">
+                            <button disabled type="button" id="button-image-person-remove" class="btn btn-red"><i class="fa fa-times"></i> Remover</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="person_code">Características</label>
+                                <div id="person-attributes" class="person-attributes"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="form-group">
+                                <label for="person_code">Código</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="person_code" name="person_code" placeholder="Código" data-to-mask="code">
+                                    <span id="button-budget-person-code-search" class="input-group-addon"><i class="fa fa-search"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-9">
+                            <div class="form-group">
+                                <label for="person_name">Nome do Cliente</label>
+                                <div class="input-group">
+                                    <input autocomplete="off" type="text" class="form-control" id="person_name" name="person_name" placeholder="Nome do Cliente">
+                                    <span id="button-budget-person-name-search" class="input-group-addon"><i class="fa fa-search"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="form-group">
+                                <label for="person_type">Tipo</label>
+                                <input readonly type="text" class="form-control" id="person_type" name="person_type" placeholder="Tipo">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="form-group">
+                                <label for="person_cpf">CPF</label>
+                                <input readonly type="text" class="form-control" id="person_cpf" name="person_cpf" data-to-mask="cpf"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="form-group">
+                                <label for="person_cnpj">CNPJ</label>
+                                <input readonly type="text" class="form-control" id="person_cnpj" name="person_cnpj" data-to-mask="cnpj"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="form-group">
+                                <label for="person_rg">RG</label>
+                                <input readonly type="text" class="form-control" id="person_rg" name="person_rg" data-to-mask="rg"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="form-group">
+                                <label for="person_gender">Sexo</label>
+                                <input readonly type="text" class="form-control" id="person_gender" name="person_gender" placeholder="Sexo">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="form-group">
+                                <label for="person_birth">Nascimento</label>
+                                <input readonly type="text" class="form-control" id="person_birth" name="person_birth" data-to-mask="date"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-person-2" class="tab-pane fade in">
+                <div class="col-xs-12 col-sm-4">
+                    <button id="button-address-new" class="btn btn-empty">
+                        <i class="fa fa-plus"></i><br/>Novo Endereço
+                    </button>
+                </div>
+            </div>
+            <div id="tab-person-3" class="tab-pane fade in">
+                {include file="{$LIB_ROOT}templates/address.html"}
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div><i class="fa fa-truck"></i></div>
+            <div id="address-delivery">
+                <span>Código: </span>Nenhum endereço informado
+            </div>
+            <button disabled id="button-budget-person-address" class="btn btn-blue">
+                <i class="fa fa-address-book-o"></i> Endereços
+            </button>
+            <button id="button-budget-person-address-back" class="btn btn-red">
+                <i class="fa fa-arrow-left"></i> Voltar
+            </button>
+        </div>
+    </div>
+</div>

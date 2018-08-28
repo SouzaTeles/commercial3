@@ -1,0 +1,26 @@
+<div class="panel panel-buttons">
+    <div class="row">
+        <div class="col-xs-6 col-sm-3">
+            <button type="button" id="button-budget-cancel" class="btn btn-lg btn-block btn-red pull-left">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+        </div>
+        {if $login->access->budget->add->value == 'Y'}
+            <div class="col-xs-6 col-sm-3">
+                <button disabled type="button" id="button-budget-save-order" class="btn btn-lg btn-block btn-orange">
+                    <i class="fa fa-file-powerpoint-o"></i> Exportar Pedido
+                </button>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <button disabled type="button" id="button-budget-save-dav" class="btn btn-lg btn-block btn-blue">
+                    <i class="fa fa-file-text-o"></i> Exportar Dav
+                </button>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <button disabled type="button" id="button-budget-save" class="btn btn-lg btn-block btn-green">
+                    <i class="fa fa-floppy-o"></i> Salvar
+                </button>
+            </div>
+        {/if}
+    </div>
+</div>

@@ -1,0 +1,118 @@
+<div class="panel panel-payment">
+    <div class="panel-heading ph-orange"><i class="fa fa-usd"></i> Pagamentos (ctrl+3)</div>
+    <div class="panel-body">
+        <div class="col-xs-12 col-sm-8">
+            <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="term_code">Código</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="term_code" name="term_code" placeholder="Código" data-to-mask="code" >
+                            <span id="button-budget-term-search" class="input-group-addon"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="form-group">
+                        <label for="term_description">Descrição do Prazo</label>
+                        <div class="input-group">
+                            <input autocomplete="off" type="text" class="form-control" id="term_description" name="term_description" placeholder="Prazo" >
+                            <span id="button-budget-term-remove" class="input-group-addon"><i class="fa fa-trash-o"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <table id="table-budget-payments" class="table table-bordered table-hover no-select">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Modalidade</th>
+                            <th>Vencimento</th>
+                            <th>Valor</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-xs-12">
+                    <button id="button-budget-payment-new" class="btn btn-green" type="button">
+                        <i class="fa fa-plus"></i> Nova Parcela
+                    </button>
+                    <button disabled id="button-budget-payment-remove" class="btn btn-red" type="button">
+                        <i class="fa fa-trash-o"></i> Remover Parcelas
+                    </button>
+                    <button disabled id="button-budget-payment-recalculate" class="btn btn-blue pull-right" type="button">
+                        <i class="fa fa-calculator"></i> Recalcular
+                    </button>
+                </div>
+                <div class="col-xs-12"><hr/></div>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="form-group">
+                        <label for="budget_payment_value">Total das Parcelas</label>
+                        <input readonly type="text" class="form-control" id="budget_payment_value" name="budget_payment_value" placeholder="Total das Parcelas" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="form-group">
+                        <label for="budget_payment_aliquot">Alíquota</label>
+                        <input readonly type="text" class="form-control" id="budget_payment_aliquot" name="budget_payment_aliquot" placeholder="Alíquota" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="form-group">
+                        <label for="budget_payment_remaining">Valor Restante</label>
+                        <input readonly type="text" class="form-control" id="budget_payment_remaining" name="budget_payment_remaining" placeholder="Valor Restante" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <div class="person-credit-box bd-gray-light">
+                Carta de Crédito: R$ 0,00
+                <button disabled id="button-budget-payment-credit" class="btn btn-green" type="button">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <div class="panel-heading ph-orange">Resumo do Pedido</div>
+            <div class="panel-body panel-body-resume bd-gray-light">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Total de Itens:</td>
+                            <td>0 Itens</td>
+                        </tr>
+                        <tr>
+                            <td>Valor Total:</td>
+                            <td>0 Itens</td>
+                        </tr>
+                        <tr>
+                            <td>Desconto total:</td>
+                            <td>0,00% / R$ 0,00</td>
+                        </tr>
+                        <tr>
+                            <td>Acréscimo</td>
+                            <td>R$ 0,00</td>
+                        </tr>
+                        <tr>
+                            <td>Vl. Total líquido:</td>
+                            <td>R$ 0,00</td>
+                        </tr>
+                        <tr>
+                            <td>ICMS:</td>
+                            <td>0,00</td>
+                        </tr>
+                        <tr>
+                            <td>Subist. Tributária:</td>
+                            <td>R$ 0,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="button-budget-notes" class="btn btn-orange">
+                    <i class="fa fa-file-o"></i> Observações
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>{$config->system->system_name} - {$data->$route->title}</title>
+        <link rel="SHORTCUT ICON" href="{$URI_PUBLIC}favicon.ico?{$smarty.now}" type="image/x-icon">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="author" content="Alessandro Menezes">
+        <meta name="theme-color" content="{if !empty($colors->hex->$route)}{$colors->hex->$route}{else}{$colors->hex->primary}{/if}">
+        <link href="{$URI_PUBLIC}bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}bootstrap/css/bootstrap-select.min.css" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="{$URI_LIB}bootstrap/summernote/summernote.css" rel="stylesheet" />
+        <link href="{$URI_LIB}bootstrap/toggle/bootstrap-toggle.min.css" rel="stylesheet" />
+        <link href="{$URI_LIB}bootstrap/tagsinput/bootstrap-tagsinput.css" rel="stylesheet" />
+        <link href="{$URI_LIB}bootstrap/select2/select2.min.css" rel="stylesheet" />
+        <link href="{$URI_LIB}bootstrap/datepicker/datepicker.css" rel="stylesheet" />
+        <link href="{$URI_LIB}bootstrap/datepicker/daterangepicker.css" rel="stylesheet" />
+        <link href="{$URI_LIB}bootstrap/datepicker/bfFur.css" rel="stylesheet" />
+        <link href="{$URI_LIB}fullcalendar/fullcalendar.min.css" rel="stylesheet" />
+        <link href="{$URI_LIB}datatable/datatables.css" rel="stylesheet" />
+        <link href="{$URI_LIB}bootstrap/slider/bootstrap-slider.css" rel="stylesheet" />
+        <link href="{$URI_LIB}spectrum/spectrum.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/alert.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/loader.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/modal.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/header.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/tables.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/address.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/components.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/buttons.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/menu.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/global.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/{$route}.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="overlay"></div>
+        <div class="container {$route}">
+            {if $route != 'login'}
+                {include file="{$PATH_TEMPLATES}includes/header.html"}
+            {/if}
+            {include file="{$PATH_TEMPLATES}{$route}.html"}
+        </div>
+        {include file="{$LIB_ROOT}templates/loader.html"}
+    </body>
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+    <script src="{$URI_LIB}jquery/jquery-3.2.1.min.js"></script>
+    <script src="{$URI_LIB}jquery/jquery-ui.js"></script>
+    <script src="{$URI_LIB}jquery/jquery.mask.min.js"></script>
+    <script src="{$URI_LIB}bootstrap/js/bootstrap.js"></script>
+    <script src="{$URI_LIB}bootstrap/js/bootstrap-confirmation.js"></script>
+    <script src="{$URI_LIB}bootstrap/js/bootstrap-filestyle.min.js"></script>
+    <script src="{$URI_LIB}bootstrap/js/bootstrap-select.js"></script>
+    <script src="{$URI_LIB}datatable/datatables.js"></script>
+    <script src="{$URI_LIB}bootstrap/datepicker/moment.min.js"></script>
+    <script src="{$URI_LIB}bootstrap/datepicker/datepicker.js"></script>
+    <script src="{$URI_LIB}bootstrap/datepicker/daterangepicker.js"></script>
+    <script src="{$URI_LIB}fullcalendar/fullcalendar.min.js"></script>
+    <script src="{$URI_LIB}bootstrap/slider/bootstrap-slider.js"></script>
+    <script src="{$URI_LIB}bootstrap/toggle/bootstrap-toggle.min.js"></script>
+    <script src="{$URI_LIB}bootstrap/typeahead/bootstrap3-typeahead.js"></script>
+    <script src="{$URI_LIB}spectrum/spectrum.js"></script>
+    <script src="{$URI_LIB}js/html2canvas/html2canvas.js"></script>
+    <script src="{$URI_LIB}js/highcharts/highcharts.js"></script>
+    <script src="{$URI_LIB}js/highcharts/exporting.js"></script>
+    <script src="{$URI_LIB}js/highcharts/data.js"></script>
+    <script src="{$URI_LIB}js/highcharts/export-data.js"></script>
+    <script src="{$URI_LIB}js/decimal.min.js"></script>
+    <script src="{$URI_LIB}js/keypress.js"></script>
+    <script src="{$URI_LIB}js/global.js?{$smarty.now}"></script>
+    <script src="{$URI_PUBLIC}js/global.js?{$smarty.now}"></script>
+    <script src="{$URI_PUBLIC}js/webcam.min.js"></script>
+    <script src="{$URI_PUBLIC}js/{$route}.js?{$smarty.now}"></script>
+    {if !empty($data->$route->pages)}
+        {foreach $data->$route->pages item=page key=key}
+            {if $login->access->{$page->key}->access->value == "Y"}
+                <script src="{$URI_PUBLIC}js/{$route}/{$route}-{$page->id}.js?{$smarty.now}"></script>
+            {/if}
+        {/foreach}
+    {/if}
+    <script>
+        global.login = {$login|json_encode};
+        global.uri = {$config->uri|json_encode};
+        global.config = {$config|json_encode};
+    </script>
+    <script>if (window.module) module = window.module;</script>
+</html>

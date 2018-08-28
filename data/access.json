@@ -1,0 +1,448 @@
+{
+
+	"agenda": {
+		"name": "Agenda",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"budget": {
+		"name": "Commercial > Pedidos",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Novo Pedido",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"open": {
+			"name": "Abrir Pedido",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar Pedido",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Excluir Pedido",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"clone": {
+			"name": "Duplicar Pedido",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"print": {
+			"name": "Imprimir Pedido",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"mail": {
+			"name": "Enviar por E-mail",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"recover": {
+			"name": "Recuperar Pedido",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"order": {
+			"name": "Exportar Pedido",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"dav": {
+			"name": "Exportar Dav",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"logistics": {
+		"name": "Logística",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"shipment": {
+		"name": "Mapa de Carregamento",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Novo Mapa",
+			"value": "Y",
+			"data_type": "bool"
+		}
+	},
+
+	"production": {
+		"name": "Produção",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"report": {
+		"name": "Relatórios",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"crm": {
+		"name": "CRM",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"target": {
+		"name": "Metas",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"cube": {
+		"name": "Cube Report",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"stock": {
+		"name": "Estoque",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"inventory": {
+		"name": "Inventário",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"rh": {
+		"name": "RH",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"config": {
+		"name": "Configurações",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"user": {
+		"name": "Configurações - Usuários",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Adicionar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Excluir",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"user_pass": {
+			"name": "Alterar Senha",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"user_profile": {
+		"name": "Configurações - Perfis de Usuário",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Adicionar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Excluir",
+			"value": "N",
+			"data_type": "bool"
+		}
+
+	},
+
+	"config_billing": {
+		"name": "Configurações - Faturamento",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"config_billing_timing": {
+		"name": "Configurações - Faturamento >> Sincronização",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Sincronizar",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"config_financial": {
+		"name": "Configurações - Financeiro",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"config_financial_statement": {
+		"name": "Configurações - Financeiro >> Status do Extrato",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Adicionar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Excluir",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"config_rh": {
+		"name": "Configurações - RH",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
+	"config_general": {
+		"name": "Configurações - Geral",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"company": {
+		"name": "Configurações - Geral >> Empresas",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Adicionar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Excluir",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"seller": {
+		"name": "Configurações - Geral >> Representantes",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Adicionar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Excluir",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"calendar": {
+		"name": "Configurações - Geral >> Calendário",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"email": {
+		"name": "Configurações - Geral >> E-mail",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Configurações",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"clock": {
+			"name": "Reagendar o Envio",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"trigger": {
+			"name": "Reenviar a Mensagem",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"log": {
+			"name": "Histórico",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"operation": {
+		"name": "Configurações - Geral >> Operações",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"reports": {
+		"name": "Configurações - Geral >> Relatórios",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Adicionar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Excluir",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"trigger": {
+			"name": "Disparar Relatório",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"service": {
+		"name": "Configurações - Geral >> Serviços",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"trigger": {
+			"name": "Disparar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"erp": {
+		"name": "Configurações - Geral >> ERP",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	}
+
+}

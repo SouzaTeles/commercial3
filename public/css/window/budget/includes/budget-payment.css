@@ -1,0 +1,61 @@
+.panel-payment #table-budget-payments_wrapper
+{
+    margin-bottom: 10px;
+}
+
+.panel-payment table.custom tr
+{
+    cursor: pointer;
+}
+
+.panel-payment table tr td button
+{
+    margin: 2px 4px;
+}
+
+.panel-payment .person-credit-box
+{
+    border: 1px solid;
+    padding: 15px 20px;
+    position: relative;
+    margin: 22px 0 10px;
+}
+
+.panel-payment .person-credit-box button
+{
+    top: 6px;
+    right: 6px;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    border-radius: 50% !important;
+}
+
+.panel-payment .panel-body-resume
+{
+    border: 1px solid;
+}
+
+.panel-payment .panel-body-resume table
+{
+    width: 100%;
+}
+
+.panel-payment .panel-body-resume table tr td
+{
+    width: 50%;
+    font-size: 16px;
+    padding: 0 8px 10px;
+}
+
+.panel-payment .panel-body-resume table tr td:nth-child(1)
+{
+    text-align: right;
+}
+
+.panel-payment .panel-body-resume button
+{
+    width: 180px;
+    display: block;
+    margin: 10px auto 0;
+}

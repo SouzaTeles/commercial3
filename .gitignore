@@ -1,0 +1,7 @@
+/.idea
+/data/conn.json
+/log
+/doc
+/public/files
+/templates/compiled
+/config/config.php

@@ -1,0 +1,26 @@
+<link href="{$URI_PUBLIC}css/modal/modal-budget-delivery.css?{$smarty.now}" rel="stylesheet" />
+<div class="modal-box bd-blue">
+    <b>Entrega</b>
+    <p>Informe as opções de entrega do pedido.</p>
+</div>
+<br/>
+<div class="row">
+    <div class="col-xs-12 col-sm-6">
+        <div class="form-group">
+            <div class="form-group">
+                <label for="modal_budget_delivery">Entrega?</label>
+                <input type="checkbox" class="form-control" id="modal_budget_delivery" name="modal_budget_delivery" />
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="modal_budget_delivery_date">Data de entrega</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input disabled type="text" class="form-control" id="modal_budget_delivery_date" name="modal_budget_delivery_date" data-to-mask="date">
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{$URI_PUBLIC}js/modal/modal-budget-delivery.js?{$smarty.now}"></script>

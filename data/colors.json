@@ -1,0 +1,27 @@
+{
+	"body": "#dddddd",
+
+	"menu_background": "#333333",
+	"menu_link_color": "#ffffff",
+	"menu_link_background": "#333333",
+
+	"text": "#ffffff",
+	"primary": "#215A7C",
+	"secondary": "#666666",
+	"background": "#ffffff",
+
+	"pages": {
+		"agenda": "#ae3335",
+		"budgets": "#c26021",
+		"logistics": "#9f312f",
+		"production": "#c26021",
+		"report": "#254375",
+		"crm": "#64276e",
+		"target": "#255f28",
+		"cube": "#9f312f",
+		"stock": "#c26021",
+		"inventory": "#254375",
+		"rh": "#64276e",
+		"config": "#ae3335"
+	}
+}

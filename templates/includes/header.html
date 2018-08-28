@@ -1,0 +1,41 @@
+<header class="bg-white box-shadow">
+    <div class="home">
+        <a href="{$URI_PUBLIC}"><i class="fa fa-home"></i></a>
+    </div>
+    <div class="logo">
+        <img src="{$config->uri->uri_public}images/commercial.png" />
+    </div>
+    <div class="user dropdown pull-right">
+        <div class="cover" style="background-image:url({$login->image})"></div>
+        <div class="info">
+            {$login->user_name}
+            <span>{$login->user_profile->user_profile_name}</span>
+        </div>
+        <button class="btn btn-empty dropdown-toggle" type="button" data-toggle="dropdown">
+            <i class="fa fa-caret-down text-blue"></i>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="#change-pass"><i class="fa fa-fw fa-lock"></i> Alterar Senha</a></li>
+            <li><a href="#logout"><i class="fa fa-fw fa-sign-out"></i> Efetuar Logout</a></li>
+        </ul>
+    </div>
+</header>
+<div class="menu">
+    <ul>
+        <li>
+            <a href="{$URI_PUBLIC}agenda" class="agenda">
+                <i class="fa fa-calendar"></i>Agenda
+            </a>
+        </li>
+        <li>
+            <a href="{$URI_PUBLIC}vendas" class="budgets">
+                <i class="fa fa-usd"></i>Vendas
+            </a>
+            <div class="sub-menu">
+                <a href="{$URI_PUBLIC}budget" class="budgets">
+                    <i class="fa fa-file-text-o"></i>Orçamentos
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>

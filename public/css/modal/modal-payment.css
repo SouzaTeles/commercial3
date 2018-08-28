@@ -1,0 +1,10 @@
+.modal-payment .modal-content .modal-body
+{
+    overflow: hidden;
+    max-height: 328px;
+}
+
+.modal.modal-payment .modal-content #col-new-agency
+{
+    display: none;
+}

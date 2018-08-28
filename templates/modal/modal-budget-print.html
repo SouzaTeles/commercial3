@@ -1,0 +1,23 @@
+<link href="{$URI_PUBLIC}css/modal/modal-budget-print.css?{$smarty.now}" rel="stylesheet" />
+<div id="modal-budget-saved">
+    <div class="col-xs-12">
+        <div class="budget-code">carregando...</div>
+        <div class="budget-message">Selecione a opção de impressão</div>
+    </div>
+    <div class="col-xs-12">
+        <button data-toggle="tooltip" data-title="Ticket" data-action="ticket" class="btn btn-red-light">
+            <i class="fa fa-ticket"></i>
+        </button>
+        <button data-toggle="tooltip" data-title="Padrão" data-action="print" class="btn btn-green-light">
+            <i class="fa fa-print"></i>
+        </button>
+        <button data-toggle="tooltip" data-title="Cupom" data-action="cupom" class="btn btn-blue-light">
+            <i class="fa fa-file-text-o"></i>
+        </button>
+        <button data-toggle="tooltip" data-title="Pdf" data-action="pdf" class="btn btn-red">
+            <i class="fa fa-file-pdf-o"></i>
+        </button>
+    </div>
+</div>
+<script> var data = {$smarty.post|@json_encode}; </script>
+<script src="{$URI_PUBLIC}js/modal/modal-budget-print.js?{$smarty.now}"></script>

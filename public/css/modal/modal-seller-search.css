@@ -1,0 +1,5 @@
+.modal-seller-search .modal-body .image-cover
+{
+    height: 134px;
+    background-image: url('../../images/empty-image.png');
+}

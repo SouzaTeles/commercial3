@@ -1,0 +1,23 @@
+.modal-budget-print .modal-body
+{
+    text-align: center;
+}
+
+.modal-budget-print .modal-body .budget-code
+{
+    font-size: 32px;
+}
+
+.modal-budget-print .modal-body .budget-message
+{
+    font-size: 20px;
+}
+
+.modal-budget-print .modal-body button
+{
+    width: 68px;
+    height: 68px;
+    font-size: 28px;
+    margin: 20px 4px 0;
+    border-radius: 50% !important;
+}
