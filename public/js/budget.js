@@ -128,7 +128,6 @@ Budget = {
     },
     beforePrint: function(key){
         var budget = Budget.budgets[key];
-        console.log(budget);
         global.post({
             url: global.uri.uri_public + 'api/modal.php?modal=modal-budget-print',
             data: budget,

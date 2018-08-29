@@ -1777,7 +1777,7 @@ Term = {
             Term.term = term;
             Term.data2form();
             Term.getModality();
-            Term.term_id = term.term_id;
+            Budget.budget.term_id = term.term_id;
         });
     },
     getModality: function(){
@@ -1811,7 +1811,7 @@ Term = {
             term_description: '',
             modalities: []
         };
-        Term.term_id = null;
+        Budget.budget.term_id = null;
     }
 };
 

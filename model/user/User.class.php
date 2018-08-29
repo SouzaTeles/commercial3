@@ -72,6 +72,9 @@
                         "c.company_color",
                         "c.company_short_name",
                         "c.company_consumer_id",
+                        "c.company_budget_message",
+                        "c.company_st",
+                        "c.company_credit",
                         "uc.user_company_main"
                     ],
                     "filters" => [

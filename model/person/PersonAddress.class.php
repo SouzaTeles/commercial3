@@ -39,6 +39,37 @@
             $this->address_reference = @$data->DsComplemento ? $data->DsComplemento : NULL;
             $this->address_note = @$data->DsObservacao ? $data->DsObservacao : NULL;
             $this->address_icms_type = @$data->TpContribuicaoICMS ? $data->TpContribuicaoICMS : NULL;
+
+            GLOBAL $dafel;
+
+            if( @$params["get_person_address_contact"] || @$_POST["get_person_address_contact"] )
+            {
+                $this->contacts = Model::getList($dafel,(Object)[
+                    "top" => 1,
+                    "class" => "PersonAddressContact",
+                    "tables" => [
+                        "PessoaEndereco_Contato PEC (NoLock)",
+                        "PessoaEndereco_TipoContato PETC (NoLock)",
+                        "TipoContato TP (NoLock)"
+                    ],
+                    "fields" => [
+                        "PETC.IdPessoa",
+                        "TP.IdTipoContato",
+                        "PessoaContato = PEC.DsContato",
+                        "PEC.StContatoPrincipal",
+                        "PETC.CdEndereco",
+                        "TP.NmTipoContato",
+                        "PETC.DsContato",
+                        "PETC.DsObservacao"
+                    ],
+                    "filters" => [
+                        [ "PEC.IdPessoaEndereco_Contato = PETC.IdPessoaEndereco_Contato" ],
+                        [ "PETC.IdTipoContato = TP.IdTipoContato" ],
+                        [ "PETC.IdPessoa", "s", "=", $data->IdPessoa ],
+                        [ "PETC.CdEndereco", "s", "=", $data->CdEndereco ]
+                    ]
+                ]);
+            }
         }
     }
 

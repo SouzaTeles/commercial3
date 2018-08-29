@@ -40,6 +40,7 @@
             $this->user_id = $data->user_id;
             $this->client_id = $data->client_id;
             $this->seller_id = $data->seller_id;
+            $this->budget_code = substr("00000{$data->budget_id}",-6);
             $this->address_code = $data->address_code;
             $this->term_id = @$data->term_id ? $data->term_id : NULL;
             $this->external_id = @$data->external_id ? $data->external_id : NULL;
@@ -105,6 +106,8 @@
                         "budget_item_value_discount=CAST(BI.budget_item_value_discount AS FLOAT)",
                         "budget_item_value_total=CAST(BI.budget_item_value_total AS FLOAT)",
                         "budget_item_value_unitary=CAST(BI.budget_item_value_unitary AS FLOAT)",
+                        "budget_item_value_icms=CAST(BI.budget_item_value_icms AS FLOAT)",
+                        "budget_item_value_st=CAST(BI.budget_item_value_st AS FLOAT)",
                         "BI.budget_item_aliquot_discount",
                         "ncm_id=P.IdClassificacaoFiscal",
                         "icms_id=P.IdCalculoICMS",
@@ -255,6 +258,7 @@
                         "INNER JOIN Bairro B ON(B.IdBairro = PE.IdBairro)"
                     ],
                     "fields" => [
+                        "PE.IdPessoa",
                         "PE.IdUF",
                         "PE.IdCidade",
                         "PE.IdBairro",
@@ -276,6 +280,64 @@
                         [ "PE.IdPessoa", "s", "=", $data->client_id ],
                         [ "PE.CdEndereco", "s", "=", $data->address_code ],
                     ]
+                ]);
+            }
+
+            if( @$_POST["get_budget_company"] || @$gets["get_budget_company"] ){
+                $company = Model::get($dafel,(Object)[
+                    "tables" => [
+                        "EmpresaERP (NoLock)",
+                    ],
+                    "fields" => [
+                        "CdEmpresa",
+                        "NmEmpresa",
+                        "NmEmpresaCurto",
+                        "NrCGC",
+                        "NrTelefone",
+                        "NrCEP",
+                        "TpLogradouro",
+                        "DsEndereco",
+                        "NrLogradouro",
+                        "NmBairro",
+                        "NmCidade",
+                        "CdUF"
+                    ],
+                    "filters" => [[ "CdEmpresa", "i", "=", $data->company_id ]]
+                ]);
+                $this->company = (Object)[
+                    "company_id" => $company->CdEmpresa,
+                    "company_name" => $company->NmEmpresa,
+                    "company_short_name" => $company->NmEmpresaCurto,
+                    "company_cnpj" => $company->NrCGC,
+                    "company_phone" => $company->NrTelefone,
+                    "address" => (Object)[
+                        "address_cep" => $company->NrCEP,
+                        "address_type" => $company->TpLogradouro,
+                        "address_public_place" => $company->DsEndereco,
+                        "address_number" => $company->NrLogradouro,
+                        "district_name" => $company->NmBairro,
+                        "city_name" => $company->NmCidade,
+                        "uf_id" => $company->CdUF
+                    ]
+                ];
+            }
+
+            if( @$data->term_id && (@$_POST["get_budget_term"] || @$gets["get_budget_term"] )){
+                $this->term = Model::get($dafel,(Object)[
+                    "class" => "Term",
+                    "tables" => [ "Prazo (NoLock)" ],
+                    "fields" => [
+                        "IdPrazo",
+                        "CdChamada",
+                        "DsPrazo",
+                        "NrParcelas",
+                        "NrDias1aParcela",
+                        "NrDiasEntrada",
+                        "NrDiasEntreParcelas",
+                        "StAtivo",
+                        "AlEntrada"
+                    ],
+                    "filters" => [[ "IdPrazo", "s", "=", $data->term_id ]]
                 ]);
             }
         }

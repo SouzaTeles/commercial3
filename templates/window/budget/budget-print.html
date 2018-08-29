@@ -1,0 +1,149 @@
+<button class="btn btn-orange" type="button">
+    <i class="fa fa-print"></i>
+</button>
+<div class="print-order box-shadow">
+    <div class="header">
+        <table>
+            <tr>
+                <td class="logo">
+                    <img id="company-logo" src="images/empty-image.png" />
+                </td>
+                <td class="company">
+                    <b id="company-name">--</b><br/>
+                    <b id="company-address">--</b><br/>
+                    <b id="company-phone">--</b>
+                </td>
+                <td class="budget-info text-right">
+                    <b id="external-code">--</b><br/>
+                    <b id="budget-date">--</b><br/>
+                    <b id="budget-code">--</b><br/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="budget-message">--</div>
+    <div id="client-info">
+        <table>
+            <tbody>
+            <tr>
+                <td colspan="2">
+                    <b id="client-name">--</b>
+                </td>
+                <td class="text-right">
+                    <b id="client-contact">--</b>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <b id="client-address">--</b>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="products">
+        <table id="table-products" class="table-border">
+            <thead>
+                <th width="auto">Produto</th>
+                <th width="4%">Und</th>
+                <th width="4%">Qtd</th>
+                <th width="8%">Valor</th>
+                <th width="7%" colspan="2">Desconto</th>
+                <th width="7%">Subs. Trib.</th>
+                <th width="7%">Líquido</th>
+                <th width="8%">Total</th>
+            </thead>
+            <tbody>
+                <tr><td colspan="8">--</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="address-values-payments">
+        <table>
+            <tr>
+                <td class="address">
+                    <table class="table-border">
+                        <thead>
+                            <th class="text-center">Endereço de Entrega</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="budget-address"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="values">
+                    <table id="table-budget-values" class="table-border">
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="2">Valores</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Valor Bruto</td>
+                                <td id="budget-value" class="text-center">--</td>
+                            </tr>
+                            <tr>
+                                <td>Desconto Total</td>
+                                <td id="budget-value-discount" class="text-center">--</td>
+                            </tr>
+                            <tr>
+                                <td>Subs. Trib.</td>
+                                <td id="budget-value-st" class="text-center">--</td>
+                            </tr>
+                            <tr>
+                                <td>Valor Total</td>
+                                <td id="budget-value-total" class="text-center">--</td>
+                            </tr>
+                            <tr>
+                                <td>Valor Total com ST</td>
+                                <td id="budget-value-total-st" class="text-center">--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="payments">
+                    <table id="table-payments" class="table-border">
+                        <thead>
+                            <tr>
+                                <th id="payment-title" class="text-center" colspan="4">Pagamento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center">Nenhum pagamento informado</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="note">
+        <table class="table-border">
+            <tr>
+                <th>Observações do Pedido</th>
+                <th>Observações da Nota</th>
+            </tr>
+            <tr>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+        </table>
+    </div>
+    <div class="seller">
+        <table>
+            <tr>
+                <td>
+                    Vendedor:<br/><b id="seller-name"></b>
+                </td>
+                <td class="text-right">
+                    Impresso em: {$smarty.now|date_format:"%d/%m/%Y %H:%M:%S"}<br/>
+                    {$config->system->system_name} v{$config->system->system_version}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
