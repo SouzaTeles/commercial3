@@ -114,7 +114,7 @@ Budget = {
                     '<li><a data-action="clone" disabled="' + ( true || global.login.access.budget.clone.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-clone txt-orange"></i>Duplicar</a></li>' +
                     '<li class="divider"></li>' +
                     '<li><a data-action="beforePrint" disabled="' + ( global.login.access.budget.print.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-print txt-green"></i>Imprimir</a></li>' +
-                    '<li><a data-action="delivery" disabled="true" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-truck txt-blue"></i>Entrega</a></li>' +
+                    '<li><a data-action="setDelivery" disabled="' + ( budget.budget.status == 'B' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-truck txt-blue"></i>Entrega</a></li>' +
                     '<li><a data-action="mail" disabled="' + ( true || global.login.access.budget.mail.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-envelope-o txt-blue"></i>E-mail</a></li>' +
                     '<li><a data-action="recover" disabled="' + ( true || global.login.access.budget.recover.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-unlock txt-red"></i>Recuperar Pedido</a></li>' +
                     '<li><a data-action="order" disabled="' + ( true || global.login.access.budget.order.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-powerpoint-o txt-blue"></i>Exportar Pedido</a></li>' +
@@ -266,6 +266,52 @@ Budget = {
             url: global.uri.uri_public + 'window.php?module=budget&action=' + params.action + '&budget_id=' + params.budget_id,
             width: params.width || 800,
             height: params.height || 620
+        });
+    },
+    setDelivery: function(key){
+        global.post({
+            url: global.uri.uri_public + 'api/modal.php?modal=modal-budget-delivery',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                id: 'modal-budget-delivery',
+                class: 'modal-budget-delivery',
+                icon: 'fa-truck',
+                title: 'Informação de Entrega',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Cancelar',
+                    class: 'pull-left'
+                },{
+                    icon: 'fa-check',
+                    title: 'Confirmar',
+                    action: function(){
+                        ModalDelivery.form2data();
+                        global.post({
+                            url: global.uri.uri_public_api + 'budget.php?action=delivery',
+                            data: {
+                                budget_id: Budget.budgets[key].budget.id,
+                                budget_delivery: ModalDelivery.delivery.delivery,
+                                budget_delivery_date: ModalDelivery.delivery.date
+                            },
+                            dataType: 'json'
+                        },function(){
+                            Budget.budgets[key].budget.delivery = ModalDelivery.delivery.delivery;
+                            Budget.budgets[key].budget.delivery_date = ModalDelivery.delivery.date;
+                            Budget.showList();
+                        });
+
+                    }
+                }],
+                shown: function(){
+                    ModalDelivery.delivery = {
+                        delivery: Budget.budgets[key].budget.delivery,
+                        date: Budget.budgets[key].budget.delivery_date
+                    };
+                    ModalDelivery.data2form();
+                }
+            });
         });
     },
     showCompanies: function(success){

@@ -15,11 +15,33 @@
 
     checkAccess();
 
-    if( in_array($get->action,["insert","edit","del","recover"]) ){
+    if( in_array($get->action,["delivery","insert","edit","del","recover"]) ){
         postLog();
     }
 
     switch( $get->action ) {
+
+        case "delivery":
+
+            if( !@$post->budget_id || !@$post->budget_delivery || !@$post->budget_delivery_date ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O ID do pedido não foi informado."
+                ]);
+            }
+
+            Model::update($commercial,(Object)[
+                "table" => "Budget",
+                "fields" => [
+                    [ "budget_delivery", "s", $post->budget_delivery ],
+                    [ "budget_delivery_date", "s", $post->budget_delivery_date ]
+                ],
+                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+            ]);
+
+            Json::get($headerStatus[200]);
+
+        break;
 
         case "edit":
 
@@ -297,6 +319,7 @@
                     "B.budget_origin",
                     "B.budget_status",
                     "B.budget_delivery",
+                    "budget_delivery_date=FORMAT(B.budget_delivery_date,'yyyy-MM-dd')",
                     "budget_date=FORMAT(B.budget_date,'yyyy-MM-dd HH:mm:ss')"
                 ],
                 "filters" => [
@@ -304,7 +327,7 @@
                     ["B.seller_id", "s", "=", @$post->seller_id ? $post->seller_id : NULL],
                     ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
                 ],
-                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_date"
+                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_delivery_date,B.budget_date"
             ]);
 
             $ret = [];
@@ -320,6 +343,7 @@
                         "origin" => $budget->budget_origin,
                         "status" => $budget->budget_status,
                         "delivery" => $budget->budget_delivery,
+                        "delivery_date" => $budget->budget_delivery_date,
                         "date" => $budget->budget_date,
                         "date_formatted" => date_format(date_create($budget->budget_date),"d/m/Y")
                     ],
