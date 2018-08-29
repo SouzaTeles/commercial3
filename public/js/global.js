@@ -48,7 +48,7 @@ Compass = {
                     },function(){
                         global.onLoader();
                         if( !!Electron ) Electron.logout();
-                        else location.href = global.uri.uri_public_admin + 'login';
+                        else location.href = global.uri.uri_public + 'index.php?route=login';
                     })
                 }
             }]

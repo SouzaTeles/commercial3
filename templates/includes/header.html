@@ -23,17 +23,123 @@
 <div class="menu">
     <ul>
         <li>
-            <a href="{$URI_PUBLIC}agenda" class="agenda">
+            <a href="{$URI_PUBLIC}index.php?route=agenda" class="agenda">
                 <i class="fa fa-calendar"></i>Agenda
             </a>
         </li>
         <li>
-            <a href="{$URI_PUBLIC}vendas" class="budgets">
+            <a href="{$URI_PUBLIC}index.php?route=sale" class="sale">
                 <i class="fa fa-usd"></i>Vendas
             </a>
             <div class="sub-menu">
-                <a href="{$URI_PUBLIC}budget" class="budgets">
+                <a href="{$URI_PUBLIC}index.php?route=target" class="sale">
+                    <i class="fa fa-bullseye"></i>Metas
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=budget" class="sale">
                     <i class="fa fa-file-text-o"></i>Orçamentos
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=devolution" class="sale">
+                    <i class="fa fa-reply-all"></i>Devolução
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=package" class="sale">
+                    <i class="fa fa-cube"></i>Encomendas
+                </a>
+            </div>
+        </li>
+        <li>
+            <a href="{$URI_PUBLIC}index.php?route=stock" class="stock">
+                <i class="fa fa-cubes"></i>Estoque
+            </a>
+            <div class="sub-menu">
+                <a href="{$URI_PUBLIC}index.php?route=inventory" class="stock">
+                    <i class="fa fa-question-circle"></i>Inventário
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=sge" class="stock">
+                    <i class="fa fa-question-circle"></i>Assistente SGE
+                </a>
+            </div>
+        </li>
+        <li>
+            <a href="{$URI_PUBLIC}index.php?route=report" class="report">
+                <i class="fa fa-file-text-o"></i>Relatórios
+            </a>
+            <div class="sub-menu">
+                <a href="{$URI_PUBLIC}index.php?route=compass" class="report">
+                    <i class="fa fa-question-circle"></i>Compass
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=cube" class="report">
+                    <i class="fa fa-question-circle"></i>Cube Report
+                </a>
+            </div>
+        </li>
+        <li>
+            <a href="{$URI_PUBLIC}index.php?route=logistics" class="logistics">
+                <i class="fa fa-question-circle"></i>Logística
+            </a>
+            <div class="sub-menu">
+                <a href="{$URI_PUBLIC}index.php?route=shipment" class="logistics">
+                    <i class="fa fa-question-circle"></i>Mapa de Carregamento
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=management" class="logistics">
+                    <i class="fa fa-question-circle"></i>Gestão
+                </a>
+            </div>
+        </li>
+        <li>
+            <a href="{$URI_PUBLIC}index.php?route=rh" class="rh">
+                <i class="fa fa-question-circle"></i>RH
+            </a>
+            <div class="sub-menu">
+                <a href="{$URI_PUBLIC}index.php?route=shipment" class="rh">
+                    <i class="fa fa-question-circle"></i>Cadastro
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=highlights" class="rh">
+                    <i class="fa fa-question-circle"></i>Melhores do Mês
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=payroll" class="rh">
+                    <i class="fa fa-question-circle"></i>Folha de Pagamento
+                </a>
+            </div>
+        </li>
+        <li>
+            <a href="{$URI_PUBLIC}index.php?route=production" class="production">
+                <i class="fa fa-question-circle"></i>Produção
+            </a>
+            <div class="sub-menu">
+                <a href="{$URI_PUBLIC}index.php?route=sisprod" class="production">
+                    <i class="fa fa-question-circle"></i>Sisprod
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=glass" class="production">
+                    <i class="fa fa-question-circle"></i>Vidro
+                </a>
+            </div>
+        </li>
+        <li>
+            <a href="{$URI_PUBLIC}index.php?route=crm" class="crm">
+                <i class="fa fa-address-card-o"></i>CRM
+            </a>
+            <div class="sub-menu">
+                <a href="{$URI_PUBLIC}index.php?route=person" class="crm">
+                    <i class="fa fa-users"></i>Cliente
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=glass" class="crm">
+                    <i class="fa fa-question-circle"></i>Vidro
+                </a>
+            </div>
+        </li>
+        <li>
+            <a href="{$URI_PUBLIC}index.php?route=config" class="config">
+                <i class="fa fa-gear"></i>Configurações
+            </a>
+            <div class="sub-menu">
+                <a href="{$URI_PUBLIC}index.php?route=user" class="config">
+                    <i class="fa fa-user"></i>Usuários
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=profile" class="config">
+                    <i class="fa fa-user-circle-o"></i>Perfil de Usuário
+                </a>
+                <a href="{$URI_PUBLIC}index.php?route=company" class="config">
+                    <i class="fa fa-user"></i>Empresas
                 </a>
             </div>
         </li>
