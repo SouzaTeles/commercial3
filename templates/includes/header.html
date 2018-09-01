@@ -1,9 +1,14 @@
 <header class="bg-white box-shadow">
     <div class="home">
-        <a href="{$URI_PUBLIC}"><i class="fa fa-home"></i></a>
+        <a href="{$URI_PUBLIC}">
+            <img src="{$config->uri->uri_public}images/commercial-c.png" />
+        </a>
+    </div>
+    <div class="title title-{if empty($data->$route->parent)}{$data->$route->key}{else}{$data->$route->parent}{/if}">
+        <i class="fa fa-fw {$data->$route->icon}"></i> {$data->$route->title}<div class="arrow"></div>
     </div>
     <div class="logo">
-        <img src="{$config->uri->uri_public}images/commercial.png" />
+        <img src="{$config->uri->uri_public}images/commercial-wide.png" />
     </div>
     <div class="user dropdown pull-right">
         <div class="cover" style="background-image:url({$login->image})"></div>
@@ -39,7 +44,7 @@
                     <i class="fa fa-file-text-o"></i>Orçamentos
                 </a>
                 <a href="{$URI_PUBLIC}index.php?route=devolution" class="sale">
-                    <i class="fa fa-reply-all"></i>Devolução
+                    <i class="fa fa-reply-all"></i>Devoluções
                 </a>
                 <a href="{$URI_PUBLIC}index.php?route=package" class="sale">
                     <i class="fa fa-cube"></i>Encomendas
@@ -61,7 +66,7 @@
         </li>
         <li>
             <a href="{$URI_PUBLIC}index.php?route=report" class="report">
-                <i class="fa fa-file-text-o"></i>Relatórios
+                <i class="fa fa-bar-chart"></i>Relatórios
             </a>
             <div class="sub-menu">
                 <a href="{$URI_PUBLIC}index.php?route=compass" class="report">
@@ -90,14 +95,14 @@
                 <i class="fa fa-question-circle"></i>RH
             </a>
             <div class="sub-menu">
-                <a href="{$URI_PUBLIC}index.php?route=shipment" class="rh">
-                    <i class="fa fa-question-circle"></i>Cadastro
+                <a href="{$URI_PUBLIC}index.php?route=person" class="rh">
+                    <i class="fa fa-users"></i>Pessoas
                 </a>
                 <a href="{$URI_PUBLIC}index.php?route=highlights" class="rh">
-                    <i class="fa fa-question-circle"></i>Melhores do Mês
+                    <i class="fa fa-star"></i>Melhores do Mês
                 </a>
-                <a href="{$URI_PUBLIC}index.php?route=payroll" class="rh">
-                    <i class="fa fa-question-circle"></i>Folha de Pagamento
+                <a href="{$URI_PUBLIC}index.php?route=pay" class="rh">
+                    <i class="fa fa-money"></i>Folha de Pagamento
                 </a>
             </div>
         </li>
@@ -114,34 +119,34 @@
                 </a>
             </div>
         </li>
-        <li>
-            <a href="{$URI_PUBLIC}index.php?route=crm" class="crm">
-                <i class="fa fa-address-card-o"></i>CRM
-            </a>
-            <div class="sub-menu">
-                <a href="{$URI_PUBLIC}index.php?route=person" class="crm">
-                    <i class="fa fa-users"></i>Cliente
-                </a>
-                <a href="{$URI_PUBLIC}index.php?route=glass" class="crm">
-                    <i class="fa fa-question-circle"></i>Vidro
-                </a>
-            </div>
-        </li>
-        <li>
-            <a href="{$URI_PUBLIC}index.php?route=config" class="config">
-                <i class="fa fa-gear"></i>Configurações
-            </a>
-            <div class="sub-menu">
-                <a href="{$URI_PUBLIC}index.php?route=user" class="config">
-                    <i class="fa fa-user"></i>Usuários
-                </a>
-                <a href="{$URI_PUBLIC}index.php?route=profile" class="config">
-                    <i class="fa fa-user-circle-o"></i>Perfil de Usuário
-                </a>
-                <a href="{$URI_PUBLIC}index.php?route=company" class="config">
-                    <i class="fa fa-user"></i>Empresas
-                </a>
-            </div>
-        </li>
+        <!--<li>-->
+            <!--<a href="{$URI_PUBLIC}index.php?route=crm" class="crm">-->
+                <!--<i class="fa fa-address-card-o"></i>CRM-->
+            <!--</a>-->
+            <!--<div class="sub-menu">-->
+                <!--<a href="{$URI_PUBLIC}index.php?route=person" class="person">-->
+                    <!--<i class="fa fa-users"></i>Cliente-->
+                <!--</a>-->
+                <!--<a href="{$URI_PUBLIC}index.php?route=followup" class="followup">-->
+                    <!--<i class="fa fa-question-circle"></i>Follow Up-->
+                <!--</a>-->
+            <!--</div>-->
+        <!--</li>-->
+        <!--<li>-->
+            <!--<a href="{$URI_PUBLIC}index.php?route=config" class="config">-->
+                <!--<i class="fa fa-gear"></i>Configurações-->
+            <!--</a>-->
+            <!--<div class="sub-menu">-->
+                <!--<a href="{$URI_PUBLIC}index.php?route=user" class="user">-->
+                    <!--<i class="fa fa-user"></i>Usuários-->
+                <!--</a>-->
+                <!--<a href="{$URI_PUBLIC}index.php?route=profile" class="profile">-->
+                    <!--<i class="fa fa-user-circle-o"></i>Perfil de Usuário-->
+                <!--</a>-->
+                <!--<a href="{$URI_PUBLIC}index.php?route=company" class="company">-->
+                    <!--<i class="fa fa-user"></i>Empresas-->
+                <!--</a>-->
+            <!--</div>-->
+        <!--</li>-->
     </ul>
 </div>

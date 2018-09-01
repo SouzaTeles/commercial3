@@ -21,6 +21,7 @@
 
     $get = (Object)$_GET;
     $post = (Object)$_POST;
+    $headers = getallheaders();
 
     if( Session::isUser() ){
         $login = Model::get($commercial,(Object)[

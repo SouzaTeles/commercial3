@@ -25,7 +25,7 @@
         <link href="{$URI_LIB}css/alert.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
         <link href="{$URI_LIB}css/loader.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
         <link href="{$URI_LIB}css/modal.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/header.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/header.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
         <link href="{$URI_LIB}css/tables.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
         <link href="{$URI_LIB}css/address.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
         <link href="{$URI_LIB}css/components.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
@@ -72,13 +72,6 @@
     <script src="{$URI_PUBLIC}js/global.js?{$smarty.now}"></script>
     <script src="{$URI_PUBLIC}js/webcam.min.js"></script>
     <script src="{$URI_PUBLIC}js/{$route}.js?{$smarty.now}"></script>
-    {if !empty($data->$route->pages)}
-        {foreach $data->$route->pages item=page key=key}
-            {if $login->access->{$page->key}->access->value == "Y"}
-                <script src="{$URI_PUBLIC}js/{$route}/{$route}-{$page->id}.js?{$smarty.now}"></script>
-            {/if}
-        {/foreach}
-    {/if}
     <script>
         global.login = {$login|json_encode};
         global.uri = {$config->uri|json_encode};

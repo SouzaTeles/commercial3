@@ -47,7 +47,7 @@ Compass = {
                         dataType: 'json'
                     },function(){
                         global.onLoader();
-                        if( !!Electron ) Electron.logout();
+                        if( !!Electron ) Electron.afterLogout();
                         else location.href = global.uri.uri_public + 'index.php?route=login';
                     })
                 }

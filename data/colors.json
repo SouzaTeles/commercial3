@@ -12,6 +12,7 @@
 
 	"pages": {
 		"agenda": "#D32F2F",
+		"home": "#0b4aa4",
 		"sale": "#7B1FA2",
 		"stock": "#512DA8",
 		"report": "#1976D2",

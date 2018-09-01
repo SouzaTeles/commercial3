@@ -1,208 +1,160 @@
 {
-
 	"agenda": {
-		"id": "agenda",
 		"key": "agenda",
-		"href": "agenda",
-		"file": "page.html",
 		"icon": "fa-calendar",
-		"title": "Agenda",
-		"pages": [{
-			"id": "budget",
-			"key": "budget",
-			"icon": "fa-file-text-o",
-			"title": "Pedidos"
-		}]
+		"title": "Agenda"
 	},
-
 	"budget": {
-		"id": "budget",
 		"key": "budget",
-		"href": "budget",
-		"file": "budget.html",
 		"icon": "fa-file-text-o",
 		"title": "Orçamentos",
-		"subtitle": "Pedidos & Davs"
+		"parent": "sale"
 	},
-
-	"logistics": {
-		"id": "logistics",
-		"key": "logistics",
-		"href": "logistica",
-		"file": "page.html",
-		"icon": "fa-truck",
-		"title": "Logística",
-		"subtitle": "???",
-		"pages": [{
-			"id": "shipment",
-			"key": "shipment",
-			"icon": "fa-truck",
-			"title": "Mapa de Carregamento"
-		}]
+	"compass": {
+		"key": "compass",
+		"icon": "fa-question-circle",
+		"title": "Compass",
+		"parent": "report"
 	},
-
-	"production": {
-		"id": "production",
-		"key": "production",
-		"href": "producao",
-		"file": "page.html",
-		"icon": "fa-bus",
-		"title": "Produção",
-		"subtitle": "???",
-		"pages": [{
-			"id": "logistics",
-			"key": "logistics",
-			"icon": "fa-bus",
-			"title": "Logística"
-		}]
-	},
-
-	"report": {
-		"id": "report",
-		"key": "report",
-		"href": "relatorios",
-		"file": "page.html",
-		"icon": "fa-bus",
-		"title": "Relatórios",
-		"subtitle": "???",
-		"pages": [{
-			"id": "logistics",
-			"key": "logistics",
-			"icon": "fa-bus",
-			"title": "Logística"
-		}]
-	},
-
-	"crm": {
-		"id": "crm",
-		"key": "crm",
-		"href": "crm",
-		"file": "page.html",
-		"icon": "fa-address-book-o",
-		"title": "CRM",
-		"subtitle": "???",
-		"pages": [{
-			"id": "crm",
-			"key": "crm",
-			"icon": "fa-address-book-o",
-			"title": "CRM"
-		}]
-	},
-
-	"target": {
-		"id": "target",
-		"key": "target",
-		"href": "metas",
-		"file": "page.html",
-		"icon": "fa-bullseye",
-		"title": "Metas",
-		"subtitle": "???",
-		"pages": [{
-			"id": "target",
-			"key": "target",
-			"icon": "fa-bullseye",
-			"title": "Metas"
-		}]
-	},
-
 	"cube": {
-		"id": "cube",
 		"key": "cube",
-		"href": "cube-report",
-		"file": "page.html",
 		"icon": "fa-cube",
 		"title": "Cube Report",
-		"subtitle": "???",
-		"pages": [{
-			"id": "cube",
-			"key": "cube",
-			"icon": "fa-cube",
-			"title": "Cube Report"
-		}]
+		"parent": "report"
+	},
+	"devolution": {
+		"key": "devolution",
+		"icon": "fa-reply-all",
+		"title": "Devoluções",
+		"parent": "sale"
+	},
+	"glass": {
+		"key": "glass",
+		"icon": "fa-question-circle",
+		"title": "Vidro",
+		"parent": "production"
+	},
+	"highlights": {
+		"key": "highlights",
+		"icon": "fa-star",
+		"title": "Melhores do Mês",
+		"parent": "rh"
+	},
+	"home": {
+		"key": "home",
+		"icon": "fa-home",
+		"title": "Home"
+	},
+	"inventory": {
+		"key": "inventory",
+		"icon": "fa-question-circle",
+		"title": "Inventário",
+		"parent": "stock"
+	},
+	"management": {
+		"key": "management",
+		"icon": "fa-question-circle",
+		"title": "Gestão",
+		"parent": "logistics"
+	},
+	"package": {
+		"key": "sale",
+		"icon": "fa-cube",
+		"title": "Encomendas"
+	},
+	"pay": {
+		"key": "pay",
+		"icon": "fa-money",
+		"title": "Folha de Pagamento",
+		"parent": "rh"
+	},
+	"person": {
+		"key": "person",
+		"icon": "fa-users",
+		"title": "Pessoas",
+		"parent": "rh"
+	},
+	"report": {
+		"key": "report",
+		"icon": "fa-bar-chart",
+		"title": "Relatórios"
+	},
+	"production": {
+		"key": "production",
+		"icon": "fa-question-circle",
+		"title": "Produção"
+	},
+	"sale": {
+		"key": "sale",
+		"icon": "fa-usd",
+		"title": "Vendas"
+	},
+	"sge": {
+		"key": "sale",
+		"icon": "fa-question-circle",
+		"title": "Assistente SGE",
+		"parent": "stock"
+	},
+	"shipment": {
+		"key": "sale",
+		"icon": "fa-question-circle",
+		"title": "Mapa de Carregamento",
+		"parent": "logistics"
+	},
+	"sisprod": {
+		"key": "sisprod",
+		"icon": "fa-question-circle",
+		"title": "SisProd",
+		"parent": "production"
+	},
+	"target": {
+		"key": "target",
+		"icon": "fa-bullseye",
+		"title": "Metas",
+		"parent": "sale"
+	},
+
+
+
+	"logistics": {
+		"key": "logistics",
+		"icon": "fa-truck",
+		"title": "Logística"
+	},
+
+
+
+
+
+	"crm": {
+		"key": "crm",
+		"icon": "fa-address-book-o",
+		"title": "CRM"
 	},
 
 	"stock": {
-		"id": "stock",
 		"key": "stock",
-		"href": "estoque",
-		"file": "page.html",
 		"icon": "fa-cubes",
-		"title": "Estoque",
-		"subtitle": "???",
-		"pages": [{
-			"id": "stock",
-			"key": "stock",
-			"icon": "fa-cubes",
-			"title": "Estoque"
-		}]
+		"title": "Estoque"
 	},
 
-	"inventory": {
-		"id": "inventory",
-		"key": "inventory",
-		"href": "inventario",
-		"file": "page.html",
-		"icon": "fa-indent",
-		"title": "Inventário",
-		"subtitle": "???",
-		"pages": [{
-			"id": "inventory",
-			"key": "inventory",
-			"icon": "fa-indent",
-			"title": "Inventário"
-		}]
-	},
+
 
 	"rh": {
-		"id": "rh",
 		"key": "rh",
-		"href": "rh",
-		"file": "page.html",
 		"icon": "fa-users",
-		"title": "RH",
-		"subtitle": "Pessoal & Departamento",
-		"pages": []
+		"title": "RH"
 	},
 
 	"config": {
-		"id": "config",
 		"key": "config",
-		"href": "config",
-		"file": "page.html",
 		"icon": "fa-gear",
-		"title": "Config",
-		"pages": [{
-			"id": "user",
-			"key": "user",
-			"icon": "fa-user",
-			"title": "Usuários"
-		},{
-			"id": "user-profile",
-			"key": "user_profile",
-			"icon": "fa-id-badge",
-			"title": "Perfis de Usuário"
-		},{
-			"id": "general",
-			"key": "config_general",
-			"icon": "fa-gear",
-			"title": "Geral"
-		}]
-	},
-
-	"home": {
-		"id": "home",
-		"key": "home",
-		"title": "Home",
-		"file": "home.html",
-		"pages": []
+		"title": "Config"
 	},
 
 	"login": {
-		"id": "login",
 		"key": "login",
-		"title": "Login",
-		"file": "login.html",
-		"pages": []
+		"title": "Login"
 	}
 
 }

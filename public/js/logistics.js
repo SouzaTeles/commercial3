@@ -1,12 +1,12 @@
 $(document).ready(function(){
 
-    if(global.login.access.shipment.access.value == 'Y'){
-        Shipment.showCompanies(function(){
-            Shipment.getList();
-        });
-        Shipment.events();
-        global.mask();
-    }
+    // if(global.login.access.shipment.access.value == 'Y'){
+    //     Shipment.showCompanies(function(){
+    //         Shipment.getList();
+    //     });
+    //     Shipment.events();
+    //     global.mask();
+    // }
     global.unLoader();
 });
 

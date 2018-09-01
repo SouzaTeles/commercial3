@@ -19,7 +19,7 @@ html, body, .login
     z-index: 1;
     margin: auto;
     width: 400px;
-    height: 434px;
+    height: 510px;
     position: absolute;
 }
 

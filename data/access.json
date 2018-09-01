@@ -1,5 +1,4 @@
 {
-
 	"agenda": {
 		"name": "Agenda",
 		"access": {
@@ -8,7 +7,6 @@
 			"data_type": "bool"
 		}
 	},
-
 	"budget": {
 		"name": "Commercial > Pedidos",
 		"access": {
@@ -67,6 +65,87 @@
 			"data_type": "bool"
 		}
 	},
+	"compass": {
+		"name": "Compass",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"devolution": {
+		"name": "Devoluções",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"glass": {
+		"name": "Vidro",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"highlights": {
+		"name": "Melhores do Mês",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"management": {
+		"name": "Gestão",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"package": {
+		"name": "Encomendas",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"pay": {
+		"name": "Folha de Pagamento",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"person": {
+		"name": "Pessoas",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"sale": {
+		"name": "Vendas",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"sisprod": {
+		"name": "SisProd",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+
 
 	"logistics": {
 		"name": "Logística",
