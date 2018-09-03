@@ -65,6 +65,14 @@
 			"data_type": "bool"
 		}
 	},
+	"client": {
+		"name": "Cliente",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
 	"compass": {
 		"name": "Compass",
 		"access": {
@@ -75,6 +83,14 @@
 	},
 	"devolution": {
 		"name": "Devoluções",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"followup": {
+		"name": "Follow Up",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -277,7 +293,7 @@
 			"data_type": "bool"
 		}
 	},
-	"user_profile": {
+	"profile": {
 		"name": "Configurações - Perfis de Usuário",
 		"access": {
 			"name": "Visualiza",

@@ -10,11 +10,33 @@
 		"title": "Orçamentos",
 		"parent": "sale"
 	},
+	"client": {
+		"key": "client",
+		"icon": "fa-user",
+		"title": "Cliente",
+		"parent": "crm"
+	},
+	"company": {
+		"key": "company",
+		"icon": "fa-building",
+		"title": "Empresas",
+		"parent": "config"
+	},
 	"compass": {
 		"key": "compass",
-		"icon": "fa-question-circle",
+		"icon": "fa-location-arrow",
 		"title": "Compass",
 		"parent": "report"
+	},
+	"config": {
+		"key": "config",
+		"icon": "fa-gear",
+		"title": "Configurações"
+	},
+	"crm": {
+		"key": "crm",
+		"icon": "fa-address-book-o",
+		"title": "CRM"
 	},
 	"cube": {
 		"key": "cube",
@@ -28,9 +50,15 @@
 		"title": "Devoluções",
 		"parent": "sale"
 	},
+	"followup": {
+		"key": "followup",
+		"icon": "fa-phone-square",
+		"title": "Follow Up",
+		"parent": "crm"
+	},
 	"glass": {
 		"key": "glass",
-		"icon": "fa-question-circle",
+		"icon": "fa-object-ungroup",
 		"title": "Vidro",
 		"parent": "production"
 	},
@@ -51,9 +79,18 @@
 		"title": "Inventário",
 		"parent": "stock"
 	},
+	"login": {
+		"key": "login",
+		"title": "Login"
+	},
+	"logistics": {
+		"key": "logistics",
+		"icon": "fa-truck",
+		"title": "Logística"
+	},
 	"management": {
 		"key": "management",
-		"icon": "fa-question-circle",
+		"icon": "fa-magic",
 		"title": "Gestão",
 		"parent": "logistics"
 	},
@@ -74,6 +111,12 @@
 		"title": "Pessoas",
 		"parent": "rh"
 	},
+	"profile": {
+		"key": "profile",
+		"icon": "fa-user-circle-o",
+		"title": "Perfil de Usuário",
+		"parent": "config"
+	},
 	"report": {
 		"key": "report",
 		"icon": "fa-bar-chart",
@@ -81,8 +124,13 @@
 	},
 	"production": {
 		"key": "production",
-		"icon": "fa-question-circle",
+		"icon": "fa-dropbox",
 		"title": "Produção"
+	},
+	"rh": {
+		"key": "rh",
+		"icon": "fa-users",
+		"title": "RH"
 	},
 	"sale": {
 		"key": "sale",
@@ -97,15 +145,20 @@
 	},
 	"shipment": {
 		"key": "sale",
-		"icon": "fa-question-circle",
+		"icon": "fa-map-o",
 		"title": "Mapa de Carregamento",
 		"parent": "logistics"
 	},
 	"sisprod": {
 		"key": "sisprod",
-		"icon": "fa-question-circle",
+		"icon": "fa-cogs",
 		"title": "SisProd",
 		"parent": "production"
+	},
+	"stock": {
+		"key": "stock",
+		"icon": "fa-cubes",
+		"title": "Estoque"
 	},
 	"target": {
 		"key": "target",
@@ -113,48 +166,10 @@
 		"title": "Metas",
 		"parent": "sale"
 	},
-
-
-
-	"logistics": {
-		"key": "logistics",
-		"icon": "fa-truck",
-		"title": "Logística"
-	},
-
-
-
-
-
-	"crm": {
-		"key": "crm",
-		"icon": "fa-address-book-o",
-		"title": "CRM"
-	},
-
-	"stock": {
-		"key": "stock",
-		"icon": "fa-cubes",
-		"title": "Estoque"
-	},
-
-
-
-	"rh": {
-		"key": "rh",
-		"icon": "fa-users",
-		"title": "RH"
-	},
-
-	"config": {
-		"key": "config",
-		"icon": "fa-gear",
-		"title": "Config"
-	},
-
-	"login": {
-		"key": "login",
-		"title": "Login"
+	"user": {
+		"key": "user",
+		"icon": "fa-user",
+		"title": "Usuários",
+		"parent": "config"
 	}
-
 }
