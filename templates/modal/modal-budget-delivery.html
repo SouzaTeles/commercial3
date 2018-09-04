@@ -1,8 +1,4 @@
-<div class="modal-box bd-blue">
-    <b>Entrega</b>
-    <p>Informe as opções de entrega do pedido.</p>
-</div>
-<br/>
+<link href="{$URI_PUBLIC}css/modal/modal-budget-delivery.css?{$smarty.now}" rel="stylesheet" />
 <div class="row">
     <div class="col-xs-12 col-sm-6">
         <div class="form-group">
@@ -19,6 +15,12 @@
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                 <input disabled type="text" class="form-control" id="modal_budget_delivery_date" name="modal_budget_delivery_date" data-to-mask="date">
             </div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <div class="form-group">
+            <label for="modal_budget_note_document">Observações do Documento</label>
+            <textarea rows="6" class="form-control" id="modal_budget_note_document" name="modal_budget_note_document" placeholder="Observações do Documento"></textarea>
         </div>
     </div>
 </div>

@@ -1,0 +1,9 @@
+.modal-budget-delivery.modal
+{
+    top: 130px;
+}
+
+.modal-budget-delivery.modal .modal-content .modal-body
+{
+    max-height: 366px;
+}

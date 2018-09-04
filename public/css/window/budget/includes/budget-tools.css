@@ -13,8 +13,35 @@
     height: 60px;
     padding: 12px;
     font-size: 26px;
-    margin-right: 5px;
+    margin-right: 48px;
     text-align: center;
+}
+
+.panel .panel-tools .action:before
+{
+  top: 0;
+  width: 0;
+  height: 0;
+  content: "";
+  position: absolute;
+  display: inline-block;
+  vertical-align: middle;
+  border-right: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+}
+
+.panel .panel-tools .action.new:before
+{
+    left: 202px;
+    border-top: 30px solid #379939;
+    border-left: 30px solid #379939;
+}
+
+.panel .panel-tools .action.edit:before
+{
+    left: 217px;
+    border-top: 30px solid #337be0;
+    border-left: 30px solid #337be0;
 }
 
 .panel .panel-tools button

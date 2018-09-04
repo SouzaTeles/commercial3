@@ -114,7 +114,7 @@ Budget = {
                     '<li><a data-action="clone" disabled="' + ( true || global.login.access.budget.clone.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-clone txt-orange"></i>Duplicar</a></li>' +
                     '<li class="divider"></li>' +
                     '<li><a data-action="beforePrint" disabled="' + ( global.login.access.budget.print.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-print txt-green"></i>Imprimir</a></li>' +
-                    '<li><a data-action="setDelivery" disabled="' + ( budget.budget.status == 'B' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-truck txt-blue"></i>Entrega</a></li>' +
+                    '<li><a data-action="beforeDelivery" disabled="' + ( budget.budget.status == 'B' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-truck txt-blue"></i>Entrega</a></li>' +
                     '<li><a data-action="mail" disabled="' + ( true || global.login.access.budget.mail.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-envelope-o txt-blue"></i>E-mail</a></li>' +
                     '<li><a data-action="recover" disabled="' + ( true || global.login.access.budget.recover.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-unlock txt-red"></i>Recuperar Pedido</a></li>' +
                     '<li><a data-action="order" disabled="' + ( true || global.login.access.budget.order.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-powerpoint-o txt-blue"></i>Exportar Pedido</a></li>' +
@@ -125,6 +125,24 @@ Budget = {
                 '</ul>' +
             '</div>'
         );
+    },
+    beforeDelivery: function(key){
+        if( !!Budget.budgets[key].getDelivery ) {
+            Budget.setDelivery(key);
+        } else {
+            global.post({
+                url: global.uri.uri_public_api + 'budget.php?action=getDelivery',
+                data: {
+                    budget_id: Budget.budgets[key].budget.id
+                },
+                dataType: 'json'
+            }, function (data) {
+                Budget.budgets[key].budget.delivery_date = data.date;
+                Budget.budgets[key].budget.note_document = data.note;
+                Budget.budgets[key].getDelivery = 1;
+                Budget.setDelivery(key);
+            });
+        }
     },
     beforePrint: function(key){
         var budget = Budget.budgets[key];
@@ -158,20 +176,6 @@ Budget = {
             Budget.data.company_id = Budget.company.company_id;
             Budget.getList();
         });
-        $('#budget_seller_code').keypress(function(e){
-            var keycode = e.keyCode || e.which;
-            if( keycode == '13' && $(this).val().length ){
-                e.preventDefault();
-                e.stopPropagation();
-                Seller.get({
-                    seller_code: $(this).val()
-                });
-            }
-        }).on('blur',function(){
-            if( $(this).attr('data-value').length ){
-                $(this).val($(this).attr('data-value'));
-            }
-        });
         $('#budget_seller_name').on('keyup',function(){
             if( $(this).val().length >= 3 && $(this).val() != Budget.typeahead.last ){
                 clearTimeout(Budget.typeahead.timer);
@@ -193,6 +197,26 @@ Budget = {
                         }
                     });
                 },Budget.typeahead.delay);
+            }
+        });
+        $('#button-budget-seller-search').click(function(){
+            Seller.search(function(){
+                Budget.getList();
+            });
+        });
+        $('#budget_seller_code').keypress(function (e){
+            var keycode = e.keyCode || e.which;
+            if( keycode == '13' && $(this).val().length ){
+                e.preventDefault();
+                e.stopPropagation();
+                Seller.get({
+                    person_code: $(this).val(),
+                    person_category_id: global.config.person.seller_category_id
+                });
+            }
+        }).on('blur',function(){
+            if( $(this).attr('data-value').length ){
+                $(this).val($(this).attr('data-value'));
             }
         });
         $('#button-budget-seller-remove').click(function(){
@@ -226,7 +250,7 @@ Budget = {
         });
         Budget.table.on('draw',function(){
             var $table = $('#table-budgets');
-            $table.find('a[disabled="false"]').click(function(e){
+            $table.find('a[disabled="false"]').unbind('click').click(function(e){
                 e.preventDefault();
                 e.stopPropagation();
                 Budget[$(this).attr('data-action')]($(this).attr('data-key'),$(this).attr('data-id'));
@@ -293,12 +317,14 @@ Budget = {
                             data: {
                                 budget_id: Budget.budgets[key].budget.id,
                                 budget_delivery: ModalDelivery.delivery.delivery,
-                                budget_delivery_date: ModalDelivery.delivery.date
+                                budget_delivery_date: ModalDelivery.delivery.date,
+                                budget_note_document: ModalDelivery.delivery.note
                             },
                             dataType: 'json'
                         },function(){
                             Budget.budgets[key].budget.delivery = ModalDelivery.delivery.delivery;
                             Budget.budgets[key].budget.delivery_date = ModalDelivery.delivery.date;
+                            Budget.budgets[key].budget.note_document = ModalDelivery.delivery.note;
                             Budget.showList();
                         });
 
@@ -307,7 +333,8 @@ Budget = {
                 shown: function(){
                     ModalDelivery.delivery = {
                         delivery: Budget.budgets[key].budget.delivery,
-                        date: Budget.budgets[key].budget.delivery_date
+                        date: Budget.budgets[key].budget.delivery_date,
+                        note: Budget.budgets[key].budget.note_document
                     };
                     ModalDelivery.data2form();
                 }
@@ -365,5 +392,66 @@ Budget = {
         $('footer div[data-label="budgets-count"]').html('<i class="fa fa-files-o"></i> ' + count);
         $('footer div[data-label="budgets-total"]').html('<i class="fa fa-money"></i> R$ ' + global.float2Br(total));
         $('footer div[data-label="budgets-average"]').html('<i class="fa fa-bar-chart"></i> R$ ' + global.float2Br(total/(count||1)));
+    }
+};
+
+Seller = {
+    seller: {},
+    get: function(data){
+        global.post({
+            url: global.uri.uri_public_api + 'person.php?action=get',
+            data: data,
+            dataType: 'json'
+        },function(person){
+            Seller.seller = {
+                seller_id: person.person_id,
+                seller_code: person.person_code,
+                seller_name: person.person_name,
+                image: person.image
+            };
+            Budget.data.seller_id = Seller.seller.seller_id;
+            $('#budget_seller_code').val(Seller.seller.seller_code).attr('data-value',Seller.seller.seller_code);
+            $('#budget_seller_name').val(Seller.seller.seller_name).attr('data-value',Seller.seller.seller_name);
+            Budget.getList();
+        });
+    },
+    search: function(success){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-seller-search',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                icon: 'fa-search',
+                id: 'modal-seller-search',
+                class: 'modal-seller-search',
+                title: 'Pesquisar Vendedor',
+                html: html,
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Selecionar',
+                    unclose: true,
+                    action: function(){
+                        if( !ModalSeller.seller.seller_id ){
+                            global.validateMessage('Nenhum vendedor foi informado.',function(){
+                                $('#modal_seller_code').focus().select();
+                            });
+                            return;
+                        }
+                        Seller.seller = ModalSeller.seller;
+                        Budget.data.seller_id = Seller.seller.seller_id;
+                        $('#modal-seller-search').modal('hide');
+                        $('#budget_seller_code').val(Seller.seller.seller_code).attr('data-value',Seller.seller.seller_code);
+                        $('#budget_seller_name').val(Seller.seller.seller_name).attr('data-value',Seller.seller.seller_name);
+                        if( !!success ) success();
+                    }
+                }],
+                shown: function(){
+                    if( !!Seller.seller.seller_id ){
+                        ModalSeller.seller = Seller.seller;
+                        ModalSeller.show();
+                    }
+                }
+            })
+        });
     }
 };

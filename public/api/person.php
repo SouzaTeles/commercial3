@@ -41,8 +41,10 @@
                     "P.CdCPF_CGC",
                     "P.TpPessoa",
                     "StATivo=ISNULL(PC.StATivo,'N')",
-                    "PCM.DtNascimento",
-                    "PCM.TpSexo"
+                    "DtNascimento=CONVERT(VARCHAR(10),PCM.DtNascimento,126)",
+                    "PCM.TpSexo",
+                    "VlLimiteCredito=ISNULL(PCM.VlLimiteCredito,0)",
+
                 ],
                 "filters" => [
                     [ "PC.IdCategoria", "s", "=", $post->person_category_id ],

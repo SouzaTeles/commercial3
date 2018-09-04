@@ -75,7 +75,7 @@
 	},
 	"inventory": {
 		"key": "inventory",
-		"icon": "fa-question-circle",
+		"icon": "fa-file-text-o",
 		"title": "Inventário",
 		"parent": "stock"
 	},
@@ -139,7 +139,7 @@
 	},
 	"sge": {
 		"key": "sale",
-		"icon": "fa-question-circle",
+		"icon": "fa-lightbulb-o",
 		"title": "Assistente SGE",
 		"parent": "stock"
 	},

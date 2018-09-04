@@ -44,7 +44,8 @@
                     "PE.StEnderecoPrincipal",
                     "PE.TpLogradouro",
                     "PE.NmLogradouro",
-                    "PE.NrLogradouro"
+                    "PE.NrLogradouro",
+                    "PE.DsObservacao"
                 ],
                 "filters" => [[ "PE.IdPessoa", "s", "=", $post->person_id ]]
             ]);

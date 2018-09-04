@@ -28,6 +28,7 @@
             $this->person_active = ($data->StATivo == "S" ? "Y" : "N");
             $this->person_gender = @$data->TpSexo ? $data->TpSexo : NULL;
             $this->person_birth = @$data->DtNascimento ? $data->DtNascimento : NULL;
+            $this->person_credit_limit = @$data->VlLimiteCredito ? (float)$data->VlLimiteCredito : 0;
 
             $this->image = getImage((Object)[
                 "image_id" => $data->IdPessoa,
@@ -124,6 +125,83 @@
                     "filters" => [[ "PE.IdPessoa", "s", "=", $data->IdPessoa ]],
                     "order" => "PE.StEnderecoPrincipal DESC, PE.CdEndereco"
                 ]);
+            }
+
+            if( @$_POST["get_person_credit_limit"] ){
+
+                $delay = 0;
+                $expired_value = 0;
+                $expired_quantity = 0;
+                $expiring_value = 0;
+                $expiring_quantity = 0;
+
+                $receivable = Model::getList($dafel,(Object)[
+                    "join" => 1,
+                    "top" => 999,
+                    "tables" => [
+                        "AReceber AR (NoLock)",
+                        "LEFT OUTER JOIN APagar AP (NoLock) On ((AP.NmEntidadeOrigem = 'AReceber') and (AP.IdEntidadeOrigem = AR.IdAReceber))",
+                        "LEFT JOIN FormaPagamento FP ON(AR.IdFormaPagamento = FP.IdFormaPagamento)"
+                    ],
+                    "fields" => [
+                        "FP.DsFormaPagamento",
+                        "AR.NrTitulo",
+                        "DtEmissao=CONVERT(VARCHAR(10),AR.DtEmissao,126)",
+                        "DtVencimento=CONVERT(VARCHAR(10),AR.DtVencimento,126)",
+                        "VlTitulo=IsNull(AR.VlTitulo,0)",
+                        "VlBaixado=IsNull(AR.VlBaixado,0)"
+                    ],
+                    "filters" => [
+                        [ "AR.DtExclusao IS NULL" ],
+                        [ "AR.DtBaixa IS NULL" ],
+                        [ "AP.IdAPagar IS NULL" ],
+                        [ "AR.IdPessoa", "s", "=", $data->IdPessoa ]
+                    ]
+                ]);
+
+                $ret=[];
+                foreach( $receivable as $item ){
+
+                    $diff = (Object)[ "days" => 0 ];
+                    if( @$item->DtVencimento ) {
+                        if( strtotime($item->DtVencimento) < strtotime(date("Y-m-d")) ) {
+                            $deadline = new \DateTime($item->DtVencimento);
+                            $now = new \DateTime(date('Y-m-d'));
+                            $diff = $deadline->diff($now);
+                        }
+                    }
+
+                    if( $diff->days > 0 ){
+                        $expired_value += (float)$item->VlTitulo;
+                        $expired_quantity ++;
+                    } else {
+                        $expiring_value += (float)$item->VlTitulo;
+                        $expiring_quantity ++;
+                    }
+
+                    if( $diff->days > $delay ){
+                        $delay = $diff->days;
+                    }
+
+                    $ret[] = (Object)[
+                        "modality_name" => $item->DsFormaPagamento,
+                        "receivable_code" => $item->NrTitulo,
+                        "receivable_date" => $item->DtEmissao,
+                        "receivable_deadline" => $item->DtVencimento,
+                        "receivable_value" => (float)$item->VlTitulo,
+                        "receivable_dropped" => (float)$item->VlBaixado,
+                        "receivable_delay" => $diff->days
+                    ];
+                }
+
+                $this->credit_limit = (Object)[
+                    "receivable" => $ret,
+                    "expired_value" => $expired_value,
+                    "expired_quantity" => $expired_quantity,
+                    "expiring_value" => $expiring_value,
+                    "expiring_quantity" => $expiring_quantity,
+                    "balance" => (float)$data->VlLimiteCredito - $expired_value - $expiring_value
+                ];
             }
         }
     }

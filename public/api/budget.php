@@ -34,7 +34,8 @@
                 "table" => "Budget",
                 "fields" => [
                     [ "budget_delivery", "s", $post->budget_delivery ],
-                    [ "budget_delivery_date", "s", $post->budget_delivery_date ]
+                    [ "budget_delivery_date", "s", $post->budget_delivery_date ],
+                    [ "budget_note_document", "s", @$post->budget_note_document ? $post->budget_note_document : NULL ]
                 ],
                 "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
             ]);
@@ -282,6 +283,28 @@
 
         break;
 
+        case "getDelivery":
+
+            if( !@$post->budget_id ) {
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $delivery = Model::get($commercial, (Object)[
+                "tables" => [ "Budget" ],
+                "fields" => [
+                    "note=budget_note_document",
+                    "date=FORMAT(budget_delivery_date,'yyyy-MM-dd')"
+                ],
+                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+            ]);
+
+            Json::get($headerStatus[200], $delivery);
+
+         break;
+
         case "getList":
 
             if (!@$post->company_id || !@$post->start_date || !@$post->end_date) {
@@ -319,7 +342,6 @@
                     "B.budget_origin",
                     "B.budget_status",
                     "B.budget_delivery",
-                    "budget_delivery_date=FORMAT(B.budget_delivery_date,'yyyy-MM-dd')",
                     "budget_date=FORMAT(B.budget_date,'yyyy-MM-dd HH:mm:ss')"
                 ],
                 "filters" => [
@@ -327,7 +349,7 @@
                     ["B.seller_id", "s", "=", @$post->seller_id ? $post->seller_id : NULL],
                     ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
                 ],
-                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_delivery_date,B.budget_date"
+                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_date"
             ]);
 
             $ret = [];
@@ -343,7 +365,6 @@
                         "origin" => $budget->budget_origin,
                         "status" => $budget->budget_status,
                         "delivery" => $budget->budget_delivery,
-                        "delivery_date" => $budget->budget_delivery_date,
                         "date" => $budget->budget_date,
                         "date_formatted" => date_format(date_create($budget->budget_date),"d/m/Y")
                     ],
@@ -382,7 +403,7 @@
 
             Json::get($headerStatus[200], $ret);
 
-            break;
+        break;
 
         case "insert":
 

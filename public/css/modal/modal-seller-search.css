@@ -1,5 +1,11 @@
+.modal-seller-search .modal-body
+{
+    height: 156px;
+    overflow: visible !important;
+}
+
 .modal-seller-search .modal-body .image-cover
 {
-    height: 134px;
+    height: 116px;
     background-image: url('../../images/empty-image.png');
 }

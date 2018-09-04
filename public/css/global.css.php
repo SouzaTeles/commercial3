@@ -138,3 +138,13 @@ footer div span
 {
     box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);
 }
+
+.form-group
+{
+    margin-bottom: 8px;
+}
+
+.form-group label
+{
+    margin-bottom: 0;
+}

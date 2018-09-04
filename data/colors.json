@@ -1,15 +1,12 @@
 {
 	"body": "#dddddd",
-
 	"menu_background": "#333333",
 	"menu_link_color": "#ffffff",
 	"menu_link_background": "#333333",
-
 	"text": "#ffffff",
 	"primary": "#215A7C",
 	"secondary": "#666666",
 	"background": "#ffffff",
-
 	"pages": {
 		"agenda": "#D32F2F",
 		"home": "#0b4aa4",

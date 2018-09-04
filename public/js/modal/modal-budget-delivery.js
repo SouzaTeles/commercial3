@@ -4,12 +4,14 @@ $(document).ready(function(){
 
 ModalDelivery = {
     delivery: {
-        delivery: 'N',
-        date: ''
+        budget_delivery_: 'N',
+        budget_delivery_date: '',
+        budget_note_document: ''
     },
     data2form: function(){
-        $('#modal_budget_delivery').bootstrapToggle(ModalDelivery.delivery.delivery == 'Y' ? 'on' : 'off');
-        $('#modal_budget_delivery_date').val(global.date2Br(ModalDelivery.delivery.date));
+        $('#modal_budget_delivery').bootstrapToggle(ModalDelivery.delivery.budget_delivery == 'Y' ? 'on' : 'off');
+        $('#modal_budget_delivery_date').val(global.date2Br(ModalDelivery.delivery.budget_delivery_date));
+        $('#modal_budget_note_document').val(ModalDelivery.delivery.budget_note_document);
     },
     events: function(){
         $('#modal_budget_delivery').on('change',function(){
@@ -29,7 +31,8 @@ ModalDelivery = {
         global.toggle();
     },
     form2data: function(){
-        ModalDelivery.delivery.delivery = $('#modal_budget_delivery').prop('checked') ? 'Y' : 'N';
-        ModalDelivery.delivery.date = global.date2Us($('#modal_budget_delivery_date').val());
+        ModalDelivery.delivery.budget_delivery = $('#modal_budget_delivery').prop('checked') ? 'Y' : 'N';
+        ModalDelivery.delivery.budget_delivery_date = global.date2Us($('#modal_budget_delivery_date').val());
+        ModalDelivery.delivery.budget_note_document = $('#modal_budget_note_document').val();
     }
 };

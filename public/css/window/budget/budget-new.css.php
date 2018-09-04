@@ -22,6 +22,11 @@
     background-color: #fff;
 }
 
+hr
+{
+    margin: 4px 0 10px;
+}
+
 footer .logo
 {
     top: 0;

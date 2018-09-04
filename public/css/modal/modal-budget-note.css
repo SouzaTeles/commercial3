@@ -1,0 +1,9 @@
+.modal-budget-note.modal
+{
+    top: 130px;
+}
+
+.modal-budget-note.modal .modal-content .modal-body
+{
+    max-height: 366px;
+}

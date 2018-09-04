@@ -1,0 +1,48 @@
+<link href="{$URI_PUBLIC}css/modal/modal-person-info.css?{$smarty.now}" rel="stylesheet" />
+<div class="info-top">
+    <div class="image"></div>
+    <div class="name">--</div>
+    <div class="default">
+        <div class="default-info code">Código<br/>--</div>
+        <div class="default-info type">Tipo<br/>--</div>
+        <div class="default-info birth">Aniversário<br/>--</div>
+    </div>
+</div>
+<table id="table-person-receivable" class="table-custom no-select">
+    <thead>
+        <tr>
+            <th>Modalidade</th>
+            <th>Título</th>
+            <th>Emissão</th>
+            <th>Vencimento</th>
+            <th>Valor</th>
+            <th>Baixado</th>
+            <th>Atraso</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<div class="legend">
+    <div class="item limite" data-toggle="tooltip" title="Limite de Crédito">
+        <i class="fa fa-credit-card"></i> R$ 0,00
+    </div>
+    <div class="item expired" data-toggle="tooltip" title="Títulos em aberto vencidos">
+        <i class="fa fa-files-o"></i> 0
+    </div>
+    <div class="item expiring" data-toggle="tooltip" title="Títulos em aberto a vencer">
+        <i class="fa fa-files-o"></i> 0
+    </div>
+    <div class="item balance" data-toggle="tooltip" title="Saldo de Crédito">
+        <i class="fa fa-money"></i> R$ 0,00
+    </div>
+    <div class="item pull-right">
+        <i class="fa fa-stop"></i> Aberto
+    </div>
+    <div class="item pull-right txt-red">
+        <i class="fa fa-stop"></i> Vencido
+    </div>
+    <div class="item pull-right txt-red-light">
+        <i class="fa fa-stop"></i> Bloqueado
+    </div>
+</div>
+<script src="{$URI_PUBLIC}js/modal/modal-person-info.js?{$smarty.now}"></script>

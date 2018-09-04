@@ -20,7 +20,8 @@
             foreach( $configs as $config ){
                 if(
                     ($config->config_category == "person" && $config->config_name == "attributes") ||
-                    ($config->config_category == "bank" && $config->config_name == "authorized" )
+                    ($config->config_category == "bank" && $config->config_name == "authorized" ) ||
+                    ($config->config_category == "credit" && $config->config_name == "authorized_modality_id" )
                 ){
                     $config->config_value = explode(":", $config->config_value);
                 }
@@ -36,7 +37,8 @@
                 "uri" => URI,
                 "uri_lib" => URI_LIB,
                 "uri_public" => URI_PUBLIC,
-                "uri_public_api" => URI_PUBLIC_API
+                "uri_public_api" => URI_PUBLIC_API,
+                "uri_public_login" => URI_PUBLIC_API
             ];
 
             return $data;

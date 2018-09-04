@@ -1,0 +1,57 @@
+.modal-person-info .info-top
+{
+    width: 100%;
+    display: table;
+    margin-bottom: 20px;
+    padding-left: 114px;
+}
+
+.modal-person-info .info-top .image
+{
+    top: 20px;
+    left: 20px;
+    width: 94px;
+    height: 88px;
+    position: absolute;
+    border: 1px solid #ddd;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../../images/empty-image.png');
+}
+
+.modal-person-info .info-top .name
+{
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.modal-person-info .info-top .default
+{
+    color: gray;
+}
+
+.modal-person-info .info-top .default-info
+{
+    float: left;
+    margin-right: 20px;
+}
+
+.modal-person-info .dataTables_scrollHeadInner,
+.modal-person-info .dataTables_scrollHeadInner .dataTable
+{
+    width: 100% !important;
+}
+
+.modal-person-info .legend
+{
+    width: 100%;
+    padding: 12px;
+    display: table;
+    border: 1px solid #ddd;
+}
+
+.modal-person-info .legend > div
+{
+    float: left;
+    margin-right: 10px;
+}

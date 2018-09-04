@@ -211,7 +211,7 @@ Budget = {
                     }
                     Budget.budget.budget_status = 'O';
                     Company.afterGet();
-                    $('.panel-tools').find('button[data-action="beforeRecover"]').prop('disabled',true);
+                    $('.panel-tools').find('button[data-action="recover"]').prop('disabled',true);
                 }
             })
         });
@@ -247,7 +247,9 @@ Budget = {
         });
     },
     blocked: function(){
-        $('.panel-tools').find('button[data-action="beforeRecover"]').prop('disabled',false);
+        $('.panel-tools').find('button[data-action="recover"]').click(function(){
+            Budget.beforeRecover();
+        }).prop('disabled',false);
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-blocked',
             dataType: 'html'
@@ -288,8 +290,8 @@ Budget = {
         });
     },
     defaultEvents: function(){
-        $('.panel-tools').find('button').click(function(){
-            Budget[$(this).attr('data-action')]();
+        $('.panel-tools button[data-action="close"]').click(function(){
+            Budget.close();
         });
         $('#button-budget-cancel').click(function(){
             Budget.close();
@@ -324,7 +326,7 @@ Budget = {
                         });
                     }
                 }
-                Seller.get(function(){
+                Seller.search(function(){
                     Payment.check();
                 });
             }
@@ -376,6 +378,43 @@ Budget = {
                 });
             }
         }).prop('disabled',Budget.budget.budget_status != 'O');
+        var $panel = $('.panel-tools');
+        $panel.find('button[data-action="clone"]').click(function(){
+
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="save"]').click(function(){
+
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="print"]').click(function(){
+
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="pdf"]').click(function(){
+
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="mail"]').click(function(){
+
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="seller"]').click(function(){
+            Seller.search();
+        }).prop('disabled',false);
+        $panel.find('button[data-action="item"]').click(function(){
+            Item.search();
+        }).prop('disabled',false);
+        $panel.find('button[data-action="client"]').click(function(){
+            Person.search();
+        }).prop('disabled',false);
+        $panel.find('button[data-action="clientInfo"]').click(function(){
+            Person.info();
+        }).prop('disabled',false);
+        $panel.find('button[data-action="note"]').click(function(){
+            Budget.note();
+        }).prop('disabled',false);
+        $panel.find('button[data-action="discount"]').click(function(){
+
+        }).prop('disabled',false);
+        $panel.find('button[data-action="delivery"]').click(function(){
+            Budget.setDelivery();
+        }).prop('disabled',false);
         global.mask();
     },
     get: function(budget_id){
@@ -445,7 +484,7 @@ Budget = {
                 budget_value_st: 0,
                 budget_value_total: 0,
                 budget_note: '',
-                budget_note_client: '',
+                budget_note_document: '',
                 budget_credit: 'N',
                 budget_status: 'O',
                 budget_delivery: 'N',
@@ -468,6 +507,54 @@ Budget = {
         Term.data2form();
         Payment.showList();
         Payment.total();
+    },
+    item: function(){
+        Item.search();
+    },
+    new: function(){
+        global.modal({
+            icon: 'fa-question-circle',
+            title: 'Confirmação',
+            html: '<p>Deseja realmente criar um novo orçamento?</p><p>As informações atuais poderão ser perdidas.</p>',
+            buttons: [{
+                icon: 'fa-times',
+                class: 'pull-left',
+                title: 'Cancelar'
+            },{
+                icon: 'fa-check',
+                title: 'Confirmar',
+                action: function(){
+                    global.onLoader();
+                    location.href = global.uri.uri_public + 'window.php?module=budget&action=new&company_id=' + Company.company.company_id;
+                }
+            }]
+        });
+    },
+    note: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-note',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                icon: 'fa-file-text-o',
+                id: 'modal-budget-note',
+                class: 'modal-budget-note',
+                title: 'Observações do Pedido',
+                html: html,
+                buttons: [{
+                    icon: 'fa-floppy-o',
+                    title: 'Atualizar',
+                    action: function(){
+                        Budget.budget.budget_note = $('#modal_budget_note').val();
+                        Budget.budget.budget_note_document = $('#modal_budget_note_document').val();
+                    }
+                }],
+                shown: function(){
+                    $('#modal_budget_note').val(Budget.budget.budget_note);
+                    $('#modal_budget_note_document').val(Budget.budget.budget_note_document);
+                }
+            })
+        });
     },
     recover: function(){
         global.post({
@@ -551,15 +638,17 @@ Budget = {
                     title: 'Confirmar',
                     action: function(){
                         ModalDelivery.form2data();
-                        Budget.budget.budget_delivery = ModalDelivery.delivery.delivery;
-                        Budget.budget.budget_delivery_date = ModalDelivery.delivery.date;
+                        Budget.budget.budget_delivery = ModalDelivery.delivery.budget_delivery;
+                        Budget.budget.budget_delivery_date = ModalDelivery.delivery.budget_delivery_date;
+                        Budget.budget.budget_note_document = ModalDelivery.delivery.budget_note_document;
                         if( !!success ) success();
                     }
                 }],
                 shown: function(){
                     ModalDelivery.delivery = {
-                        delivery: Budget.budget.budget_delivery,
-                        date: Budget.budget.budget_delivery_date
+                        budget_delivery: Budget.budget.budget_delivery,
+                        budget_delivery_date: Budget.budget.budget_delivery_date,
+                        budget_note_document: Budget.budget.budget_note_document
                     };
                     ModalDelivery.data2form();
                 }
@@ -672,7 +761,7 @@ Budget = {
 
 Seller = {
     seller: {},
-    get: function(success){
+    search: function(success){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-seller-search',
             dataType: 'html'
@@ -1167,7 +1256,7 @@ Item = {
     },
     search: function(){
         global.post({
-            url: global.uri.uri_public_api + 'modal.php?template=modal-product-search',
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-product-search',
             dataType: 'html'
         },function(html){
             global.modal({
@@ -1355,6 +1444,7 @@ Person = {
                 get_person_credit: 1,
                 get_person_address: 1,
                 get_person_attribute: 1,
+                get_person_credit_limit: 1,
                 person_id: data.person_id,
                 person_code: data.person_code,
                 person_category_id: global.config.person.client_category_id
@@ -1367,8 +1457,41 @@ Person = {
             Address.delivery = person.address ? person.address[0] : null;
             Budget.budget.address_code = Address.delivery ? Address.delivery.address_code : null;
             Budget.budget.address_uf_id = Address.delivery ? Address.delivery.uf_id : null;
+            Budget.budget.budget_note_document = Budget.budget.budget_note_document.split('\n\nObs de Entrega: ')[0];
+            if( !!person.address[0] && !!person.address[0].address_note ){
+                Budget.budget.budget_note_document +=  '\n\nObs de Entrega: ' + person.address[0].address_note;
+            }
             Person.data2form();
             Address.showDelivery();
+        });
+    },
+    info: function(){
+        if( !Person.person.person_id ){
+            global.validateMessage('A pessoa deverá ser informada.',function(){
+                Budget.goTo(2);
+            });
+            return;
+        }
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-person-info',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                icon: 'fa-info',
+                id: 'modal-person-info',
+                class: 'modal-person-info',
+                title: 'Informações da Pessoa',
+                html: html,
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Fechar'
+                }],
+                show: function(){
+                    ModalPersonInfo.person = Person.person;
+                    ModalPersonInfo.show();
+                }
+            });
         });
     },
     init: function(){
@@ -1387,6 +1510,34 @@ Person = {
             credits: [],
             attributes: []
         };
+    },
+    search: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-person-search',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                icon: 'fa-search',
+                title: 'Localização de Pessoa',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    class: 'pull-left',
+                    title: 'Cancelar'
+                },{
+                    icon: 'fa-pencil',
+                    title: 'Adicionar Produtos',
+                    unclose: true,
+                    action: function(){
+
+                    }
+                }],
+                load: function(){
+
+                }
+            });
+        });
     },
     showAttributes: function(){
         $('#person-attributes').html('');
@@ -1617,6 +1768,10 @@ Address = {
             Address.delivery = Person.person.address[$(this).attr('data-key')];
             Budget.budget.address_code = Address.delivery.address_code;
             Budget.budget.address_uf_id = Address.delivery.uf_id;
+            Budget.budget.budget_note_document = Budget.budget.budget_note_document.split('\n\nObs de Entrega: ')[0];
+            if( !!Address.delivery.address_note ){
+                Budget.budget.budget_note_document +=  '\n\nObs de Entrega: ' + Address.delivery.address_note;
+            }
             Address.showDelivery();
             Address.showList();
         });
@@ -1912,6 +2067,7 @@ Payment = {
                 },{
                     icon: 'fa-floppy-o',
                     title: 'Atualizar',
+                    unclose: true,
                     action: function () {
                         $('#modal-payment').find('form button').click();
                     }
@@ -2035,6 +2191,9 @@ Payment = {
                     }
                 }]
             });
+        });
+        $('#button-budget-notes').click(function(){
+            Budget.note();
         });
         Payment.table.on('draw',function(){
             var $table = $('#table-budget-payments');

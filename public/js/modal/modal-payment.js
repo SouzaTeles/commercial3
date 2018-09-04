@@ -3,7 +3,6 @@ $(document).ready(function(){
 });
 
 ModalPayment = {
-    bank: null,
     payment: {
         bank_id: null,
         agency_id: null,
@@ -29,32 +28,40 @@ ModalPayment = {
         $agency2.prop('disabled',type != 'C');
         $check.prop('disabled',type != 'C');
         if( type != 'C' ){
-            $bank.val(null);
+            $bank.val(null).prop('required',false);
+            $agency.val(null).prop('required',false);
+            $agency2.val(null).prop('required',false);
+            $check.val(null).prop('required',false);
+        } else {
+            $bank.val(null).prop('required',true);
             $agency.val(null);
             $agency2.val(null);
-            $check.val(null);
+            $check.val(null).prop('required',true);
         }
         if( !ModalPayment.payment.agency_code ){
             $('#col-agency').show();
             $('#col-new-agency').hide();
+            $agency.prop('required',true);
+            $agency2.prop('required',false);
         } else {
             $('#col-new-agency').show();
             $('#col-agency').hide();
+            $agency.prop('required',false);
+            $agency2.prop('required',true);
         }
         $bank.selectpicker('refresh');
         $agency.selectpicker('refresh');
     },
     data2form: function(){
+        ModalPayment.check(ModalPayment.payment.modality_type);
         $('#modal_payment_entry').bootstrapToggle(ModalPayment.payment.payment_entry == 'Y' ? 'on' : 'off');
         $('#modal_payment_deadline').val(global.date2Br(ModalPayment.payment.payment_deadline));
         $('#modal_modality_id').selectpicker('val',ModalPayment.payment.modality_id);
         $('#modal_payment_value').val(global.float2Br(ModalPayment.payment.payment_value));
-        $('#modal_bank_id').selectpicker('val',ModalPayment.payment.bank_id).trigger('change');
-        $('#modal_agency_id').selectpicker('val',ModalPayment.payment.agency_id);
+        $('#modal_bank_id').selectpicker('val',ModalPayment.payment.bank_id);
         $('#modal_agency_code').val(ModalPayment.payment.agency_code);
         $('#modal_check_number').val(ModalPayment.payment.check_number);
         ModalPayment.installments(ModalPayment.payment.modality_installment);
-        ModalPayment.check(ModalPayment.payment.modality_type);
         ModalPayment.showAgencies();
     },
     events: function(){
@@ -109,11 +116,15 @@ ModalPayment = {
             $('#modal_agency_id').selectpicker('val','default');
             $('#col-new-agency').show();
             $('#col-agency').hide();
+            $('#modal_agency_id').prop('required',false);
+            $('#modal_agency_code').prop('required',true);
         });
         $('#button-new-agency-cancel').click(function(){
             $('#modal_agency_code').val('');
             $('#col-agency').show();
             $('#col-new-agency').hide();
+            $('#modal_agency_id').prop('required',true);
+            $('#modal_agency_code').prop('required',false);
         });
         global.mask();
         global.toggle();
