@@ -38,6 +38,12 @@ Keyboard = {
         global.listener.simple_combo("ctrl 4", function () {
             Budget.goTo(4);
         });
+        global.listener.simple_combo("f2", function () {
+            if( $('#product_code').is(':focus') || $('#product_name').is(':focus') ){
+                Item.search();
+                return;
+            }
+        });
     }
 };
 
@@ -1166,7 +1172,7 @@ Item = {
                 get_unit: 1,
                 get_product_stock: 1,
                 get_product_prices: 1,
-                company_id: Budget.budget.company_id,
+                company_id: Company.company.company_id,
                 product_id: data.product_id,
                 product_code: data.product_code
             },
@@ -1262,6 +1268,8 @@ Item = {
             global.modal({
                 size: 'big',
                 icon: 'fa-search',
+                id: 'modal-product-search',
+                class: 'modal-product-search',
                 title: 'Localização de Produto',
                 html: html,
                 buttons: [{
@@ -1269,15 +1277,32 @@ Item = {
                     class: 'pull-left',
                     title: 'Cancelar'
                 },{
-                    icon: 'fa-pencil',
+                    icon: 'fa-plus',
                     title: 'Adicionar Produtos',
                     unclose: true,
                     action: function(){
-
+                        $.each(ModalProductSearch.selected,function(key,item){
+                            Budget.budget.items.push(item);
+                            Budget.budget.budget_value += item.budget_item_value;
+                            Budget.budget.budget_value_total += item.budget_item_value_total;
+                        });
+                        Item.init();
+                        Item.total();
+                        Item.data2form();
+                        Item.showList();
+                        Payment.total();
+                        $('#modal-product-search').modal('hide');
                     }
                 }],
-                load: function(){
-
+                shown: function(){
+                    $('#modal_product_name').focus();
+                },
+                hidden: function(){
+                    if( !!Item.item.product_id ){
+                        $('#budget_item_quantity').focus().select();
+                    } else {
+                        $('#product_code').focus().select();
+                    }
                 }
             });
         });

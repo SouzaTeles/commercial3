@@ -91,6 +91,71 @@
 
         break;
 
+        case "getList":
+
+            if( !@$post->product_name || !@$post->company_id ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $products = Model::getList($dafel,(Object)[
+                "top" => 200,
+                "join" => 1,
+                "tables" => [
+                    "Produto P (NoLock)",
+                    "INNER JOIN CodigoProduto CP (NoLock) ON(P.IdProduto = CP.IdProduto AND CP.StCodigoPrincipal = 'S')",
+                    "LEFT JOIN CodigoProduto EAN (NoLock) ON(P.IdProduto = EAN.IdProduto AND EAN.IdTipoCodigoProduto = '{$config->product->code_ean_id}')",
+                    "LEFT JOIN CodigoProduto CPF (NoLock) ON(P.IdProduto = CPF.IdProduto AND CPF.IdTipoCodigoProduto = '{$config->product->code_provider_id}')",
+                    "INNER JOIN Produto_Empresa PE (NoLock) ON(P.IdProduto = PE.IdProduto)",
+                    "INNER JOIN Unidade U ON(P.IdUnidade = U.IdUnidade)"
+                ],
+                "fields" => [
+                    "P.IdProduto",
+                    "CP.CdChamada",
+                    "P.NmProduto",
+                    "P.CdClassificacao",
+                    "StAtivoVenda=ISNULL(PE.StAtivoVenda,'S')",
+                    "VlPreco=(SELECT TOP 1 VlPreco FROM HistoricoPreco WHERE IdProduto = P.IdProduto AND CdEmpresa = '{$post->company_id}' AND IdPreco = '{$config->product->price_id}' ORDER BY DtReferencia DESC)",
+                    "VlEstoque=(CASE WHEN P.IdProdutoOrigem IS NULL THEN ( SELECT TOP 1 QtEstoque FROM EstoqueEmpresa WHERE IdProduto = P.IdProduto AND CdEmpresa = {$post->company_id} ORDER BY DtReferencia DESC ) ELSE ( ( SELECT TOP 1 QtEstoque FROM EstoqueEmpresa WHERE IdProduto = P.IdProdutoOrigem AND CdEmpresa = {$post->company_id} ORDER BY DtReferencia DESC ) * P.FtConversaoUnidade ) END)",
+                    "U.CdSigla",
+                    "U.TpUnidade"
+                ],
+                "filters" => [
+                    [ "PE.CdEmpresa", "i", "=", $post->company_id ],
+                    [ "ISNULL(PE.StAtivoVenda,'S')", "s", "=", @$post->product_active ? "S" : NULL ],
+                    @$post->product_name ? [
+                        [ "CP.CdChamada", "s", "like", "%{$post->product_name}%" ],
+                        [ "EAN.CdChamada", "s", "like", "%{$post->product_name}%" ],
+                        [ "CPF.CdChamada", "s", "like", "%{$post->product_name}%" ],
+                        [ "P.CdClassificacao", "s", "like", "%{$post->product_name}%" ],
+                        [ "P.NmProduto", "s", "like", "%{$post->product_name}%" ]
+                    ] : NULL,
+                    [ "(SELECT TOP 1 VlPreco FROM HistoricoPreco WHERE IdProduto = P.IdProduto AND CdEmpresa = '{$post->company_id}' AND IdPreco = '{$config->product->price_id}' ORDER BY DtReferencia DESC) IS NOT NULL" ],
+                ],
+                "group" => "P.IdProduto, P.IdUnidade, PE.CdEmpresa, CP.CdChamada, P.NmProduto, P.CdClassificacao, ISNULL(PE.StAtivoVenda,'S'), IdProdutoOrigem, FtConversaoUnidade, U.CdSigla, U.TpUnidade",
+            ]);
+
+            $ret = [];
+            foreach( $products as $product ){
+                $ret[] = (Object)[
+                    "product_id" => $product->IdProduto,
+                    "product_code" => $product->CdChamada,
+                    "product_name" => $product->NmProduto,
+                    "product_active" => $product->StAtivoVenda == "S" ? "Y" : "N",
+                    "product_classification" => $product->CdClassificacao,
+                    "product_price" => (float)$product->VlPreco,
+                    "product_stock" => (float)$product->VlEstoque,
+                    "unit_code" => $product->CdSigla,
+                    "unit_type" => $product->TpUnidade
+                ];
+            }
+
+            Json::get( $headerStatus[200], $ret );
+
+        break;
+
         case "complement":
 
             if( !@$post->product_id || !@$post->company_id ){
