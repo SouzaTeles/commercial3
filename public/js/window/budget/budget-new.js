@@ -358,7 +358,7 @@ Budget = {
                         });
                     }
                 }
-                Seller.get(function(){
+                Seller.search(function(){
                     Payment.check();
                 });
             }
@@ -379,7 +379,7 @@ Budget = {
                         });
                     }
                 }
-                Seller.get(function(){
+                Seller.search(function(){
                     Payment.check();
                 });
             }
@@ -622,7 +622,7 @@ Budget = {
         });
     },
     seller: function(){
-        Seller.get();
+        Seller.search();
     },
     setDelivery: function(success){
         global.post({
