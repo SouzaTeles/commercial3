@@ -21,6 +21,18 @@
             $this->modality_delay = ( $data->TpFormaPagamento == "A" ? 30 : 1 );
             $this->modality_entry = ( $data->TpFormaPagamento == "D" ? "Y" : "N" );
             $this->modality_installment = @(int)$data->Parcelas ? (int)$data->Parcelas : ( $data->TpFormaPagamento != "A" ? 1 : 0 );
+
+            $this->image = getImage((Object)[
+                "image_id" => $data->IdFormaPagamento,
+                "image_dir" => "modality"
+            ]);
+
+            if( !@$this->image ){
+                $this->image = getImage((Object)[
+                    "image_id" => $data->TpFormaPagamento,
+                    "image_dir" => "modality/type"
+                ]);
+            }
         }
 
     }

@@ -295,8 +295,9 @@
             $delivery = Model::get($commercial, (Object)[
                 "tables" => [ "Budget" ],
                 "fields" => [
-                    "note=budget_note_document",
-                    "date=FORMAT(budget_delivery_date,'yyyy-MM-dd')"
+                    "budget_delivery",
+                    "budget_note_document",
+                    "budget_delivery_date=FORMAT(budget_delivery_date,'yyyy-MM-dd')"
                 ],
                 "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
             ]);

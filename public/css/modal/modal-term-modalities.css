@@ -2,3 +2,15 @@
 {
     cursor: pointer;
 }
+
+.modal-term-modalities table tr td img
+{
+    max-width: 40px;
+    max-height: 20px;
+}
+
+.modal-term-modalities .dataTables_scrollHeadInner,
+.modal-term-modalities .dataTables_scrollHeadInner .dataTable
+{
+    width: 100% !important;
+}

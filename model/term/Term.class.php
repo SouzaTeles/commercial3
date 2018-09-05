@@ -87,6 +87,16 @@
                     $modality->modality_entry = ( $modality->modality_type == "D" ? "Y" : "N" );
                     $modality->modality_delay = ( $modality->modality_type == "A" ? 30 : 1 );
                     $modality->modality_installment = @(int)$modality->modality_installment ? (int)$modality->modality_installment : ( $modality->modality_type != "A" ? 1 : 0 );
+                    $modality->image = getImage((Object)[
+                        "image_id" => $modality->modality_id,
+                        "image_dir" => "modality"
+                    ]);
+                    if( !@$modality->image ){
+                        $modality->image = getImage((Object)[
+                            "image_id" => $modality->modality_type,
+                            "image_dir" => "modality/type"
+                        ]);
+                    }
                 }
                 $this->modalities = $modalities;
             }

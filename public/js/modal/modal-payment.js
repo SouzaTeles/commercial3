@@ -4,6 +4,7 @@ $(document).ready(function(){
 
 ModalPayment = {
     payment: {
+        image: null,
         bank_id: null,
         agency_id: null,
         agency_code: null,
@@ -84,6 +85,7 @@ ModalPayment = {
         });
         $('#modal_modality_id').on('changed.bs.select',function(e, clickedIndex){
             var modality = Payment.modalities[clickedIndex-1];
+            ModalPayment.payment.image = modality.image;
             ModalPayment.payment.nature_id = modality.nature_id;
             ModalPayment.payment.modality_type = modality.modality_type;
             ModalPayment.payment.modality_installment = modality.modality_installment;
@@ -99,7 +101,8 @@ ModalPayment = {
         $.each(Payment.modalities, function(key, modality){
             $('#modal_modality_id').append($('<option>',{
                 value: modality.modality_id,
-                text: modality.modality_code + ' - ' + modality.modality_description
+                text: modality.modality_code + ' - ' + modality.modality_description,
+                'data-content': ( modality.image ? '<img src="' + modality.image + '" style="max-width:40px;max-height:18px;"/> ' : '<i class="fa fa-credit-card"></i> ' ) + modality.modality_code + ' - ' + modality.modality_description,
             }));
         });
         $.each(Payment.banks, function(key, bank){
@@ -135,6 +138,7 @@ ModalPayment = {
     },
     form2data: function(){
         ModalPayment.payment = {
+            image: ModalPayment.payment.image,
             bank_id: $('#modal_bank_id').val() || null,
             agency_id: $('#modal_agency_id').val() || null,
             agency_code: $('#modal_agency_code').val() || null,

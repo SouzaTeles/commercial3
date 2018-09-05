@@ -127,22 +127,19 @@ Budget = {
         );
     },
     beforeDelivery: function(key){
-        if( !!Budget.budgets[key].getDelivery ) {
+        global.post({
+            url: global.uri.uri_public_api + 'budget.php?action=getDelivery',
+            data: { budget_id: Budget.budgets[key].budget.id },
+            dataType: 'json'
+        }, function(data){
+            Budget.budgets[key].budget.delivery = data.budget_delivery;
+            Budget.budgets[key].delivery = {
+                delivery_date: data.budget_delivery_date,
+                note_document: data.budget_note_document
+            };
+            Budget.budgets[key].getDelivery = 1;
             Budget.setDelivery(key);
-        } else {
-            global.post({
-                url: global.uri.uri_public_api + 'budget.php?action=getDelivery',
-                data: {
-                    budget_id: Budget.budgets[key].budget.id
-                },
-                dataType: 'json'
-            }, function (data) {
-                Budget.budgets[key].budget.delivery_date = data.date;
-                Budget.budgets[key].budget.note_document = data.note;
-                Budget.budgets[key].getDelivery = 1;
-                Budget.setDelivery(key);
-            });
-        }
+        });
     },
     beforePrint: function(key){
         var budget = Budget.budgets[key];
@@ -309,32 +306,31 @@ Budget = {
                     class: 'pull-left'
                 },{
                     icon: 'fa-check',
-                    title: 'Confirmar',
+                    title: 'Salvar',
                     action: function(){
                         ModalDelivery.form2data();
                         global.post({
                             url: global.uri.uri_public_api + 'budget.php?action=delivery',
                             data: {
                                 budget_id: Budget.budgets[key].budget.id,
-                                budget_delivery: ModalDelivery.delivery.delivery,
-                                budget_delivery_date: ModalDelivery.delivery.date,
-                                budget_note_document: ModalDelivery.delivery.note
+                                budget_delivery: ModalDelivery.delivery.budget_delivery,
+                                budget_delivery_date: ModalDelivery.delivery.budget_delivery_date,
+                                budget_note_document: ModalDelivery.delivery.budget_note_document
                             },
                             dataType: 'json'
                         },function(){
-                            Budget.budgets[key].budget.delivery = ModalDelivery.delivery.delivery;
-                            Budget.budgets[key].budget.delivery_date = ModalDelivery.delivery.date;
-                            Budget.budgets[key].budget.note_document = ModalDelivery.delivery.note;
+                            Budget.budgets[key].budget.delivery = ModalDelivery.delivery.budget_delivery;
+                            Budget.budgets[key].delivery.delivery_date = ModalDelivery.delivery.budget_delivery_date;
+                            Budget.budgets[key].delivery.note_document = ModalDelivery.delivery.budget_note_document;
                             Budget.showList();
                         });
-
                     }
                 }],
                 shown: function(){
                     ModalDelivery.delivery = {
-                        delivery: Budget.budgets[key].budget.delivery,
-                        date: Budget.budgets[key].budget.delivery_date,
-                        note: Budget.budgets[key].budget.note_document
+                        budget_delivery: Budget.budgets[key].budget.delivery,
+                        budget_delivery_date: Budget.budgets[key].delivery.delivery_date,
+                        budget_note_document: Budget.budgets[key].delivery.note_document
                     };
                     ModalDelivery.data2form();
                 }

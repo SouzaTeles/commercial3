@@ -1826,6 +1826,8 @@ Term = {
                                 icon: 'fa-check',
                                 title: 'Sim',
                                 action: function(){
+                                    Term.init();
+                                    Term.data2form();
                                     Term.get({
                                         term_id: null,
                                         term_code: $('#term_code').val()
@@ -2074,6 +2076,7 @@ Payment = {
                 }],
                 shown: function(){
                     ModalPayment.payment = {
+                        image: Payment.payment.image,
                         modality_id: Payment.payment.modality_id,
                         modality_type: Payment.payment.modality_type,
                         modality_description: Payment.payment.modality_description,
@@ -2096,6 +2099,7 @@ Payment = {
                             budget_payment_id: Payment.payment.budget_payment_id,
                             external_id: Payment.payment.external_id,
                             budget_payment_credit: 'N',
+                            image: ModalPayment.payment.image,
                             modality_id: ModalPayment.payment.modality_id,
                             modality_type: ModalPayment.payment.modality_type,
                             modality_description: ModalPayment.payment.modality_description,
@@ -2242,6 +2246,7 @@ Payment = {
                             budget_payment_id: null,
                             external_id: null,
                             budget_payment_credit: 'N',
+                            image: ModalPayment.payment.image,
                             modality_id: ModalPayment.payment.modality_id,
                             modality_type: ModalPayment.payment.modality_type,
                             modality_description: ModalPayment.payment.modality_description,
@@ -2282,7 +2287,7 @@ Payment = {
         $.each( Budget.budget.payments, function(key, payment){
             var row = Payment.table.row.add([
                 ( payment.budget_payment_entry == 'Y' ? '<i class="fa fa-check-circle"></i> ' : '' ) + payment.budget_payment_installment + 'x ',
-                payment.modality_description,
+                ( payment.image ? '<img src="' + payment.image + '" style="max-width:40px;max-height:18px;"/> ' : '<i class="fa fa-credit-card"></i> ' ) + payment.modality_description,
                 '<span>' + payment.budget_payment_deadline + '</span>' + global.date2Br(payment.budget_payment_deadline),
                 global.float2Br(payment.budget_payment_value),
                 '<button data-toggle="tooltip" data-title="Editar Parcela" data-action="beforeEdit" data-key="' + key + '" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +

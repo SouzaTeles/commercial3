@@ -243,6 +243,16 @@
                         $payment->modality_delay = ( $payment->modality_type == "A" ? 30 : 1 );
                         $payment->modality_entry = ( $payment->modality_type == "D" ? "Y" : "N" );
                         $payment->modality_installment = @(int)$payment->modality_installment ? (int)$payment->modality_installment : ( $payment->modality_type != "A" ? 1 : 0 );
+                        $payment->image = getImage((Object)[
+                            "image_id" => $payment->modality_id,
+                            "image_dir" => "modality"
+                        ]);
+                        if( !@$payment->image ){
+                            $payment->image = getImage((Object)[
+                                "image_id" => $payment->modality_type,
+                                "image_dir" => "modality/type"
+                            ]);
+                        }
                     }
                     $this->payments = $payments;
                 }

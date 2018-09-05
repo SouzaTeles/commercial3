@@ -1,47 +1,24 @@
 $(document).ready(function(){
 
-    var entries = [];
-    var parcels = [];
-    var options = [];
-    var $modal = $('#modal-term-modalities');
+    ModalTermModalities.setModalities();
+    ModalTermModalities.setEntries();
+    ModalTermModalities.showModalities();
 
-    $.each(Term.term.modalities, function(key, modality){
-        if( modality.term_modality_type == 'E' ){
-            entries.push(modality);
-        } else {
-            parcels.push(modality);
-        }
-    });
+});
 
-    if( entries.length && parcels.length ) {
-        $.each(entries, function (k, entry) {
-            $.each(parcels, function (j, parcel) {
-                options.push({
-                    'modality_description': 'Entrada em ' + entry.modality_description + ' + [' + (Term.term.term_installment - 1) + 'x] ' + parcel.modality_description,
-                    'entry': entry,
-                    'parcel': parcel
-                });
-            });
-        });
-    } else {
-        options = options.concat(entries);
-        options = options.concat(parcels);
-    }
-
-    var $table = $('#modal-table-payment-options');
-    $.each( options, function( key, option ){
-        $table.find('tbody').append(
-            '<tr data-key="' + key + '">' +
-            '<td><i class="fa fa-credit-card"></i></td>' +
-            '<td>' + option.modality_code + '</td>' +
-            '<td>' + option.modality_description + '</td>' +
-            '<td>' + Term.term.term_installment + 'x (R$ ' + global.float2Br(Budget.budget.budget_value_total / Term.term.term_installment) + ')</td>' +
-            '</tr>'
-        );
-    });
-
-    $table.find('tbody tr').click(function(){
-        var modality = options[$(this).attr('data-key')];
+ModalTermModalities = {
+    entries: [],
+    parcels: [],
+    options: [],
+    modal: $('#modal-term-modalities'),
+    table: global.table({
+        selector: '#table-term-modalities',
+        scrollY: 186,
+        scrollCollapse: 1,
+        order: [[2,'asc']]
+    }),
+    get: function(key){
+        var modality = ModalTermModalities.options[key];
         if( !modality.modality_installment ){
             global.validateMessage('A forma de pagamento <b>' + modality.modality_code + ' - ' + modality.modality_description + '</b> não possui convênio cadastrado para a empresa selecionada!<br/>Contacte o setor financeiro.')
             return;
@@ -98,6 +75,45 @@ $(document).ready(function(){
         }
         Payment.total();
         Payment.showList();
-        $modal.modal('hide');
-    });
-});
+        ModalTermModalities.modal.modal('hide');
+    },
+    setEntries: function(){
+        if( ModalTermModalities.entries.length && ModalTermModalities.parcels.length ) {
+            $.each(ModalTermModalities.entries, function (k, entry) {
+                $.each(ModalTermModalities.parcels, function (j, parcel) {
+                    ModalTermModalities.options.push({
+                        'modality_description': 'Entrada em ' + entry.modality_description + ' + [' + (Term.term.term_installment - 1) + 'x] ' + parcel.modality_description,
+                        'entry': entry,
+                        'parcel': parcel
+                    });
+                });
+            });
+        } else {
+            ModalTermModalities.options = ModalTermModalities.options.concat(ModalTermModalities.entries);
+            ModalTermModalities.options = ModalTermModalities.options.concat(ModalTermModalities.parcels);
+        }
+    },
+    setModalities: function(){
+        $.each(Term.term.modalities, function(key, modality){
+            if( modality.term_modality_type == 'E' ){
+                ModalTermModalities.entries.push(modality);
+            } else {
+                ModalTermModalities.parcels.push(modality);
+            }
+        });
+    },
+    showModalities: function(){
+        $.each( ModalTermModalities.options, function( key, option ){
+            var row = ModalTermModalities.table.row.add([
+                ( option.image ? '<img src="' + option.image + '" />' : '<i class="fa fa-credit-card"></i>' ),
+                option.modality_code,
+                option.modality_description,
+                Term.term.term_installment + 'x (R$ ' + global.float2Br(Budget.budget.budget_value_total / Term.term.term_installment) + ')'
+            ]).node();
+            $(row).click(function(){
+                ModalTermModalities.get(key);
+            })
+        });
+        ModalTermModalities.table.draw();
+    }
+};
