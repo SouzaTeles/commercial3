@@ -1787,6 +1787,28 @@ Address = {
         };
         Address.delivery = null;
     },
+    map: function(key){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-map-single',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                icon: 'fa-map-marker',
+                id: 'modal-map-single',
+                class: 'modal-map-single',
+                title: 'Mapa',
+                html: html,
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Ok'
+                }],
+                show: function(){
+                    ModalMapSingle.get(Person.person.address[key]);
+                }
+            });
+        });
+    },
     showDelivery: function(){
         var text = '<span>--</span>Nenhum endereço informado';
         if( !!Address.delivery ){
@@ -1806,23 +1828,24 @@ Address = {
             var selected = Budget.budget && Budget.budget.address_code == address.address_code;
             $panel.append(
                 '<div class="col-xs-12 col-sm-4">' +
-                '<div class="address-card address-card-' + ( selected ? 'selected' : 'un-selected' ) + '">' +
-                '<div class="address-header">' +
-                'Endereço ' + address.address_code +
-                '<button ' + ( main ? 'disabled' : '' ) + ' class="btn btn-empty pull-right" data-action="main" data-toggle="tooltip" title="Principal" data-key="' + key +'"><i class="fa fa-star' + ( main ? '' : '-o' ) + '"></i></button>' +
-                '</div>' +
-                '<div class="address-body">' +
-                address.address_public_place + ', ' + address.address_number + '<br/>' +
-                address.district_name + ' - ' + address.city_name + ' - ' + address.uf_id + '<br/>' +
-                'CEP ' + ( !!address.address_cep ? address.address_cep : '<i>não informado</i>' ) + '<br/>' +
-                '</div>' +
-                '<div class="address-footer">' +
-                '<button data-key="' + key +'" data-action="edit" class="btn btn-custom pull-right"><i class="fa fa-pencil"></i></button>' +
-                '<button data-key="' + key +'" data-action="del" class="btn btn-custom pull-right"><i class="fa fa-trash-o"></i></button>' +
-                '<button ' + ( selected ? 'disabled' : '' ) + ' data-key="' + key +'" data-action="select" class="btn btn-custom pull-left"><i class="fa fa-check"></i></button>' +
-                '<button data-key="' + key +'" data-action="contacts" class="btn btn-custom pull-left"><i class="fa fa-phone"></i></button>' +
-                '</div>' +
-                '</div>' +
+                    '<div class="address-card address-card-' + ( selected ? 'selected' : 'un-selected' ) + '">' +
+                        '<div class="address-header">' +
+                            'Endereço ' + address.address_code +
+                            '<button ' + ( main ? 'disabled' : '' ) + ' class="btn btn-empty pull-right" data-action="main" data-toggle="tooltip" title="Principal" data-key="' + key +'"><i class="fa fa-star' + ( main ? '' : '-o' ) + '"></i></button>' +
+                            '<button class="btn btn-empty pull-right" data-action="map" data-toggle="tooltip" title="Ver no Mapa" data-key="' + key +'"><i class="fa fa-map-marker"></i></button>' +
+                        '</div>' +
+                        '<div class="address-body">' +
+                            address.address_public_place + ', ' + address.address_number + '<br/>' +
+                            address.district_name + ' - ' + address.city_name + ' - ' + address.uf_id + '<br/>' +
+                            'CEP ' + ( !!address.address_cep ? address.address_cep : '<i>não informado</i>' ) + '<br/>' +
+                        '</div>' +
+                        '<div class="address-footer">' +
+                            '<button data-key="' + key +'" data-action="edit" class="btn btn-custom pull-right"><i class="fa fa-pencil"></i></button>' +
+                            '<button data-key="' + key +'" data-action="del" class="btn btn-custom pull-right"><i class="fa fa-trash-o"></i></button>' +
+                            '<button ' + ( selected ? 'disabled' : '' ) + ' data-key="' + key +'" data-action="select" class="btn btn-custom pull-left"><i class="fa fa-check"></i></button>' +
+                            '<button data-key="' + key +'" data-action="contacts" class="btn btn-custom pull-left"><i class="fa fa-phone"></i></button>' +
+                        '</div>' +
+                    '</div>' +
                 '</div>'
             );
         });
@@ -1848,6 +1871,9 @@ Address = {
         });
         $panel.find('button[data-action="contacts"]').click(function(){
             global.waiting();
+        });
+        $panel.find('button[data-action="map"]').click(function(){
+            Address.map($(this).attr('data-key'));
         });
         global.tooltip();
     },

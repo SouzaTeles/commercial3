@@ -13,7 +13,7 @@
                 [ "log_system_version", "s", $config->system->system_version ],
                 [ "log_item_id", "s", @$params->item_id ? $params->item_id : NULL ],
                 [ "log_app_version", "s", @$headers["AppVersion"] ? $headers["AppVersion"] : NULL ],
-                [ "log_host_ip", "s", @$headers["HostIP"] ? $headers["HostIP"] : NULL ],
+                [ "log_host_ip", "s", @$headers["HostIP"] && $headers["HostIP"] != "null" ? $headers["HostIP"] : NULL ],
                 [ "log_host_name", "s", @$headers["HostName"] ? $headers["HostName"] : NULL ],
                 [ "log_platform", "s", @$headers["Platform"] ? $headers["Platform"] : NULL ],
                 [ "log_date", "s", date("Y-m-d H:i:s") ],
