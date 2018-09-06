@@ -76,7 +76,8 @@
                     "fields" => [
                         "seller_id=IdPessoa",
                         "seller_code=CdChamada",
-                        "seller_name=NmPessoa"
+                        "seller_name=NmPessoa",
+                        "seller_short_name=ISNULL(NmCurto,NULL)"
                     ],
                     "filters" => [[ "IdPessoa", "s", "=", $data->seller_id ]]
                 ]);

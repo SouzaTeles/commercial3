@@ -37,3 +37,11 @@
     margin: 0 auto;
     position: absolute;
 }
+
+@media(max-height:700px)
+{
+    .modal-product-search .dataTables_scrollBody tr td.dataTables_empty
+    {
+        height: 222px;
+    }
+}

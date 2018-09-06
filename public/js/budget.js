@@ -250,6 +250,7 @@ Budget = {
             $table.find('a[disabled="false"]').unbind('click').click(function(e){
                 e.preventDefault();
                 e.stopPropagation();
+                $('.dropdown-budget').removeClass('open');
                 Budget[$(this).attr('data-action')]($(this).attr('data-key'),$(this).attr('data-id'));
             });
             $table.find('[data-toggle="tooltip"]').tooltip({container:'body'});
@@ -285,7 +286,7 @@ Budget = {
     print: function(params){
         global.window({
             url: global.uri.uri_public + 'window.php?module=budget&action=' + params.action + '&budget_id=' + params.budget_id,
-            width: params.width || 800,
+            width: params.width || 860,
             height: params.height || 620
         });
     },

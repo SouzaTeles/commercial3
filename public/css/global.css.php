@@ -28,6 +28,7 @@ body::-webkit-scrollbar,
 div::-webkit-scrollbar
 {
     width: 0.5em;
+    height: 0.5em;
     background: #999;
 }
 

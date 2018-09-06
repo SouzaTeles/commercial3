@@ -15,10 +15,6 @@
 
     checkAccess();
 
-    if( in_array($get->action,["delivery","insert","edit","del","recover"]) ){
-        postLog();
-    }
-
     switch( $get->action ) {
 
         case "delivery":
@@ -38,6 +34,10 @@
                     [ "budget_note_document", "s", @$post->budget_note_document ? $post->budget_note_document : NULL ]
                 ],
                 "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+            ]);
+
+            postLog((Object)[
+                "item_id" => $post->budget_id
             ]);
 
             Json::get($headerStatus[200]);
@@ -208,6 +208,10 @@
                     [ "budget_id", "i", "=", $budget_id ],
                     [ "budget_payment_id", "i", "not in", sizeof($payments) ? $payments : NULL ]
                 ]
+            ]);
+
+            postLog((Object)[
+                "item_id" => $budget_id
             ]);
 
             Json::get($headerStatus[200], (Object)[
@@ -540,6 +544,10 @@
                 "external_code" => $budget->external_code
             ];
 
+            postLog((Object)[
+                "item_id" => $budget_id
+            ]);
+
             Json::get($headerStatus[200], $ret);
 
         break;
@@ -601,6 +609,10 @@
                 "table" => "Budget",
                 "fields" => [[ "budget_status", "s", "O" ]],
                 "filters" => [[ "budget_id", "s", "=", $budget->budget_id ]]
+            ]);
+
+            postLog((Object)[
+                "item_id" => $budget->budget_id
             ]);
 
             Json::get( $headerStatus[200], (Object)[

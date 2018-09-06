@@ -5,7 +5,6 @@ body
     font-size: 12px;
     background-color: #fff;
     font-family: sans-serif;
-    -webkit-print-color-adjust: exact !important;
 }
 
 table
@@ -17,8 +16,8 @@ table
 th
 {
     text-transform: uppercase;
-    background-color: #a7a7a7;
     -webkit-print-color-adjust: exact;
+    background-color: #a7a7a7 !important;
 }
 
 th, td
@@ -91,13 +90,14 @@ th, td
 
 #budget-message
 {
-    color: #fff;
     padding: 10px;
     margin: 10px 0;
     font-size: 11px;
+    font-weight: bold;
     text-align: center;
-    background-color: #666;
+    color: #fff !important;
     text-transform: uppercase;
+    background-color: #666 !important;
     -webkit-print-color-adjust: exact;
 }
 

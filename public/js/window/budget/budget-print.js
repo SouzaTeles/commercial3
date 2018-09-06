@@ -11,7 +11,7 @@ Print = {
     budget_id: global.url.searchParams.get('budget_id'),
     events: function(){
         $(document).ready(function(){
-            window.print();
+            // window.print();
         });
         $('button').click(function(){
             window.print();
@@ -65,7 +65,7 @@ Print = {
     showBudget: function(){
 
         $('#company-logo').attr('src',Print.company.image);
-        $('#company-name').text(Print.budget.company.company_name);
+        $('#company-name').text(Print.budget.company.company_short_name);
         $('#company-address').html(
             Print.budget.company.address.address_type + ' ' +
             Print.budget.company.address.address_public_place + '<br/>' +
@@ -82,6 +82,7 @@ Print = {
         }
         $('#budget-date').text('Data: ' + global.date2Br(Print.budget.budget_date.substring(0,10)));
         $('#budget-code').text('Orçamento n°: ' + Print.budget.budget_code);
+        $('#seller-name').html('Vendedor: ' + (Print.budget.seller.seller_short_name ? Print.budget.seller.seller_short_name : Print.budget.seller.seller_name));
 
         $('#budget-message').text(Print.company.company_budget_message);
 
@@ -112,12 +113,12 @@ Print = {
                     '<td>' + item.product_code + ' - ' + item.product_name + '</td>' +
                     '<td>' + item.unit_code + '</td>' +
                     '<td>' + item.budget_item_quantity + '</td>' +
-                    '<td>R$ ' + global.float2Br(item.budget_item_value) + '</td>' +
+                    '<td>R$' + global.float2Br(item.budget_item_value) + '</td>' +
                     '<td>' + global.float2Br(item.budget_item_aliquot_discount) + '%</td>' +
                     '<td>R$' + global.float2Br(item.budget_item_value_discount) + '</td>' +
-                    ( Print.company.company_st == 'Y' ? '<td>R$ ' + global.float2Br(item.budget_item_value_st) + '</td>' : '' ) +
-                    '<td>R$ ' + global.float2Br(item.budget_item_value_total/item.budget_item_quantity) + '</td>' +
-                    '<td>R$ ' + global.float2Br(item.budget_item_value_total) + '</td>' +
+                    ( Print.company.company_st == 'Y' ? '<td>R$' + global.float2Br(item.budget_item_value_st) + '</td>' : '' ) +
+                    '<td>R$' + global.float2Br(item.budget_item_value_total/item.budget_item_quantity) + '</td>' +
+                    '<td>R$' + global.float2Br(item.budget_item_value_total) + '</td>' +
                 '</tr>'
             );
         });
@@ -136,11 +137,11 @@ Print = {
             Print.budget.address.uf_id
         );
 
-        $('#budget-value').text('R$ ' + global.float2Br(Print.budget.budget_value));
-        $('#budget-value-discount').text('R$ ' + global.float2Br(Print.budget.budget_value_discount));
-        $('#budget-value-st').text('R$ ' + global.float2Br(Print.budget.budget_value_st));
-        $('#budget-value-total').text('R$ ' + global.float2Br(Print.budget.budget_value_total));
-        $('#budget-value-total-st').text('R$ ' + global.float2Br(Print.budget.budget_value_total+Print.budget.budget_value_st));
+        $('#budget-value').text('R$' + global.float2Br(Print.budget.budget_value));
+        $('#budget-value-discount').text('R$' + global.float2Br(Print.budget.budget_value_discount));
+        $('#budget-value-st').text('R$' + global.float2Br(Print.budget.budget_value_st));
+        $('#budget-value-total').text('R$' + global.float2Br(Print.budget.budget_value_total));
+        $('#budget-value-total-st').text('R$' + global.float2Br(Print.budget.budget_value_total+Print.budget.budget_value_st));
 
         if( Print.company.company_st == 'N' ){
             $('#table-budget-values tbody tr').eq(2).hide();
@@ -159,17 +160,18 @@ Print = {
                     '<tr>' +
                         '<td class="text-center">' + payment.budget_payment_installment + 'x</td>' +
                         '<td>' + payment.modality_description + '</td>' +
-                        '<td class="text-center">R$ ' + global.float2Br(payment.budget_payment_value) + '</td>' +
+                        '<td class="text-center">R$' + global.float2Br(payment.budget_payment_value) + '</td>' +
                         '<td class="text-center">' + global.date2Br(payment.budget_payment_deadline) + '</td>' +
                     '</tr>'
                 );
             });
         }
 
-        $('#seller-name').text(Print.budget.seller.seller_code + ' ' + Print.budget.seller.seller_name);
+        $('#budget-note').html(Print.budget.budget_note||'--');
+        $('#budget-note-document').html(Print.budget.budget_note_document||'--');
 
         setTimeout(function(){
-            //Print.events();
+            Print.events();
         },1000);
     }
 };

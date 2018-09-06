@@ -1,3 +1,4 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <button class="btn btn-orange" type="button">
     <i class="fa fa-print"></i>
 </button>
@@ -17,6 +18,7 @@
                     <b id="external-code">--</b><br/>
                     <b id="budget-date">--</b><br/>
                     <b id="budget-code">--</b><br/>
+                    <b id="seller-name">--</b>
                 </td>
             </tr>
         </table>
@@ -44,7 +46,7 @@
     <div class="products">
         <table id="table-products" class="table-border">
             <thead>
-                <th width="auto">Produto</th>
+                <th width="auto" class="te">Produto</th>
                 <th width="4%">Und</th>
                 <th width="4%">Qtd</th>
                 <th width="8%">Valor</th>
@@ -128,17 +130,14 @@
                 <th>Observações da Nota</th>
             </tr>
             <tr>
-                <td>--</td>
-                <td>--</td>
+                <td id="budget-note">--</td>
+                <td id="budget-note-document">--</td>
             </tr>
         </table>
     </div>
     <div class="seller">
         <table>
             <tr>
-                <td>
-                    Vendedor:<br/><b id="seller-name"></b>
-                </td>
                 <td class="text-right">
                     Impresso em: {$smarty.now|date_format:"%d/%m/%Y %H:%M:%S"}<br/>
                     {$config->system->system_name} v{$config->system->system_version}

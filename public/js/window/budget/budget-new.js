@@ -8,6 +8,11 @@ $(document).ready(function(){
     }
     global.unLoader();
 
+    $(window).resize(function(){
+        Item.table.columns.adjust().draw();
+        Payment.table.columns.adjust().draw();
+    });
+
 });
 
 Keyboard = {
@@ -41,6 +46,10 @@ Keyboard = {
         global.listener.simple_combo("f2", function () {
             if( $('#product_code').is(':focus') || $('#product_name').is(':focus') ){
                 Item.search();
+                return;
+            }
+            if( $('#person_code').is(':focus') || $('#person_name').is(':focus') ){
+                Person.search();
                 return;
             }
         });
@@ -1370,6 +1379,52 @@ Person = {
         last: '',
         timer: 0
     },
+    active: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'person.php?action=active',
+            data: {
+                person_id: Person.person.person_id,
+                person_category_id: global.config.person.client_category_id
+            },
+            dataType: 'json'
+        },function(){
+            Person.afterGet();
+        });
+    },
+    afterGet: function(){
+        Address.getAddress = true;
+        Budget.budget.client_id = Person.person.person_id;
+        Address.delivery = Person.person.address ? Person.person.address[0] : null;
+        Budget.budget.address_code = Address.delivery ? Address.delivery.address_code : null;
+        Budget.budget.address_uf_id = Address.delivery ? Address.delivery.uf_id : null;
+        Budget.budget.budget_note_document = Budget.budget.budget_note_document.split('\n\nObs de Entrega: ')[0];
+        if( !!Person.person.address[0] && !!Person.person.address[0].address_note ){
+            Budget.budget.budget_note_document +=  '\n\nObs de Entrega: ' + Person.person.address[0].address_note;
+        }
+        Person.data2form();
+        Address.showDelivery();
+    },
+    beforeActive: function(){
+        global.modal({
+            icon: 'fa-question-circle-o',
+            title: 'Confirmação',
+            html: '<p>O cliente <b>' + Person.person.person_name + '</b> está inativo. Deseja ativa-lo?</p>',
+            buttons: [{
+                icon: 'fa-times',
+                title: 'Não',
+                class: 'pull-left'
+            },{
+                icon: 'fa-check',
+                title: 'Sim',
+                action: function(){
+                    Person.active();
+                }
+            }],
+            hidden: function(){
+                $('#person_code').focus().select();
+            }
+        });
+    },
     data2form: function(){
         $('#person_code').val(Person.person.person_code).attr('data-value',Person.person.person_code);
         $('#person_name').val(Person.person.person_name).attr('data-value',Person.person.person_name);
@@ -1477,17 +1532,11 @@ Person = {
             dataType: 'json'
         }, function(person){
             Person.person = person;
-            Address.getAddress = true;
-            Budget.budget.client_id = person.person_id;
-            Address.delivery = person.address ? person.address[0] : null;
-            Budget.budget.address_code = Address.delivery ? Address.delivery.address_code : null;
-            Budget.budget.address_uf_id = Address.delivery ? Address.delivery.uf_id : null;
-            Budget.budget.budget_note_document = Budget.budget.budget_note_document.split('\n\nObs de Entrega: ')[0];
-            if( !!person.address[0] && !!person.address[0].address_note ){
-                Budget.budget.budget_note_document +=  '\n\nObs de Entrega: ' + person.address[0].address_note;
+            if( Person.person.person_active == 'N' ){
+                Person.beforeActive();
+            } else {
+                Person.afterGet();
             }
-            Person.data2form();
-            Address.showDelivery();
         });
     },
     info: function(){
@@ -1544,22 +1593,19 @@ Person = {
             global.modal({
                 size: 'big',
                 icon: 'fa-search',
+                id: 'modal-person-search',
+                class: 'modal-person-search',
                 title: 'Localização de Pessoa',
                 html: html,
                 buttons: [{
                     icon: 'fa-times',
-                    class: 'pull-left',
-                    title: 'Cancelar'
-                },{
-                    icon: 'fa-pencil',
-                    title: 'Adicionar Produtos',
-                    unclose: true,
-                    action: function(){
-
-                    }
+                    title: 'Fechar'
                 }],
-                load: function(){
-
+                shown: function(){
+                    $('#modal_person_name').focus();
+                },
+                hidden: function(){
+                    $('#person_code').focus();
                 }
             });
         });

@@ -1,27 +1,36 @@
 <?php
 
-    function postLog()
+    function postLog($params=(Object)[])
     {
-        GLOBAL $commercial, $login, $post, $get;
+        GLOBAL $commercial, $login, $post, $get, $headers, $config;
 
         $log_id = Model::insert($commercial,(Object)[
             "table" => "[Log]",
             "fields" => [
-                [ "user_id", "s", @$login ? $login->user_id : NULL ],
+                [ "user_id", "s", @$params->user_id ? $params->user_id : $login->user_id ],
                 [ "log_script", "s", SCRIPT_NAME ],
-                [ "log_action", "s", @$get->action ? $get->action : NULL ],
-                [ "log_date", "s", date("Y-m-d H:i:s") ]
+                [ "log_action", "s", $get->action ],
+                [ "log_system_version", "s", $config->system->system_version ],
+                [ "log_item_id", "s", @$params->item_id ? $params->item_id : NULL ],
+                [ "log_app_version", "s", @$headers["AppVersion"] ? $headers["AppVersion"] : NULL ],
+                [ "log_host_ip", "s", @$headers["HostIP"] ? $headers["HostIP"] : NULL ],
+                [ "log_host_name", "s", @$headers["HostName"] ? $headers["HostName"] : NULL ],
+                [ "log_platform", "s", @$headers["Platform"] ? $headers["Platform"] : NULL ],
+                [ "log_date", "s", date("Y-m-d H:i:s") ],
             ]
         ]);
 
         $pathLog =  PATH_LOG . "post/" . date("Y/F/d") . "/" . SCRIPT_NAME . "/" . ( @$get->action ? "{$get->action}/" : "" );
         if( !is_dir($pathLog) ) mkdir($pathLog, 0755, true);
-        file_put_contents( "{$pathLog}{$log_id}.json" , json_encode($post) );
+        file_put_contents("{$pathLog}{$log_id}.json" , json_encode((Object)[
+            "post" => $post,
+            "headers" => $headers
+        ]));
     }
 
     function email( $params )
     {
-        GLOBAL $commercial, $site, $login, $smarty;
+        GLOBAL $commercial, $login, $smarty;
 
         $email_id = Model::insert($commercial,(Object)[
             "table" => "email",

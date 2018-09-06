@@ -1,0 +1,65 @@
+<link href="{$URI_PUBLIC}css/modal/modal-person-search.css" rel="stylesheet" />
+<form>
+    <div class="row">
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="modal_person_name">Nome</label>
+                <input type="text" class="form-control" id="modal_person_name" placeholder="Nome">
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="modal_person_doc">CPF/CNPJ</label>
+                <input type="text" class="form-control" id="modal_person_doc" placeholder="CPF/CNPJ"/>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="modal_person_contact">Contato</label>
+                <input type="text" class="form-control" id="modal_person_contact" placeholder="Contato"/>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="modal_person_address">&nbsp;&nbsp;</label>
+                <input type="checkbox" class="form-control" id="modal_person_address" />
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="modal_person_active">&nbsp;&nbsp;</label>
+                <input checked type="checkbox" class="form-control" id="modal_person_active" />
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label>&nbsp;&nbsp;</label>
+                <button class="btn btn-custom btn-block">
+                    <i class="fa fa-search"></i> Pesquisar
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+<table id="modal-table-people" class="table-custom no-select nowrap">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Código</th>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>CPF/CNPJ</th>
+            <th>Endereço</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<div class="legend">
+    <div class="found">
+        <i class="fa fa-users"></i> 0 Pessoas localizadas
+    </div>
+    <div class="pull-right">
+        <i class="fa fa-stop txt-gray-light"></i> Inativo
+    </div>
+</div>
+<script src="{$URI_PUBLIC}js/modal/modal-person-search.js?{$smarty.now}"></script>

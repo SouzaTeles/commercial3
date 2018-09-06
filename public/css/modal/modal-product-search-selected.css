@@ -27,3 +27,11 @@
 {
     width: 60px;
 }
+
+@media(max-height:700px)
+{
+    .modal-product-search-selected
+    {
+        top: 80px;
+    }
+}
