@@ -1,6 +1,6 @@
 <?php
 
-    function postLog($params=(Object)[])
+    function postLog($params)
     {
         GLOBAL $commercial, $login, $post, $get, $headers, $config;
 
