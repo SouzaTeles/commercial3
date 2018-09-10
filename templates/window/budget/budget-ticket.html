@@ -1,0 +1,22 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<div class="ticket">
+    <div id="company-name" class="company">--</div>
+    <div class="info">
+        <div class="time">{$smarty.now|date_format:'%d/%m/%Y %H:%M:%S'}</div>
+        <div class="system">{$config->system->system_name} {$config->system->system_version}</div>
+    </div>
+    <div id="client-name" class="client"></div>
+    <div id="seller-name" class="seller"></div>
+    <div id="external-code" class="external"></div>
+    <div id="budget-code" class="budget"></div>
+    <table id="table-payments" class="payments">
+        <tbody>
+            <tr>
+                <td colspan="4">--</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<button class="btn btn-orange" type="button">
+    <i class="fa fa-print"></i>
+</button>
