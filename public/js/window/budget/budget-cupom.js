@@ -114,7 +114,7 @@ Cupom = {
                         '<td class="ng-binding">' + item.budget_item_quantity + item.unit_code + ' X</td>' +
                         '<td>R$' + global.float2Br(item.budget_item_value) + '</td>' +
                         '<td>R$' + global.float2Br(item.budget_item_value_discount) + ' [' + item.budget_item_aliquot_discount + '%]</td>' +
-                        '<td class="text-right">' + global.float2Br(item.budget_item_value_total) + '</td>' +
+                        '<td class="text-right">R$' + global.float2Br(item.budget_item_value_total) + '</td>' +
                     '</tr>' +
                     '<tr><td colspan="5"></td></tr>'
                 );

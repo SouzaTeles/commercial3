@@ -1,5 +1,10 @@
 <?php include "../../data.css.php"; ?>
 
+body
+{
+    font-size: 12px;
+}
+
 .container
 {
     padding: 20px;
@@ -13,7 +18,7 @@
     background-color: #333;
 }
 
-.ticket
+.cupom
 {
     width: 89mm;
     padding: 15px;
@@ -24,59 +29,59 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
-.ticket .company-name
+.cupom .company-name
 {
     font-size: 18px;
     font-weight: bold;
 }
 
-.ticket .info
+.cupom .info
 {
     width: 100%;
     display: table;
     margin: 6px 0 2px;
 }
 
-.ticket .info .time
+.cupom .info .time
 {
     float: left;
 }
 
-.ticket .info .system
+.cupom .info .system
 {
     float: right;
 }
 
-.ticket .budget
+.cupom .budget
 {
     width: 100%;
     display: table;
     margin: 2px 0 4px;
 }
 
-.ticket .budget .code
+.cupom .budget .code
 {
     float: left;
 }
 
-.ticket .budget .external
+.cupom .budget .external
 {
     float: right;
 }
 
-.ticket .separator
+.cupom .separator
 {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
 }
 
-.ticket .client,
-.ticket .seller
+.cupom .client,
+.cupom .seller
 {
     text-align: left;
 }
 
-.ticket .seller
+.cupom .seller
 {
     margin-bottom: 6px;
 }
@@ -114,6 +119,12 @@ button.btn
     button.btn
     {
         display: none;
+    }
+
+    .cupom
+    {
+        width: 80mm;
+        padding: 0 0 0 15px;
     }
 }
 

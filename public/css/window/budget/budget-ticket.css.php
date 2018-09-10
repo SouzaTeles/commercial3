@@ -1,5 +1,10 @@
 <?php include "../../data.css.php"; ?>
 
+body
+{
+    font-size: 12px;
+}
+
 .container
 {
     padding: 20px;
@@ -59,15 +64,14 @@
 
 .ticket .budget
 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     margin-bottom: 8px;
 }
 
-.ticket .payments
+table
 {
     width: 100%;
-    font-size: 16px;
 }
 
 button.btn
@@ -92,6 +96,12 @@ button.btn
     button.btn
     {
         display: none;
+    }
+
+    .ticket
+    {
+        width: 80mm;
+        padding: 0 0 0 15px;
     }
 }
 

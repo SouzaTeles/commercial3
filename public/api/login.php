@@ -60,7 +60,7 @@
             ],
             "no_update" => 1
         ]);
-        
+
         Model::insert( $commercial, (Object)[
             "table" => "UserSession",
             "fields" => [
