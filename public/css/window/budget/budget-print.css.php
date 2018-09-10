@@ -181,7 +181,6 @@ button.btn
     position: fixed;
     font-size: 24px;
     border-radius: 50% !important;
-
 }
 
 @media print

@@ -1,6 +1,6 @@
 <?php
 
-    define( "PATH_LIB", "C:/wamp/www/sirius/lib/" );
+    define( "PATH_LIB", "C:/wamp/www/lib/" );
     define( "PATH_ROOT", "C:/wamp/www/commercial3/" );
     
     include PATH_LIB . "config/func.php";

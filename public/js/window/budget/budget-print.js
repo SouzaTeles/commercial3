@@ -11,7 +11,7 @@ Print = {
     budget_id: global.url.searchParams.get('budget_id'),
     events: function(){
         $(document).ready(function(){
-            // window.print();
+            window.print();
         });
         $('button').click(function(){
             window.print();
