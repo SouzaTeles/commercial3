@@ -70,14 +70,14 @@ ModalPersonSearch = {
             width: '100%',
             on: 'Somente ativos',
             off: 'Ativos e inativos',
-            onstyle: 'custom',
+            onstyle: 'blue',
             offstyle: 'gray-dark'
         });
         $('#modal_person_address').bootstrapToggle({
             width: '100%',
             on: 'Exibir endereço',
             off: 'Ocultar endereço',
-            onstyle: 'custom',
+            onstyle: 'blue',
             offstyle: 'gray-dark'
         }).on('change',function(){
             ModalPersonSearch.table.column(5).visible(this.checked);

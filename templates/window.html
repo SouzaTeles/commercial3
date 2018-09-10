@@ -19,24 +19,22 @@
         <link href="{$URI_LIB}datatable/datatables.css" rel="stylesheet" />
         <link href="{$URI_LIB}bootstrap/slider/bootstrap-slider.css" rel="stylesheet" />
         <link href="{$URI_LIB}spectrum/spectrum.css" rel="stylesheet" />
-        <link href="{$URI_LIB}css/alert.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/loader.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/modal.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/tables.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/address?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/components.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/buttons.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/menu.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_PUBLIC}css/global.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_PUBLIC}css/window.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_PUBLIC}css/window/{$module}/{$module}-{$action}.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/alert.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/loader.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/modal.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/tables.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/components.css.php" rel="stylesheet" />
+        <link href="{$URI_LIB}css/colors.css.php" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/global.css.php" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/window.css.php" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/window/{$module}/{$module}-{$action}.css.php" rel="stylesheet" />
     </head>
     <body>
         <div class="overlay"></div>
         <div class="container">
             {include file="{$PATH_TEMPLATES}window/{$module}/{$module}-{$action}.html"}
         </div>
-        {include file="{$LIB_ROOT}templates/loader.html"}
+        {include file="{$PATH_LIB}templates/loader.html"}
     </body>
     <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
     <script src="{$URI_LIB}jquery/jquery-3.2.1.min.js"></script>
@@ -65,7 +63,9 @@
     <script src="{$URI_LIB}js/global.js?{$smarty.now}"></script>
     <script src="{$URI_PUBLIC}js/global.js?{$smarty.now}"></script>
     <script src="{$URI_PUBLIC}js/window/{$module}/{$module}-{$action}.js?{$smarty.now}"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgm0-sSdm8vDMAePEay6MqMMb3nQFZSn4"></script>
+    {if $smarty.get.module == "budget"}
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgm0-sSdm8vDMAePEay6MqMMb3nQFZSn4"></script>
+    {/if}
     <script>
         global.login = {$login|json_encode};
         global.uri = {$config->uri|json_encode};

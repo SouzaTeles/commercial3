@@ -124,5 +124,5 @@ try {
     var children = remote.getGlobal('children');
     var Electron = remote.getGlobal('Electron');
 } catch(e){
-    var Electron = null;
+
 }

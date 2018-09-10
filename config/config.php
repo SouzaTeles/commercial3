@@ -1,10 +1,10 @@
 <?php
 
-    define( "LIB_ROOT", "C:/wamp/www/lib/" );
+    define( "PATH_LIB", "C:/wamp/www/sirius/lib/" );
     define( "PATH_ROOT", "C:/wamp/www/commercial3/" );
     
-    include LIB_ROOT . "config/func.php";
-    include LIB_ROOT . "config/config.php";
+    include PATH_LIB . "config/func.php";
+    include PATH_LIB . "config/config.php";
     
     define( "PATH_LOG", PATH_ROOT . "log/" );
     define( "PATH_DATA", PATH_ROOT . "data/" );
@@ -20,8 +20,9 @@
     define( "URI_LIB", "http://" . URI . "/lib/" );
     define( "URI_PUBLIC", "http://" . URI . "/commercial3/" );
     define( "URI_PUBLIC_LOGIN", "http://" . URI . "/commercial3/index.php?route=login" );
+    define( "URI_FILES", URI_PUBLIC . "files/" );
     define( "URI_PUBLIC_API", URI_PUBLIC . "api/" );
-    
+
     define( "WIDTH_THUMB_MAX", 5000 );
     define( "HEIGHT_THUMB_MAX", 3500 );
     define( "WIDTH_THUMB_MIN", 320 );

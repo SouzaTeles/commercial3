@@ -5,16 +5,18 @@
     right: 0;
     z-index: 1000;
     position: fixed;
+    background-color: #fff;
 }
 
 .panel .panel-tools .action
 {
+    color: #fff;
     float: left;
     height: 60px;
     padding: 12px;
     font-size: 26px;
-    margin-right: 48px;
     text-align: center;
+    margin-right: 48px;
 }
 
 .panel .panel-tools .action:before
@@ -26,15 +28,15 @@
   position: absolute;
   display: inline-block;
   vertical-align: middle;
-  border-right: 30px solid transparent;
-  border-bottom: 30px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 0px solid transparent;
 }
 
 .panel .panel-tools .action.new:before
 {
     left: 202px;
-    border-top: 30px solid #379939;
-    border-left: 30px solid #379939;
+    border-top: 60px solid #379939;
+    border-left: 0px solid #379939;
 }
 
 .panel .panel-tools .action.edit:before

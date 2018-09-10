@@ -6,22 +6,8 @@ html, body
 {
     overflow-x: hidden;
     padding: 0 !important;
+    background-color: #ddd;
     font-family: 'Oswald', sans-serif;
-    background-color: <?php echo $colors->hex->body; ?>;
-}
-
-h1
-{
-    height: 36px;
-    font-size: 24px;
-    padding: 6px 10px;
-    margin-bottom: 20px;
-    border-left: 6px solid <?php echo $colors->hex->primary; ?>;
-}
-
-hr
-{
-    border-color: <?php echo $colors->hex->primary; ?>;
 }
 
 body::-webkit-scrollbar,
@@ -35,7 +21,7 @@ div::-webkit-scrollbar
 body::-webkit-scrollbar-thumb,
 div::-webkit-scrollbar-thumb
 {
-    background-color: <?php echo $colors->hex->primary; ?>;;
+    background-color: <?php echo $colors->hex->palette["blue"]; ?>;
     outline: 1px solid #3c3c3c;
     position: relative;
     right: 0.5em;
@@ -60,7 +46,6 @@ div::-webkit-scrollbar-thumb
     border-radius: 50%;
     background-size: cover;
     background-position: center center;
-    box-shadow: 0 4px 10px 0 rgba(<?php echo $colors->rgb->primary->red; ?>,<?php echo $colors->rgb->primary->green; ?>,<?php echo $colors->rgb->primary->blue; ?>,0.2), 0 4px 20px 0 rgba(<?php echo $colors->rgb->primary->red; ?>,<?php echo $colors->rgb->primary->green; ?>,<?php echo $colors->rgb->primary->blue; ?>,0.19);
 }
 
 .table-cover tr:hover td:first-child div
@@ -81,7 +66,7 @@ div::-webkit-scrollbar-thumb
     display: table;
     position: relative;
     padding: 90px 0 60px;
-    border-left: 60px solid <?php echo $colors->hex->menu_link_background; ?>;
+    border-left: 60px solid #333;
 }
 
 .overlay
@@ -101,7 +86,7 @@ footer
     padding: 20px;
     z-index: 1001;
     position: fixed;
-    background-color: <?php echo $colors->hex->background; ?>;
+    background-color: #fff;
     box-shadow: 0 4px 20px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);
 }
 

@@ -2,7 +2,41 @@
 
     header("Content-type: text/css");
 
-    $colors = json_decode($_GET["colors"]);
+    if( file_exists("../../config/config.php")){
+        include "../../config/config.php";
+    } else{
+        include "../../../../config/config.php";
+    }
+
+    $datas = [
+        "pages" => (Array)json_decode(file_get_contents(PATH_ROOT . "data/colors.json")),
+        "palette" => (Array)json_decode(file_get_contents(PATH_LIB . "data/colors.json"))
+    ];
+
+    $hex = [];
+    $rgb = [];
+    $colors = [];
+
+    foreach( $datas as $k => $data ){
+        foreach( $data as $j => $color ){
+            $hex[$k][$j] = $color;
+            list($r, $g, $b) = sscanf($color, "#%02x%02x%02x");
+            $rgb[$k][$j] = (Object)[
+                "red" => $r,
+                "green" => $g,
+                "blue" => $b
+            ];
+        }
+        $colors = (Object)[
+            "hex" => (Object)$hex,
+            "rgb" => (Object)$rgb
+        ];
+    }
+
+    $colors->hex = (Object)$colors->hex;
+    $colors->hex->pages = (Object)$colors->hex->pages;
+    $colors->rgb = (Object)$colors->rgb;
+    $colors->rgb->pages = (Object)$colors->rgb->pages;
 
     function brightness( $hex, $steps )
     {
@@ -24,21 +58,5 @@
 
         return $return;
     }
-
-    function getWallpaper()
-	{
-		$ds = DIRECTORY_SEPARATOR;
-	    $path = __DIR__ . "{$ds}..{$ds}images{$ds}wallpaper{$ds}";
-        //die($path);
-		$images = [];
-		$files = glob( "{$path}/*.{jpg,png}", GLOB_BRACE );
-
-		foreach( $files as $file ){
-			$info = explode( "/", $file );
-			$images[] = end($info);
-		}
-
-		return $images[rand(0,sizeof($images)-1)];
-	}
 
 ?>

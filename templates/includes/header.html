@@ -11,7 +11,7 @@
         <img src="{$config->uri->uri_public}images/commercial-wide.png" />
     </div>
     <div class="user dropdown pull-right">
-        <div class="cover" style="background-image:url({$login->image})"></div>
+        <div class="cover"{if !empty($login->image)} style="background-image:url({$login->image})"{/if}></div>
         <div class="info">
             {$login->user_name}
             <span>{$login->user_profile->user_profile_name}</span>

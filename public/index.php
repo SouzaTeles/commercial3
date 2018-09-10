@@ -21,7 +21,8 @@
                         $key = $p2->key;
                         if (!@$login->access->$key) {
                             echo "Chave do json não encontrada: {$key}";
-                            die(var_dump($login->access));
+                            var_dump($login->access);
+                            die();
                         }
                         $p2->access = $login->access->$key->access->value;
                     }
@@ -29,7 +30,8 @@
                 $key = $p1->key;
                 if (!@$login->access->$key) {
                     echo "Chave do json não encontrada: {$key}";
-                    die(var_dump($login->access));
+                    var_dump($login->access);
+                    die();
                 }
                 $p1->access = $login->access->$key->access->value;
             }
@@ -43,8 +45,6 @@
 
     $colors = json_decode(file_get_contents(PATH_DATA."colors.json"));
     $colors = getColors($colors);
-
-    $_SESSION["colors"] = $colors;
 
     $smarty->assign( "data", $data );
     $smarty->assign( "login", $login );

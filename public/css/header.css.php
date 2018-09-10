@@ -10,6 +10,7 @@ header
     z-index: 1002;
     display: table;
     position: fixed;
+    background-color: #fff;
     padding: 14px 20px 14px 80px;
 }
 
@@ -32,7 +33,7 @@ header .home a
     font-size: 28px;
     padding: 30px 12px;
     transition: all ease 0.3s;
-    border-left: 4px solid #071fa7;
+    border-left: 4px solid <?php echo $colors->hex->palette["blue-dark"]; ?>;
 }
 
 header .home a img
@@ -51,6 +52,33 @@ header .title
     padding: 20px 20px 22px;
     text-transform: uppercase;
 }
+
+header .title:before
+{
+    top: 0;
+    width: 0;
+    height: 0;
+    right: -45px;
+    content: "";
+    position: absolute;
+    display: inline-block;
+    vertical-align: middle;
+    border-right: 15px solid transparent;
+    border-bottom: 60px solid transparent;
+}
+
+<?php foreach( $colors->hex->pages as $page => $color ){ ?>
+header .title-<?php echo $page; ?>
+{
+    background-color: <?php echo $color; ?>;
+}
+
+header .title-<?php echo $page; ?>:before
+{
+    border-left: 30px solid <?php echo $color ?>;
+    border-top: 30px solid <?php echo $color ?>;
+}
+<?php } ?>
 
 header .title i
 {
@@ -119,27 +147,3 @@ header .user button
 {
     float: left;
 }
-
-<?php foreach( $colors->hex->pages as $page => $color ){ ?>
-header .title-<?php echo $page . PHP_EOL; ?>
-{
-    background-color: <?php echo $color; ?>;
-    border-left: 6px solid <?php echo brightness($color,-20); ?>;
-}
-
-header .title-<?php echo $page; ?>:before
-{
-    top: 0;
-    width: 0;
-    height: 0;
-    content: "";
-    right: -90px;
-    position: absolute;
-    display: inline-block;
-    vertical-align: middle;
-    border-right: 45px solid transparent;
-    border-bottom: 45px solid transparent;
-    border-top: 45px solid <?php echo $color; ?>;
-    border-left: 45px solid <?php echo $color; ?>;
-}
-<?php } ?>

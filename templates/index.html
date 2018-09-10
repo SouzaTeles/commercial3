@@ -7,7 +7,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
         <meta name="author" content="Alessandro Menezes">
-        <meta name="theme-color" content="{if !empty($colors->hex->$route)}{$colors->hex->$route}{else}{$colors->hex->primary}{/if}">
         <link href="{$URI_PUBLIC}bootstrap/css/bootstrap.min.css" rel="stylesheet" />
         <link href="{$URI_PUBLIC}bootstrap/css/bootstrap-select.min.css" rel="stylesheet" />
         <link href="{$URI_PUBLIC}font-awesome/css/font-awesome.min.css" rel="stylesheet" />
@@ -22,17 +21,17 @@
         <link href="{$URI_LIB}datatable/datatables.css" rel="stylesheet" />
         <link href="{$URI_LIB}bootstrap/slider/bootstrap-slider.css" rel="stylesheet" />
         <link href="{$URI_LIB}spectrum/spectrum.css" rel="stylesheet" />
-        <link href="{$URI_LIB}css/alert.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/loader.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/modal.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_PUBLIC}css/header.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/tables.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/address.css?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/components.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/buttons.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_LIB}css/menu.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_PUBLIC}css/global.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
-        <link href="{$URI_PUBLIC}css/{$route}.css.php?colors={$colors|@json_encode|@urlencode}" rel="stylesheet" />
+        <link href="{$URI_LIB}css/alert.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/loader.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/modal.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/tables.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/address.css" rel="stylesheet" />
+        <link href="{$URI_LIB}css/components.css.php" rel="stylesheet" />
+        <link href="{$URI_LIB}css/colors.css.php" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/header.css.php" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/menu.css.php" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/global.css.php" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/{$route}.css.php" rel="stylesheet" />
     </head>
     <body>
         <div class="overlay"></div>
@@ -42,7 +41,7 @@
             {/if}
             {include file="{$PATH_TEMPLATES}{$route}.html"}
         </div>
-        {include file="{$LIB_ROOT}templates/loader.html"}
+        {include file="{$PATH_LIB}templates/loader.html"}
     </body>
     <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
     <script src="{$URI_LIB}jquery/jquery-3.2.1.min.js"></script>
@@ -72,7 +71,6 @@
     <script src="{$URI_PUBLIC}js/global.js?{$smarty.now}"></script>
     <script src="{$URI_PUBLIC}js/webcam.min.js"></script>
     <script src="{$URI_PUBLIC}js/{$route}.js?{$smarty.now}"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgm0-sSdm8vDMAePEay6MqMMb3nQFZSn4"></script>
     <script>
         global.login = {$login|json_encode};
         global.uri = {$config->uri|json_encode};

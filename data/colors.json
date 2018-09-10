@@ -1,22 +1,12 @@
 {
-	"body": "#dddddd",
-	"menu_background": "#333333",
-	"menu_link_color": "#ffffff",
-	"menu_link_background": "#333333",
-	"text": "#ffffff",
-	"primary": "#215A7C",
-	"secondary": "#666666",
-	"background": "#ffffff",
-	"pages": {
-		"agenda": "#D32F2F",
-		"home": "#0b4aa4",
-		"sale": "#7B1FA2",
-		"stock": "#512DA8",
-		"report": "#1976D2",
-		"logistics": "#00897B",
-		"rh": "#CDDC39",
-		"production": "#F57C00",
-		"crm": "#795548",
-		"config": "#616161"
-	}
+	"agenda": "#D32F2F",
+	"home": "#0b4aa4",
+	"sale": "#7B1FA2",
+	"stock": "#512DA8",
+	"report": "#1976D2",
+	"logistics": "#00897B",
+	"rh": "#CDDC39",
+	"production": "#F57C00",
+	"crm": "#795548",
+	"config": "#616161"
 }
