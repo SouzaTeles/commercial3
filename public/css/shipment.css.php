@@ -1,4 +1,4 @@
-<?php include "../data.css.php";?>
+<?php include "data.css.php";?>
 
 nav-pages
 {
@@ -123,22 +123,8 @@ nav-pages
     margin: 2px;
 }
 
-#table-budgets_filter,
-#button-budget-person-address-new,
-#button-budget-person-address-edit,
-#button-budget-person-address-back
+
 {
     display: none;
 }
 
-#button-budget-seller-remove,
-#button-budget-person-search,
-#button-budget-person-remove,
-#button-budget-product-search,
-#button-budget-product-remove,
-#button-budget-term-search,
-#button-budget-term-remove,
-#modal-table-payment-options tr,
-#button-budget-category-remove {
-    cursor: pointer;
-}

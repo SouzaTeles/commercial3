@@ -32,7 +32,7 @@ switch( $get->action )
             "filters" => [
                 //[ "M.StMapaCarregamento", "s", "=", "A"],
                 //[ "M.CdChamada", "s", "=", $post->shipment_code],
-                [ "M.DtReferencia", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]],
+                [ "M.DtReferencia", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
                // [ "M.CdChamada", "s", "=", $post->company_id],
 
             ]
@@ -78,6 +78,8 @@ switch( $get->action )
         ]
     ]);
 
+        //var_dump($documents); vazio
+
         $ret = [];
         foreach($documents as $document){
             $ret[] = (Object)[
@@ -89,8 +91,8 @@ switch( $get->action )
             ];
         }
 
+        //var_dump($ret); vazio
         Json::get($httpStatus[200], $ret);
         break;
-
 }
 ?>

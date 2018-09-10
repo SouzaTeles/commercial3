@@ -1,0 +1,64 @@
+.panel .panel-tools
+{
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    position: fixed;
+    background-color: #fff;
+}
+
+.panel .panel-tools .action
+{
+    color: #fff;
+    float: left;
+    height: 60px;
+    padding: 12px;
+    font-size: 26px;
+    text-align: center;
+    margin-right: 48px;
+}
+
+.panel .panel-tools .action:before
+{
+    top: 0;
+    width: 0;
+    height: 0;
+    content: "";
+    position: absolute;
+    display: inline-block;
+    vertical-align: middle;
+    border-right: 15px solid transparent;
+    border-bottom: 0px solid transparent;
+}
+
+/* ponta inclinada: posição */
+.panel .panel-tools .action.new:before
+{
+    left: 153px;
+    border-top: 60px solid #379939;
+    border-left: 0px solid #379939;
+}
+
+.panel .panel-tools .action.edit:before
+{
+    left: 217px;
+    border-top: 30px solid #337be0;
+    border-left: 30px solid #337be0;
+}
+
+.panel .panel-tools button
+{
+    float: left;
+    padding: 8px;
+    font-size: 22px;
+    margin: 14px 5px 8px;
+}
+
+.panel .panel-tools .pipe
+{
+    width: 2px;
+    float: left;
+    height: 20px;
+    margin: 24px 5px 16px;
+}

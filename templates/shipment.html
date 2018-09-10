@@ -1,0 +1,109 @@
+<ul class="nav nav-tabs hidden">
+    <li><a data-toggle="tab" href="#tab-1-1"></a></li>
+    <li><a data-toggle="tab" href="#tab-1-2"></a></li>
+</ul>
+<div class="tab-content tab-content-clean">
+    <div id="tab-1-1" class="tab-pane fade in active">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="filter">
+                    <form id="form-shipment-filter">
+                        <div class="row">
+                            <!-- Codigo do Mapa -->
+                            <div class="col-xs-12 col-sm-2">
+                                <div class="form-group">
+                                    <label for="shipment_code">Código do Mapa</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="shipment_code" placeholder="Código do Mapa" data-to-mask="code"/>
+                                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Campo Empresa -->
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="form-group">
+                                    <label for="shipment_company_id">Empresa</label>
+                                    <select class="selectpicker show-tick" id="shipment_company_id" title="-- Selecione a Empresa --"></select>
+                                </div>
+                            </div>
+                            <!-- Campo Motorista -->
+                            <div class="col-xs-12 col-sm-4">
+                                <div class="form-group">
+                                    <label for="shipment_driver_name">Motorista</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="shipment_driver_name" placeholder="Motorista"/>
+                                        <span id="button-shipment-seller-remove" class="input-group-addon"><i class="fa fa-trash-o"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Data Inicial -->
+                            <div class="col-xs-12 col-sm-2">
+                                <div class="form-group">
+                                    <label for="shipment_start_date">Data Inicial</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input data-to-mask="date" type="text" class="form-control" id="shipment_start_date"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Data Final -->
+                            <div class="col-xs-12 col-sm-2">
+                                <div class="form-group">
+                                    <label for="shipment_end_date">Data Final</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input data-to-mask="date" type="text" class="form-control" id="shipment_end_date"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Pesquisa Rapida -->
+                            <div class="col-xs-12 col-sm-2">
+                                <div class="form-group">
+                                    <label for="shipment_search">Pesquisa Rápida</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="shipment_search" />
+                                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Botão Atualizar -->
+                            <div class="col-xs-12 col-sm-2">
+                                <label>&nbsp;&nbsp;</label>
+                                <button type="button" id="btn-filter" class="btn btn-block btn-blue">
+                                    <i class="fa fa-refresh"></i> Atualizar
+                                </button>
+                            </div>
+                            <!-- Botão novo Mapa -->
+                            <div class="col-xs-12 col-sm-2">
+                                <label>&nbsp;&nbsp;</label>
+                                <button type="button" id="button-shipment-new" class="btn btn-block btn-green"{if $login->access->shipment->add->value == 'N'} disabled{/if}>
+                                    <i class="fa fa-plus"></i> Novo Mapa
+                                </button>
+                            </div>
+                            <!-- Logo -->
+                            <!--div class="col-xs-12 col-sm-2">
+                                <div class="logo-logistics">
+                                    <img src="{$config->uri->uri_public}images/compass.png" />
+                                </div>
+                            </div-->
+                        </div>
+                    </form>
+                </div>
+                <table id="table-shipment-docs" class="table table-custom table-actions">
+                    <thead>
+                    <tr>
+                        <th><!--Status--></th>
+                        <th>Código</th>
+                        <th>Rota</th>
+                        <th>Data</th>
+                        <th>Motorista</th>
+                        <th>Data</th>
+                        <th><!--Opções--></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="panel-tools bg-white box-shadow">
+    {if empty($smarty.get.budget_id)}<div class="action new bg-green txt-white"><i class="fa fa-plus"></i> Novo Mapa</div>{/if}
+    {if !empty($smarty.get.budget_id)}<div class="action edit bg-blue txt-white"><i class="fa fa-edit"></i> Editar orçamento</div>{/if}
+    <button data-action="new" data-toggle="tooltip" data-placement="bottom" title="Novo Mapa" class="btn btn-empty"><i class="fa fa-file-o txt-gray-dark"></i></button>
+    <button disabled data-action="clone" data-toggle="tooltip" data-placement="bottom" title="Duplicar" class="btn btn-empty"><i class="fa fa-files-o txt-orange"></i></button>
+    <button disabled data-action="recover" data-toggle="tooltip" data-placement="bottom" title="Reabrir" class="btn btn-empty"><i class="fa fa-unlock txt-orange"></i></button>
+    <button disabled data-action="save" data-toggle="tooltip" data-placement="bottom" title="Salvar" class="btn btn-empty"><i class="fa fa-floppy-o txt-blue"></i></button>
+    <button data-action="close" data-toggle="tooltip" data-placement="bottom" title="Fechar" class="btn btn-empty"><i class="fa fa-times txt-red"></i></button>
+    <div class="pipe bg-gray-light"></div>
+    <button disabled data-action="print" data-toggle="tooltip" data-placement="bottom" title="Imprimir" class="btn btn-empty"><i class="fa fa-print txt-blue-light"></i></button>
+    <button disabled data-action="pdf" data-toggle="tooltip" data-placement="bottom" title="Gerar PDF" class="btn btn-empty"><i class="fa fa-file-pdf-o txt-red-light"></i></button>
+    <button disabled data-action="mail" data-toggle="tooltip" data-placement="bottom" title="Enviar por E-mail" class="btn btn-empty"><i class="fa fa-envelope-o txt-blue-dark"></i></button>
+    <div class="pipe bg-gray-light"></div>
+    <button disabled data-action="seller" data-toggle="tooltip" data-placement="bottom" title="Informar o Vendedor" class="btn btn-empty"><i class="fa fa-id-badge txt-orange"></i></button>
+    <div class="pipe bg-gray-light"></div>
+    <button disabled data-action="item" data-toggle="tooltip" data-placement="bottom" title="Localizar produto" class="btn btn-empty"><i class="fa fa-cube txt-orange-dark"></i></button>
+    <button disabled data-action="client" data-toggle="tooltip" data-placement="bottom" title="Localizar cliente" class="btn btn-empty"><i class="fa fa-user txt-green"></i></button>
+    <button disabled data-action="clientInfo" data-toggle="tooltip" data-placement="bottom" title="Informações do cliente" class="btn btn-empty"><i class="fa fa-id-card-o txt-orange"></i></button>
+    <button disabled data-action="note" data-toggle="tooltip" data-placement="bottom" title="Observações" class="btn btn-empty"><i class="fa fa-file-o txt-orange-light"></i></button>
+    <!--<button disabled data-action="discount" data-toggle="tooltip" data-placement="bottom" title="Aplicar desconto geral" class="btn btn-empty"><i class="fa fa-usd txt-brown"></i></button>-->
+    <div class="pipe bg-gray-light"></div>
+    <button disabled data-action="delivery" data-toggle="tooltip" data-placement="bottom" title="Opção de Entrega" class="btn btn-empty"><i class="fa fa-truck txt-blue"></i></button>
+</div>
