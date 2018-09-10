@@ -60,17 +60,17 @@
             ],
             "no_update" => 1
         ]);
-
+        
         Model::insert( $commercial, (Object)[
             "table" => "UserSession",
             "fields" => [
                 [ "user_id", "s", $user->user_id ],
                 [ "user_session_value", "s", session_id() ],
                 [ "user_session_origin", "s", "D" ],
-                [ "log_app_version", "s", @$headers["AppVersion"] ? $headers["AppVersion"] : NULL ],
-                [ "log_host_ip", "s", @$headers["HostIP"] && $headers["HostIP"] != "null" ? $headers["HostIP"] : NULL ],
-                [ "log_host_name", "s", @$headers["HostName"] ? $headers["HostName"] : NULL ],
-                [ "log_platform", "s", @$headers["Platform"] ? $headers["Platform"] : NULL ],
+                [ "user_session_app_version", "s", @$headers["AppVersion"] ? $headers["AppVersion"] : NULL ],
+                [ "user_session_host_ip", "s", @$headers["HostIP"] && $headers["HostIP"] != "null" ? $headers["HostIP"] : NULL ],
+                [ "user_session_host_name", "s", @$headers["HostName"] ? $headers["HostName"] : NULL ],
+                [ "user_session_platform", "s", @$headers["Platform"] ? $headers["Platform"] : NULL ],
                 [ "user_session_date", "s", date("Y-m-d H:i:s") ],
             ]
         ]);
