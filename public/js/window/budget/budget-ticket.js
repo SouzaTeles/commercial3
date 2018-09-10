@@ -11,7 +11,7 @@ Ticket = {
     budget_id: global.url.searchParams.get('budget_id'),
     events: function(){
         $(document).ready(function(){
-            // window.print();
+            window.print();
         });
         $('button').click(function(){
             window.print();
@@ -22,15 +22,10 @@ Ticket = {
             url: global.uri.uri_public_api + 'budget.php?action=get',
             data: {
                 budget_id: Ticket.budget_id,
-                get_budget_items: 1,
                 get_budget_person: 1,
-                get_person_address: 1,
-                get_person_address_contact: 1,
-                get_budget_address: 1,
                 get_budget_seller: 1,
                 get_budget_payments: 1,
-                get_budget_company: 1,
-                get_budget_term: 1
+                get_budget_company: 1
             },
             dataType: 'json'
         },function(budget){

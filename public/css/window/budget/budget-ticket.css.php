@@ -16,7 +16,7 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
-.ticket .company
+.ticket .company-name
 {
     font-size: 18px;
     font-weight: bold;
