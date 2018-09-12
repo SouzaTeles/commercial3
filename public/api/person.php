@@ -274,6 +274,24 @@
 
         break;
 
+        case "electronWebcam":
+
+            if( !@$post->person_id || !@$post->image ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $file = PATH_FILES . "person/{$post->person_id}.jpeg";
+            file_put_contents( $file, pack('H*',$post->image) );
+
+            Json::get( $headerStatus[200], (Object)[
+                "image" => URI_FILES . "person/{$post->person_id}.jpeg?" . rand(100000,999999)
+            ]);
+
+        break;
+
     }
 
 ?>

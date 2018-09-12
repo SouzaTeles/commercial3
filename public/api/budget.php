@@ -127,7 +127,8 @@
                 $item = (Object)$item;
                 $fields = [
                     ["external_id", "s", @$item->external_id ? $item->external_id : NULL],
-                    ["price_id", "s", $item->price_id],
+                    ["authorization_id", "i", @$item->authorization_id ? $item->authorization_id : NULL],
+                    ["price_id", "s", $item>price_id],
                     ["budget_item_quantity", "d", $item->budget_item_quantity],
                     ["budget_item_value", "d", $item->budget_item_value],
                     ["budget_item_value_unitary", "d", $item->budget_item_value_unitary],
@@ -496,6 +497,7 @@
                     "fields" => [
                         ["budget_id", "i", $budget_id],
                         ["external_id", "s", @$item->external_id ? $item->external_id : NULL],
+                        ["authorization_id", "i", @$item->authorization_id ? $item->authorization_id : NULL],
                         ["product_id", "s", $item->product_id],
                         ["price_id", "s", $item->price_id],
                         ["budget_item_quantity", "d", $item->budget_item_quantity],

@@ -37,7 +37,7 @@ ModalProductSearch = {
             width: '100%',
             on: '<i class="fa fa-check"></i> Somente ativos',
             off: '<i class="fa fa-times"></i> Ativos e inativos',
-            onstyle: 'custom',
+            onstyle: 'blue',
             offstyle: 'gray-dark'
         });
         $('#button-selected').click(function(){

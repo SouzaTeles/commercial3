@@ -843,6 +843,61 @@ Item = {
             $('#product_code').focus();
         },200);
     },
+    discountAuthorization: function(params){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-discount-authorization',
+            data: {
+                item_id: Item.item.product_id,
+                item_name: Item.item.product_name,
+                item_quantity: Item.item.budget_item_quantity,
+                item_value_total: (Item.item.budget_item_quantity * Item.item.budget_item_value_total) - params.value,
+                item_value_discount: params.value,
+                item_max_discount: Item.item.product_discount,
+                item_aliquot_discount: params.aliquot
+            },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'small',
+                icon: 'fa-lock',
+                id: 'modal-discount-authorization',
+                class: 'modal-discount-authorization',
+                title: 'Autorização de Desconto',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    class: 'pull-left btn-red',
+                    title: 'Cancelar'
+                },{
+                    icon: 'fa-unlock',
+                    title: 'Autorizar',
+                    class: 'btn-green',
+                    unclose: true,
+                    action: function(){
+                        ModalDiscountAuthorization.authorize();
+                    }
+                }],
+                shown: function(){
+                    $('#modal_user_user').focus();
+                },
+                hidden: function(){
+                    if( Item.item.budget_item_value_discount > 0 ){
+                        $('#button-budget-item-add').focus();
+                    } else {
+                        $('#budget_item_aliquot_discount').focus().select();
+                    }
+                }
+            });
+        });
+    },
+    discountAliquot: function(budget_item_aliquot_discount){
+        Item.item.budget_item_aliquot_discount = budget_item_aliquot_discount;
+        Item.item.budget_item_value_discount = parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2));
+        Item.item.budget_item_aliquot_discount = (Item.item.budget_item_value_discount / (Item.item.budget_item_value ? Item.item.budget_item_value : 1)) * 100;
+        Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
+        $('#button-budget-item-add').focus().select();
+        Item.data2form();
+    },
     beforeEdit: function(key){
         var item = Budget.budget.items[key];
         if( !item.prices ){
@@ -927,53 +982,6 @@ Item = {
             }]
         });
     },
-    discountAliquot: function(budget_item_aliquot_discount){
-        if( budget_item_aliquot_discount <= Item.item.product_discount ) {
-            Item.item.budget_item_aliquot_discount = budget_item_aliquot_discount;
-            Item.item.budget_item_value_discount = parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2));
-            Item.item.budget_item_aliquot_discount = (Item.item.budget_item_value_discount / (Item.item.budget_item_value ? Item.item.budget_item_value : 1)) * 100;
-            Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
-            $('#button-budget-item-add').focus().select();
-            Item.data2form();
-        } else {
-            $('#budget_item_aliquot_discount').val($('#budget_item_aliquot_discount').attr('data-value'));
-            global.modal({
-                icon: 'fa-warning-triangle',
-                title: 'Informação',
-                html: '<p>O desconto máximo do produto é de ' + global.float2Br(Item.item.product_discount) + '%.</p>',
-                buttons: [{
-                    icon: 'fa-check',
-                    title: 'Ok'
-                }],
-                hidden: function(){
-                    $('#budget_item_aliquot_discount').focus().select();
-                }
-            });
-        }
-    },
-    discountValue: function(budget_item_value_discount){
-        if( budget_item_value_discount <= ((Item.item.product_discount/100)*Item.item.budget_item_value) ){
-            Item.item.budget_item_value_discount = budget_item_value_discount;
-            Item.item.budget_item_aliquot_discount = (Item.item.budget_item_value_discount / (Item.item.budget_item_value ? Item.item.budget_item_value : 1)) * 100;
-            Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
-            $('#button-budget-item-add').focus().select();
-            Item.data2form();
-        } else {
-            $('#budget_item_value_discount').val($('#budget_item_value_discount').attr('data-value'));
-            global.modal({
-                icon: 'fa-warning-triangle',
-                title: 'Informação',
-                html: '<p>O desconto máximo do produto é de R$ ' + global.float2Br(((Item.item.product_discount/100)*Item.item.budget_item_value)) + '.</p>',
-                buttons: [{
-                    icon: 'fa-check',
-                    title: 'Ok'
-                }],
-                hidden: function(){
-                    $('#budget_item_value_discount').focus().select();
-                }
-            });
-        }
-    },
     edit: function(key){
         var item = Budget.budget.items[key];
         Budget.budget.budget_value -= item.budget_item_value_total;
@@ -989,7 +997,7 @@ Item = {
         $('#product_code, #product_name').on('focus',function(){
             Budget.section = 1;
         });
-        $('#product_code').keypress(function (e) {
+        $('#product_code').on('keyup',function (e) {
             var keycode = e.keyCode || e.which;
             if (keycode == '13' && $(this).val().length) {
                 e.preventDefault();
@@ -1057,7 +1065,7 @@ Item = {
             $('#budget_item_value_total').val('R$ ' + global.float2Br(Item.item.budget_item_value_total));
             $('#budget_item_quantity').focus().select();
         });
-        $('#budget_item_quantity').keypress(function(e){
+        $('#budget_item_quantity').on('keyup',function(e){
             var keycode = e.keyCode || e.which;
             if( keycode == '13' && $(this).val().length ){
                 var budget_item_quantity = $(this).val().length ? ( Item.item.unit_type == 'F' ? parseFloat(global.br2Float($(this).val())) : parseInt($(this).val()) ) : $(this).attr('data-value');
@@ -1070,31 +1078,50 @@ Item = {
                 Item.quantity(budget_item_quantity);
             }
         });
-        $('#budget_item_aliquot_discount').keypress(function(e) {
+        $('#budget_item_aliquot_discount').on('keyup',function(e) {
             var keycode = e.keyCode || e.which;
-            if (keycode == '13' && $(this).val().length) {
-                var budget_item_aliquot_discount = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-                Item.discountAliquot(budget_item_aliquot_discount);
+            if (keycode == '13') {
+                if( $(this).val().length ){
+                    var budget_item_aliquot_discount = global.br2Float($(this).val());
+                    if( budget_item_aliquot_discount <= Item.item.product_discount ){
+                        $(this).attr('data-value',budget_item_aliquot_discount);
+                        Item.item.authorization_id = null;
+                        Item.discountAliquot(budget_item_aliquot_discount);
+                    } else {
+                        Item.discountAuthorization({
+                            aliquot: budget_item_aliquot_discount,
+                            value: parseFloat(((budget_item_aliquot_discount / 100) * (Item.item.budget_item_quantity*Item.item.budget_item_value)).toFixed(2))
+                        });
+                    }
+                } else {
+                    $('#button-budget-item-add').focus();
+                }
             }
         }).blur(function(){
-            var budget_item_aliquot_discount = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-            $(this).val(global.float2Br(budget_item_aliquot_discount,2,4));
-            if( budget_item_aliquot_discount != Item.item.budget_item_aliquot_discount ){
-                Item.discountAliquot(budget_item_aliquot_discount);
-            }
+            $(this).val(global.float2Br($(this).attr('data-value')));
         });
-        $('#budget_item_value_discount').keypress(function(e) {
+        $('#budget_item_value_discount').on('keyup',function(e){
             var keycode = e.keyCode || e.which;
-            if (keycode == '13' && $(this).val().length) {
-                var budget_item_value_discount = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-                Item.discountValue(budget_item_value_discount);
+            if (keycode == '13'){
+                if( $(this).val().length ){
+                    var budget_item_value_discount = global.br2Float($(this).val());
+                    var budget_item_aliquot_discount = parseFloat(((budget_item_value_discount/(Item.item.budget_item_quantity*Item.item.budget_item_value_unitary))*100).toFixed(4));
+                    if( budget_item_aliquot_discount <= Item.item.product_discount ){
+                        $(this).attr('data-value',budget_item_value_discount);
+                        Item.item.authorization_id = null;
+                        Item.discountAliquot(budget_item_aliquot_discount);
+                    } else {
+                        Item.discountAuthorization({
+                            aliquot: budget_item_aliquot_discount,
+                            value: parseFloat(((budget_item_aliquot_discount / 100) * (Item.item.budget_item_quantity*Item.item.budget_item_value)).toFixed(2))
+                        });
+                    }
+                } else {
+                    $('#button-budget-item-add').focus();
+                }
             }
         }).blur(function(){
-            var budget_item_value_discount = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-            $(this).val(global.float2Br(budget_item_value_discount));
-            if( budget_item_value_discount != Item.item.budget_item_value_discount ){
-                Item.discountValue(budget_item_value_discount);
-            }
+            $(this).val(global.float2Br($(this).attr('data-value')));
         });
         $('#button-budget-item-add').click(function(){
             if( Item.item.budget_item_quantity == 0 ){
@@ -1114,7 +1141,7 @@ Item = {
             }
             Item.add();
         });
-        $('#budget_value_addition').keypress(function(e) {
+        $('#budget_value_addition').on('keyup',function(e) {
             var keycode = e.keyCode || e.which;
             if (keycode == '13' && $(this).val().length) {
                 var budget_value_addition = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
@@ -1127,7 +1154,7 @@ Item = {
                 Item.totalAddition(budget_value_addition);
             }
         });
-        $('#budget_value_discount').keypress(function(e) {
+        $('#budget_value_discount').on('keyup',function(e) {
             var keycode = e.keyCode || e.which;
             if (keycode == '13' && $(this).val().length) {
                 var budget_value_discount = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
@@ -1259,7 +1286,8 @@ Item = {
             budget_item_aliquot_discount: 0,
             budget_item_value_discount: 0,
             budget_item_value_total: 0,
-            prices: []
+            prices: [],
+            user_authorization: null
         };
     },
     quantity: function(budget_item_quantity){
@@ -1283,11 +1311,12 @@ Item = {
                 html: html,
                 buttons: [{
                     icon: 'fa-times',
-                    class: 'pull-left',
+                    class: 'pull-left btn-red',
                     title: 'Cancelar'
                 },{
                     icon: 'fa-plus',
                     title: 'Adicionar Produtos',
+                    class: 'btn-green',
                     unclose: true,
                     action: function(){
                         $.each(ModalProductSearch.selected,function(key,item){
@@ -1666,6 +1695,13 @@ PersonImage = {
         $('#button-image-person-remove').click(function(){
             PersonImage.del();
         });
+        if( typeof(Electron) == 'object' ){
+            ipcRenderer.on('taken-photo',(event, response) => {
+                if( !!response.fileImage ){
+                    PersonImage.electronWebcam(response.fileImage);
+                }
+            });
+        }
     },
     show: function(){
         if( !!Person.person.image ) {
@@ -1697,36 +1733,22 @@ PersonImage = {
         $('#file-image-person').filestyle('clear');
     },
     webcam: function(){
-        global.post({
-            url: global.uri.uri_public_api + 'modal.php?template=modal-web-cam',
-            dataType: 'html'
-        },function(html) {
-            global.modal({
-                icon: 'fa-camera',
-                title: 'Nova foto',
-                html: html,
-                buttons: [{
-                    icon: 'fa-times',
-                    title: 'Cancelar',
-                    class: 'pull-left'
-                }, {
-                    icon: 'fa-check',
-                    title: 'Usar Imagem',
-                    disabled: true,
-                    action: function () {
-
-                    }
-                }],
-                load: function (){
-                    Electron.showWebcam({
-                        'selector': '#mycam'
-                    });
-                    // webcam.load({
-                    //     'selector': '#my-camera'
-                    // });
-                }
-            });
+        ipcRenderer.send('take-photo',{
+            open: false
         });
+    },
+    electronWebcam: function(fileImage){
+        global.post({
+            url: global.uri.uri_public_api + 'person.php?action=electronWebcam',
+            data: {
+                person_id: Person.person.person_id,
+                image: fileImage
+            },
+            dataType: 'json'
+        },function(data){
+            Person.person.image = data.image;
+            PersonImage.show();
+        })
     }
 };
 

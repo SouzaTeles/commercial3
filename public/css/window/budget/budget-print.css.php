@@ -59,6 +59,8 @@ th, td
 .print-order
 {
     padding: 20px;
+    margin: 0 auto;
+    max-width: 780px;
 }
 
 .print-order .products table tr td,

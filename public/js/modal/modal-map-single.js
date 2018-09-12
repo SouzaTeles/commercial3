@@ -5,18 +5,13 @@ $(document).ready(function(){
 ModalMapSingle = {
     point: {},
     get: function(address){
-        console.log(address);
         global.post({
-            url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyA4we-5aCbXOqPvzcbUJW49x46LXnhwdbY&address=' + address.address_cep,
+            url: global.uri.uri_public_api + 'address.php?action=geocode',
+            data: address,
             dataType: 'json'
-        },function(data){
-            if( data.results.length ){
-                ModalMapSingle.point = data.results[0].geometry.location;
-                ModalMapSingle.show();
-            } else {
-                global.unLoader();
-                global.validateMessage('O google maps não encontrou o CEP <b>' + address.address_cep + '</b>.');
-            }
+        },function(point){
+            ModalMapSingle.point = point;
+            ModalMapSingle.show();
         });
     },
     show: function(){

@@ -351,6 +351,64 @@
 
         break;
 
+        case "discountItemAuthorization":
+
+            if( !@$post->user_user || !@$post->user_pass || !@$post->data ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado"
+                ]);
+            }
+
+            $post->data = (Object)$post->data;
+
+            $user = Model::get( $commercial, (Object)[
+                "tables" => [ "[User]" ],
+                "fields" => [
+                    "user_id",
+                    "user_name",
+                    "user_active",
+                    "user_max_discount=CAST(user_max_discount AS FLOAT)"
+                ],
+                "filters" => [
+                    [ "user_user", "s", "=", $post->user_user ],
+                    [ "user_pass", "s", "=", md5($post->user_pass) ]
+                ]
+            ]);
+
+            if( !@$user ){
+                headerResponse((Object)[
+                    "code" => 404,
+                    "message" => "Login e/ou senha incorretos."
+                ]);
+            }
+
+            if( $user->user_active == "N" ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O usuário está inativo."
+                ]);
+            }
+
+            $user->user_max_discount = (float)$user->user_max_discount;
+            $post->data->item_aliquot_discount = (float)$post->data->item_aliquot_discount;
+
+            if( $user->user_max_discount < $post->data->item_aliquot_discount ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Desconto acima do permitido."
+                ]);
+            }
+
+            $user->authorization_id = postLog((Object)[
+                "user_id" => $user->user_id,
+                "item_id" => $post->data->item_id
+            ]);
+
+            Json::get( $headerStatus[200], $user );
+
+        break;
+
 	}
 
 ?>

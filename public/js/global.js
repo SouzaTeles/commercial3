@@ -123,6 +123,7 @@ try {
     var mainWindow = remote.getGlobal('mainWindow');
     var children = remote.getGlobal('children');
     var Electron = remote.getGlobal('Electron');
+    var ipcRenderer = require('electron').ipcRenderer;
 } catch(e){
 
 }

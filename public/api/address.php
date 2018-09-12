@@ -54,4 +54,42 @@
 
         break;
 
+        case "geocode":
+
+            if( !@$post->address_cep ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "Parâmetro GET não localizado."
+                ]);
+            }
+
+            $url = "https://maps.google.com/maps/api/geocode/json?key=AIzaSyA4we-5aCbXOqPvzcbUJW49x46LXnhwdbY&address={$post->address_cep}";
+            $google = file_get_contents($url);
+            $google = json_decode($google, TRUE);
+
+            if( !@$google['results'][0] ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "O google não encontrou as coordenadas para o cep: {$post->address_cep}."
+                ]);
+            }
+
+            $result = $google['results'][0];
+            if( @$result['geometry']['location'] ){
+                $address_lat = $result['geometry']['location']['lat'];
+                $address_lng = $result['geometry']['location']['lng'];
+            } else {
+                headerResponse((Object)[
+                    "code" => 417,
+                    "O google não encontrou as coordenadas para o cep: {$post->address_cep}."
+                ]);
+            }
+
+            Json::get( $headerStatus[200], (Object)[
+                "lat" => $address_lat,
+                "lng" => $address_lng
+            ]);
+
+        break;
+
     }

@@ -59,6 +59,9 @@ th, td
 .print-order
 {
     padding: 20px;
+    margin: 0 auto;
+    max-width: 780px;
+    background-color: #fff;
 }
 
 .print-order .products table tr td,
@@ -188,7 +191,7 @@ button.btn
     .container,
     .print-order
     {
-        padding: 0;
+        padding: 0 !important;
     }
 
     button.btn

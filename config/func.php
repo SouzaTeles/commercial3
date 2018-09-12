@@ -4,7 +4,7 @@
     {
         GLOBAL $commercial, $login, $post, $get, $headers, $config;
 
-        $log_id = Model::insert($commercial,(Object)[
+        $log_id = (int)Model::insert($commercial,(Object)[
             "table" => "[Log]",
             "fields" => [
                 [ "user_id", "s", @$params->user_id ? $params->user_id : $login->user_id ],
@@ -26,6 +26,8 @@
             "post" => $post,
             "headers" => $headers
         ]));
+
+        return $log_id;
     }
 
     function email( $params )

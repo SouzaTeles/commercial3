@@ -1,7 +1,9 @@
 $(document).ready(function(){
 
     Pdf.getBudget();
-    global.unLoader();
+    setTimeout(function(){
+        global.unLoader();
+    },1000);
 
 });
 
@@ -11,11 +13,17 @@ Pdf = {
     budget_id: global.url.searchParams.get('budget_id'),
     events: function(){
         $(document).ready(function(){
-            //window.print();
+            Pdf.pdf();
         });
         $('button').click(function(){
-            //window.print();
+            Pdf.pdf();
         });
+        if( typeof(Electron) == 'object' ){
+            ipcRenderer.on('wrote-pdf',(event, response) => {
+                console.log(response);
+                global.unLoader();
+            });
+        }
     },
     getBudget: function(){
         global.post({
@@ -60,6 +68,21 @@ Pdf = {
                     window.close();
                 }
             });
+        }
+    },
+    pdf: function(){
+        global.onLoader();
+        if( typeof(Electron) == 'object' ){
+            ipcRenderer.send('print-to-pdf',{
+                open: true
+            });
+        } else{
+            var pdf = new jsPDF('p', 'in', 'a4');
+            pdf.internal.scaleFactor = 30;
+            pdf.addHTML($('.print-order')[0], function(){
+                pdf.save(parseInt(Math.random().toString().replace('0.','')) + '.pdf');
+            });
+            global.unLoader();
         }
     },
     showBudget: function(){
