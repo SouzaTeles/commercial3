@@ -351,6 +351,7 @@
 
         break;
 
+        case "creditAuthorization":
         case "discountItemAuthorization":
 
             if( !@$post->user_user || !@$post->user_pass || !@$post->data ){
@@ -368,6 +369,7 @@
                     "user_id",
                     "user_name",
                     "user_active",
+                    "user_credit_authorization",
                     "user_max_discount=CAST(user_max_discount AS FLOAT)"
                 ],
                 "filters" => [
@@ -390,19 +392,27 @@
                 ]);
             }
 
-            $user->user_max_discount = (float)$user->user_max_discount;
-            $post->data->item_aliquot_discount = (float)$post->data->item_aliquot_discount;
-
-            if( $user->user_max_discount < $post->data->item_aliquot_discount ){
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Desconto acima do permitido."
-                ]);
+            if( $get->action == "creditAuthorization" ) {
+                if ($user->user_credit_authorization == "N") {
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "O usuário não possui permissão para liberação de crédito."
+                    ]);
+                }
+            } else {
+                $user->user_max_discount = (float)$user->user_max_discount;
+                $post->data->item_aliquot_discount = (float)$post->data->item_aliquot_discount;
+                if ($user->user_max_discount < $post->data->item_aliquot_discount) {
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "Desconto acima do permitido."
+                    ]);
+                }
             }
 
             $user->authorization_id = postLog((Object)[
                 "user_id" => $user->user_id,
-                "item_id" => $post->data->item_id
+                "item_id" => @$post->data->item_id ? $post->data->item_id : NULL
             ]);
 
             Json::get( $headerStatus[200], $user );

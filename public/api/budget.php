@@ -537,6 +537,14 @@
                 }
             }
 
+            if( @$budget->authorization ){
+                Model::update($commercial,(Object)[
+                    "table" => "[Log]",
+                    "fields" => [[ "log_item_id", "s", $budget_id ]],
+                    "filters" => [[ "log_id", "i", "in", $budget->authorization ]]
+                ]);
+            }
+
             $ret = (Object)[
                 "budget_id" => $budget_id,
                 "budget_code" => substr("00000{$budget_id}", -6),

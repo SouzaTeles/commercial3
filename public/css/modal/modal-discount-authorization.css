@@ -1,10 +1,10 @@
-.modal .modal-content .modal-body .modal-box,
-.modal .modal-content .modal-body .modal-box b
+.modal-discount-authorization .modal-content .modal-body .modal-box,
+.modal-discount-authorization .modal-content .modal-body .modal-box b
 {
     font-size: 16px;
 }
 
-.modal .modal-content .modal-body form
+.modal-discount-authorization .modal-content .modal-body form
 {
     margin-top: 10px;
 }

@@ -507,7 +507,8 @@ Budget = {
                 items: [],
                 payments: [],
                 person: {},
-                export: null
+                export: null,
+                authorization: []
             };
             Item.init();
             Person.init();
@@ -2142,8 +2143,69 @@ Payment = {
             }]
         });
     },
+    creditAuthorization: function(params){
+        params.image = Person.person.image;
+        params.person_id = Person.person.person_id;
+        params.person_code = Person.person.person_code;
+        params.person_name = Person.person.person_name;
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-credit-authorization',
+            data: params,
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'small',
+                icon: 'fa-lock',
+                id: 'modal-credit-authorization',
+                class: 'modal-credit-authorization',
+                title: 'Autorização de Crédito',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    class: 'pull-left btn-red',
+                    title: 'Cancelar'
+                },{
+                    icon: 'fa-unlock',
+                    title: 'Autorizar',
+                    class: 'btn-green',
+                    unclose: true,
+                    action: function(){
+                        ModalCreditAuthorization.authorize();
+                    }
+                }],
+                shown: function(){
+                    $('#modal_user_user').focus();
+                }
+            });
+        });
+    },
     check: function(){
-        Budget.submit();
+        if( !Budget.budget.export ){
+            Budget.submit();
+            return;
+        }
+        var deferred = 0;
+        $.each(Budget.budget.payments,function(key,payment){
+            if( global.config.credit.authorized_modality_id.indexOf(payment.modality_id) == -1 ){
+                deferred += payment.budget_payment_value;
+            }
+        });
+        if( deferred > 0 ){
+            var debit_day_limit = parseInt(global.config.credit.debit_day_limit);
+            if( Person.person.credit_limit.delay > debit_day_limit ){
+                Payment.creditAuthorization({
+                    reason: 1,
+                    message: 'O cliente possui títulos vencidos em aberto por mais de ' + debit_day_limit + ' dias.'
+                });
+            } else if( deferred > Person.person.credit_limit.balance ){
+                Payment.creditAuthorization({
+                    reason: 2,
+                    message: 'O valor da compra ultrapassa o limite de crédito do cliente.'
+                });
+            }
+        } else {
+            Budget.submit();
+        }
     },
     del: function(key){
         global.modal({
@@ -2255,6 +2317,8 @@ Payment = {
                         icon: 'fa-check',
                         title: 'Sim',
                         action: function(){
+                            Term.init();
+                            Term.data2form();
                             if( !!Payment.modalities.length ){
                                 Payment.new();
                             } else {
@@ -2379,8 +2443,6 @@ Payment = {
                             agency_code: ModalPayment.payment.agency_code,
                             check_number: ModalPayment.payment.check_number
                         });
-                        Term.init();
-                        Term.data2form();
                         Payment.sort();
                         Payment.total();
                         $('#modal-payment').modal('hide');

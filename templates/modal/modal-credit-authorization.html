@@ -1,0 +1,32 @@
+<link href="{$URI_PUBLIC}css/modal/modal-credit-authorization.css?{$smarty.now}" rel="stylesheet" />
+<div class="modal-message"></div>
+<div class="modal-box">
+    <div class="cover"></div>
+    <div class="client-info"></div>
+    <button id="person-info" class="btn btn-orange"><i class="fa fa-info"></i></button>
+</div>
+<form id="form-credit-authorization">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="modal_user_user">Usuário</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" class="form-control" id="modal_user_user" name="modal_user_user">
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="modal_user_pass">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                    <input type="password" class="form-control" id="modal_user_pass" name="modal_user_pass">
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="hidden"></button>
+</form>
+<script src="{$URI_PUBLIC}js/modal/modal-credit-authorization.js?{$smarty.now}"></script>
+<script> ModalCreditAuthorization.data = {$smarty.post|@json_encode}; </script>

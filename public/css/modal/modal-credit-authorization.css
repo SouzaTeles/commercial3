@@ -1,0 +1,47 @@
+.modal-credit-authorization .modal-content .modal-body
+{
+    max-height: 304px;
+}
+
+.modal-credit-authorization .modal-content .modal-body .modal-message
+{
+    font-size: 18px;
+}
+
+.modal-credit-authorization .modal-body .modal-box
+{
+    display: table;
+    font-size: 15px;
+    position: relative;
+}
+
+.modal-credit-authorization .modal-body .modal-box .cover
+{
+    float: left;
+    width: 68px;
+    height: 82px;
+    border: 1px solid #666;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../../images/empty-image.png');
+}
+
+.modal-credit-authorization .modal-body .modal-box .client-info
+{
+    margin-left: 80px;
+}
+
+.modal-credit-authorization .modal-body .modal-box button
+{
+    top: -14px;
+    width: 32px;
+    height: 32px;
+    right: -14px;
+    position: absolute;
+    border-radius: 50% !important;
+}
+
+.modal-credit-authorization .modal-content .modal-body form
+{
+    margin-top: 10px;
+}

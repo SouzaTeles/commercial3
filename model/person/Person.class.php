@@ -195,6 +195,7 @@
                 }
 
                 $this->credit_limit = (Object)[
+                    "delay" => $delay,
                     "receivable" => $ret,
                     "expired_value" => $expired_value,
                     "expired_quantity" => $expired_quantity,
