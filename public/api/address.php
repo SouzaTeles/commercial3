@@ -92,4 +92,54 @@
 
         break;
 
+        case "main":
+
+            if( !@$post->person_id ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            Model::update($dafel,(Object)[
+                "table" => "PessoaEndereco",
+                "fields" => [[ "StEnderecoPrincipal", "s", "N" ]],
+                "filters" => [[ "IdPessoa", "s", "=", $post->person_id ]]
+            ]);
+
+            Model::update($dafel,(Object)[
+                "table" => "PessoaEndereco",
+                "fields" => [[ "StEnderecoPrincipal", "s", "S" ]],
+                "filters" => [
+                    [ "IdPessoa", "s", "=", $post->person_id ],
+                    [ "CdEndereco", "s", "=", $post->address_code ]
+                ]
+            ]);
+
+            postLog((Object)[
+                "parent_id" => $post->person_id
+            ]);
+
+            Json::get($headerStatus[200],(Object)[
+                "message" => "Endereço atualizado com sucesso!"
+            ]);
+
+        break;
+
+        case "getContactTypes":
+
+            $contactTypes = Model::getList($dafel,(Object)[
+                "tables" => [ "TipoContato (NoLock)" ],
+                "fields" => [
+                    "contact_type_id=IdTipoContato",
+                    "contact_type_code=CdChamada",
+                    "contact_type_name=NmTipoContato"
+                ],
+                "order" => "CdPrioridade"
+            ]);
+
+            Json::get( $headerStatus[200], $contactTypes );
+
+        break;
+
     }

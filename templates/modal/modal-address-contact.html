@@ -1,0 +1,4 @@
+<link href="{$URI_PUBLIC}css/modal/modal-address-contact.css?{$smarty.now}" rel="stylesheet" />
+<div class="contacts"></div>
+<script src="{$URI_PUBLIC}js/modal/modal-address-contact.js?{$smarty.now}"></script>
+<script> ModalAddressContact.contacts = {$smarty.post.contacts|@json_encode}; </script>

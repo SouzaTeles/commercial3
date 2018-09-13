@@ -120,6 +120,7 @@ Budget = {
                     '<li><a data-action="order" disabled="' + ( true || global.login.access.budget.order.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-powerpoint-o txt-orange"></i>Exportar Pedido</a></li>' +
                     '<li><a data-action="dav" disabled="' + ( true || global.login.access.budget.dav.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-text-o txt-blue"></i>Exportar Dav</a></li>' +
                     '<li><a data-action="info" disabled="true" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-info txt-gray"></i>Informações</a></li>' +
+                    '<li><a data-action="audit" disabled="true" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-shield txt-green"></i>Auditoria</a></li>' +
                     '<li class="divider"></li>' +
                     '<li><a data-action="del" disabled="' + ( true || budget.budget.status != 'O' || global.login.access.budget.del.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-trash-o txt-red"></i>Apagar</a></li>' +
                 '</ul>' +

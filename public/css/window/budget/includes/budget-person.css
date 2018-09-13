@@ -78,6 +78,7 @@
     margin: 2px;
 }
 
+.panel-person .panel-footer #button-budget-person-address-new,
 .panel-person .panel-footer #button-budget-person-address-back
 {
     display: none;

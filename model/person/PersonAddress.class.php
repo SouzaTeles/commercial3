@@ -42,7 +42,7 @@
 
             GLOBAL $dafel;
 
-            if( @$params["get_person_address_contact"] || @$_POST["get_person_address_contact"] )
+            if( @$params["get_address_contact"] || @$_POST["get_address_contact"] )
             {
                 $this->contacts = Model::getList($dafel,(Object)[
                     "top" => 1,

@@ -1,0 +1,56 @@
+.modal.modal-big .modal-dialog
+{
+    width: 940px;
+}
+
+.modal.modal-big .modal-content .modal-body
+{
+    max-height: 540px;
+}
+
+.modal-person-new .modal-content .modal-body .title
+{
+    border-left: 4px solid #4b6bee;
+    padding: 2px 0 0px 8px;
+    font-size: 16px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.modal-person-new .modal-content .modal-body hr
+{
+    margin: 4px 0 20px;
+}
+
+.modal-person-new .modal-content .modal-body .contacts
+{
+    width: 100%;
+    height: 174px;
+    overflow-y: auto;
+    border: 1px solid lightgray;
+}
+
+.modal-person-new .modal-content .modal-body .contacts .contact
+{
+    height: 28px;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-person-new .modal-content .modal-body .contacts .contact .contact-name,
+.modal-person-new .modal-content .modal-body .contacts .contact .contact-value
+{
+    width: 50%;
+    float: left;
+}
+
+.modal-person-new .modal-content .modal-body .contacts .contact .contact-name
+{
+    padding: 4px 6px;
+    text-align: right;
+}
+
+.modal-person-new .modal-content .modal-body .contacts .contact .contact-value input
+{
+    width: 100%;
+    height: 28px;
+}

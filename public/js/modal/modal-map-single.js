@@ -1,39 +1,55 @@
 $(document).ready(function(){
+    ModalMapSingle.show();
     global.onLoader();
 });
 
 ModalMapSingle = {
-    point: {},
-    get: function(address){
+    address: {},
+    get: function(){
         global.post({
             url: global.uri.uri_public_api + 'address.php?action=geocode',
-            data: address,
+            data: ModalMapSingle.address,
             dataType: 'json'
         },function(point){
-            ModalMapSingle.point = point;
+            ModalMapSingle.address.lat = point.lat;
+            ModalMapSingle.address.lng = point.lng;
             ModalMapSingle.show();
         });
     },
     show: function(){
+        if( !ModalMapSingle.address.lat || !ModalMapSingle.address.lng ){
+            ModalMapSingle.get();
+            return;
+        }
         map.init({
             mapTypeControl: false,
             zoom: 16,
             point: {
-                lat: parseFloat(ModalMapSingle.point.lat),
-                lng: parseFloat(ModalMapSingle.point.lng)
+                lat: parseFloat(ModalMapSingle.address.lat),
+                lng: parseFloat(ModalMapSingle.address.lng)
             },
+            infowindow: (
+                '<b>ENDEREÇO ' + (ModalMapSingle.address.address_code) + '</b><br/>' +
+                ModalMapSingle.address.address_type + ' ' +
+                ModalMapSingle.address.address_public_place + ', ' +
+                ModalMapSingle.address.address_number + '<br/>' +
+                ModalMapSingle.address.district_name + ' - ' +
+                ModalMapSingle.address.city_name + ' - ' +
+                ModalMapSingle.address.uf_id
+            ),
             selector: 'modal-map'
         });
         map.addMarker({
-            title: '@@@',
+            title: 'Endereço ' + (ModalMapSingle.address.address_code),
             point: {
-                lat: parseFloat(ModalMapSingle.point.lat),
-                lng: parseFloat(ModalMapSingle.point.lng)
-            }
+                lat: parseFloat(ModalMapSingle.address.lat),
+                lng: parseFloat(ModalMapSingle.address.lng)
+            },
+            infowindow: true
         });
-        // map.map.setZoom(16);
-        // map.map.setCenter(data.results[0].geometry.location);
-        // map.markers[0].setPosition(data.results[0].geometry.location);
+        setTimeout(function(){
+            new google.maps.event.trigger(map.markers[0], 'click');
+        },1000);
         global.unLoader();
     }
 };

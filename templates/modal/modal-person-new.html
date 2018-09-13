@@ -1,0 +1,51 @@
+<link href="{$URI_PUBLIC}css/modal/modal-person-new.css?{$smarty.now}" rel="stylesheet" />
+<div class="row">
+    <div class="col-xs-12">
+        <div class="title">Dados pessoais</div>
+    </div>
+    <div class="col-xs-12 col-sm-8">
+        <div class="form-group">
+            <label for="modal_person_name">Nome do Cliente</label>
+            <input type="text" class="form-control" id="modal_person_name" name="modal_person_name" placeholder="Nome do Cliente">
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="modal_person_short_name">Nome Curto</label>
+            <input type="text" class="form-control" id="modal_person_short_name" name="modal_person_short_name" placeholder="Nome Curto">
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="modal_person_type">Tipo</label>
+            <select class="selectpicker show-tick" id="modal_person_type" name="modal_person_type" title="-- Selecione o Tipo --">
+                <option selected value="F">Física</option>
+                <option value="J">Jurídica</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="modal_person_document">CFP</label>
+            <input type="text" class="form-control" id="modal_person_document" name="modal_person_document" data-to-mask="cpf"/>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="modal_person_gender">Sexo</label>
+            <select class="selectpicker show-tick" id="modal_person_gender" name="modal_person_gender" title="-- Sexo --">
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="modal_person_birth">Nascimento</label>
+            <input type="text" class="form-control" id="modal_person_birth" name="modal_person_birth" data-to-mask="date"/>
+        </div>
+    </div>
+    <div class="col-xs-12"><hr/></div>
+</div>
+{include file="{$PATH_TEMPLATES}includes/address.html"}
+<script src="{$URI_PUBLIC}js/modal/modal-person-new.js?{$smarty.now}"></script>

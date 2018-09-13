@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div class="title">Endereço</div>
+    </div>
+    <div class="col-xs-12 col-sm-2">
+        <div class="form-group">
+            <label for="modal_address_cep">CEP</label>
+            <div class="input-group">
+                <input autocomplete="off" type="text" class="form-control" id="modal_address_cep" name="modal_address_cep" placeholder="CEP" data-to-mask="cep">
+                <span class="btn btn-custom input-group-addon" id="button-address-cep-search"><i class="fa fa-search"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-2">
+        <div class="form-group">
+            <label for="modal_address_type">Tipo</label>
+            <select class="selectpicker show-tick" id="modal_address_type" name="modal_address_type" title="-- Tipo --"></select>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="modal_address_public_place">Logradouro</label>
+            <input placeholder="Rua" autocomplete="off" class="form-control" type="text" id="modal_address_public_place" name="modal_address_public_place" />
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-2">
+        <div class="form-group">
+            <label for="modal_address_number">Número</label>
+            <input placeholder="Número" autocomplete="off" class="form-control" type="text" id="modal_address_number" name="modal_address_number"/>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="modal_city_name">Cidade</label>
+            <input placeholder="Cidade" autocomplete="off" class="form-control" type="text" id="modal_city_name" name="modal_city_name"/>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="modal_district_name">Bairro</label>
+            <input placeholder="Bairro" autocomplete="off" class="form-control" type="text" id="modal_district_name" name="modal_district_name"/>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="modal_address_icms_type">Contribuição de ICMS</label>
+            <select class="selectpicker show-tick" id="modal_address_icms_type" name="modal_address_icms_type">
+                <option value="1">Contribuinte ICMS</option>
+                <option selected value="2">Contribuinte Isento</option>
+                <option value="9">Não Contribuinte</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="modal_address_ie">Inscrição Estadual</label>
+            <input readonly placeholder="Inscrição Estadual" class="form-control" type="text" id="modal_address_ie" name="modal_address_ie" value="ISENTO"/>
+        </div>
+    </div>
+    <div class="col-xs-12"><hr/></div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="title">Contatos</div>
+                <div id="modal-contacts" class="contacts"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="title">Observações</div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <textarea rows="8" class="form-control" id="modal_address_note" name="modal_address_note" placeholder="Observações do Endereço"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

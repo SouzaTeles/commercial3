@@ -1544,6 +1544,9 @@ Person = {
                 }]
             });
         });
+        $('#button-budget-person-new').click(function(){
+            Person.new();
+        });
         PersonImage.events();
     },
     get: function(data){
@@ -1614,6 +1617,34 @@ Person = {
             credits: [],
             attributes: []
         };
+    },
+    new: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-person-new',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                icon: 'fa-plus',
+                id: 'modal-person-new',
+                class: 'modal-person-new',
+                title: 'Novo Cliente',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Cancelar',
+                    class: 'pull-left btn-red'
+                },{
+                    icon: 'fa-plus',
+                    title: 'Cadastrar',
+                    class: 'btn-green',
+                    unclose: true,
+                    action: function(){
+                        ModalPersonNew.submit();
+                    }
+                }]
+            });
+        });
     },
     search: function(){
         global.post({
@@ -1757,15 +1788,36 @@ Address = {
     address: {},
     delivery: null,
     getAddress: true,
+    contact: function(key){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-address-contact',
+            data: { contacts: Person.person.address[key].contacts },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'small',
+                icon: 'fa-phone',
+                id: 'modal-address-contact',
+                class: 'modal-address-contact',
+                title: 'Contatos',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Fechar'
+                }]
+            });
+        });
+    },
     events: function(){
         $('#button-budget-person-address').click(function(){
             if( Address.getAddress ){
                 Address.getList();
             } else {
                 $(this).hide();
-                $('a[href="#tab-person-2"]').click();
+                $('#button-budget-person-new').hide();
                 $('#button-budget-person-address-new').show();
                 $('#button-budget-person-address-back').show();
+                $('a[href="#tab-person-2"]').click();
             }
         });
         $('#button-address-new').click(function(){
@@ -1773,8 +1825,10 @@ Address = {
         });
         $('#button-budget-person-address-back').click(function(){
             $(this).hide();
-            $('a[href="#tab-person-1"]').click();
+            $('#button-budget-person-new').show();
             $('#button-budget-person-address').show();
+            $('#button-budget-person-address-new').hide();
+            $('a[href="#tab-person-1"]').click();
         });
         $('#button-address-new').click(function(){
             Address.new();
@@ -1783,15 +1837,20 @@ Address = {
     getList: function(){
         global.post({
             url: global.uri.uri_public_api + 'address.php?action=getList',
-            data: { person_id: Person.person.person_id },
+            data: {
+                get_address_contact: 1,
+                person_id: Person.person.person_id
+            },
             dataType: 'json'
         }, function(address){
             Address.getAddress = false;
             Person.person.address = address;
-            Address.showList();
             $('a[href="#tab-person-2"]').click();
+            $('#button-budget-person-new').hide();
             $('#button-budget-person-address').hide();
+            $('#button-budget-person-address-new').show();
             $('#button-budget-person-address-back').show();
+            Address.showList();
         });
     },
     init: function(){
@@ -1810,9 +1869,37 @@ Address = {
         };
         Address.delivery = null;
     },
+    main: function(key){
+        global.post({
+            url: global.uri.uri_public_api + 'address.php?action=main',
+            data: {
+                person_id: Person.person.person_id,
+                address_code: Person.person.address[key].address_code
+            },
+            dataType: 'json'
+        }, function (data) {
+            global.modal({
+                icon: 'fa-info',
+                title: 'Informação',
+                html: '<p>' + data.message + '</p>',
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Ok'
+                }]
+            });
+            Person.person.address[key].address_main = 'Y';
+            $.each(Person.person.address, function (k) {
+                if (k != key) {
+                    Person.person.address[k].address_main = 'N';
+                }
+            });
+            Address.showList();
+        });
+    },
     map: function(key){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-map-single',
+            data: Person.person.address[key],
             dataType: 'html'
         },function(html){
             global.modal({
@@ -1825,10 +1912,7 @@ Address = {
                 buttons: [{
                     icon: 'fa-check',
                     title: 'Ok'
-                }],
-                show: function(){
-                    ModalMapSingle.get(Person.person.address[key]);
-                }
+                }]
             });
         });
     },
@@ -1851,11 +1935,12 @@ Address = {
             var selected = Budget.budget && Budget.budget.address_code == address.address_code;
             $panel.append(
                 '<div class="col-xs-12 col-sm-4">' +
-                    '<div class="address-card address-card-' + ( selected ? 'selected' : 'un-selected' ) + '">' +
+                    '<div class="box-shadow address-card address-card-' + ( selected ? 'selected' : 'un-selected' ) + '">' +
                         '<div class="address-header">' +
                             'Endereço ' + address.address_code +
-                            '<button ' + ( main ? 'disabled' : '' ) + ' class="btn btn-empty pull-right" data-action="main" data-toggle="tooltip" title="Principal" data-key="' + key +'"><i class="fa fa-star' + ( main ? '' : '-o' ) + '"></i></button>' +
-                            '<button class="btn btn-empty pull-right" data-action="map" data-toggle="tooltip" title="Ver no Mapa" data-key="' + key +'"><i class="fa fa-map-marker"></i></button>' +
+                            '<label>selecionado</label>' +
+                            '<button ' + ( main ? 'disabled' : '' ) + ' class="btn btn-empty-gold pull-right" data-action="main" data-toggle="tooltip" title="Principal" data-key="' + key +'"><i class="fa fa-star' + ( main ? '' : '-o' ) + '"></i></button>' +
+                            '<button class="btn btn-empty-red pull-right" data-action="map" data-toggle="tooltip" title="Ver no Mapa" data-key="' + key +'"><i class="fa fa-map-marker"></i></button>' +
                         '</div>' +
                         '<div class="address-body">' +
                             address.address_public_place + ', ' + address.address_number + '<br/>' +
@@ -1863,25 +1948,22 @@ Address = {
                             'CEP ' + ( !!address.address_cep ? address.address_cep : '<i>não informado</i>' ) + '<br/>' +
                         '</div>' +
                         '<div class="address-footer">' +
-                            '<button data-key="' + key +'" data-action="edit" class="btn btn-custom pull-right"><i class="fa fa-pencil"></i></button>' +
-                            '<button data-key="' + key +'" data-action="del" class="btn btn-custom pull-right"><i class="fa fa-trash-o"></i></button>' +
-                            '<button ' + ( selected ? 'disabled' : '' ) + ' data-key="' + key +'" data-action="select" class="btn btn-custom pull-left"><i class="fa fa-check"></i></button>' +
-                            '<button data-key="' + key +'" data-action="contacts" class="btn btn-custom pull-left"><i class="fa fa-phone"></i></button>' +
+                            '<button data-toggle="tooltip" data-title="Editar" data-key="' + key +'" data-action="edit" class="btn btn-empty-blue pull-right"><i class="fa fa-pencil"></i></button>' +
+                            '<button disabled data-toggle="tooltip" data-title="Excluir" data-key="' + key +'" data-action="del" class="btn btn-empty-red pull-right"><i class="fa fa-trash-o"></i></button>' +
+                            '<button data-toggle="tooltip" data-title="Selecionar"' + ( selected ? ' disabled' : '' ) + ' data-key="' + key +'" data-action="select" class="btn btn-empty-orange pull-left"><i class="fa fa-check"></i></button>' +
+                            '<button data-toggle="tooltip" data-title="Contatos" data-key="' + key +'" data-action="contact" class="btn btn-empty-blue pull-left"><i class="fa fa-phone"></i></button>' +
                         '</div>' +
                     '</div>' +
                 '</div>'
             );
         });
-        $panel.find('button[data-action="edit"]').click(function(){
-            global.waiting();
+        $panel.find('button[data-action="map"]').click(function(){
+            Address.map($(this).attr('data-key'));
         });
-        $panel.find('button[data-action="edit"]').click(function(){
-            global.waiting();
+        $panel.find('button[data-action="main"]').click(function(){
+            Address.main($(this).attr('data-key'));
         });
-        $panel.find('button[data-action="del"]').click(function(){
-            global.waiting();
-        });
-        $panel.find('.address-card').not('.address-delivery').find('button[data-action="select"]').click(function(){
+        $panel.find('button[data-action="select"]').click(function(){
             Address.delivery = Person.person.address[$(this).attr('data-key')];
             Budget.budget.address_code = Address.delivery.address_code;
             Budget.budget.address_uf_id = Address.delivery.uf_id;
@@ -1892,11 +1974,14 @@ Address = {
             Address.showDelivery();
             Address.showList();
         });
-        $panel.find('button[data-action="contacts"]').click(function(){
+        $panel.find('button[data-action="contact"]').click(function(){
+            Address.contact($(this).attr('data-key'));
+        });
+        $panel.find('button[data-action="edit"]').click(function(){
             global.waiting();
         });
-        $panel.find('button[data-action="map"]').click(function(){
-            Address.map($(this).attr('data-key'));
+        $panel.find('button[data-action="del"]').click(function(){
+            global.waiting();
         });
         global.tooltip();
     },
