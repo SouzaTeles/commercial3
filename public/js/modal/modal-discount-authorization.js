@@ -5,17 +5,17 @@ $(document).ready(function(){
 
 ModalDiscountAuthorization = {
     data: {
-        item_id: '',
-        item_name: '',
+        product_id: '',
+        product_name: '',
         item_quantity: 0,
         item_value_total: 0,
-        item_max_discount: 0,
         item_value_discount: 0,
+        product_max_discount: 0,
         item_aliquot_discount: 0
     },
     authorize: function(){
         global.post({
-            url: global.uri.uri_public_api + 'user.php?action=discountItemAuthorization',
+            url: global.uri.uri_public_api + 'budget.php?action=discountItemAuthorization',
             data: {
                 user_user: $('#modal_user_user').val(),
                 user_pass: $('#modal_user_pass').val(),
@@ -24,7 +24,7 @@ ModalDiscountAuthorization = {
             dataType: 'json'
         },function(data){
             Item.discountAliquot(ModalDiscountAuthorization.data.item_aliquot_discount);
-            Item.item.authorization_id = data.authorization_id;
+            Budget.budget.authorization.push(data.authorization_id);
             $('#modal-discount-authorization').modal('hide');
         });
     },

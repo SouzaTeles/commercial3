@@ -21,23 +21,24 @@ Compass = {
             e.preventDefault();
             e.stopPropagation();
             if( $(this).attr('href') == '#change-pass' ){
-                Compass.modalPass();
+                Compass.userPass();
             } else if( $(this).attr('href') == '#logout' ){
-                Compass.logout();
+                Compass.userLogout();
             }
         });
         $(window).resize(function(){
             Compass.container();
         });
     },
-    logout: function(){
+    userLogout: function(){
         global.modal({
             icon: 'fa-question-circle-o',
             title: 'Confirmação',
             html: '<p>Deseja realmente sair do sistema?</p>',
             buttons: [{
                 icon: 'fa-times',
-                title: 'Cancelar'
+                title: 'Cancelar',
+                class: 'pull-left'
             },{
                 icon: 'fa-check',
                 title: 'Confirmar',
@@ -47,71 +48,37 @@ Compass = {
                         dataType: 'json'
                     },function(){
                         global.onLoader();
-                        if( !!Electron ) Electron.afterLogout();
-                        else location.href = global.uri.uri_public + 'index.php?route=login';
+                        if( typeof(Electron) == 'object' ){
+                            Electron.afterLogout();
+                        } else {
+                            location.href = global.uri.uri_public + 'index.php?route=login';
+                        }
                     })
                 }
             }]
         });
     },
-    editPass: function(data){
-        if( data.user_new_pass != data.user_pass_confirm ){
-            global.alert({
-                class: 'alert-danger',
-                message: 'A nova senha não confere com o campo de confirmação.'
-            });
-        } else {
-            global.post({
-                url: global.uri.uri_public_api + 'user.php?action=loginPass',
-                data: data,
-                dataType: 'json'
-            },function(data){
-                $('#modal').modal('hide');
-                setTimeout(function(){
-                    global.modal({
-                        icon: 'fa-info',
-                        title: 'Informação',
-                        html: '<p>' + data.message + '</p>',
-                        buttons: [{
-                            icon: 'fa-check',
-                            title: 'Ok'
-                        }]
-                    });
-                },500);
-            });
-        }
-    },
-    modalPass: function(){
+    userPass: function(){
         global.post({
-            url: global.uri.uri_public_api + 'user.php?action=loginPassForm',
+            url: global.uri.uri_public + 'api/modal.php?modal=modal-user-pass',
             dataType: 'html'
         },function(html){
             global.modal({
+                id: 'modal-user-pass',
+                class: 'modal-user-pass',
                 icon: 'fa-lock',
-                title: 'Alteração de Senha',
+                title: 'Alteração de senha',
                 html: html,
                 buttons: [{
                     icon: 'fa-times',
-                    title: 'Cancelar'
+                    title: 'Cancelar',
+                    class: 'pull-left'
                 },{
                     icon: 'fa-pencil',
                     title: 'Atualizar',
                     unclose: true,
-                    action: function(){
-                        $('#modal form button').click();
-                    }
-                }],
-                load: function(){
-                    $('#modal form').on('submit',function(e){
-                        e.preventDefault();
-                        e.stopPropagation();
-                        Compass.editPass({
-                            user_pass: $('#modal_user_pass').val(),
-                            user_new_pass: $('#modal_user_new_pass').val(),
-                            user_pass_confirm: $('#modal_user_pass_confirm').val()
-                        });
-                    });
-                }
+                    id: 'button-user-pass-change'
+                }]
             });
         });
     }

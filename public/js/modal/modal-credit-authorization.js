@@ -8,13 +8,14 @@ ModalCreditAuthorization = {
         reason: 0,
         message: 0,
         image: null,
-        person_id: '',
+        budget_id: null,
+        person_id: null,
         person_code: '',
         person_name: ''
     },
     authorize: function(){
         global.post({
-            url: global.uri.uri_public_api + 'user.php?action=creditAuthorization',
+            url: global.uri.uri_public_api + 'budget.php?action=creditAuthorization',
             data: {
                 user_user: $('#modal_user_user').val(),
                 user_pass: $('#modal_user_pass').val(),
@@ -36,6 +37,9 @@ ModalCreditAuthorization = {
         $('#modal_user_user').focus();
         $('#person-info').click(function(){
             Person.info();
+        });
+        $('#button-credit-authorize').click(function(){
+            $('#form-credit-authorization button').click();
         });
     },
     show: function(){

@@ -38,7 +38,7 @@
                 "uri_lib" => URI_LIB,
                 "uri_public" => URI_PUBLIC,
                 "uri_public_api" => URI_PUBLIC_API,
-                "uri_public_login" => URI_PUBLIC_API
+                "uri_public_login" => URI_PUBLIC_LOGIN
             ];
 
             return $data;

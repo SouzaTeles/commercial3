@@ -24,10 +24,6 @@
         ]);
     }
 
-    if( in_array($get->action,["del","edit","insert","userPass","loginPass"]) ){
-        postLog();
-    }
-
     switch( $get->action ){
 
         case "del":
@@ -302,7 +298,7 @@
 
         break;
 
-	    case "loginPass":
+	    case "editPass":
 
             if( !@$post->user_pass || !@$post->user_new_pass ){
                 headerResponse((Object)[
@@ -312,7 +308,7 @@
             }
 
             $user = Model::get($commercial,(Object)[
-                "tables" => [ "user" ],
+                "tables" => [ "[User]" ],
                 "fields" => [ "user_id" ],
                 "filters" => [
                     [ "user_id", "i", "=", $login->user_id ],
@@ -328,7 +324,7 @@
             }
 
             $user = Model::update($commercial,(Object)[
-                "table" => "user",
+                "table" => "[User]",
                 "fields" => [[ "user_pass", "s", md5($post->user_new_pass) ]],
                 "filters" => [[ "user_id", "i", "=", $login->user_id ]]
             ]);
@@ -336,86 +332,6 @@
             Json::get($headerStatus[200],(Object)[
                 "message" => "Senha atualizada com sucesso."
             ]);
-
-        break;
-
-        case "userPassForm":
-
-            $smarty->display( PATH_TEMPLATES . "includes/form-user-password.html" );
-
-        break;
-
-        case "loginPassForm":
-
-            $smarty->display( PATH_TEMPLATES . "includes/form-login-password.html" );
-
-        break;
-
-        case "creditAuthorization":
-        case "discountItemAuthorization":
-
-            if( !@$post->user_user || !@$post->user_pass || !@$post->data ){
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Parâmetro POST não encontrado"
-                ]);
-            }
-
-            $post->data = (Object)$post->data;
-
-            $user = Model::get( $commercial, (Object)[
-                "tables" => [ "[User]" ],
-                "fields" => [
-                    "user_id",
-                    "user_name",
-                    "user_active",
-                    "user_credit_authorization",
-                    "user_max_discount=CAST(user_max_discount AS FLOAT)"
-                ],
-                "filters" => [
-                    [ "user_user", "s", "=", $post->user_user ],
-                    [ "user_pass", "s", "=", md5($post->user_pass) ]
-                ]
-            ]);
-
-            if( !@$user ){
-                headerResponse((Object)[
-                    "code" => 404,
-                    "message" => "Login e/ou senha incorretos."
-                ]);
-            }
-
-            if( $user->user_active == "N" ){
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "O usuário está inativo."
-                ]);
-            }
-
-            if( $get->action == "creditAuthorization" ) {
-                if ($user->user_credit_authorization == "N") {
-                    headerResponse((Object)[
-                        "code" => 417,
-                        "message" => "O usuário não possui permissão para liberação de crédito."
-                    ]);
-                }
-            } else {
-                $user->user_max_discount = (float)$user->user_max_discount;
-                $post->data->item_aliquot_discount = (float)$post->data->item_aliquot_discount;
-                if ($user->user_max_discount < $post->data->item_aliquot_discount) {
-                    headerResponse((Object)[
-                        "code" => 417,
-                        "message" => "Desconto acima do permitido."
-                    ]);
-                }
-            }
-
-            $user->authorization_id = postLog((Object)[
-                "user_id" => $user->user_id,
-                "item_id" => @$post->data->item_id ? $post->data->item_id : NULL
-            ]);
-
-            Json::get( $headerStatus[200], $user );
 
         break;
 

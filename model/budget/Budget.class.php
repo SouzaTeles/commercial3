@@ -32,6 +32,7 @@
         public $budget_trash;
         public $budget_update;
         public $budget_date;
+        public $authorization = [];
 
         public function __construct( $data, $gets )
         {
@@ -197,7 +198,8 @@
                         "P.TpPessoa",
                         "StATivo=ISNULL(PC.StATivo,'N')",
                         "PCM.DtNascimento",
-                        "PCM.TpSexo"
+                        "PCM.TpSexo",
+                        "PCM.VlLimiteCredito"
                     ],
                     "filters" => [
                         [ "PC.IdCategoria", "s", "=", $config->person->client_category_id ],

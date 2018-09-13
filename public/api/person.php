@@ -80,7 +80,7 @@
             ]);
 
             postLog((Object)[
-                "item_id" => $post->person_id
+                "parent_id" => $post->person_id
             ]);
 
             Json::get( $headerStatus[200] );

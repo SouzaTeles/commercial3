@@ -441,6 +441,7 @@ Budget = {
                 get_product_stock: 1,
                 get_budget_person: 1,
                 get_person_credit: 1,
+                get_person_credit_limit: 1,
                 get_budget_address: 1,
                 get_person_attribute: 1,
                 get_budget_seller: 1,
@@ -848,12 +849,12 @@ Item = {
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-discount-authorization',
             data: {
-                item_id: Item.item.product_id,
-                item_name: Item.item.product_name,
+                product_id: Item.item.product_id,
+                product_name: Item.item.product_name,
+                product_max_discount: Item.item.product_discount,
                 item_quantity: Item.item.budget_item_quantity,
                 item_value_total: (Item.item.budget_item_quantity * Item.item.budget_item_value_total) - params.value,
                 item_value_discount: params.value,
-                item_max_discount: Item.item.product_discount,
                 item_aliquot_discount: params.aliquot
             },
             dataType: 'html'
@@ -1287,8 +1288,7 @@ Item = {
             budget_item_aliquot_discount: 0,
             budget_item_value_discount: 0,
             budget_item_value_total: 0,
-            prices: [],
-            user_authorization: null
+            prices: []
         };
     },
     quantity: function(budget_item_quantity){
@@ -2168,10 +2168,8 @@ Payment = {
                     icon: 'fa-unlock',
                     title: 'Autorizar',
                     class: 'btn-green',
-                    unclose: true,
-                    action: function(){
-                        ModalCreditAuthorization.authorize();
-                    }
+                    id: 'button-credit-authorize',
+                    unclose: true
                 }],
                 shown: function(){
                     $('#modal_user_user').focus();

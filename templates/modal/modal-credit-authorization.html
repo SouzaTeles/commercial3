@@ -12,7 +12,7 @@
                 <label for="modal_user_user">Usuário</label>
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input type="text" class="form-control" id="modal_user_user" name="modal_user_user">
+                    <input type="text" class="form-control" id="modal_user_user" name="modal_user_user" required>
                 </div>
             </div>
         </div>
@@ -21,12 +21,12 @@
                 <label for="modal_user_pass">Senha</label>
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                    <input type="password" class="form-control" id="modal_user_pass" name="modal_user_pass">
+                    <input type="password" class="form-control" id="modal_user_pass" name="modal_user_pass" required>
                 </div>
             </div>
         </div>
     </div>
-    <button type="submit" class="hidden"></button>
+    <button class="hidden"></button>
 </form>
 <script src="{$URI_PUBLIC}js/modal/modal-credit-authorization.js?{$smarty.now}"></script>
 <script> ModalCreditAuthorization.data = {$smarty.post|@json_encode}; </script>

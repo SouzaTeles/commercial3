@@ -11,7 +11,7 @@
                 [ "log_script", "s", SCRIPT_NAME ],
                 [ "log_action", "s", $get->action ],
                 [ "log_system_version", "s", $config->system->system_version ],
-                [ "log_item_id", "s", @$params->item_id ? $params->item_id : NULL ],
+                [ "log_parent_id", "s", @$params->parent_id ? $params->parent_id : NULL ],
                 [ "log_app_version", "s", @$headers["AppVersion"] ? $headers["AppVersion"] : NULL ],
                 [ "log_host_ip", "s", @$headers["HostIP"] && $headers["HostIP"] != "null" ? $headers["HostIP"] : NULL ],
                 [ "log_host_name", "s", @$headers["HostName"] ? $headers["HostName"] : NULL ],

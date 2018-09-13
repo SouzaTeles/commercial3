@@ -5,9 +5,10 @@
     left: 0;
     right: 0;
     top: 90px;
+    bottom: 0;
+    width: 60px;
     height: 100%;
     z-index: 1001;
-    display: table;
     position: fixed;
 }
 

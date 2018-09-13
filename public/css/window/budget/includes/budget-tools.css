@@ -42,8 +42,8 @@
 .panel .panel-tools .action.edit:before
 {
     left: 217px;
-    border-top: 30px solid #337be0;
-    border-left: 30px solid #337be0;
+    border-top: 60px solid #337be0;
+    border-left: 0px solid #337be0;
 }
 
 .panel .panel-tools button

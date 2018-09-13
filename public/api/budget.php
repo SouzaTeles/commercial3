@@ -37,7 +37,7 @@
             ]);
 
             postLog((Object)[
-                "item_id" => $post->budget_id
+                "parent_id" => $post->budget_id
             ]);
 
             Json::get($headerStatus[200]);
@@ -127,8 +127,7 @@
                 $item = (Object)$item;
                 $fields = [
                     ["external_id", "s", @$item->external_id ? $item->external_id : NULL],
-                    ["authorization_id", "i", @$item->authorization_id ? $item->authorization_id : NULL],
-                    ["price_id", "s", $item>price_id],
+                    ["price_id", "s", $item->price_id],
                     ["budget_item_quantity", "d", $item->budget_item_quantity],
                     ["budget_item_value", "d", $item->budget_item_value],
                     ["budget_item_value_unitary", "d", $item->budget_item_value_unitary],
@@ -212,7 +211,7 @@
             ]);
 
             postLog((Object)[
-                "item_id" => $budget_id
+                "parent_id" => $budget_id
             ]);
 
             Json::get($headerStatus[200], (Object)[
@@ -497,7 +496,6 @@
                     "fields" => [
                         ["budget_id", "i", $budget_id],
                         ["external_id", "s", @$item->external_id ? $item->external_id : NULL],
-                        ["authorization_id", "i", @$item->authorization_id ? $item->authorization_id : NULL],
                         ["product_id", "s", $item->product_id],
                         ["price_id", "s", $item->price_id],
                         ["budget_item_quantity", "d", $item->budget_item_quantity],
@@ -555,7 +553,7 @@
             ];
 
             postLog((Object)[
-                "item_id" => $budget_id
+                "parent_id" => $budget_id
             ]);
 
             Json::get($headerStatus[200], $ret);
@@ -622,12 +620,79 @@
             ]);
 
             postLog((Object)[
-                "item_id" => $budget->budget_id
+                "parent_id" => $budget->budget_id
             ]);
 
             Json::get( $headerStatus[200], (Object)[
                 "message" => "Orçamento recuperado com sucesso!"
             ]);
+
+        break;
+
+        case "creditAuthorization":
+        case "discountItemAuthorization":
+
+            if( !@$post->user_user || !@$post->user_pass || !@$post->data ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado"
+                ]);
+            }
+
+            $post->data = (Object)$post->data;
+
+            $user = Model::get( $commercial, (Object)[
+                "tables" => [ "[User]" ],
+                "fields" => [
+                    "user_id",
+                    "user_name",
+                    "user_active",
+                    "user_credit_authorization",
+                    "user_max_discount=CAST(user_max_discount AS FLOAT)"
+                ],
+                "filters" => [
+                    [ "user_user", "s", "=", $post->user_user ],
+                    [ "user_pass", "s", "=", md5($post->user_pass) ]
+                ]
+            ]);
+
+            if( !@$user ){
+                headerResponse((Object)[
+                    "code" => 404,
+                    "message" => "Login e/ou senha incorretos."
+                ]);
+            }
+
+            if( $user->user_active == "N" ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O usuário está inativo."
+                ]);
+            }
+
+            if( $get->action == "creditAuthorization" ) {
+                if ($user->user_credit_authorization == "N") {
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "O usuário não possui permissão para liberação de crédito."
+                    ]);
+                }
+            } else {
+                $user->user_max_discount = (float)$user->user_max_discount;
+                $post->data->item_aliquot_discount = (float)$post->data->item_aliquot_discount;
+                if ($user->user_max_discount < $post->data->item_aliquot_discount) {
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "Desconto acima do permitido."
+                    ]);
+                }
+            }
+
+            $user->authorization_id = postLog((Object)[
+                "user_id" => $user->user_id
+            ]);
+
+            Json::get( $headerStatus[200], $user );
 
         break;
 
