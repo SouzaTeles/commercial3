@@ -9,7 +9,7 @@
     if( !@$get->action ){
         headerResponse((Object)[
             "code" => 417,
-            "Nenhuma ação informada na requisição."
+            "message" => "Nenhuma ação informada na requisição."
         ]);
     }
 
@@ -59,7 +59,7 @@
             if( !@$post->address_cep ){
                 headerResponse((Object)[
                     "code" => 417,
-                    "Parâmetro GET não localizado."
+                    "message" => "Parâmetro GET não localizado."
                 ]);
             }
 
@@ -70,20 +70,20 @@
             if( !@$google['results'][0] ){
                 headerResponse((Object)[
                     "code" => 417,
-                    "O google não encontrou as coordenadas para o cep: {$post->address_cep}."
+                    "message" => "O google não encontrou as coordenadas para o cep: {$post->address_cep}."
                 ]);
             }
 
             $result = $google['results'][0];
-            if( @$result['geometry']['location'] ){
-                $address_lat = $result['geometry']['location']['lat'];
-                $address_lng = $result['geometry']['location']['lng'];
-            } else {
+            if( !@$result['geometry']['location'] ){
                 headerResponse((Object)[
                     "code" => 417,
-                    "O google não encontrou as coordenadas para o cep: {$post->address_cep}."
+                    "message" => "O google não encontrou as coordenadas para o cep: {$post->address_cep}."
                 ]);
             }
+
+            $address_lat = $result['geometry']['location']['lat'];
+            $address_lng = $result['geometry']['location']['lng'];
 
             Json::get( $headerStatus[200], (Object)[
                 "lat" => $address_lat,

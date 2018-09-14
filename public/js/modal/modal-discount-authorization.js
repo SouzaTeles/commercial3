@@ -39,7 +39,7 @@ ModalDiscountAuthorization = {
     show: function(){
         var $modal = $('#modal-discount-authorization');
         $modal.find('.modal-box').html(
-            '<b>' + ModalDiscountAuthorization.data.item_name + '</b><br/>' +
+            '<b>' + ModalDiscountAuthorization.data.product_name + '</b><br/>' +
             'Quantidade: ' + ModalDiscountAuthorization.data.item_quantity + '<br/>' +
             'Desconto: ' + global.float2Br(ModalDiscountAuthorization.data.item_aliquot_discount) + '% / R$' + global.float2Br(ModalDiscountAuthorization.data.item_value_discount) + '<br/>' +
             'Total: R$' + global.float2Br(ModalDiscountAuthorization.data.item_value_total)
