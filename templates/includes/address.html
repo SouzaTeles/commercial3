@@ -7,20 +7,20 @@
             <label for="modal_address_cep">CEP</label>
             <div class="input-group">
                 <input autocomplete="off" type="text" class="form-control" id="modal_address_cep" name="modal_address_cep" placeholder="CEP" data-to-mask="cep">
-                <span class="btn btn-custom input-group-addon" id="button-address-cep-search"><i class="fa fa-search"></i></span>
+                <span data-toggle="tooltip" data-title="Pesquisar Cep" class="btn input-group-addon" id="button-cep-search"><i class="fa fa-search"></i></span>
             </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-2">
         <div class="form-group">
             <label for="modal_address_type">Tipo</label>
-            <select class="selectpicker show-tick" id="modal_address_type" name="modal_address_type" title="-- Tipo --"></select>
+            <select data-size="8" data-live-search="true" class="selectpicker show-tick" id="modal_address_type" name="modal_address_type" title="-- Tipo --"></select>
         </div>
     </div>
     <div class="col-xs-12 col-sm-6">
         <div class="form-group">
             <label for="modal_address_public_place">Logradouro</label>
-            <input placeholder="Rua" autocomplete="off" class="form-control" type="text" id="modal_address_public_place" name="modal_address_public_place" />
+            <input maxlength="50" placeholder="Logradouro" autocomplete="off" class="form-control" type="text" id="modal_address_public_place" name="modal_address_public_place" />
         </div>
     </div>
     <div class="col-xs-12 col-sm-2">
@@ -32,13 +32,19 @@
     <div class="col-xs-12 col-sm-3">
         <div class="form-group">
             <label for="modal_city_name">Cidade</label>
-            <input placeholder="Cidade" autocomplete="off" class="form-control" type="text" id="modal_city_name" name="modal_city_name"/>
+            <div class="input-group">
+                <input data-value="" placeholder="Cidade" autocomplete="off" class="form-control" type="text" id="modal_city_name" name="modal_city_name"/>
+                <span data-toggle="tooltip" data-title="Remover Cidade" class="btn input-group-addon" id="button-address-city-remove"><i class="fa fa-trash"></i></span>
+            </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-3">
         <div class="form-group">
             <label for="modal_district_name">Bairro</label>
-            <input placeholder="Bairro" autocomplete="off" class="form-control" type="text" id="modal_district_name" name="modal_district_name"/>
+            <div class="input-group">
+                <input data-value="" placeholder="Bairro" autocomplete="off" class="form-control" type="text" id="modal_district_name" name="modal_district_name"/>
+                <span data-toggle="tooltip" data-title="Remover Bairro" class="btn input-group-addon" id="button-address-district-remove"><i class="fa fa-trash"></i></span>
+            </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-3">
@@ -54,7 +60,7 @@
     <div class="col-xs-12 col-sm-3">
         <div class="form-group">
             <label for="modal_address_ie">Inscrição Estadual</label>
-            <input readonly placeholder="Inscrição Estadual" class="form-control" type="text" id="modal_address_ie" name="modal_address_ie" value="ISENTO"/>
+            <input maxlength="20" readonly placeholder="Inscrição Estadual" class="form-control" type="text" id="modal_address_ie" name="modal_address_ie" value="ISENTO"/>
         </div>
     </div>
     <div class="col-xs-12"><hr/></div>

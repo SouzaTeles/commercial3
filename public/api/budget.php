@@ -538,7 +538,7 @@
             if( @$budget->authorization ){
                 Model::update($commercial,(Object)[
                     "table" => "[Log]",
-                    "fields" => [[ "log_item_id", "s", $budget_id ]],
+                    "fields" => [[ "log_parent_id", "s", $budget_id ]],
                     "filters" => [[ "log_id", "i", "in", $budget->authorization ]]
                 ]);
             }

@@ -16,6 +16,7 @@
         public function __construct( $data, $gets=[] )
         {
             $this->user_id = $data->user_id;
+            $this->external_id = $data->external_id;
             $this->person_id = @$data->person_id ? $data->person_id : NULL;
             $this->user_profile_id = (int)$data->user_profile_id;
             $this->person_id = @$data->person_id ? $data->person_id : NULL;

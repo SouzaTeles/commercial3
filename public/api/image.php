@@ -14,10 +14,6 @@
         ]);
     }
 
-    if( in_array($get->action,["up"]) ){
-        postLog();
-    }
-
     switch( $get->action ) {
 
         case "up":

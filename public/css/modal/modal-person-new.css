@@ -53,4 +53,13 @@
 {
     width: 100%;
     height: 28px;
+    padding: 2px 4px;
+}
+
+@media(max-height:700px)
+{
+    .modal.modal-big .modal-content .modal-body
+    {
+        max-height: 460px;
+    }
 }

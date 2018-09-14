@@ -11,6 +11,12 @@
     background-color: transparent;
 }
 
+.panel.panel-budget
+{
+    width: 960px;
+    margin: 0 auto;
+}
+
 .panel .panel-heading
 {
     font-size: 22px;

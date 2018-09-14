@@ -142,4 +142,19 @@
 
         break;
 
+        case "getAddressTypes":
+
+            $addressTypes = Model::getList($dafel,(Object)[
+                "tables" => [ "InformacaoGeral (NoLock)" ],
+                "fields" => [ "address_type=DsInformacaoGeral" ],
+                "filters" => [
+                    [ "LEN(DsInformacaoGeral) > 0" ],
+                    [ "NmCombo", "s", "=", "Tipo Logradouro" ]
+                ]
+            ]);
+
+            Json::get( $headerStatus[200], $addressTypes );
+
+        break;
+
     }

@@ -1466,7 +1466,7 @@ Person = {
         $('#person_birth').val(global.date2Br(Person.person.person_birth));
         $('#file-image-person').filestyle('disabled',!Person.person.person_id);
         $('#button-image-person-remove').prop('disabled',!Person.person.image);
-        $('#button-image-person-web-cam').prop('disabled',!Person.person.image);
+        $('#button-image-person-web-cam').prop('disabled',!Person.person.person_id);
         $('#button-budget-person-address').prop('disabled',!Person.person.person_id);
         $('#button-budget-payment-credit').prop('disabled',!Person.person.credits.length);
         Person.showAttributes();

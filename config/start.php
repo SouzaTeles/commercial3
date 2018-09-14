@@ -30,6 +30,7 @@
             "fields" => [
                 "user_id",
                 "person_id",
+                "external_id",
                 "user_profile_id",
                 "user_user",
                 "user_pass",

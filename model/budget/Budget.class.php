@@ -555,7 +555,7 @@
                     [ "NrDocumentoAuxVenda", "s", $dav->NrDocumentoAuxVenda ],
                     [ "DtEmissao", "s", $date ],
                     [ "StDocumentoAuxVenda", "s", $davParams->status ],
-                    [ "IdUsuario", "s", $login->user_id ],
+                    [ "IdUsuario", "s", $login->external_id ],
                     [ "IdPrazo", "s", @$budget->term_id ? $budget->term_id  : NULL ],
                     [ "AlDesconto", "d", number_format($budget->budget_aliquot_discount, 4, '.', '' ) ],
                     [ "VlDesconto", "d", number_format($budget->budget_value_discount, 2, '.', '' ) ],
@@ -1082,7 +1082,7 @@
                     [ "StAgendaEntrega", "s", $budget->budget_delivery ],
                     [ "DsObservacaoPedido", "s", @$budget->budget_note ? strtoupper($budget->budget_note) : NULL ],
                     [ "DsObservacaoDocumento", "s", @$budget->budget_note_document ? strtoupper($budget->budget_note_document) : NULL ],
-                    [ "IdUsuario", "s", $login->user_id ],
+                    [ "IdUsuario", "s", $login->external_id ],
                     [ "StFaturamentoParcial", "s", $orderParams->partial_billing ],
                     [ "StMontagem", "s", $orderParams->mounting ],
                     [ "IdMensagem1", "s", $orderParams->message_id ],
@@ -1102,7 +1102,7 @@
                     [ "IdPedidoDeVenda", "s", $order->IdPedidoDeVenda ],
                     [ "DtHistorico", "s", $dateTime ],
                     [ "TpPedidoDeVenda", "s", $orderParams->type ],
-                    [ "IdUsuario", "s", $login->user_id ]
+                    [ "IdUsuario", "s", $login->external_id ],
                 ]
             ]);
 

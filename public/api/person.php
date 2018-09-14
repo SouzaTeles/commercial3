@@ -9,7 +9,7 @@
     if( !@$get->action ){
         headerResponse((Object)[
             "code" => 417,
-            "Parâmetro GET não localizado."
+            "message" => "Parâmetro GET não localizado."
         ]);
     }
 
@@ -220,6 +220,224 @@
             }
 
             Json::get( $headerStatus[200], $people );
+
+        break;
+
+        case "insert":
+
+            if( !@$post->person_name ) headerResponse((Object)[ "code" => 417, "message" => "Nome da Pessoa não informado." ]);
+            if( !@$post->person_type ) headerResponse((Object)[ "code" => 417, "message" => "Tipo de pessoa não informada." ]);
+            if( !@$post->person_document ) headerResponse((Object)[ "code" => 417, "message" => "CPF ou CNPJ não informado." ]);
+            if( !@$post->person_categories ) headerResponse((Object)[ "code" => 417, "message" => "Categoria não informada." ]);
+
+            $address = (Object)$post->address;
+            if( !@$address->address_type) headerResponse((Object)[ "code" => 417, "message" => "Tipo do Logradouro não informado." ]);
+            if( !@$address->address_public_place) headerResponse((Object)[ "code" => 417, "message" => "Pessoa não informada." ]);
+            if( !@$address->address_number) headerResponse((Object)[ "code" => 417, "message" => "Número do endereço não informado." ]);
+            if( $address->address_icms_type == 1 && !@$address->address_ie ) headerResponse((Object)[ "code" => 417, "message" => "Inscrição estadual não informada." ]);
+            if( !@$address->district_id ) headerResponse((Object)[ "code" => 417, "message" => "Bairro não informado." ]);
+            if( !@$address->city_id ) headerResponse((Object)[ "code" => 417, "message" =>  "Cidade não informado." ]);
+            if( !@$address->uf_id ) headerResponse((Object)[ "code" => 417, "message" => "UF não informado." ]);
+            if( !@$address->address_icms_type ) headerResponse((Object)[ "code" => 417, "message" => "Tipo de contribuição ICMS não informada." ]);
+            if( !@$address->address_cep ) headerResponse((Object)[ "code" => 417, "message" => "CEP não informado." ]);
+
+            $post->person_name = removeSpecialChar($post->person_name);
+            if( @$post->person_short_name ) $post->person_short_name = removeSpecialChar($post->person_short_name);
+
+            $address->address_public_place = removeSpecialChar($address->address_public_place);
+            $address->address_number = removeSpecialChar($address->address_number);
+            if( @$address->address_note ) $address->address_note = removeSpecialChar($address->address_note);
+
+            $person = Model::get($dafel,(Object)[
+                "tables" => [ "Pessoa (NoLock)" ],
+                "fields" => [ "CdChamada", "NmPessoa" ],
+                "filters" => [[ "REPLACE(REPLACE(REPLACE(CdCPF_CGC,'.',''),'-',''),'/','')", "s", "=", str_replace([".", "-", "/"], ["", "", ""], $post->person_document) ]]
+            ]);
+
+            if (@$person) {
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => (
+                        "O CPF/CNPJ já está cadastrado no seguinte cliente: " .
+                        "<b>{$person->CdChamada} - {$person->NmPessoa}</b><br/><br/>" .
+                        "Verifique."
+                    )
+                ]);
+            }
+
+            $person = (Object)[
+                "IdPessoa" => Model::nextCode($dafel,(Object)[
+                    "table" => "Pessoa",
+                    "field" => "IdPessoa",
+                    "increment" => "S",
+                    "base36encode" => 1
+                ]),
+                "CdChamada" => Model::nextCode($dafel,(Object)[
+                    "table" => "Pessoa",
+                    "field" => "CdChamada",
+                    "increment" => "S"
+                ])
+            ];
+
+            Model::insert($dafel,(Object)[
+                "table" => "Pessoa",
+                "fields" => [
+                    [ "IdPessoa", "s", $person->IdPessoa ],
+                    [ "CdChamada", "s", $person->CdChamada ],
+                    [ "TpPessoa", "s", $post->person_type ],
+                    [ "CdCPF_CGC", "s", $post->person_document ],
+                    [ "NmPessoa", "s", strtoupper(substr($post->person_name,0,50)) ],
+                    [ "NmCurto", "s", @$post->person_short_name ? strtoupper(substr($post->person_short_name,0,20)) : NULL ],
+                ]
+            ]);
+
+            Model::insert($dafel,(Object)[
+                "table" => "PessoaComplementar",
+                "fields" => [
+                    [ "IdPessoa", "s", $person->IdPessoa ],
+                    [ "DtNascimento", "s", @$post->person_birth ? $post->person_birth : NULL ],
+                    [ "TpSexo", "s", @$post->person_gender ? $post->person_gender : NULL ],
+                    [ "DtUltimaAlteracao", "s", date("Y-m-d") ],
+                    [ "VlCapitalRegistrado", "d", "0" ],
+                    [ "VlCapitalAtual", "d", "0" ],
+                    [ "VlCapitalGiro", "d", "0" ],
+                    [ "VlEstoque", "d", "0" ],
+                    [ "VlFaturamentoAnual", "s", "0" ],
+                    [ "AlIRRF", "s", "0" ],
+                    [ "NrFuncionarios", "s", "0" ],
+                    [ "TpEstabelecimento", "s", "1" ],
+                    [ "StTributosContribuicoes", "s", "N" ],
+                    [ "StTributosContribQualquerValor", "s", "N" ],
+                    [ "StCobraTaxaBancaria", "s", "S" ],
+                    [ "StEnvioBoletoAutomatico", "s", "N" ],
+                    [ "StPrestadoraServico", "s", "N" ],
+                    [ "VlLimiteCredito", "s", "0" ],
+                    [ "VlLimiteCreditoParcela", "s", "0" ],
+                    [ "StSubstitutoTributario", "s", "0" ],
+                    [ "StAdministracaoFederal", "s", "N" ]
+                ]
+            ]);
+
+            foreach( explode(",", $post->person_categories) as $category_id ){
+                $category = (Object)[
+                    "IdPessoaCategoria" => Model::nextCode($dafel,(Object)[
+                        "table" => "PessoaCategoria",
+                        "field" => "IdPessoaCategoria",
+                        "increment" => "S",
+                        "base36encode" => 1
+                    ])
+                ];
+                Model::insert($dafel,(Object)[
+                    "table" => "PessoaCategoria",
+                    "fields" => [
+                        [ "IdPessoaCategoria", "s", $category->IdPessoaCategoria ],
+                        [ "IdPessoa", "s", $person->IdPessoa ],
+                        [ "IdCategoria", "s", $category_id ],
+                        [ "DtCadastro", "s", date("Y-m-d H:i:s") ],
+                        [ "StAtivo", "s", "S" ]
+                    ]
+                ]);
+            }
+
+            Model::insert($dafel,(Object)[
+                "table" => "PessoaEndereco",
+                "fields" => [
+                    [ "IdPessoa", "s", $person->IdPessoa ],
+                    [ "CdEndereco", "s", "01" ],
+                    [ "StEnderecoPrincipal", "s", "S" ],
+                    [ "StEnderecoEntrega", "s", "S" ],
+                    [ "StEnderecoCobranca", "s", "S" ],
+                    [ "StEnderecoResidencial", "s", "S" ],
+                    [ "StEnderecoComercial", "s", "S" ],
+                    [ "StEnderecoCorrespondencia", "s", "S" ],
+                    [ "StCalculoSuframa", "s", "N" ],
+                    [ "NrInscricaoEstadual", "s", substr($address->address_ie,0,20) ],
+                    [ "NmLogradouro", "s", strtoupper(substr($address->address_public_place,0,50)) ],
+                    [ "NrLogradouro", "s", substr($address->address_number,0,10) ],
+                    [ "DsComplemento", "s", @$address->address_reference ? substr($address->address_reference,0,50) : NULL ],
+                    [ "TpLogradouro", "s", substr($address->address_type,0,5) ],
+                    [ "CdCEP", "s", substr($address->address_cep,0,9) ],
+                    [ "IdBairro", "s", $address->district_id ],
+                    [ "CdCPF_CGC", "s", $post->person_document ],
+                    [ "IdCidade", "s", $address->city_id ],
+                    [ "IdUF", "s", $address->uf_id ],
+                    [ "NmPessoa", "s", strtoupper(substr($post->person_name,0,50)) ],
+                    [ "DsObservacao", "s", @$address->address_note ? strtoupper($address->address_note) : NULL ],
+                    [ "StAtivo", "s", "S" ],
+                    [ "IdPais", "s", "076" ],
+                    //1: contribuinte ICMS, 2: contribuinte ISENTO, 9: não contribuinte
+                    [ "TpContribuicaoICMS", "s", $address->address_icms_type ]
+                ]
+            ]);
+
+            $cep = Model::get($dafel,(Object)[
+                "tables" => [ "CEP" ],
+                "fields" => [ "CdCEP" ],
+                "filters" => [[ "CdCEP", "s", "=", $address->address_cep ]]
+            ]);
+
+            if( !@$cep ){
+                Model::insert($dafel,(Object)[
+                    "table" => "CEP",
+                    "fields" => [
+                        [ "CdCEP", "s", $address->address_cep, "=" ],
+                        [ "NmLogradouro", "s", strtoupper(substr($address->address_public_place,0,50)) ],
+                        [ "IdBairro", "s", $address->district_id ],
+                        [ "IdCidade", "s", $address->city_id ],
+                        [ "IdUF", "s", $address->uf_id ],
+                        [ "TpLogradouro", "s", strtoupper(substr($address->address_type,0,50)) ]
+                    ]
+                ]);
+            }
+
+            if( @$address->contacts ){
+
+                $personAddress = (Object)[
+                    "IdPessoaEndereco_Contato" => Model::nextCode($dafel,(Object)[
+                        "table" => "PessoaEndereco_Contato",
+                        "field" => "IdPessoaEndereco_Contato",
+                        "increment" => "S",
+                        "base36encode" => 1
+                    ])
+                ];
+
+                Model::insert($dafel,(Object)[
+                    "table" => "PessoaEndereco_Contato",
+                    "fields" => [
+                        [ "IdPessoaEndereco_Contato", "s", $personAddress->IdPessoaEndereco_Contato ],
+                        [ "IdPessoa", "s", $person->IdPessoa ],
+                        [ "CdEndereco", "s", "01" ],
+                        [ "DsContato", "s", strtoupper(substr(explode(" ",$post->person_name)[0],0,50)) ],
+                        [ "StContatoPrincipal", "s", "S" ]
+                    ]
+                ]);
+
+                foreach( $address->contacts as $contact ){
+                    $contact = (Object)$contact;
+                    if( @$contact->contact_type_id && @$contact->contact_value ){
+                        Model::insert($dafel,(Object)[
+                            "table" => "PessoaEndereco_TipoContato",
+                            "fields" => [
+                                [ "IdPessoaEndereco_Contato", "s", $personAddress->IdPessoaEndereco_Contato ],
+                                [ "IdTipoContato", "s", $contact->contact_type_id ],
+                                [ "IdPessoa", "s", $person->IdPessoa ],
+                                [ "CdEndereco", "s", "01" ],
+                                [ "DsContato", "s", strtoupper(substr($contact->contact_value,0,50)) ],
+                                [ "DsObservacao", "s", @$contact->contact_note ? $contact->contact_note : NULL ]
+                            ]
+                        ]);
+                    }
+                }
+            }
+
+            postLog((Object)[
+                "parent_id" => $person->IdPessoa
+            ]);
+
+            Json::get( $headerStatus[200], (Object)[
+                "person_id" => $person->IdPessoa,
+                "person_code" => $person->CdChamada
+            ]);
 
         break;
 
