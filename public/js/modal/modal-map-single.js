@@ -1,6 +1,5 @@
 $(document).ready(function(){
     ModalMapSingle.show();
-    global.onLoader();
 });
 
 ModalMapSingle = {
@@ -45,11 +44,11 @@ ModalMapSingle = {
                 lat: parseFloat(ModalMapSingle.address.address_lat),
                 lng: parseFloat(ModalMapSingle.address.address_lng)
             },
-            infowindow: true
+            infowindow: true,
+            animation: google.maps.Animation.DROP
         });
         setTimeout(function(){
             new google.maps.event.trigger(map.markers[0], 'click');
         },1000);
-        global.unLoader();
     }
 };

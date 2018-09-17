@@ -193,7 +193,7 @@
             }
 
             Model::delete($commercial,(Object)[
-                "top" => 999,
+                "top" => 99,
                 "table" => "BudgetItem",
                 "filters" => [
                     [ "budget_id", "i", "=", $budget_id ],
@@ -202,7 +202,7 @@
             ]);
 
             Model::delete($commercial,(Object)[
-                "top" => 999,
+                "top" => 99,
                 "table" => "BudgetPayment",
                 "filters" => [
                     [ "budget_id", "i", "=", $budget_id ],

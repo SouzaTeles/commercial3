@@ -15,6 +15,7 @@
 
 .address-card
 {
+    cursor: pointer;
     margin: 0 0 30px;
     position: relative;
     padding: 20px 20px 50px;
@@ -37,6 +38,7 @@
     color: #fff;
     float: right;
     display: none;
+    cursor: pointer;
     font-size: 14px;
     padding: 2px 6px;
     margin-left: 2px;
@@ -76,6 +78,7 @@
     margin-right: 4px;
 }
 
+.address-card:hover,
 .address-card-selected
 {
     border: 2px solid <?php echo $colors->hex->palette["orange"]; ?>;

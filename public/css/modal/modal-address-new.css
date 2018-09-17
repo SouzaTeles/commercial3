@@ -1,0 +1,70 @@
+.modal.modal-big .modal-dialog
+{
+    width: 940px;
+}
+
+.modal.modal-big .modal-content .modal-body
+{
+    max-height: 540px;
+}
+
+.modal-address-new .modal-content .modal-body .title
+{
+    border-left: 4px solid #4b6bee;
+    padding: 2px 0 0 8px;
+    font-size: 16px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.modal-address-new .modal-content .modal-body .title button
+{
+    font-size: 28px;
+}
+
+.modal-address-new .modal-content .modal-body hr
+{
+    margin: 4px 0 20px;
+}
+
+.modal-address-new .modal-content .modal-body .contacts
+{
+    width: 100%;
+    height: 174px;
+    overflow-y: auto;
+    border: 1px solid lightgray;
+}
+
+.modal-address-new .modal-content .modal-body .contacts .contact
+{
+    height: 28px;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-address-new .modal-content .modal-body .contacts .contact .contact-name,
+.modal-address-new .modal-content .modal-body .contacts .contact .contact-value
+{
+    width: 50%;
+    float: left;
+}
+
+.modal-address-new .modal-content .modal-body .contacts .contact .contact-name
+{
+    padding: 4px 6px;
+    text-align: right;
+}
+
+.modal-address-new .modal-content .modal-body .contacts .contact .contact-value input
+{
+    width: 100%;
+    height: 28px;
+    padding: 2px 4px;
+}
+
+@media(max-height:700px)
+{
+    .modal.modal-big .modal-content .modal-body
+    {
+        max-height: 460px;
+    }
+}

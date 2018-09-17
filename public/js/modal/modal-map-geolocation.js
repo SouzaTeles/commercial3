@@ -15,12 +15,15 @@ ModalMapGeolocation = {
             data: { address_cep: ModalMapGeolocation.data.cep },
             dataType: 'json'
         },function(point){
-            ModalMapGeolocation.data.lat = point.lat;
-            ModalMapGeolocation.data.lng = point.lng;
-            ModalMapGeolocation.show();
+            ModalMapGeolocation.data.address_lat = point.lat;
+            ModalMapGeolocation.data.address_lng = point.lng;
+            map.markers[0].setPosition(point);
+            map.map.setCenter(point);
         });
     },
     show: function(){
+        ModalMapGeolocation.data.lat = ModalMapGeolocation.data.lat || -15.818142465877486;
+        ModalMapGeolocation.data.lng = ModalMapGeolocation.data.lng || -47.78571496917914;
         map.init({
             selector: ModalMapGeolocation.selector,
             mapTypeControl: true,
@@ -33,14 +36,6 @@ ModalMapGeolocation = {
                 map.markers[0].setPosition({
                     lat: event.latLng.lat(),
                     lng: event.latLng.lng()
-                });
-                console.log({
-                    lat: event.latLng.lat(),
-                    lng: event.latLng.lng()
-                });
-                console.log({
-                    lat: map.markers[0].getPosition().lat(),
-                    lng: map.markers[0].getPosition().lng()
                 });
             }
         });

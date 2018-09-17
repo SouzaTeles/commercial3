@@ -513,7 +513,6 @@ Budget = {
             };
             Item.init();
             Person.init();
-            Address.init();
             Term.init();
         }
         Person.data2form();
@@ -1820,7 +1819,7 @@ Address = {
                 $('a[href="#tab-person-2"]').click();
             }
         });
-        $('#button-address-new').click(function(){
+        $('#button-budget-person-address-new').click(function(){
             Address.new();
         });
         $('#button-budget-person-address-back').click(function(){
@@ -1852,22 +1851,6 @@ Address = {
             $('#button-budget-person-address-back').show();
             Address.showList();
         });
-    },
-    init: function(){
-        Address.address = {
-            uf_id: null,
-            city_id: null,
-            district_id: null,
-            address_code: ('0'+(Person.person.address.length+1)).slice(-2),
-            address_main: ( !Person.person.address.length ? 'Y' : 'N' ),
-            address_cep: '',
-            address_public_place: '',
-            address_number: '',
-            address_complement: '',
-            address_lat: '',
-            address_lng: ''
-        };
-        Address.delivery = null;
     },
     main: function(key){
         global.post({
@@ -1934,11 +1917,12 @@ Address = {
         var $panel = $('#tab-person-2');
         $panel.find('.address-card').parent().remove();
         $.each( Person.person.address, function(key,address){
+            address.key = key;
             var main = address.address_main == 'Y';
             var selected = Budget.budget && Budget.budget.address_code == address.address_code;
             $panel.append(
                 '<div class="col-xs-12 col-sm-4">' +
-                    '<div class="box-shadow address-card address-card-' + ( selected ? 'selected' : 'un-selected' ) + '">' +
+                    '<div data-key="' + key +'" class="box-shadow no-select address-card address-card-' + ( selected ? 'selected' : 'un-selected' ) + '">' +
                         '<div class="address-header">' +
                             'Endereço ' + address.address_code +
                             '<label>selecionado</label>' +
@@ -1953,20 +1937,13 @@ Address = {
                         '<div class="address-footer">' +
                             '<button data-toggle="tooltip" data-title="Editar" data-key="' + key +'" data-action="edit" class="btn btn-empty-blue pull-right"><i class="fa fa-pencil"></i></button>' +
                             '<button disabled data-toggle="tooltip" data-title="Excluir" data-key="' + key +'" data-action="del" class="btn btn-empty-red pull-right"><i class="fa fa-trash-o"></i></button>' +
-                            '<button data-toggle="tooltip" data-title="Selecionar"' + ( selected ? ' disabled' : '' ) + ' data-key="' + key +'" data-action="select" class="btn btn-empty-orange pull-left"><i class="fa fa-check"></i></button>' +
                             '<button data-toggle="tooltip" data-title="Contatos" data-key="' + key +'" data-action="contact" class="btn btn-empty-blue pull-left"><i class="fa fa-phone"></i></button>' +
                         '</div>' +
                     '</div>' +
                 '</div>'
             );
         });
-        $panel.find('button[data-action="map"]').click(function(){
-            Address.map($(this).attr('data-key'));
-        });
-        $panel.find('button[data-action="main"]').click(function(){
-            Address.main($(this).attr('data-key'));
-        });
-        $panel.find('button[data-action="select"]').click(function(){
+        $panel.find('.address-card').click(function(){
             Address.delivery = Person.person.address[$(this).attr('data-key')];
             Budget.budget.address_code = Address.delivery.address_code;
             Budget.budget.address_uf_id = Address.delivery.uf_id;
@@ -1977,23 +1954,62 @@ Address = {
             Address.showDelivery();
             Address.showList();
         });
-        $panel.find('button[data-action="contact"]').click(function(){
+        $panel.find('button[data-action="map"]').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            Address.map($(this).attr('data-key'));
+
+        });
+        $panel.find('button[data-action="main"]').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            Address.main($(this).attr('data-key'));
+        });
+        $panel.find('button[data-action="contact"]').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
             Address.contact($(this).attr('data-key'));
         });
-        $panel.find('button[data-action="edit"]').click(function(){
-            global.waiting();
-        });
-        $panel.find('button[data-action="del"]').click(function(){
-            global.waiting();
+        $panel.find('button[data-action="edit"]').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            Address.new($(this).attr('data-key'));
         });
         global.tooltip();
     },
-    new: function(){
-        Address.init();
-        $('#button-address-add').show();
-        $('#button-address-edit').hide();
-        $('#address-panel-title span').text('Novo Endereço');
-        $('a[href="#tab-person-3"]').click();
+    new: function(key){
+        var address = (key && Person.person.address[key] ? Person.person.address[key] : null);
+        if( address ) address.key = key;
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-address-new',
+            data: {
+                person_id: Person.person.person_id,
+                address: address
+            },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                icon: 'fa-plus',
+                size: 'big',
+                id: 'modal-address-new',
+                class: 'modal-address-new',
+                title: 'Novo Endereço',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Cancelar',
+                    class: 'pull-left btn-red'
+                },{
+                    unclose: true,
+                    icon: (key && Person.person.address[key] ? 'fa-floppy-o' : 'fa-plus'),
+                    title: (key && Person.person.address[key] ? 'Atualizar' : 'Cadastrar'),
+                    class: (key && Person.person.address[key] ? 'btn-blue' : 'btn-green'),
+                    action: function(){
+                        ModalAddressNew.submit();
+                    }
+                }]
+            });
+        });
     }
 };
 

@@ -83,3 +83,9 @@
 {
     display: none;
 }
+
+.panel-person .panel-body
+{
+    overflow-y: auto;
+    max-height: 436px;
+}
