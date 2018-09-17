@@ -45,7 +45,9 @@
                     "PE.TpLogradouro",
                     "PE.NmLogradouro",
                     "PE.NrLogradouro",
-                    "PE.DsObservacao"
+                    "PE.DsObservacao",
+                    "VlLatitude=CAST(PE.VlLatitude AS FLOAT)",
+                    "VlLongitude=CAST(PE.VlLongitude AS FLOAT)"
                 ],
                 "filters" => [[ "PE.IdPessoa", "s", "=", $post->person_id ]]
             ]);

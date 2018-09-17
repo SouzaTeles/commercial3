@@ -366,7 +366,9 @@
                     [ "StAtivo", "s", "S" ],
                     [ "IdPais", "s", "076" ],
                     //1: contribuinte ICMS, 2: contribuinte ISENTO, 9: não contribuinte
-                    [ "TpContribuicaoICMS", "s", $address->address_icms_type ]
+                    [ "TpContribuicaoICMS", "s", $address->address_icms_type ],
+                    [ "VlLatitude", "d", @$address->address_lat ? (float)$address->address_lat : NULL ],
+                    [ "VlLongitude", "d", @$address->address_lng ? (float)$address->address_lng : NULL ]
                 ]
             ]);
 
@@ -464,7 +466,10 @@
                 ],
                 "filters" => [
                     [ "PC.IdCategoria", "s", "=", $post->person_category_id ],
-                    [ "P.NmPessoa", "s", "like", "{$post->person_name}%" ]
+                    [
+                        [ "P.NmPessoa", "s", "like", "{$post->person_name}%" ],
+                        [ "P.NmCurto", "s", "like", "{$post->person_name}%" ]
+                    ]
                 ],
                 "order" => "P.NmPessoa"
             ]);

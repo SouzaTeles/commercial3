@@ -120,7 +120,9 @@
                         "PE.NmLogradouro",
                         "PE.NrLogradouro",
                         "PE.DsComplemento",
-                        "PE.DsObservacao"
+                        "PE.DsObservacao",
+                        "VlLatitude=CAST(PE.VlLatitude AS FLOAT)",
+                        "VlLongitude=CAST(PE.VlLongitude AS FLOAT)"
                     ],
                     "filters" => [[ "PE.IdPessoa", "s", "=", $data->IdPessoa ]],
                     "order" => "PE.StEnderecoPrincipal DESC, PE.CdEndereco"

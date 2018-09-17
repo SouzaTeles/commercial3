@@ -19,6 +19,8 @@
         public $address_icms_type;
         public $city_name;
         public $district_name;
+        public $address_lat;
+        public $address_lng;
 
         public function __construct($data, $params)
         {
@@ -39,6 +41,8 @@
             $this->address_reference = @$data->DsComplemento ? $data->DsComplemento : NULL;
             $this->address_note = @$data->DsObservacao ? $data->DsObservacao : NULL;
             $this->address_icms_type = @$data->TpContribuicaoICMS ? $data->TpContribuicaoICMS : NULL;
+            $this->address_lat = @$data->VlLatitude ? $data->VlLatitude : NULL;
+            $this->address_lng = @$data->VlLongitude ? $data->VlLongitude : NULL;
 
             GLOBAL $dafel;
 

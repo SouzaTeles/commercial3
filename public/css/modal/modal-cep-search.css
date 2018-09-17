@@ -1,0 +1,33 @@
+.modal-cep-search .dataTables_scrollHeadInner,
+.modal-cep-search .dataTables_scrollHeadInner .dataTable
+{
+    min-width: 100%;
+}
+
+.modal-cep-search .dataTables_scrollBody
+{
+    min-height: 140px;
+}
+
+.modal-cep-search .dataTables_scrollBody tr td.dataTables_empty
+{
+    height: 124px;
+}
+
+.modal-cep-search .modal-dialog
+{
+    width: 800px;
+}
+
+.modal-cep-search .modal-content .modal-body
+{
+    max-height: 360px;
+}
+
+.modal-cep-search .dropdown-menu
+{
+    top: 198px;
+    left: 21px;
+    position: fixed;
+    min-width: 200px !important;
+}

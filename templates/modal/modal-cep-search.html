@@ -1,0 +1,86 @@
+<link href="{$URI_PUBLIC}css/modal/modal-cep-search.css?{$smarty.now}" rel="stylesheet" />
+<form id="form-cep-search">
+    <div class="row">
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="modal_search_cep_code">CEP</label>
+                <input autocomplete="off" type="text" class="form-control" id="modal_search_cep_code" name="modal_search_cep_code" placeholder="CEP" data-to-mask="cep">
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-9">
+            <div class="form-group">
+                <label for="modal_search_public_place">Logradouro</label>
+                <input maxlength="50" placeholder="Logradouro" autocomplete="off" class="form-control" type="text" id="modal_search_public_place" name="modal_search_public_place" />
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="modal_search_uf_id">Estado</label>
+                <div class="input-group">
+                    <select data-size="10" class="selectpicker show-tick" id="modal_search_uf_id" name="modal_search_uf_id" title="-- Estado --">
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                        <option value="ES">Estrangeiro</option>
+                    </select>
+                    <span data-toggle="tooltip" data-title="Remover Cidade" class="btn input-group-addon" id="button-search-uf-remove"><i class="fa fa-trash"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="modal_search_city_name">Cidade</label>
+                <input data-value="" placeholder="Cidade" autocomplete="off" class="form-control" type="text" id="modal_search_city_name" name="modal_search_city_name"/>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="modal_search_district_name">Bairro</label>
+                <input data-value="" placeholder="Bairro" autocomplete="off" class="form-control" type="text" id="modal_search_district_name" name="modal_search_district_name"/>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label>&nbsp;&nbsp;</label>
+                <button class="btn btn-block btn-blue"><i class="fa fa-search"></i> Buscar</button>
+            </div>
+        </div>
+    </div>
+</form>
+<table id="modal-table-cep" class="table-custom no-select">
+    <thead>
+        <tr>
+            <th>CEP</th>
+            <th>UF</th>
+            <th>Cidade</th>
+            <th>Bairro</th>
+            <th>Logradouro</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<script src="{$URI_PUBLIC}js/modal/modal-cep-search.js?{$smarty.now}"></script>

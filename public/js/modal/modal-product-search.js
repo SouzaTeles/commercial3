@@ -10,7 +10,7 @@ ModalProductSearch = {
         selector: '#modal-table-products',
         scrollY: 320,
         scrollCollapse: 1,
-        noControls: [0],
+        noControls: [0,7],
         order: [[3,'asc']]
     }),
     add: function(){
@@ -122,9 +122,10 @@ ModalProductSearch = {
                 product.product_code,
                 product.product_classification ? product.product_classification : '--',
                 product.product_name,
-                product.product_price,
+                '<span>' + product.product_price + '</span>R$ ' + global.float2Br(product.product_price),
                 product.unit_code,
-                product.unit_code == 'I' ? parseInt(product.product_stock) : global.float2Br(product.product_stock,'0',3)
+                product.unit_code == 'I' ? parseInt(product.product_stock) : global.float2Br(product.product_stock,'0',3),
+                '<button class="btn btn-empty-orange"><i class="fa fa-info-circle"></i></button>'
             ]).node();
             if( product.product_active == 'Y' ){
                 $(row).on('dblclick',function(){

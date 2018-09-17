@@ -1,7 +1,7 @@
 .modal-product-search .dataTables_scrollHeadInner,
 .modal-product-search .dataTables_scrollHeadInner .dataTable
 {
-    width: 100% !important;
+    min-width: 100%;
 }
 
 .modal-product-search .dataTables_scrollBody tr td.dataTables_empty
@@ -38,10 +38,12 @@
     position: absolute;
 }
 
-@media(max-height:700px)
-{
-    .modal-product-search .dataTables_scrollBody tr td.dataTables_empty
+@media(max-height:700px) {
+    .modal-product-search .dataTables_scrollBody
     {
         height: 222px;
+    }
+    .modal-product-search .dataTables_scrollBody tr td.dataTables_empty {
+        height: 172px;
     }
 }

@@ -11,6 +11,7 @@ $(document).ready(function(){
 });
 
 ModalPersonNew = {
+    mapZoom: 4,
     person: {
         person_name: '',
         person_short_name: '',
@@ -32,6 +33,8 @@ ModalPersonNew = {
             city_name: '',
             district_id: null,
             district_name: '',
+            address_lat: -15.818142465877486,
+            address_lng: -47.78571496917914,
             contacts: []
         }
     },
@@ -119,6 +122,9 @@ ModalPersonNew = {
                 $(this).val('');
             }
         });
+        $('#button-address-geolocation').click(function(){
+            ModalPersonNew.geolocation();
+        });
         $('#modal_address_cep').on('keyup',function(e){
             var keycode = e.keyCode || e.which;
             if( keycode == '13' ){
@@ -143,7 +149,18 @@ ModalPersonNew = {
                     buttons: [{
                         icon: 'fa-times',
                         title: 'Fechar'
-                    }]
+                    }],
+                    shown: function(){
+                        $('#modal_search_cep_code').focus();
+                        ModalCepSearch.success = function(cep){
+                            ModalPersonNew.setCep(cep,function(){
+                                $('#modal-cep-search').modal('hide');
+                            });
+                        }
+                    },
+                    hidden: function(){
+                        $('#modal_address_number').focus();
+                    }
                 });
             });
         });
@@ -233,6 +250,43 @@ ModalPersonNew = {
         ModalPersonNew.person.address.address_note = $('#modal_address_note').val();
         if( !!success ) success();
     },
+    geolocation: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-map-geolocation',
+            data: {
+                zoom: ModalPersonNew.mapZoom,
+                cep: $('#modal_address_cep').val(),
+                lat: ModalPersonNew.person.address.address_lat,
+                lng: ModalPersonNew.person.address.address_lng
+            },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                icon: 'fa-map-marker',
+                id: 'modal-map-geolocation',
+                class: 'modal-map-geolocation',
+                title: 'Geolocalização',
+                html: html,
+                buttons: [{
+                    unclose: true,
+                    icon: 'fa-globe',
+                    id: 'button-zip-code',
+                    title: 'Localização do CEP'
+                },{
+                    icon: 'fa-check',
+                    title: 'Usar Localização',
+                    action: function(){
+                        ModalPersonNew.person.address.address_lat = map.markers[0].getPosition().lat();
+                        ModalPersonNew.person.address.address_lng = map.markers[0].getPosition().lng();
+                    }
+                }],
+                hidden: function(){
+                    map.destroy();
+                    global.loaders++;
+                }
+            });
+        });
+    },
     getAddressTypes: function(){
         global.post({
             url: global.uri.uri_public_api + 'address.php?action=getAddressTypes',
@@ -248,18 +302,7 @@ ModalPersonNew = {
             data: { cep_code: cep_code },
             dataType: 'json'
         },function(data){
-            ModalPersonNew.person.address.address_cep = data.cep_code;
-            ModalPersonNew.person.address.address_type = data.public_place_type.toUpperCase();
-            ModalPersonNew.person.address.address_public_place = data.public_place;
-            ModalPersonNew.person.address.uf_id = data.uf_id;
-            ModalPersonNew.person.address.city_id = data.city_id;
-            ModalPersonNew.person.address.district_id = data.district_id;
-            $('#modal_address_cep').val(data.cep_code);
-            $('#modal_address_type').selectpicker('val',data.public_place_type);
-            $('#modal_address_public_place').val(data.public_place);
-            $('#modal_city_name').val(data.city_name + ' - ' + data.uf_id).attr('data-value',data.city_name + ' - ' + data.uf_id);
-            $('#modal_district_name').val(data.district_name).attr('data-value',data.district_name);
-            $('#modal_address_number').focus();
+            ModalPersonNew.setCep(data);
         });
     },
     getContactTypes: function(){
@@ -270,6 +313,24 @@ ModalPersonNew = {
             ModalPersonNew.contactTypes = data;
             ModalPersonNew.showContactTypes();
         });
+    },
+    setCep: function(cep,success){
+        ModalPersonNew.mapZoom = 16;
+        ModalPersonNew.person.address.address_cep = cep.cep_code;
+        ModalPersonNew.person.address.address_type = cep.public_place_type.toUpperCase();
+        ModalPersonNew.person.address.address_public_place = cep.public_place;
+        ModalPersonNew.person.address.uf_id = cep.uf_id;
+        ModalPersonNew.person.address.city_id = cep.city_id;
+        ModalPersonNew.person.address.district_id = cep.district_id;
+        ModalPersonNew.person.address.address_lat = cep.address_lat;
+        ModalPersonNew.person.address.address_lng = cep.address_lng;
+        $('#modal_address_cep').val(cep.cep_code);
+        $('#modal_address_type').selectpicker('val',cep.public_place_type);
+        $('#modal_address_public_place').val(cep.public_place);
+        $('#modal_city_name').val(cep.city_name + ' - ' + cep.uf_id).attr('data-value',cep.city_name + ' - ' + cep.uf_id);
+        $('#modal_district_name').val(cep.district_name).attr('data-value',cep.district_name);
+        $('#modal_address_number').focus();
+        if(!!success) success();
     },
     showAddressTypes: function(){
         $.each(ModalPersonNew.addressTypes,function(key,addressType){
@@ -379,5 +440,5 @@ ModalPersonNew = {
             return false;
         }
         return true;
-    },
+    }
 };

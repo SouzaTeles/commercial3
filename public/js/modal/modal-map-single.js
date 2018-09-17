@@ -11,13 +11,13 @@ ModalMapSingle = {
             data: ModalMapSingle.address,
             dataType: 'json'
         },function(point){
-            ModalMapSingle.address.lat = point.lat;
-            ModalMapSingle.address.lng = point.lng;
+            ModalMapSingle.address.address_lat = point.lat;
+            ModalMapSingle.address.address_lng = point.lng;
             ModalMapSingle.show();
         });
     },
     show: function(){
-        if( !ModalMapSingle.address.lat || !ModalMapSingle.address.lng ){
+        if( !ModalMapSingle.address.address_lat || !ModalMapSingle.address.address_lng ){
             ModalMapSingle.get();
             return;
         }
@@ -25,8 +25,8 @@ ModalMapSingle = {
             mapTypeControl: false,
             zoom: 16,
             point: {
-                lat: parseFloat(ModalMapSingle.address.lat),
-                lng: parseFloat(ModalMapSingle.address.lng)
+                lat: parseFloat(ModalMapSingle.address.address_lat),
+                lng: parseFloat(ModalMapSingle.address.address_lng)
             },
             infowindow: (
                 '<b>ENDEREÇO ' + (ModalMapSingle.address.address_code) + '</b><br/>' +
@@ -42,8 +42,8 @@ ModalMapSingle = {
         map.addMarker({
             title: 'Endereço ' + (ModalMapSingle.address.address_code),
             point: {
-                lat: parseFloat(ModalMapSingle.address.lat),
-                lng: parseFloat(ModalMapSingle.address.lng)
+                lat: parseFloat(ModalMapSingle.address.address_lat),
+                lng: parseFloat(ModalMapSingle.address.address_lng)
             },
             infowindow: true
         });

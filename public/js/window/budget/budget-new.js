@@ -1912,7 +1912,10 @@ Address = {
                 buttons: [{
                     icon: 'fa-check',
                     title: 'Ok'
-                }]
+                }],
+                hidden: function(){
+                    map.destroy();
+                }
             });
         });
     },

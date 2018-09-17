@@ -17,6 +17,11 @@
     margin-bottom: 10px;
 }
 
+.modal-person-new .modal-content .modal-body .title button
+{
+    font-size: 28px;
+}
+
 .modal-person-new .modal-content .modal-body hr
 {
     margin: 4px 0 20px;
