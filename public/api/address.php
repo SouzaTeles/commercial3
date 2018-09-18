@@ -84,55 +84,69 @@
             $updated = [];
             if( @$post->contacts ){
 
-                $personAddress = Model::get($dafel,(Object)[
-                    "tables" => [ "PessoaEndereco_Contato" ],
-                    "fields" => [ "IdPessoaEndereco_Contato" ],
+                $dataContacts = Model::getList($dafel,(Object)[
+                    "tables" => [
+                        "PessoaEndereco_Contato PEC",
+                        "PessoaEndereco_TipoContato PETC"
+                    ],
+                    "fields" => [
+                        "PEC.IdPessoaEndereco_Contato",
+                        "PETC.IdTipoContato"
+                    ],
                     "filters" => [
-                        [ "IdPessoa", "s", "=", $person->IdPessoa ],
-                        [ "CdEndereco", "s", "=", $post->address_code ]
+                        [ "PETC.IdPessoaEndereco_Contato = PEC.IdPessoaEndereco_Contato" ],
+                        [ "PEC.IdPessoa", "s", "=", $person->IdPessoa ],
+                        [ "PEC.CdEndereco", "s", "=", $post->address_code ]
                     ]
                 ]);
 
+                $oldContacts = [];
+                $IdPessoaEndereco_Contato = NULL;
+                foreach( $dataContacts as $item ){
+                    $oldContacts[] = $item->IdTipoContato;
+                    $IdPessoaEndereco_Contato = $item->IdPessoaEndereco_Contato;
+                }
+
                 foreach( $post->contacts as $contact ){
                     $contact = (Object)$contact;
-                    $updated[] = $contact->address_contact_type_id;
-                    if( @$contact->address_contact_type_id ) {
-                        Model::update($dafel,(Object)[
+                    $key = array_search($contact->address_contact_type_id,$oldContacts);
+                    if( $key === FALSE ){
+                        Model::insert($dafel,(Object)[
                             "table" => "PessoaEndereco_TipoContato",
                             "fields" => [
-                                [ "DsContato", "s", strtoupper(substr($contact->address_contact_value,0,50)) ],
-                                [ "DsObservacao", "s", @$contact->address_contact_note ? $contact->address_contact_note : NULL ]
-                            ],
+                                [ "IdPessoaEndereco_Contato", "s", $IdPessoaEndereco_Contato ],
+                                [ "IdTipoContato", "s", $contact->address_contact_type_id ],
+                                [ "IdPessoa", "s", $person->IdPessoa ],
+                                [ "CdEndereco", "s", $post->address_code ],
+                                [ "DsContato", "s", strtoupper(substr(removeSpecialChar($contact->address_contact_value),0,50)) ]
+                            ]
+                        ]);
+                    } else {
+                        unset($oldContacts[$key]);
+                        Model::update($dafel,(Object)[
+                            "table" => "PessoaEndereco_TipoContato",
+                            "fields" => [[ "DsContato", "s", strtoupper(substr($contact->address_contact_value,0,50)) ]],
                             "filters" => [
+                                [ "IdPessoaEndereco_Contato", "s", "=", $IdPessoaEndereco_Contato ],
                                 [ "IdTipoContato", "s", "=", $contact->address_contact_type_id ],
                                 [ "IdPessoa", "s", "=", $person->IdPessoa ],
                                 [ "CdEndereco", "s", "=", $post->address_code ]
                             ]
                         ]);
-                    } else {
-                        Model::insert($dafel,(Object)[
-                            "table" => "PessoaEndereco_TipoContato",
-                            "fields" => [
-                                [ "IdPessoaEndereco_Contato", "s", $personAddress->IdPessoaEndereco_Contato ],
-                                [ "IdTipoContato", "s", $contact->address_contact_type_id ],
-                                [ "IdPessoa", "s", $person->IdPessoa ],
-                                [ "CdEndereco", "s", $post->address_code ],
-                                [ "DsContato", "s", strtoupper(substr($contact->address_contact_value,0,50)) ],
-                                [ "DsObservacao", "s", @$contact->address_contact_note ? $contact->address_contact_note : NULL ]
-                            ]
-                        ]);
                     }
                 }
-                Model::delete($dafel,(Object)[
-                    "top" => 99,
-                    "table" => "PessoaEndereco_TipoContato",
-                    "filters" => [
-                        ["IdTipoContato", "s", "not in", $updated],
-                        ["IdPessoa", "s", "=", $person->IdPessoa],
-                        ["CdEndereco", "s", $post->address_code]
-                    ]
-                ]);
-
+                if( sizeof($oldContacts)) {
+                    Model::delete($dafel, (Object)[
+                        "top" => 99,
+                        "table" => "PessoaEndereco_TipoContato",
+                        "filters" => [
+                            ["IdTipoContato", "s", "in", $oldContacts],
+                            ["IdPessoa", "s", "=", $person->IdPessoa],
+                            ["CdEndereco", "s", $post->address_code],
+                            ["IdPessoaEndereco_Contato", "s", "=", $IdPessoaEndereco_Contato]
+                        ]
+                    ]);
+                }
             }
 
             postLog((Object)[

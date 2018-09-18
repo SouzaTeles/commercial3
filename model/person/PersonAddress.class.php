@@ -49,7 +49,6 @@
             if( @$params["get_address_contact"] || @$_POST["get_address_contact"] )
             {
                 $this->contacts = Model::getList($dafel,(Object)[
-                    "top" => 1,
                     "class" => "PersonAddressContact",
                     "tables" => [
                         "PessoaEndereco_Contato PEC (NoLock)",
