@@ -776,10 +776,16 @@ Budget = {
 };
 
 Seller = {
-    seller: {},
+    seller: {
+        seller_id: null,
+        seller_code: '',
+        seller_name: '',
+        seller_image: null
+    },
     search: function(success){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-seller-search',
+            data: Seller.seller,
             dataType: 'html'
         },function(html){
             global.modal({
@@ -791,24 +797,15 @@ Seller = {
                 buttons: [{
                     icon: 'fa-check',
                     title: 'Selecionar',
-                    unclose: true,
-                    action: function(){
-                        if( !ModalSeller.seller.seller_id ){
-                            global.validateMessage('Nenhum vendedor foi informado.',function(){
-                                $('#modal_seller_code').focus().select();
-                            });
-                            return;
-                        }
-                        Seller.seller = ModalSeller.seller;
-                        Budget.budget.seller_id = Seller.seller.seller_id;
-                        $('#modal-seller-search').modal('hide');
-                        if( success ) success();
-                    }
+                    id: 'button-seller-select',
+                    unclose: true
                 }],
                 shown: function(){
-                    if( !!Seller.seller.seller_id ){
-                        ModalSeller.seller = Seller.seller;
-                        ModalSeller.show();
+                    $('#modal_seller_code').focus();
+                    ModalSeller.success = function(seller){
+                        Seller.seller = seller;
+                        Budget.budget.seller_id = seller.seller_id;
+                        if( !!success ) success();
                     }
                 }
             })
