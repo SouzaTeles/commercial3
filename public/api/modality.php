@@ -4,7 +4,7 @@
 
     Session::checkApi();
 
-    GLOBAL $commercial, $dafel, $headerStatus, $get, $post;
+    GLOBAL $commercial, $dafel, $headerStatus, $get, $post, $config;
 
     if( !@$get->action ){
         headerResponse((Object)[
@@ -35,7 +35,7 @@
                     "Parcelas=COUNT(FPI.IdFormaPagamentoItem)"
                 ],
                 "filters" => [
-                    [ "FP.StAtivo", "s", "=", "S" ]
+                    [ "FP.IdFormaPagamento", "s", "in", $config->budget->authorized_modality_id ],
                 ],
                 "group" => "FP.IdFormaPagamento,FP.CdChamada,FP.DsFormaPagamento,FP.StAtivo,FP.IdNaturezaLancamento,FP.TpFormaPagamento,FPI.NrDiasPrimeiraParcelaVenda",
                 "order" => "DsFormaPagamento"

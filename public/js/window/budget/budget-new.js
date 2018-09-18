@@ -193,6 +193,7 @@ Budget = {
         last: '',
         timer: 0
     },
+    instance_id: ('00000'+btoa(global.random(1000000,9999999)).toUpperCase().substr(0,10)).slice(-10),
     add: function(){
         global.post({
             url: global.uri.uri_public_api + 'budget.php?action=insert',
@@ -507,7 +508,10 @@ Budget = {
                 budget_delivery_date: global.dateAddDays(global.today(),3),
                 items: [],
                 payments: [],
-                person: {},
+                credit: {
+                    value: 0,
+                    payable: []
+                },
                 export: null,
                 authorization: []
             };
@@ -1464,7 +1468,7 @@ Person = {
         $('#button-image-person-remove').prop('disabled',!Person.person.image);
         $('#button-image-person-web-cam').prop('disabled',!Person.person.person_id);
         $('#button-budget-person-address').prop('disabled',!Person.person.person_id);
-        $('#button-budget-payment-credit').prop('disabled',!Person.person.credits.length);
+        $('#button-budget-payment-credit').prop('disabled',!Person.person.person_id);
         Person.showAttributes();
         PersonImage.show();
     },
@@ -1550,7 +1554,6 @@ Person = {
         global.post({
             url: global.uri.uri_public_api + 'person.php?action=get',
             data: {
-                get_person_credit: 1,
                 get_person_address: 1,
                 get_person_attribute: 1,
                 get_person_credit_limit: 1,
@@ -2203,8 +2206,8 @@ Payment = {
     payment_remaining: 0,
     table: global.table({
         selector: '#table-budget-payments',
-        noControls: [0,4],
-        order: [[2,'asc']],
+        noControls: [0,1,5],
+        order: [[3,'asc']],
         scrollY: 186,
         scrollCollapse: 1
     }),
@@ -2242,6 +2245,63 @@ Payment = {
                     }
                 }
             }]
+        });
+    },
+    credit: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-credit',
+            data: {
+                instance_id: Budget.instance_id,
+                company_id: Company.company.company_id,
+                person: {
+                    person_id: Person.person.person_id,
+                    person_code: Person.person.person_code,
+                    person_name: Person.person.person_name
+                },
+                selected: Budget.budget.credit.payable
+            },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                hideClose: 1,
+                icon: 'fa-money',
+                id: 'modal-credit',
+                class: 'modal-credit',
+                title: 'Cartas de crédito',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Cancelar',
+                    class: 'pull-left btn-red',
+                    id: 'button-credit-cancel',
+                    unclose: true
+                },{
+                    icon: 'fa-check',
+                    title: 'Ok',
+                    class: 'btn-blue-dark',
+                    id: 'button-credit-select',
+                    unclose: true
+                }],
+                shown: function(){
+                    ModalCredit.success = function(credits){
+                        console.log(credits);
+                        Budget.budget.credit.value = 0;
+                        Budget.budget.credit.payable = [];
+                        $.each(credits,function(key,credit){
+                            if( Budget.budget.credit.value < ( Budget.budget.budget_value_total - Payment.payment_value ) ) {
+                                if( Budget.budget.credit.value + credit.payable_value > ( Budget.budget.budget_value_total - Payment.payment_value )) {
+                                    credit.payable_value = Budget.budget.budget_value_total - Payment.payment_value;
+                                }
+                                Budget.budget.credit.value += credit.payable_value;
+                                Budget.budget.credit.payable.push(credit);
+                            }
+                        });
+                        Payment.total();
+                        Payment.showList();
+                    }
+                }
+            })
         });
     },
     creditAuthorization: function(params){
@@ -2481,17 +2541,14 @@ Payment = {
         $('#button-budget-notes').click(function(){
             Budget.note();
         });
+        $('#button-budget-payment-credit').click(function(){
+            if( Budget.budget.budget_value_total == 0 ){
+                global.validateMessage('O valor do pedido está zerado. Verifique.');
+                return;
+            }
+            Payment.credit();
+        });
         Payment.table.on('draw',function(){
-            var $table = $('#table-budget-payments');
-            $table.find('tbody tr').dblclick(function(){
-                var key = $(this).attr('data-key');
-                if( !!key ){
-                    Payment.beforeEdit(key);
-                }
-            });
-            $table.find('button').click(function(){
-                Payment[$(this).attr('data-action')]($(this).attr('data-key'));
-            });
             global.tooltip();
         });
     },
@@ -2564,16 +2621,37 @@ Payment = {
     },
     showList: function(){
         Payment.table.clear();
+        if( Budget.budget.credit.value > 0 ){
+            var row = Payment.table.row.add([
+                '1x',
+                '<img src="' + global.uri.uri_public + 'files/modality/00A000000P.png" style="max-width:40px;max-height:18px;"/>',
+                'Carta de Crédito',
+                '<span>' + global.today() + '</span>' + global.date2Br(global.today()),
+                global.float2Br(Budget.budget.credit.value),
+                '<button data-toggle="tooltip" data-title="Editar Parcela" data-action="beforeEdit" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
+                '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="del" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
+            ]).node();
+            $(row).on('dblclick',function(){
+                Payment.credit();
+            }).find('button').click(function(){
+                console.log($(this).attr('data-action'));
+            });
+        }
         $.each( Budget.budget.payments, function(key, payment){
             var row = Payment.table.row.add([
-                ( payment.budget_payment_entry == 'Y' ? '<i class="fa fa-check-circle"></i> ' : '' ) + payment.budget_payment_installment + 'x ',
-                ( payment.image ? '<img src="' + payment.image + '" style="max-width:40px;max-height:18px;"/> ' : '<i class="fa fa-credit-card"></i> ' ) + payment.modality_description,
+                ( payment.budget_payment_entry == 'Y' ? '<i class="fa fa-check-circle"></i> ' : '' ) + payment.budget_payment_installment + 'x',
+                ( payment.image ? '<img src="' + payment.image + '" style="max-width:40px;max-height:18px;"/> ' : '<i class="fa fa-credit-card"></i> ' ),
+                payment.modality_description,
                 '<span>' + payment.budget_payment_deadline + '</span>' + global.date2Br(payment.budget_payment_deadline),
                 global.float2Br(payment.budget_payment_value),
                 '<button data-toggle="tooltip" data-title="Editar Parcela" data-action="beforeEdit" data-key="' + key + '" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
                 '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="del" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
             ]).node();
-            $(row).attr('data-key',key);
+            $(row).on('dblclick',function(){
+                Payment.beforeEdit($(this).attr('data-key'));
+            }).find('button').click(function(){
+                Payment[$(this).attr('data-action')]($(this).attr('data-key'));
+            });
         });
         $('#button-budget-payment-remove').prop('disabled',!Budget.budget.payments.length);
         $('#button-budget-payment-recalculate').prop('disabled',!Budget.budget.payments.length);
@@ -2594,12 +2672,13 @@ Payment = {
         $.each(Budget.budget.payments,function(e,payment){
             Payment.payment_value += payment.budget_payment_value;
         });
-        Payment.payment_value = parseFloat(Payment.payment_value.toFixed(2));
+        Payment.payment_value = parseFloat(Payment.payment_value.toFixed(2)) + Budget.budget.credit.value;
         Payment.payment_aliquot = (Payment.payment_value/(Budget.budget.budget_value_total ? Budget.budget.budget_value_total : 1))*100;
         Payment.payment_remaining = Budget.budget.budget_value_total - Payment.payment_value;
         $('#budget_payment_value').val('R$ '+global.float2Br(Payment.payment_value));
         $('#budget_payment_aliquot').val(global.float2Br(Payment.payment_aliquot)+'%');
         $('#budget_payment_remaining').val('R$ '+global.float2Br(Payment.payment_remaining));
+        $('#payment-credit-value').text('R$ '+global.float2Br(Budget.budget.credit.value));
     },
     getModalities: function(success){
         global.post({

@@ -1,0 +1,32 @@
+<link href="{$URI_PUBLIC}css/modal/modal-credit.css?{$smarty.now}" rel="stylesheet" />
+<table id="modal-table-credit" class="table-custom no-select">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Empresa</th>
+            <th>Título</th>
+            <th>Valor</th>
+            <th>Utilizado</th>
+            <th>Disponível</th>
+            <th>Emissão</th>
+            <th>Empenhado</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<br/>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="form-group">
+            <label for="modal_credit_note">Observações do título</label>
+            <textarea disabled rows="4" class="form-control" id="modal_credit_note" name="modal_credit_note" placeholder="Observações do título"></textarea>
+        </div>
+    </div>
+</div>
+<script src="{$URI_PUBLIC}js/modal/modal-credit.js?{$smarty.now}"></script>
+<script>
+    ModalCredit.company_id = '{$smarty.post.company_id}';
+    ModalCredit.instance_id = '{$smarty.post.instance_id}';
+    ModalCredit.person = {$smarty.post.person|@json_encode};
+    {if !empty($smarty.post.selected)}ModalCredit.selected = {$smarty.post.selected|@json_encode};{/if};
+</script>

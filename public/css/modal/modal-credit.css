@@ -1,0 +1,11 @@
+.modal-credit .dataTables_scrollHeadInner,
+.modal-credit .dataTables_scrollHeadInner .dataTable
+{
+    min-width: 100%;
+}
+
+.modal-credit table tr td input
+{
+    width: 20px;
+    height: 20px;
+}

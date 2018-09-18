@@ -4,7 +4,7 @@
 
     Session::checkApi();
 
-    GLOBAL $commercial, $dafel, $headerStatus, $get, $post;
+    GLOBAL $commercial, $dafel, $headerStatus, $get, $post, $config;
 
     if( !@$get->action ){
         headerResponse((Object)[
