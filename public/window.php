@@ -4,6 +4,9 @@
 
     GLOBAL $config, $login, $get, $post, $smarty;
 
+    define( "ROUTE", "window" );
+    Session::check();
+
     $colors = json_decode(file_get_contents(PATH_DATA."colors.json"));
     $colors = getColors($colors);
 

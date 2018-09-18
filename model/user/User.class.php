@@ -9,6 +9,7 @@
         public $user_user;
         public $user_name;
         public $user_email;
+        public $user_only_session;
         public $user_login;
         public $user_update;
         public $user_date;
@@ -21,6 +22,7 @@
             $this->user_profile_id = (int)$data->user_profile_id;
             $this->person_id = @$data->person_id ? $data->person_id : NULL;
             $this->user_active = $data->user_active;
+            $this->user_only_session = $data->user_only_session;
             $this->user_user = $data->user_user;
             $this->user_name = $data->user_name;
             $this->user_email = @$data->user_email ? $data->user_email : NULL;

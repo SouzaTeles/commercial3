@@ -2,6 +2,8 @@
 
     include "../../config/start.php";
 
+    GLOBAL $commercial, $post, $headerStatus;
+
     if( !Session::isUser() )
     {
         if( !@$post->user_user || !@$post->user_pass ){
@@ -26,6 +28,7 @@
                 "user_max_discount=CAST(user_max_discount AS FLOAT)",
                 "user_credit_authorization",
                 "user_active",
+                "user_only_session",
                 "user_login=FORMAT(user_login,'yyyy-MM-dd HH:mm:ss')",
                 "user_update=FORMAT(user_update,'yyyy-MM-dd HH:mm:ss')",
                 "user_date=FORMAT(user_date,'yyyy-MM-dd HH:mm:ss')",
