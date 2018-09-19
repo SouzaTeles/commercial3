@@ -63,6 +63,7 @@
             $budget = $post;
             $date = date("Y-m-d H:i:s");
             $budget_id = $budget->budget_id;
+            $budget->credit = (Object)$budget->credit;
 
             if( @$budget->export ){
                 $operation = Model::get($dafel,(Object)[
@@ -93,8 +94,11 @@
             }
 
             $budget_origin = "D";
-            $payment_icon = (@$budget->payments ? (sizeof($budget->payments) > 1 ? "SEVERAL" : $budget->payments[0]["modality_id"]): NULL);
-            if( !@$payment_icon && $budget->credit->value > 0 ){
+            $payment_icon = NULL;
+            if( @$budget->payments ){
+                $payment_icon = sizeof($budget->payments) > 1 ? "SEVERAL" : $budget->payments[0]["modality_id"];
+            }
+            else if( $budget->credit->value > 0 ){
                 $payment_icon = $config->credit->modality_id;
             }
 
@@ -160,8 +164,6 @@
                     ]);
                 }
             }
-
-            $budget->credit = (Object)$budget->credit;
 
             if( $budget->credit->value > 0 ){
                 $payment_id = Model::insert($commercial, (Object)[
@@ -478,8 +480,8 @@
             if (!@$post->items || !sizeof($post->items)) headerResponse((Object)["code" => 417, "message" => "Nenhum produto informado para o pedido."]);
 
             $budget = $post;
-            $budget->credit = (Object)$budget->credit;
             $date = date("Y-m-d H:i:s");
+            $budget->credit = (Object)$budget->credit;
 
             if( $budget->credit->value > 0 ){
                 foreach( $budget->credit->payable as $credit ){
@@ -530,8 +532,11 @@
             }
 
             $budget_origin = "D";
-            $payment_icon = (@$budget->payments ? (sizeof($budget->payments) > 1 ? "SEVERAL" : $budget->payments[0]["modality_id"]): NULL);
-            if( !@$payment_icon && $budget->credit->value > 0 ){
+            $payment_icon = NULL;
+            if( @$budget->payments ){
+                $payment_icon = sizeof($budget->payments) > 1 ? "SEVERAL" : $budget->payments[0]["modality_id"];
+            }
+            else if( $budget->credit->value > 0 ){
                 $payment_icon = $config->credit->modality_id;
             }
 
