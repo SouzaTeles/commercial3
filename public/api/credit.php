@@ -70,7 +70,7 @@
 
             $data = (Object)[
                 "id" => $post->payable_id,
-                "table" => "##CCredito\${$post->payable_id}\${$post->instance_id}\${$login->external_id}\${$config->credit->pawn_system}\$M",
+                "table" => "##CCredito\${$post->payable_id}\${$post->instance_id}\${$login->external_id}\${$config->budget->system_id}\$M",
                 "description" => "Inclusao do Commercial",
                 "date" => date("Y-m-d H:i:s"),
                 "instance_id" => $post->instance_id,
@@ -95,7 +95,7 @@
             foreach( $post->payable as $payable_id ){
                 $data = (Object)[
                     "id" => $payable_id,
-                    "table" => "##CCredito\${$payable_id}\${$post->instance_id}\${$login->external_id}\${$config->credit->pawn_system}\$M",
+                    "table" => "##CCredito\${$payable_id}\${$post->instance_id}\${$login->external_id}\${$config->budget->system_id}\$M",
                     "description" => "Inclusao do Commercial",
                     "date" => date("Y-m-d H:i:s"),
                     "instance_id" => $post->instance_id,

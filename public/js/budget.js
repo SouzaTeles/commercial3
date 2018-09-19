@@ -94,7 +94,7 @@ Budget = {
         searching: 1,
         // scrollY: $(window).innerHeight()-372,
         // scrollCollapse: 1,
-        noControls: [7,8],
+        noControls: [7,8,9],
         order: [[0,'desc']]
     }),
     typeahead: {
@@ -367,7 +367,7 @@ Budget = {
             var type = Budget.type[budget.budget.status == 'O' ? 'B' : budget.budget.type];
             var status = Budget.status[budget.budget.status];
             var delivery = Budget.delivery[budget.budget.delivery];
-            Budget.table.row.add([
+            var row = Budget.table.row.add([
                 '<i data-toggle="tooltip" title="' + type.title + '" class="fa fa-' + status.icon + ' txt-' + type.color + '"></i><br/>' + budget.budget.code,
                 '<label>' + budget.seller.code + '</label><div class="seller">' + ( budget.seller.short_name || budget.seller.name ) + '</div>',
                 ( budget.budget.status == 'L' && budget.external.code ? budget.external.code : '--' ),
@@ -375,9 +375,13 @@ Budget = {
                 '<div class="person-cover"' + ( budget.person.image ? 'style="background-image:url(' + budget.person.image + ')"' : '' ) + '></div><label>' + budget.person.code + '</label><div class="client">' + budget.person.name + '</div>',
                 '<span>' + budget.budget.value_total_order + '</span>R$ ' + global.float2Br(budget.budget.value_total),
                 '<span>' + budget.budget.date + '</span>' + budget.budget.date_formatted,
+                budget.budget.icon ? '<img src="' + budget.budget.icon + '" />' : '--',
                 '<i data-toggle="tooltip" title="' + delivery.title + '" class="fa fa-' + delivery.icon + ' txt-' + delivery.color + '"></i>',
                 Budget.actions(budget)
-            ]);
+            ]).node();
+            $(row).on('dblclick',function(){
+                Budget.open(key,budget.budget.id);
+            });
         });
         Budget.table.draw();
     },

@@ -2,6 +2,6 @@
 {include file="{$PATH_TEMPLATES}includes/address.html"}
 <script src="{$URI_PUBLIC}js/modal/modal-address-new.js?{$smarty.now}"></script>
 <script>
-    ModalAddressNew.address = {$smarty.post.address|@json_encode};
+    {if !empty($smarty.post.address)}ModalAddressNew.address = {$smarty.post.address|@json_encode};{/if}
     ModalAddressNew.address.person_id = '{$smarty.post.person_id}';
 </script>

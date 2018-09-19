@@ -22,6 +22,12 @@
     display: none;
 }
 
+table tr td img
+{
+    max-width: 28px;
+    max-height: 18px;
+}
+
 table tr td:first-child i
 {
     margin: 2px 4px;

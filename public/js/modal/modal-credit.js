@@ -63,7 +63,6 @@ ModalCredit = {
         });
     },
     pawn: function(data){
-        console.log(data);
         global.post({
             url: global.uri.uri_public_api + 'credit.php?action=pawn',
             data: {
@@ -75,7 +74,6 @@ ModalCredit = {
             ModalCredit.selected.push(data);
             ModalCredit.last.push(data.payable_id);
             $('#modal-credit input[data-id="' + data.payable_id + '"]').prop('checked',true);
-            console.log(data);
         });
     },
     select: function(key){
@@ -87,6 +85,15 @@ ModalCredit = {
                     'Usuário: ' + credit.pawn.user_name + '<br/>' +
                     'Módulo: ' + credit.pawn.system_name + '<br/>' +
                     'Descrição: ' + credit.pawn.description + '<br/>' +
+                '</p>'
+            );
+            return;
+        }
+        if( credit.company_id != ModalCredit.company_id ){
+            global.validateMessage(
+                '<p>' +
+                    'A Carta de crédito não poderá ser utilizada em uma empresa diferente de sua origem.<br/>' +
+                    'Contate o setor financeiro.' +
                 '</p>'
             );
             return;
@@ -128,7 +135,7 @@ ModalCredit = {
                 $('#modal_credit_note').val(ModalCredit.credits[$(this).attr('data-key')].payable_note);
             }).find('input').change(function(){
                 ModalCredit.select($(this).attr('data-key'));
-            }).prop('disabled',!!credit.pawn);
+            }).prop('disabled',(!!credit.pawn || credit.company_id != ModalCredit.company_id));
         });
         ModalCredit.table.draw();
     },
@@ -144,7 +151,6 @@ ModalCredit = {
             ModalCredit.selected.splice(data.index,1);
             ModalCredit.last.splice(ModalCredit.last.indexOf(data.payable_id),1);
             $('#modal-credit input[data-id="' + data.payable_id + '"]').prop('checked',false);
-            console.log(ModalCredit.last,ModalCredit.selected);
         });
     }
 };

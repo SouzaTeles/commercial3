@@ -8,6 +8,14 @@
     cursor: pointer;
 }
 
+.panel-payment table tr td img
+{
+    float: left;
+    max-width: 40px;
+    max-height: 18px;
+    margin-right: 6px;
+}
+
 .panel-payment table tr td button
 {
     margin: 2px 4px;

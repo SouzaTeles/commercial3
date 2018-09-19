@@ -193,7 +193,6 @@ Budget = {
         last: '',
         timer: 0
     },
-    instance_id: ('00000'+btoa(global.random(1000000,9999999)).toUpperCase().substr(0,10)).slice(-10),
     add: function(){
         global.post({
             url: global.uri.uri_public_api + 'budget.php?action=insert',
@@ -207,6 +206,23 @@ Budget = {
         });
     },
     afterRecover: function(){
+        if( Budget.budget.budget_credit == 'Y' ) {
+            Budget.budget.budget_credit = 'N';
+            Budget.budget.credit = {
+                value: 0,
+                payable: []
+            };
+            var index = -1;
+            $.each(Budget.budget.payments,function(key,payment){
+                if( payment.budget_payment_credit == 'Y' ){
+                    index = key;
+                }
+            });
+            Budget.budget.payments.splice(index,1);
+            Payment.total();
+            Payment.showList();
+            $('#payment-credit-value').text('R$ 0,00');
+        }
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-recovered',
             dataType: 'html'
@@ -457,6 +473,7 @@ Budget = {
             delete budget.person;
             delete budget.address;
             Budget.budget = budget;
+            Budget.budget.instance_id = Budget.instance();
             Budget.budget.address_uf_id = Address.delivery.uf_id;
             Company.get();
         });
@@ -513,7 +530,8 @@ Budget = {
                     payable: []
                 },
                 export: null,
-                authorization: []
+                authorization: [],
+                instance_id: Budget.instance(),
             };
             Item.init();
             Person.init();
@@ -527,6 +545,9 @@ Budget = {
         Term.data2form();
         Payment.showList();
         Payment.total();
+    },
+    instance: function(){
+        return ('00000'+btoa(global.random(1000000,9999999)).toUpperCase().substr(0,10)).slice(-10);
     },
     item: function(){
         Item.search();
@@ -723,8 +744,27 @@ Budget = {
             });
             return false;
         }
-        if( !!Budget.budget.export && !Budget.budget.payments.length ){
-            global.validateMessage('As informações de pagamentos deverão ser adicionadas.');
+        if( !!Budget.budget.export ){
+            if(!Budget.budget.payments.length && Budget.budget.credit.value == 0){
+                global.validateMessage('As informações de pagamentos deverão ser adicionadas.');
+                global.scrollTo({
+                    delay: 500,
+                    addition: 200,
+                    selector: '.panel-payment'
+                });
+                return false;
+            }
+            if(Budget.budget.export == 'dav' && Budget.budget.credit.value > 0){
+                global.validateMessage('Não será possível exportar o DAV utilizando uma carta de crédito.');
+                global.scrollTo({
+                    delay: 500,
+                    addition: 200,
+                    selector: '.panel-payment'
+                });
+                return false;
+            }
+        } else if(Budget.budget.credit.value > 0){
+            global.validateMessage('Este orçamento está utilizando uma Carta de Crédito como forma de pagamento e por esse motivo não será permitido salvá-lo, você deverá exporta-lo.');
             global.scrollTo({
                 delay: 500,
                 addition: 200,
@@ -732,7 +772,7 @@ Budget = {
             });
             return false;
         }
-        if( !!Budget.budget.payments.length && Payment.payment_remaining != 0 ){
+        if( (!!Budget.budget.payments.length || Budget.budget.credit.value > 0) && Payment.payment_remaining != 0 ){
             global.validateMessage('A soma das parcelas é diferente do valor total do pedido.');
             global.scrollTo({
                 delay: 500,
@@ -2206,8 +2246,8 @@ Payment = {
     payment_remaining: 0,
     table: global.table({
         selector: '#table-budget-payments',
-        noControls: [0,1,5],
-        order: [[3,'asc']],
+        noControls: [0,4],
+        order: [[2,'asc']],
         scrollY: 186,
         scrollCollapse: 1
     }),
@@ -2247,11 +2287,29 @@ Payment = {
             }]
         });
     },
+    beforeRemoveCredit: function(){
+        global.modal({
+            icon: 'fa-question-circle-o',
+            title: 'Confirmação',
+            html: '<p>Deseja remover a carta de crédito do orçamento?</p>',
+            buttons: [{
+                icon: 'fa-times',
+                title: 'Não',
+                class: 'pull-left'
+            }, {
+                icon: 'fa-check',
+                title: 'Sim',
+                action: function () {
+                    Payment.removeCredit();
+                }
+            }]
+        });
+    },
     credit: function(){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-credit',
             data: {
-                instance_id: Budget.instance_id,
+                instance_id: Budget.budget.instance_id,
                 company_id: Company.company.company_id,
                 person: {
                     person_id: Person.person.person_id,
@@ -2285,9 +2343,9 @@ Payment = {
                 }],
                 shown: function(){
                     ModalCredit.success = function(credits){
-                        console.log(credits);
                         Budget.budget.credit.value = 0;
                         Budget.budget.credit.payable = [];
+                        Budget.budget.budget_credit = 'N';
                         $.each(credits,function(key,credit){
                             if( Budget.budget.credit.value < ( Budget.budget.budget_value_total - Payment.payment_value ) ) {
                                 if( Budget.budget.credit.value + credit.payable_value > ( Budget.budget.budget_value_total - Payment.payment_value )) {
@@ -2295,6 +2353,7 @@ Payment = {
                                 }
                                 Budget.budget.credit.value += credit.payable_value;
                                 Budget.budget.credit.payable.push(credit);
+                                Budget.budget.budget_credit = 'Y';
                             }
                         });
                         Payment.total();
@@ -2549,7 +2608,18 @@ Payment = {
             Payment.credit();
         });
         Payment.table.on('draw',function(){
-            global.tooltip();
+            var table = $('#table-budget-payments');
+            $(table).find('tr').on('dblclick',function(){
+                if( $(this).attr('data-key') == -1 ){
+                    Payment.credit();
+                } else {
+                    Payment.beforeEdit($(this).attr('data-key'));
+                }
+            }).find('button').click(function(){
+                Payment[$(this).attr('data-action')]($(this).attr('data-key'));
+            }).tooltip({
+                container: 'body'
+            });
         });
     },
     new: function(){
@@ -2609,49 +2679,65 @@ Payment = {
     },
     recalculate: function(){
         var installment = Budget.budget.payments.length;
-        var budget_payment_value = parseInt((100*Budget.budget.budget_value_total)/installment)/100;
+        var value_total = Budget.budget.budget_value_total = Budget.budget.credit.value;
+        var budget_payment_value = parseInt((100*value_total)/installment)/100;
         for( var i=0; i<installment; i++ ){
             if( (i+1) == installment ){
-                budget_payment_value = parseFloat((budget_payment_value + parseFloat((Budget.budget.budget_value_total-(installment*budget_payment_value)).toFixed(2))).toFixed(2));
+                budget_payment_value = parseFloat((budget_payment_value + parseFloat((value_total-(installment*budget_payment_value)).toFixed(2))).toFixed(2));
             }
             Budget.budget.payments[i].budget_payment_value = budget_payment_value;
         }
         Payment.total();
         Payment.showList();
     },
+    removeCredit: function(){
+        var payable = [];
+        $.each(Budget.budget.credit.payable,function(key,credit){
+             payable.push(credit.payable_id);
+        });
+        global.post({
+            url: global.uri.uri_public_api + 'credit.php?action=redeem',
+            data: {
+                payable: payable,
+                instance_id: Budget.budget.instance_id
+            },
+            dataType: 'json'
+        },function(){
+            Budget.budget.credit.value = 0;
+            Budget.budget.credit.payable = [];
+            Budget.budget.budget_credit = 'Y';
+            $('#payment-credit-value').text('R$ 0,00');
+            Payment.total();
+            Payment.showList();
+        });
+    },
     showList: function(){
         Payment.table.clear();
         if( Budget.budget.credit.value > 0 ){
             var row = Payment.table.row.add([
                 '1x',
-                '<img src="' + global.uri.uri_public + 'files/modality/00A000000P.png" style="max-width:40px;max-height:18px;"/>',
-                'Carta de Crédito',
+                '<img src="' + global.uri.uri_public + 'files/modality/00A000000P.png"/>Carta de Crédito',
                 '<span>' + global.today() + '</span>' + global.date2Br(global.today()),
                 global.float2Br(Budget.budget.credit.value),
-                '<button data-toggle="tooltip" data-title="Editar Parcela" data-action="beforeEdit" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
-                '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="del" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
+                '<button data-toggle="tooltip" data-title="Editar Parcela" data-action="credit" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
+                '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="beforeRemoveCredit" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
             ]).node();
-            $(row).on('dblclick',function(){
-                Payment.credit();
-            }).find('button').click(function(){
-                console.log($(this).attr('data-action'));
-            });
+            $(row).attr('data-key',-1);
+            $('#payment-credit-value').text('R$ '+global.float2Br(Budget.budget.credit.value));
         }
         $.each( Budget.budget.payments, function(key, payment){
             var row = Payment.table.row.add([
                 ( payment.budget_payment_entry == 'Y' ? '<i class="fa fa-check-circle"></i> ' : '' ) + payment.budget_payment_installment + 'x',
-                ( payment.image ? '<img src="' + payment.image + '" style="max-width:40px;max-height:18px;"/> ' : '<i class="fa fa-credit-card"></i> ' ),
-                payment.modality_description,
+                ( payment.image ? '<img src="' + payment.image + '"/> ' : '<i class="fa fa-credit-card"></i> ' ) + payment.modality_description,
                 '<span>' + payment.budget_payment_deadline + '</span>' + global.date2Br(payment.budget_payment_deadline),
                 global.float2Br(payment.budget_payment_value),
                 '<button data-toggle="tooltip" data-title="Editar Parcela" data-action="beforeEdit" data-key="' + key + '" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
                 '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="del" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
             ]).node();
-            $(row).on('dblclick',function(){
-                Payment.beforeEdit($(this).attr('data-key'));
-            }).find('button').click(function(){
-                Payment[$(this).attr('data-action')]($(this).attr('data-key'));
-            });
+            $(row).attr('data-key',key);
+            if( payment.budget_payment_credit == 'Y' ){
+                $('#payment-credit-value').text('R$ '+global.float2Br(payment.budget_payment_value));
+            }
         });
         $('#button-budget-payment-remove').prop('disabled',!Budget.budget.payments.length);
         $('#button-budget-payment-recalculate').prop('disabled',!Budget.budget.payments.length);
@@ -2678,7 +2764,6 @@ Payment = {
         $('#budget_payment_value').val('R$ '+global.float2Br(Payment.payment_value));
         $('#budget_payment_aliquot').val(global.float2Br(Payment.payment_aliquot)+'%');
         $('#budget_payment_remaining').val('R$ '+global.float2Br(Payment.payment_remaining));
-        $('#payment-credit-value').text('R$ '+global.float2Br(Budget.budget.credit.value));
     },
     getModalities: function(success){
         global.post({

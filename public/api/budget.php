@@ -93,6 +93,10 @@
             }
 
             $budget_origin = "D";
+            $payment_icon = (@$budget->payments ? (sizeof($budget->payments) > 1 ? "SEVERAL" : $budget->payments[0]["modality_id"]): NULL);
+            if( !@$payment_icon && $budget->credit->value > 0 ){
+                $payment_icon = $config->credit->modality_id;
+            }
 
             Model::update($commercial, (Object)[
                 "table" => "Budget",
@@ -113,6 +117,7 @@
                     ["budget_value_total", "d", $budget->budget_value_total],
                     ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
                     ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
+                    ["budget_payment_icon","s", $payment_icon],
                     ["budget_credit", "s", $budget->budget_credit],
                     ["budget_delivery", "s", $budget->budget_delivery],
                     ["budget_status", "s", @$budget->export ? "L" : "O" ],
@@ -152,6 +157,37 @@
                     $items[] = (int)Model::insert($commercial, (Object)[
                         "table" => "BudgetItem",
                         "fields" => $fields
+                    ]);
+                }
+            }
+
+            $budget->credit = (Object)$budget->credit;
+
+            if( $budget->credit->value > 0 ){
+                $payment_id = Model::insert($commercial, (Object)[
+                    "table" => "BudgetPayment",
+                    "fields" => [
+                        ["budget_id", "i", $budget_id],
+                        ["modality_id", "s", $config->credit->modality_id],
+                        ["external_id", "s", $budget->credit->external_id],
+                        ["budget_payment_value", "d", $budget->credit->value],
+                        ["budget_payment_installment", "i", 1],
+                        ["budget_payment_entry", "s", "N"],
+                        ["budget_payment_credit", "s", "Y"],
+                        ["budget_payment_deadline", "s", date("Y-m-d")],
+                        ["budget_payment_date", "s", date("Y-m-d")]
+                    ]
+                ]);
+                foreach( $budget->credit->payable as $credit ){
+                    $credit = (Object)$credit;
+                    Model::insert($commercial, (Object)[
+                        "table" => "BudgetPaymentCredit",
+                        "fields" => [
+                            ["budget_payment_id", "i", $payment_id],
+                            ["payable_id", "s", $credit->payable_id],
+                            ["payable_value", "s", $credit->payable_value],
+                            ["budget_payment_credit_date", "s", date("Y-m-d H:i:s")]
+                        ]
                     ]);
                 }
             }
@@ -206,6 +242,7 @@
                 "table" => "BudgetPayment",
                 "filters" => [
                     [ "budget_id", "i", "=", $budget_id ],
+                    [ "budget_payment_credit", "s", "=", "N" ],
                     [ "budget_payment_id", "i", "not in", sizeof($payments) ? $payments : NULL ]
                 ]
             ]);
@@ -347,6 +384,7 @@
                     "B.budget_origin",
                     "B.budget_status",
                     "B.budget_delivery",
+                    "B.budget_payment_icon",
                     "budget_date=FORMAT(B.budget_date,'yyyy-MM-dd HH:mm:ss')"
                 ],
                 "filters" => [
@@ -354,11 +392,23 @@
                     ["B.seller_id", "s", "=", @$post->seller_id ? $post->seller_id : NULL],
                     ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
                 ],
-                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_date"
+                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_payment_icon,B.budget_date"
             ]);
 
             $ret = [];
             foreach ($budgets as $budget) {
+                $icon = NULL;
+                if( @$budget->budget_payment_icon ){
+                    if( $budget->budget_payment_icon == "SEVERAL" ){
+                        $icon = URI_FILES . "modality/several.png";
+                    } else {
+                        $icon = getImage((Object)[
+                            "image_id" => $budget->budget_payment_icon,
+                            "image_dir" => "modality"
+                        ]);
+                    }
+
+                }
                 $ret[] = (Object)[
                     "budget" => (Object)[
                         "id" => (int)$budget->budget_id,
@@ -371,7 +421,9 @@
                         "status" => $budget->budget_status,
                         "delivery" => $budget->budget_delivery,
                         "date" => $budget->budget_date,
-                        "date_formatted" => date_format(date_create($budget->budget_date),"d/m/Y")
+                        "date_formatted" => date_format(date_create($budget->budget_date),"d/m/Y"),
+                        "payment" => $budget->budget_payment_icon,
+                        "icon" => $icon
                     ],
                     "external" => (Object)[
                         "id" => $budget->external_id,
@@ -426,8 +478,29 @@
             if (!@$post->items || !sizeof($post->items)) headerResponse((Object)["code" => 417, "message" => "Nenhum produto informado para o pedido."]);
 
             $budget = $post;
+            $budget->credit = (Object)$budget->credit;
             $date = date("Y-m-d H:i:s");
-            
+
+            if( $budget->credit->value > 0 ){
+                foreach( $budget->credit->payable as $credit ){
+                    $credit = (Object)$credit;
+                    $table = Model::get($dafel,(Object)[
+                        "tables" => [ "TempDB..sysObjects" ],
+                        "fields" => [ "Name" ],
+                        "filters" => [
+                            [ "SUBSTRING(Name,12,10)", "s", "=", $credit->payable_id ],
+                            [ "SUBSTRING(Name,23,10)", "s", "=", $budget->instance_id ]
+                        ]
+                    ]);
+                    if( !@$table->Name ){
+                        headerResponse((Object)[
+                            "code" => 417,
+                            "message" => "O crédito não foi empenhado. Contate o setor de TI."
+                        ]);
+                    }
+                }
+            }
+
             if( @$budget->export ){
                 $operation = Model::get($dafel,(Object)[
                     "tables" => [ "Operacao (NoLock)" ],
@@ -457,6 +530,10 @@
             }
 
             $budget_origin = "D";
+            $payment_icon = (@$budget->payments ? (sizeof($budget->payments) > 1 ? "SEVERAL" : $budget->payments[0]["modality_id"]): NULL);
+            if( !@$payment_icon && $budget->credit->value > 0 ){
+                $payment_icon = $config->credit->modality_id;
+            }
 
             $budget_id = (int)Model::insert($commercial, (Object)[
                 "table" => "Budget",
@@ -479,6 +556,7 @@
                     ["budget_value_total", "d", $budget->budget_value_total],
                     ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
                     ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
+                    ["budget_payment_icon","s",$payment_icon],
                     ["budget_credit", "s", $budget->budget_credit],
                     ["budget_delivery", "s", $budget->budget_delivery],
                     ["budget_status", "s", @$budget->export ? "L" : "O" ],
@@ -509,6 +587,35 @@
                         ["budget_item_date", "s", $date]
                     ]
                 ]);
+            }
+
+            if( $budget->credit->value > 0 ){
+                $payment_id = Model::insert($commercial, (Object)[
+                    "table" => "BudgetPayment",
+                    "fields" => [
+                        ["budget_id", "i", $budget_id],
+                        ["modality_id", "s", $config->credit->modality_id],
+                        ["external_id", "s", $budget->credit->external_id],
+                        ["budget_payment_value", "d", $budget->credit->value],
+                        ["budget_payment_installment", "i", 1],
+                        ["budget_payment_entry", "s", "N"],
+                        ["budget_payment_credit", "s", "Y"],
+                        ["budget_payment_deadline", "s", date("Y-m-d")],
+                        ["budget_payment_date", "s", date("Y-m-d")]
+                    ]
+                ]);
+                foreach( $budget->credit->payable as $credit ){
+                    $credit = (Object)$credit;
+                    Model::insert($commercial, (Object)[
+                        "table" => "BudgetPaymentCredit",
+                        "fields" => [
+                            ["budget_payment_id", "i", $payment_id],
+                            ["payable_id", "s", $credit->payable_id],
+                            ["payable_value", "s", $credit->payable_value],
+                            ["budget_payment_credit_date", "s", date("Y-m-d H:i:s")]
+                        ]
+                    ]);
+                }
             }
 
             if (@$budget->payments) {
@@ -604,6 +711,102 @@
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Não será possivel editar o pedido, pois o mesmo está sendo faturado."
+                ]);
+            }
+
+            if( $budget->budget_credit == "Y" ){
+                $credits = Model::getList($commercial,(Object)[
+                    "tables" => [
+                        "Budget B",
+                        "BudgetPayment BP",
+                        "BudgetPaymentCredit BPC"
+                    ],
+                    "fields" => [
+                        "BP.budget_payment_id",
+                        "BP.external_id",
+                        "BPC.payable_id",
+                        "BPC.payable_value"
+                    ],
+                    "filters" => [
+                        [ "B.budget_id = BP.budget_id" ],
+                        [ "BP.budget_payment_id = BPC.budget_payment_id" ],
+                        [ "BP.budget_payment_credit", "s", "=", "Y" ],
+                        [ "B.budget_id", "i", "=", $budget->budget_id ]
+                    ]
+                ]);
+
+                $payable = [];
+                $IdEntidadeOrigem = NULL;
+                $budget_payment_id = NULL;
+                foreach( $credits as $credit ){
+                    $payable[] = $credit->payable_id;
+                    $IdEntidadeOrigem = $credit->external_id;
+                    $budget_payment_id = $credit->budget_payment_id;
+                }
+
+                if( !@$IdEntidadeOrigem || !@$budget_payment_id ){
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "Não foi possível recuperar o orçamento. Contate o setor de TI."
+                    ]);
+                }
+
+                $drops = Model::getList($dafel,(Object)[
+                    "tables" => [ "APagarBaixa" ],
+                    "fields" => [ "IdAPagarBaixa", "IdLoteAPagar" ],
+                    "filters" => [
+                        [ "IdEntidadeOrigem", "s", "=", $IdEntidadeOrigem ],
+                        [ "IdAPagar", "s", "in", $payable ]
+                    ]
+                ]);
+
+                if( sizeof($drops) != sizeof($payable) ){
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "Não foi possível recuperar o orçamento. Uma ou mais Baixas do crédito não foram encontradas."
+                    ]);
+                }
+
+                $payableDrop=[];
+                $payableLot=[];
+                foreach( $drops as $drop ){
+                    $payableDrop[] = $drop->IdAPagarBaixa;
+                    $payableLot[] = $drop->IdLoteAPagar;
+                }
+
+                Model::delete($dafel,(Object)[
+                    "table" => "LoteAPagar",
+                    "filters" => [[ "IdLoteAPagar", "s", "in", $payableLot ]],
+                    "top" => sizeof($payableLot)
+                ]);
+
+                Model::delete($dafel,(Object)[
+                    "table" => "APagarBaixa",
+                    "filters" => [
+                        [ "IdEntidadeOrigem", "s", "=", $IdEntidadeOrigem ],
+                        [ "IdAPagarBaixa", "s", "in", $payableDrop ]
+                    ],
+                    "top" => sizeof($payableDrop)
+                ]);
+
+                Model::update($dafel,(Object)[
+                    "table" => "APagar",
+                    "fields" => [[ "DtBaixa", "s", NULL ]],
+                    "filters" => [[ "IdAPagar", "s", "in", $payable ]],
+                    "top" => sizeof($payable)
+                ]);
+
+                Model::delete($commercial,(Object)[
+                    "table" => "BudgetPayment",
+                    "filters" => [
+                        ["budget_id", "i", "=", $budget->budget_id],
+                        ["budget_payment_id", "i", "=", $budget_payment_id]
+                    ]
+                ]);
+
+                Model::delete($commercial,(Object)[
+                    "table" => "BudgetPaymentCredit",
+                    "filters" => [["budget_payment_id", "i", "=", $budget_payment_id]]
                 ]);
             }
 
