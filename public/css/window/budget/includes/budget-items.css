@@ -23,3 +23,10 @@
 {
     margin: 2px 4px;
 }
+
+.panel-items .total
+{
+    font-size: 18px;
+    text-align: right;
+    padding: 10px 0 0;
+}

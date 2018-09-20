@@ -838,7 +838,8 @@
         break;
 
         case "creditAuthorization":
-        case "discountItemAuthorization":
+        case "itemDiscountAuthorization":
+        case "generalDiscountAuthorization":
 
             if( !@$post->user_user || !@$post->user_pass || !@$post->data ){
                 headerResponse((Object)[
@@ -878,17 +879,26 @@
                 ]);
             }
 
-            if( $get->action == "creditAuthorization" ) {
-                if ($user->user_credit_authorization == "N") {
+            $user->user_max_discount = (float)$user->user_max_discount;
+
+            if( $get->action == "creditAuthorization" ){
+                if ($user->user_credit_authorization == "N"){
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "O usuário não possui permissão para liberação de crédito."
                     ]);
                 }
-            } else {
-                $user->user_max_discount = (float)$user->user_max_discount;
+            } else if( $get->action == "itemDiscountAuthorization" ){
                 $post->data->item_aliquot_discount = (float)$post->data->item_aliquot_discount;
                 if ($user->user_max_discount < $post->data->item_aliquot_discount) {
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "Desconto acima do permitido."
+                    ]);
+                }
+            } else if( $get->action == "generalDiscountAuthorization" ){
+                $post->data->aliquot_discount = (float)$post->data->aliquot_discount;
+                if ($user->user_max_discount < $post->data->aliquot_discount) {
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "Desconto acima do permitido."

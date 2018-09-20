@@ -89,6 +89,11 @@ Budget = {
         start_date: global.today(),
         end_date: global.today()
     },
+    filters: {
+        type: [],
+        status: [],
+        delivery: []
+    },
     table: global.table({
         selector: '#table-budgets',
         searching: 1,
@@ -363,25 +368,31 @@ Budget = {
     showList: function(){
         Budget.table.clear();
         $.each( Budget.budgets, function(key, budget){
-            budget.key = key;
-            var type = Budget.type[budget.budget.status == 'O' ? 'B' : budget.budget.type];
-            var status = Budget.status[budget.budget.status];
-            var delivery = Budget.delivery[budget.budget.delivery];
-            var row = Budget.table.row.add([
-                '<i data-toggle="tooltip" title="' + type.title + '" class="fa fa-' + status.icon + ' txt-' + type.color + '"></i><br/>' + budget.budget.code,
-                '<label>' + budget.seller.code + '</label><div class="seller">' + ( budget.seller.short_name || budget.seller.name ) + '</div>',
-                ( budget.budget.status == 'L' && budget.external.code ? budget.external.code : '--' ),
-                ( budget.document.code || '--' ),
-                '<div class="person-cover"' + ( budget.person.image ? 'style="background-image:url(' + budget.person.image + ')"' : '' ) + '></div><label>' + budget.person.code + '</label><div class="client">' + budget.person.name + '</div>',
-                '<span>' + budget.budget.value_total_order + '</span>R$ ' + global.float2Br(budget.budget.value_total),
-                '<span>' + budget.budget.date + '</span>' + budget.budget.date_formatted,
-                budget.budget.icon ? '<img src="' + budget.budget.icon + '" />' : '--',
-                '<i data-toggle="tooltip" title="' + delivery.title + '" class="fa fa-' + delivery.icon + ' txt-' + delivery.color + '"></i>',
-                Budget.actions(budget)
-            ]).node();
-            $(row).on('dblclick',function(){
-                Budget.open(key,budget.budget.id);
-            });
+            if(
+                (!Budget.filters.type.length || Budget.type.status.indexOf(budget.budget.type) != -1) &&
+                (!Budget.filters.status.length || Budget.filters.status.indexOf(budget.budget.status) != -1) &&
+                (!Budget.filters.delivery.length || Budget.filters.delivery.indexOf(budget.budget.delivery) != -1)
+            ){
+                budget.key = key;
+                var type = Budget.type[budget.budget.status == 'O' ? 'B' : budget.budget.type];
+                var status = Budget.status[budget.budget.status];
+                var delivery = Budget.delivery[budget.budget.delivery];
+                var row = Budget.table.row.add([
+                    '<i data-toggle="tooltip" title="' + type.title + '" class="fa fa-' + status.icon + ' txt-' + type.color + '"></i><br/>' + budget.budget.code,
+                    '<label>' + budget.seller.code + '</label><div class="seller">' + ( budget.seller.short_name || budget.seller.name ) + '</div>',
+                    ( budget.budget.status == 'L' && budget.external.code ? budget.external.code : '--' ),
+                    ( budget.document.code || '--' ),
+                    '<div class="person-cover"' + ( budget.person.image ? 'style="background-image:url(' + budget.person.image + ')"' : '' ) + '></div><label>' + budget.person.code + '</label><div class="client">' + budget.person.name + '</div>',
+                    '<span>' + budget.budget.value_total_order + '</span>R$ ' + global.float2Br(budget.budget.value_total),
+                    '<span>' + budget.budget.date + '</span>' + budget.budget.date_formatted,
+                    budget.budget.icon ? '<img src="' + budget.budget.icon + '" />' : '--',
+                    '<i data-toggle="tooltip" title="' + delivery.title + '" class="fa fa-' + delivery.icon + ' txt-' + delivery.color + '"></i>',
+                    Budget.actions(budget)
+                ]).node();
+                $(row).on('dblclick', function () {
+                    Budget.open(key, budget.budget.id);
+                });
+            }
         });
         Budget.table.draw();
     },

@@ -74,3 +74,10 @@ footer button i.fa-mobile
     font-size: 20px;
     position: relative;
 }
+
+footer button[data-selected="true"]
+{
+    padding: 4px;
+    background: lightgray;
+    border-radius: 4px !important;
+}

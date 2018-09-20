@@ -329,6 +329,50 @@ Budget = {
             Budget.close();
         });
     },
+    discount: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-discount',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'small',
+                icon: 'fa-usd',
+                id: 'modal-budget-discount',
+                class: 'modal-budget-discount',
+                title: 'Desconto Geral',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Cancelar'
+                },{
+                    icon: 'fa-check',
+                    title: 'Aplicar',
+                    unclose: true,
+                    action: function(){
+                        ModalBudgetDiscount.discountAuthorization();
+                    }
+                }],
+                show: function(){
+                    $('#modal_discount_aliquot').focus();
+                }
+            });
+        });
+    },
+    discountAliquot: function(data){
+        console.log(data);
+        Budget.budget.budget_value_discount = 0;
+        Budget.budget.budget_aliquot_discount = data.aliquot_discount;
+        $.each(Budget.budget.items,function(key,item){
+            item.budget_item_aliquot_discount = data.aliquot_discount.toFixed(2);
+            item.budget_item_value_discount = parseFloat(((data.aliquot_discount / 100) * item.budget_item_value).toFixed(2));
+            item.budget_item_value_total = item.budget_item_value - item.budget_item_value_discount;
+            Budget.budget.budget_value_discount += item.budget_item_value_discount;
+        });
+        Budget.budget.budget_value_total = Budget.budget.budget_value - Budget.budget.budget_value_discount + Budget.budget.budget_value_addition;
+        Item.total();
+        Item.showList();
+        Payment.total();
+    },
     edit: function(){
         global.post({
             url: global.uri.uri_public_api + 'budget.php?action=edit',
@@ -442,8 +486,8 @@ Budget = {
             Budget.note();
         }).prop('disabled',false);
         $panel.find('button[data-action="discount"]').click(function(){
-
-        }).prop('disabled',false);
+            Budget.discount();
+        });
         $panel.find('button[data-action="delivery"]').click(function(){
             Budget.setDelivery();
         }).prop('disabled',false);
@@ -1183,32 +1227,6 @@ Item = {
             }
             Item.add();
         });
-        $('#budget_value_addition').on('keyup',function(e) {
-            var keycode = e.keyCode || e.which;
-            if (keycode == '13' && $(this).val().length) {
-                var budget_value_addition = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-                Item.totalAddition(budget_value_addition);
-            }
-        }).blur(function(){
-            var budget_value_addition = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-            $(this).val(global.float2Br(budget_value_addition));
-            if( budget_value_addition != Budget.budget.budget_value_total_addition ){
-                Item.totalAddition(budget_value_addition);
-            }
-        });
-        $('#budget_value_discount').on('keyup',function(e) {
-            var keycode = e.keyCode || e.which;
-            if (keycode == '13' && $(this).val().length) {
-                var budget_value_discount = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-                Item.totalDiscount(budget_value_discount);
-            }
-        }).blur(function(){
-            var budget_value_discount = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-            $(this).val(global.float2Br(budget_value_discount));
-            if( budget_value_discount != Budget.budget.budget_value_total_discount ){
-                Item.totalDiscount(budget_value_discount);
-            }
-        });
         Item.table.on('draw',function(){
             var $table = $('#table-budget-items');
             $table.find('button[data-action="info"]').click(function(){
@@ -1409,35 +1427,11 @@ Item = {
             });
         });
         Item.table.draw();
+        $('.panel-tools button[data-action="discount"]').prop('disabled',!Budget.budget.items.length);
     },
     total: function(){
-        $('#budget_value').val('R$ ' + global.float2Br(Budget.budget.budget_value));
-        $('#budget_value_addition').val(global.float2Br(Budget.budget.budget_value_addition)).prop({
-            'readonly': true || !Budget.budget.items.length
-        }).attr({
-            'data-value': Budget.budget.budget_value_addition
-        });
-        $('#budget_value_discount').val(global.float2Br(Budget.budget.budget_value_discount)).prop({
-            'readonly': true || !Budget.budget.items.length
-        }).attr({
-            'data-value': Budget.budget.budget_value_discount
-        });
-        $('#budget_value_total').val('R$ ' + global.float2Br(Budget.budget.budget_value_total));
+        $('.panel-items .total').html('Valor Total: <b>R$' + global.float2Br(Budget.budget.budget_value_total) + '</b>');
         Payment.total();
-    },
-    totalAddition: function(budget_value_addition){
-        Budget.budget.budget_value_addition = budget_value_addition;
-        Budget.budget.budget_value_total = Budget.budget.budget_value;
-        Budget.budget.budget_value_total += Budget.budget.budget_value_addition;
-        Budget.budget.budget_value_total -= Budget.budget.budget_value_discount;
-        Item.total();
-    },
-    totalDiscount: function(budget_value_discount){
-        Budget.budget.budget_value_discount = budget_value_discount;
-        Budget.budget.budget_value_total = Budget.budget.budget_value;
-        Budget.budget.budget_value_total += Budget.budget.budget_value_addition;
-        Budget.budget.budget_value_total -= Budget.budget.budget_value_discount;
-        Item.total();
     }
 };
 
@@ -2679,7 +2673,7 @@ Payment = {
     },
     recalculate: function(){
         var installment = Budget.budget.payments.length;
-        var value_total = Budget.budget.budget_value_total = Budget.budget.credit.value;
+        var value_total = Budget.budget.budget_value_total - Budget.budget.credit.value;
         var budget_payment_value = parseInt((100*value_total)/installment)/100;
         for( var i=0; i<installment; i++ ){
             if( (i+1) == installment ){
