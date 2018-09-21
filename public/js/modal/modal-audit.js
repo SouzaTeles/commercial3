@@ -23,7 +23,7 @@ ModalAudit = {
     events: function(){
         ModalAudit.table.on('draw',function(){
             $('#modal-table-audit').find('button').click(function(){
-                ModalAudit.showMore($(this).attr('data-key'));
+                ModalAudit.authorization($(this).attr('data-key'));
             });
         });
     },
@@ -50,6 +50,39 @@ ModalAudit = {
             ]);
         });
         ModalAudit.table.draw();
+    },
+    authorization: function(key){
+        global.post({
+            url: global.uri.uri_public + 'api/modal.php?modal=modal-audit-authorization',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'small',
+                id: 'modal-audit-authorization',
+                class: 'modal-audit-authorization',
+                icon: 'fa-lock',
+                title: 'Autorização',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    class: 'btn-red pull-left',
+                    title: 'Cancelar'
+                },{
+                    icon: 'fa-unlock',
+                    class: 'btn-green-dark',
+                    title: 'Autorizar',
+                    unclose: true,
+                    id: 'button-submit'
+                }],
+                shown: function(){
+                    $('#modal_user_user').focus();
+                    ModalAuditAuthorization.success = function(){
+                        console.log(key);
+                        ModalAudit.showMore(key);
+                    }
+                }
+            });
+        });
     },
     showMore: function(key){
         global.post({

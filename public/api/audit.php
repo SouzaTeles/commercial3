@@ -15,6 +15,62 @@
 
     switch( $get->action )
     {
+        case "authorization":
+
+            if( !@$post->user_user || !@$post->user_pass ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado"
+                ]);
+            }
+
+            $user = Model::get( $commercial, (Object)[
+                "tables" => [ "[User]" ],
+                "fields" => [
+                    "user_id",
+                    "user_name",
+                    "user_active"
+                ],
+                "filters" => [
+                    [ "user_user", "s", "=", $post->user_user ],
+                    [ "user_pass", "s", "=", md5($post->user_pass) ]
+                ]
+            ]);
+
+            if( !@$user ){
+                headerResponse((Object)[
+                    "code" => 404,
+                    "message" => "Login e/ou senha incorretos."
+                ]);
+            }
+
+            if( $user->user_active == "N" ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O usuário está inativo."
+                ]);
+            }
+
+            $access = Model::get( $commercial, (Object)[
+                "tables" => [ "[UserAccess]" ],
+                "fields" => [ "user_access_value" ],
+                "filters" => [
+                    [ "user_id", "s", "=", $user->user_id ],
+                    [ "user_access_name", "s", "=", "audit" ]
+                ]
+            ]);
+
+            if( !@$access || $access->user_access_value == "N"){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O usuário não possui permissão para auditoria."
+                ]);
+            }
+
+            Json::get( $headerStatus[200] );
+
+        break;
+
         case "getJson":
 
             if( !@$post->log_id || !@$post->log_script || !@$post->log_action || !@$post->log_date ) {

@@ -23,8 +23,8 @@
 		"name": "Altera opção de entrega do pedido de venda",
 		"value": "N"
 	},
-	"budget_audit": {
-		"name": "Auditoria dos pedidos de venda",
+	"audit": {
+		"name": "Auditoria",
 		"value": "N"
 	}
 }

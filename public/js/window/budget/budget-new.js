@@ -2572,9 +2572,10 @@ Payment = {
                         Budget.budget.payments = [];
                         if( Budget.budget.credit.value > 0){
                             Payment.removeCredit();
+                        } else {
+                            Payment.showList();
+                            Payment.total();
                         }
-                        Payment.showList();
-                        Payment.total();
                     }
                 }]
             });
