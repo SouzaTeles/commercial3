@@ -257,6 +257,15 @@
 		}
 	},
 
+	"registration": {
+		"name": "Cadastro",
+		"access": {
+			"name": "Visualiza",
+			"value": "S",
+			"data_type": "bool"
+		}
+	},
+
 	"config": {
 		"name": "Configurações",
 		"access": {

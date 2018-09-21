@@ -127,6 +127,12 @@
 		"icon": "fa-dropbox",
 		"title": "Produção"
 	},
+	"registration": {
+		"key": "registration",
+		"icon": "fa-plus-square-o",
+		"title": "Cadastro",
+		"parent": "stock"
+	},
 	"rh": {
 		"key": "rh",
 		"icon": "fa-users",
