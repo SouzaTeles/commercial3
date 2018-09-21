@@ -2570,6 +2570,9 @@ Payment = {
                         Term.init();
                         Term.data2form();
                         Budget.budget.payments = [];
+                        if( Budget.budget.credit.value > 0){
+                            Payment.removeCredit();
+                        }
                         Payment.showList();
                         Payment.total();
                     }

@@ -10,8 +10,6 @@
     $colors = json_decode(file_get_contents(PATH_DATA."colors.json"));
     $colors = getColors($colors);
 
-    $login->access = $login->user_profile->user_profile_access;
-
     $smarty->assign( "login", $login );
     $smarty->assign( "config", $config );
     $smarty->assign( "colors", $colors );
