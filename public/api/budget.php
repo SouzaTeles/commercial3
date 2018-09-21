@@ -906,6 +906,7 @@
                     "message" => "O usuário está inativo."
                 ]);
             }
+
             if( $get->action == "creditAuthorization" ){
                 $access = Model::get( $commercial, (Object)[
                     "tables" => [ "[UserAccess]" ],

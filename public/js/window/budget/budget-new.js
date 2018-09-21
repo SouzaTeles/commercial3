@@ -2570,8 +2570,12 @@ Payment = {
                         Term.init();
                         Term.data2form();
                         Budget.budget.payments = [];
-                        Payment.showList();
-                        Payment.total();
+                        if( Budget.budget.credit.value > 0){
+                            Payment.removeCredit();
+                        } else {
+                            Payment.showList();
+                            Payment.total();
+                        }
                     }
                 }]
             });
