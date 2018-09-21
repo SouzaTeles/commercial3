@@ -10,7 +10,8 @@ html, body
 }
 
 body::-webkit-scrollbar,
-div::-webkit-scrollbar
+div::-webkit-scrollbar,
+ul::-webkit-scrollbar
 {
     width: 0.5em;
     height: 0.5em;
@@ -18,7 +19,8 @@ div::-webkit-scrollbar
 }
 
 body::-webkit-scrollbar-thumb,
-div::-webkit-scrollbar-thumb
+div::-webkit-scrollbar-thumb,
+ul::-webkit-scrollbar-thumb
 {
     background-color: <?php echo $colors->hex->palette["blue"]; ?>;
     outline: 1px solid #3c3c3c;
@@ -132,4 +134,10 @@ footer div span
 .form-group label
 {
     margin-bottom: 0;
+}
+
+ul.typeahead
+{
+    overflow-y: auto;
+    max-height: 220px;
 }

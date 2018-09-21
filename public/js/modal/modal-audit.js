@@ -77,7 +77,6 @@ ModalAudit = {
                 shown: function(){
                     $('#modal_user_user').focus();
                     ModalAuditAuthorization.success = function(){
-                        console.log(key);
                         ModalAudit.showMore(key);
                     }
                 }
