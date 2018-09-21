@@ -90,7 +90,6 @@ Budget = {
         end_date: global.today()
     },
     filters: {
-        type: [],
         status: [],
         delivery: []
     },
@@ -124,13 +123,35 @@ Budget = {
                     '<li><a data-action="recover" disabled="' + ( true || global.login.access.budget.recover.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-unlock txt-red"></i>Recuperar Pedido</a></li>' +
                     '<li><a data-action="order" disabled="' + ( true || global.login.access.budget.order.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-powerpoint-o txt-orange"></i>Exportar Pedido</a></li>' +
                     '<li><a data-action="dav" disabled="' + ( true || global.login.access.budget.dav.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-text-o txt-blue"></i>Exportar Dav</a></li>' +
-                    '<li><a data-action="info" disabled="true" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-info txt-gray"></i>Informações</a></li>' +
-                    '<li><a data-action="audit" disabled="true" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-shield txt-green"></i>Auditoria</a></li>' +
+                    '<li><a data-action="info" disabled="false" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-info txt-gray"></i>Informações</a></li>' +
+                    '<li><a data-action="audit" disabled="false" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-shield txt-green"></i>Auditoria</a></li>' +
                     '<li class="divider"></li>' +
                     '<li><a data-action="del" disabled="' + ( true || budget.budget.status != 'O' || global.login.access.budget.del.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-trash-o txt-red"></i>Apagar</a></li>' +
                 '</ul>' +
             '</div>'
         );
+    },
+    audit: function(key,budget_id){
+        global.post({
+            url: global.uri.uri_public + 'api/modal.php?modal=modal-audit',
+            data: {
+                log_script: 'budget',
+                log_parent_id: budget_id
+            },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                id: 'modal-audit',
+                class: 'modal-audit',
+                icon: 'fa-shield',
+                title: 'Auditoria Orçamento ' + ('00000'+budget_id).slice(-6),
+                html: html,
+                buttons: [{
+                    title: 'Fechar'
+                }]
+            });
+        });
     },
     beforeDelivery: function(key){
         global.post({
@@ -251,8 +272,41 @@ Budget = {
             }
             Budget.new();
         });
+        $('button[data-action="status"]').click(function(){
+            var value = $(this).attr('data-value');
+            $(this).toggleClass('selected');
+            var index = Budget.filters.status.indexOf(value);
+            if( index > -1 ){
+                Budget.filters.status.splice(index,1);
+            } else {
+                Budget.filters.status.push(value);
+            }
+            Budget.showList();
+        });
+        $('button[data-action="delivery"]').click(function(){
+            var value = $(this).attr('data-value');
+            $(this).toggleClass('selected');
+            var index = Budget.filters.delivery.indexOf(value);
+            if( index > -1 ){
+                Budget.filters.delivery.splice(index,1);
+            } else {
+                Budget.filters.delivery.push(value);
+            }
+            Budget.showList();
+        });
         Budget.table.on('draw',function(){
             var $table = $('#table-budgets');
+            $table.find('button[data-toggle="dropdown"]').unbind('click').click(function(){
+                var top = $(this).parent().position().top;
+                var documentHeight = $(document).innerHeight();
+                var menuHeight = 364;
+                if( top + menuHeight > documentHeight ){
+                    $(this).next().css({
+                        'top': 'auto',
+                        'bottom': '100%'
+                    });
+                }
+            });
             $table.find('a[disabled="false"]').unbind('click').click(function(e){
                 e.preventDefault();
                 e.stopPropagation();
@@ -368,9 +422,9 @@ Budget = {
     showList: function(){
         Budget.table.clear();
         $.each( Budget.budgets, function(key, budget){
+            budget.status = budget.budget.type + (budget.budget.status == 'B' ? 'B' : '');
             if(
-                (!Budget.filters.type.length || Budget.type.status.indexOf(budget.budget.type) != -1) &&
-                (!Budget.filters.status.length || Budget.filters.status.indexOf(budget.budget.status) != -1) &&
+                (!Budget.filters.status.length || Budget.filters.status.indexOf(budget.status) != -1) &&
                 (!Budget.filters.delivery.length || Budget.filters.delivery.indexOf(budget.budget.delivery) != -1)
             ){
                 budget.key = key;

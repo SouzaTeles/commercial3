@@ -17,30 +17,65 @@
 
     switch( $get->action ) {
 
-        case "delivery":
+        case "get":
 
-            if( !@$post->budget_id || !@$post->budget_delivery || !@$post->budget_delivery_date ){
+            if (!@$post->budget_id ){
                 headerResponse((Object)[
                     "code" => 417,
-                    "message" => "O ID do pedido não foi informado."
+                    "message" => "Parâmetro POST não encontrado."
                 ]);
             }
 
-            Model::update($commercial,(Object)[
-                "table" => "Budget",
+            $budget = Model::get($commercial, (Object)[
+                "class" => "Budget",
+                "tables" => [ "Budget" ],
                 "fields" => [
-                    [ "budget_delivery", "s", $post->budget_delivery ],
-                    [ "budget_delivery_date", "s", $post->budget_delivery_date ],
-                    [ "budget_note_document", "s", @$post->budget_note_document ? $post->budget_note_document : NULL ]
+                    "budget_id",
+                    "company_id",
+                    "user_id",
+                    "client_id",
+                    "seller_id",
+                    "address_code",
+                    "term_id",
+                    "external_id",
+                    "external_type",
+                    "external_code",
+                    "document_id",
+                    "document_type",
+                    "document_code",
+                    "document_canceled",
+                    "budget_value=CAST(budget_value AS FLOAT)",
+                    "budget_aliquot_discount=CAST(budget_aliquot_discount AS FLOAT)",
+                    "budget_value_discount=CAST(budget_value_discount AS FLOAT)",
+                    "budget_value_addition=CAST(budget_value_addition AS FLOAT)",
+                    "budget_value_icms=CAST(budget_value_icms AS FLOAT)",
+                    "budget_value_st=CAST(budget_value_st AS FLOAT)",
+                    "budget_value_total=CAST(budget_value_total AS FLOAT)",
+                    "budget_note",
+                    "budget_note_document",
+                    "budget_credit",
+                    "budget_delivery",
+                    "budget_status",
+                    "budget_origin",
+                    "budget_trash",
+                    "budget_delivery_date=FORMAT(budget_delivery_date,'yyyy-MM-dd')",
+                    "budget_update=FORMAT(budget_update,'yyyy-MM-dd HH:mm:ss')",
+                    "budget_date=FORMAT(budget_date,'yyyy-MM-dd HH:mm:ss')"
                 ],
-                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+                "filters" => [
+                    [ "budget_trash", "s", "=", "N"],
+                    [ "budget_id", "i", "=", $post->budget_id ]
+                ]
             ]);
 
-            postLog((Object)[
-                "parent_id" => $post->budget_id
-            ]);
+            if( !@$budget ){
+                headerResponse((Object)[
+                    "code" => 404,
+                    "message" => "Orçamento não encontrado."
+                ]);
+            }
 
-            Json::get($headerStatus[200]);
+            Json::get($headerStatus[200], $budget);
 
         break;
 
@@ -64,6 +99,26 @@
             $date = date("Y-m-d H:i:s");
             $budget_id = $budget->budget_id;
             $budget->credit = (Object)$budget->credit;
+
+            if( $budget->credit->value > 0 ){
+                foreach( $budget->credit->payable as $credit ){
+                    $credit = (Object)$credit;
+                    $table = Model::get($dafel,(Object)[
+                        "tables" => [ "TempDB..sysObjects (NoLock)" ],
+                        "fields" => [ "Name" ],
+                        "filters" => [
+                            [ "SUBSTRING(Name,12,10)", "s", "=", $credit->payable_id ],
+                            [ "SUBSTRING(Name,23,10)", "s", "=", $budget->instance_id ]
+                        ]
+                    ]);
+                    if( !@$table->Name ){
+                        headerResponse((Object)[
+                            "code" => 417,
+                            "message" => "O crédito não foi empenhado. Contate o setor de TI."
+                        ]);
+                    }
+                }
+            }
 
             if( @$budget->export ){
                 $operation = Model::get($dafel,(Object)[
@@ -249,6 +304,15 @@
                 ]
             ]);
 
+            if( @$budget->authorization ){
+                Model::update($commercial,(Object)[
+                    "table" => "[Log]",
+                    "top" => sizeof($budget->authorization),
+                    "fields" => [[ "log_parent_id", "s", $budget_id ]],
+                    "filters" => [[ "log_id", "i", "in", $budget->authorization ]]
+                ]);
+            }
+
             postLog((Object)[
                 "parent_id" => $budget_id
             ]);
@@ -262,207 +326,7 @@
                 "external_code" => $budget->external_code
             ]);
 
-        break;
-
-        case "get":
-
-            if (!@$post->budget_id ){
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Parâmetro POST não encontrado."
-                ]);
-            }
-
-            $budget = Model::get($commercial, (Object)[
-                "class" => "Budget",
-                "tables" => [ "Budget" ],
-                "fields" => [
-                    "budget_id",
-                    "company_id",
-                    "user_id",
-                    "client_id",
-                    "seller_id",
-                    "address_code",
-                    "term_id",
-                    "external_id",
-                    "external_type",
-                    "external_code",
-                    "document_id",
-                    "document_type",
-                    "document_code",
-                    "document_canceled",
-                    "budget_value=CAST(budget_value AS FLOAT)",
-                    "budget_aliquot_discount=CAST(budget_aliquot_discount AS FLOAT)",
-                    "budget_value_discount=CAST(budget_value_discount AS FLOAT)",
-                    "budget_value_addition=CAST(budget_value_addition AS FLOAT)",
-                    "budget_value_icms=CAST(budget_value_icms AS FLOAT)",
-                    "budget_value_st=CAST(budget_value_st AS FLOAT)",
-                    "budget_value_total=CAST(budget_value_total AS FLOAT)",
-                    "budget_note",
-                    "budget_note_document",
-                    "budget_credit",
-                    "budget_delivery",
-                    "budget_status",
-                    "budget_origin",
-                    "budget_trash",
-                    "budget_delivery_date=FORMAT(budget_delivery_date,'yyyy-MM-dd')",
-                    "budget_update=FORMAT(budget_update,'yyyy-MM-dd HH:mm:ss')",
-                    "budget_date=FORMAT(budget_date,'yyyy-MM-dd HH:mm:ss')"
-                ],
-                "filters" => [
-                    [ "budget_trash", "s", "=", "N"],
-                    [ "budget_id", "i", "=", $post->budget_id ]
-                ]
-            ]);
-
-            if( !@$budget ){
-                headerResponse((Object)[
-                    "code" => 404,
-                    "message" => "Orçamento não encontrado."
-                ]);
-            }
-
-            Json::get($headerStatus[200], $budget);
-
-        break;
-
-        case "getDelivery":
-
-            if( !@$post->budget_id ) {
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Parâmetro POST não encontrado."
-                ]);
-            }
-
-            $delivery = Model::get($commercial, (Object)[
-                "tables" => [ "Budget" ],
-                "fields" => [
-                    "budget_delivery",
-                    "budget_note_document",
-                    "budget_delivery_date=FORMAT(budget_delivery_date,'yyyy-MM-dd')"
-                ],
-                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
-            ]);
-
-            Json::get($headerStatus[200], $delivery);
-
-         break;
-
-        case "getList":
-
-            if (!@$post->company_id || !@$post->start_date || !@$post->end_date) {
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Parâmetro POST não encontrado."
-                ]);
-            }
-
-            $budgets = Model::getList($commercial, (Object)[
-                "join" => 1,
-                "tables" => [
-                    "{$conn->commercial->table}.dbo.Budget B",
-                    "INNER JOIN {$conn->dafel->table}.dbo.Pessoa P ON(P.IdPessoa = B.client_id)",
-                    "INNER JOIN {$conn->dafel->table}.dbo.Pessoa PR ON(PR.IdPessoa = B.seller_id)"
-                ],
-                "fields" => [
-                    "B.budget_id",
-                    "B.external_id",
-                    "B.external_type",
-                    "B.external_code",
-                    "B.document_id",
-                    "B.document_type",
-                    "B.document_code",
-                    "B.document_canceled",
-                    "B.client_id",
-                    "client_code=P.CdChamada",
-                    "client_name=P.NmPessoa",
-                    "B.seller_id",
-                    "seller_code=PR.CdChamada",
-                    "seller_name=PR.NmPessoa",
-                    "seller_short_name=PR.NmCurto",
-                    "budget_value_st=CAST(B.budget_value_st AS FLOAT)",
-                    "budget_value_total=CAST(B.budget_value_total AS FLOAT)",
-                    "B.budget_origin",
-                    "B.budget_status",
-                    "B.budget_delivery",
-                    "B.budget_payment_icon",
-                    "budget_date=FORMAT(B.budget_date,'yyyy-MM-dd HH:mm:ss')"
-                ],
-                "filters" => [
-                    ["B.company_id", "i", "=", $post->company_id],
-                    ["B.seller_id", "s", "=", @$post->seller_id ? $post->seller_id : NULL],
-                    ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
-                ],
-                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_payment_icon,B.budget_date"
-            ]);
-
-            $ret = [];
-            foreach ($budgets as $budget) {
-                $icon = NULL;
-                if( @$budget->budget_payment_icon ){
-                    if( $budget->budget_payment_icon == "SEVERAL" ){
-                        $icon = URI_FILES . "modality/several.png";
-                    } else {
-                        $icon = getImage((Object)[
-                            "image_id" => $budget->budget_payment_icon,
-                            "image_dir" => "modality"
-                        ]);
-                    }
-
-                }
-                $ret[] = (Object)[
-                    "budget" => (Object)[
-                        "id" => (int)$budget->budget_id,
-                        "value_st" => (float)$budget->budget_value_st,
-                        "code" => substr("000000{$budget->budget_id}",-6),
-                        "value_total" => (float)($budget->budget_value_total+$budget->budget_value_st),
-                        "value_total_order" => substr("0000000000" . number_format((float)($budget->budget_value_total+$budget->budget_value_st),2,"",""),-10),
-                        "type" => @$budget->external_type ? $budget->external_type : "B",
-                        "origin" => $budget->budget_origin,
-                        "status" => $budget->budget_status,
-                        "delivery" => $budget->budget_delivery,
-                        "date" => $budget->budget_date,
-                        "date_formatted" => date_format(date_create($budget->budget_date),"d/m/Y"),
-                        "payment" => $budget->budget_payment_icon,
-                        "icon" => $icon
-                    ],
-                    "external" => (Object)[
-                        "id" => $budget->external_id,
-                        "type" => $budget->external_type,
-                        "code" => $budget->external_code
-                    ],
-                    "document" => (Object)[
-                        "id" => $budget->document_id,
-                        "code" => $budget->document_code,
-                        "type" => $budget->document_type,
-                        "canceled" => $budget->document_canceled,
-                    ],
-                    "person" => (Object)[
-                        "id" => $budget->client_id,
-                        "code" => $budget->client_code,
-                        "name" => $budget->client_name,
-                        "image" => getImage((Object)[
-                            "image_id" => $budget->client_id,
-                            "image_dir" => "person",
-                        ])
-                    ],
-                    "seller" => (Object)[
-                        "id" => $budget->seller_id,
-                        "code" => $budget->seller_code,
-                        "name" => $budget->seller_name,
-                        "short_name" => $budget->seller_short_name,
-                        "image" => getImage((Object)[
-                            "image_id" => $budget->seller_id,
-                            "image_dir" => "person",
-                        ])
-                    ]
-                ];
-            }
-
-            Json::get($headerStatus[200], $ret);
-
-        break;
+            break;
 
         case "insert":
 
@@ -487,7 +351,7 @@
                 foreach( $budget->credit->payable as $credit ){
                     $credit = (Object)$credit;
                     $table = Model::get($dafel,(Object)[
-                        "tables" => [ "TempDB..sysObjects" ],
+                        "tables" => [ "TempDB..sysObjects (NoLock)" ],
                         "fields" => [ "Name" ],
                         "filters" => [
                             [ "SUBSTRING(Name,12,10)", "s", "=", $credit->payable_id ],
@@ -650,6 +514,7 @@
             if( @$budget->authorization ){
                 Model::update($commercial,(Object)[
                     "table" => "[Log]",
+                    "top" => sizeof($budget->authorization),
                     "fields" => [[ "log_parent_id", "s", $budget_id ]],
                     "filters" => [[ "log_id", "i", "in", $budget->authorization ]]
                 ]);
@@ -667,6 +532,121 @@
             postLog((Object)[
                 "parent_id" => $budget_id
             ]);
+
+            Json::get($headerStatus[200], $ret);
+
+        break;
+
+        case "getList":
+
+            if (!@$post->company_id || !@$post->start_date || !@$post->end_date) {
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $budgets = Model::getList($commercial, (Object)[
+                "join" => 1,
+                "tables" => [
+                    "{$conn->commercial->table}.dbo.Budget B",
+                    "INNER JOIN {$conn->dafel->table}.dbo.Pessoa P ON(P.IdPessoa = B.client_id)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.Pessoa PR ON(PR.IdPessoa = B.seller_id)"
+                ],
+                "fields" => [
+                    "B.budget_id",
+                    "B.external_id",
+                    "B.external_type",
+                    "B.external_code",
+                    "B.document_id",
+                    "B.document_type",
+                    "B.document_code",
+                    "B.document_canceled",
+                    "B.client_id",
+                    "client_code=P.CdChamada",
+                    "client_name=P.NmPessoa",
+                    "B.seller_id",
+                    "seller_code=PR.CdChamada",
+                    "seller_name=PR.NmPessoa",
+                    "seller_short_name=PR.NmCurto",
+                    "budget_value_st=CAST(B.budget_value_st AS FLOAT)",
+                    "budget_value_total=CAST(B.budget_value_total AS FLOAT)",
+                    "B.budget_origin",
+                    "B.budget_status",
+                    "B.budget_delivery",
+                    "B.budget_payment_icon",
+                    "budget_date=FORMAT(B.budget_date,'yyyy-MM-dd HH:mm:ss')"
+                ],
+                "filters" => [
+                    ["B.company_id", "i", "=", $post->company_id],
+                    ["B.seller_id", "s", "=", @$post->seller_id ? $post->seller_id : NULL],
+                    ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
+                ],
+                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_payment_icon,B.budget_date"
+            ]);
+
+            $ret = [];
+            foreach ($budgets as $budget) {
+                $icon = NULL;
+                if( @$budget->budget_payment_icon ){
+                    if( $budget->budget_payment_icon == "SEVERAL" ){
+                        $icon = URI_FILES . "modality/several.png";
+                    } else {
+                        $icon = getImage((Object)[
+                            "image_id" => $budget->budget_payment_icon,
+                            "image_dir" => "modality"
+                        ]);
+                    }
+
+                }
+                $ret[] = (Object)[
+                    "budget" => (Object)[
+                        "id" => (int)$budget->budget_id,
+                        "value_st" => (float)$budget->budget_value_st,
+                        "code" => substr("000000{$budget->budget_id}",-6),
+                        "value_total" => (float)($budget->budget_value_total+$budget->budget_value_st),
+                        "value_total_order" => substr("0000000000" . number_format((float)($budget->budget_value_total+$budget->budget_value_st),2,"",""),-10),
+                        "type" => @$budget->external_type ? $budget->external_type : "B",
+                        "origin" => $budget->budget_origin,
+                        "status" => $budget->budget_status,
+                        "delivery" => $budget->budget_delivery,
+                        "date" => $budget->budget_date,
+                        "date_formatted" => date_format(date_create($budget->budget_date),"d/m/Y"),
+                        "payment" => $budget->budget_payment_icon,
+                        "icon" => $icon
+                    ],
+                    "external" => (Object)[
+                        "id" => $budget->external_id,
+                        "type" => $budget->external_type,
+                        "code" => $budget->external_code
+                    ],
+                    "document" => (Object)[
+                        "id" => $budget->document_id,
+                        "code" => $budget->document_code,
+                        "type" => $budget->document_type,
+                        "canceled" => $budget->document_canceled,
+                    ],
+                    "person" => (Object)[
+                        "id" => $budget->client_id,
+                        "code" => $budget->client_code,
+                        "name" => $budget->client_name,
+                        "image" => getImage((Object)[
+                            "image_id" => $budget->client_id,
+                            "image_dir" => "person",
+                        ])
+                    ],
+                    "seller" => (Object)[
+                        "id" => $budget->seller_id,
+                        "code" => $budget->seller_code,
+                        "name" => $budget->seller_name,
+                        "short_name" => $budget->seller_short_name,
+                        "image" => getImage((Object)[
+                            "image_id" => $budget->seller_id,
+                            "image_dir" => "person",
+                        ])
+                    ]
+                ];
+            }
 
             Json::get($headerStatus[200], $ret);
 
@@ -837,6 +817,56 @@
 
         break;
 
+        case "delivery":
+
+            if( !@$post->budget_id || !@$post->budget_delivery || !@$post->budget_delivery_date ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O ID do pedido não foi informado."
+                ]);
+            }
+
+            Model::update($commercial,(Object)[
+                "table" => "Budget",
+                "fields" => [
+                    [ "budget_delivery", "s", $post->budget_delivery ],
+                    [ "budget_delivery_date", "s", $post->budget_delivery_date ],
+                    [ "budget_note_document", "s", @$post->budget_note_document ? $post->budget_note_document : NULL ]
+                ],
+                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+            ]);
+
+            postLog((Object)[
+                "parent_id" => $post->budget_id
+            ]);
+
+            Json::get($headerStatus[200]);
+
+            break;
+
+        case "getDelivery":
+
+            if( !@$post->budget_id ) {
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $delivery = Model::get($commercial, (Object)[
+                "tables" => [ "Budget" ],
+                "fields" => [
+                    "budget_delivery",
+                    "budget_note_document",
+                    "budget_delivery_date=FORMAT(budget_delivery_date,'yyyy-MM-dd')"
+                ],
+                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+            ]);
+
+            Json::get($headerStatus[200], $delivery);
+
+            break;
+
         case "creditAuthorization":
         case "itemDiscountAuthorization":
         case "generalDiscountAuthorization":
@@ -855,9 +885,7 @@
                 "fields" => [
                     "user_id",
                     "user_name",
-                    "user_active",
-                    "user_credit_authorization",
-                    "user_max_discount=CAST(user_max_discount AS FLOAT)"
+                    "user_active"
                 ],
                 "filters" => [
                     [ "user_user", "s", "=", $post->user_user ],
@@ -878,27 +906,46 @@
                     "message" => "O usuário está inativo."
                 ]);
             }
-
-            $user->user_max_discount = (float)$user->user_max_discount;
-
             if( $get->action == "creditAuthorization" ){
-                if ($user->user_credit_authorization == "N"){
+                $access = Model::get( $commercial, (Object)[
+                    "tables" => [ "[UserAccess]" ],
+                    "fields" => [ "credit_authorization=user_access_value" ],
+                    "filters" => [
+                        [ "user_id", "s", "=", $user->user_id ],
+                        [ "user_access_name", "s", "=", "credit_authorization" ]
+                    ]
+                ]);
+                if( !@$access || $access->credit_authorization == "N"){
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "O usuário não possui permissão para liberação de crédito."
                     ]);
                 }
             } else if( $get->action == "itemDiscountAuthorization" ){
-                $post->data->item_aliquot_discount = (float)$post->data->item_aliquot_discount;
-                if ($user->user_max_discount < $post->data->item_aliquot_discount) {
+                $access = Model::get( $commercial, (Object)[
+                    "tables" => [ "[UserAccess]" ],
+                    "fields" => [ "max_discount=user_access_value" ],
+                    "filters" => [
+                        [ "user_id", "s", "=", $user->user_id ],
+                        [ "user_access_name", "s", "=", "max_discount" ]
+                    ]
+                ]);
+                if( !@$access || (float)$access->max_discount < (float)$post->data->item_aliquot_discount) {
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "Desconto acima do permitido."
                     ]);
                 }
             } else if( $get->action == "generalDiscountAuthorization" ){
-                $post->data->aliquot_discount = (float)$post->data->aliquot_discount;
-                if ($user->user_max_discount < $post->data->aliquot_discount) {
+                $access = Model::get( $commercial, (Object)[
+                    "tables" => [ "[UserAccess]" ],
+                    "fields" => [ "max_discount=user_access_value" ],
+                    "filters" => [
+                        [ "user_id", "s", "=", $user->user_id ],
+                        [ "user_access_name", "s", "=", "max_discount" ]
+                    ]
+                ]);
+                if( !@$access || (float)$access->max_discount < (float)$post->data->aliquot_discount ){
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "Desconto acima do permitido."

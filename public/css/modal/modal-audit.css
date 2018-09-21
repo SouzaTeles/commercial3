@@ -1,0 +1,5 @@
+.modal-audit .dataTables_scrollHeadInner,
+.modal-audit .dataTables_scrollHeadInner .dataTable
+{
+    min-width: 100%;
+}

@@ -1525,7 +1525,7 @@ Person = {
                 }
             }
         });
-        $('#button-budget-person-search').click(function () {
+        $('#button-budget-person-code-search').click(function () {
             if( $('#person_code').val().length ){
                 Person.get({
                     person_id: null,
@@ -1556,6 +1556,9 @@ Person = {
                     });
                 },Item.typeahead.delay);
             }
+        });
+        $('#button-budget-person-name-search').click(function(){
+            Person.search();
         });
         $('#button-budget-person-remove').click(function () {
             if( !Person.person.person_id ) return;
@@ -2128,7 +2131,7 @@ Term = {
                     } else {
                         Term.get({
                             term_id: null,
-                            term_code: $(this).val()
+                            term_code: $('#term_code').val()
                         });
                     }
                 }

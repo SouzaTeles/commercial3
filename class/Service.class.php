@@ -46,7 +46,7 @@
                         $ret = $mail->send((Object)[
                             "from" => (Object)[
                                 "email" => $config->email_config_user,
-                                "name" => "Compass"
+                                "name" => "Commercial"
                             ],
                             "recipients" => $email->recipients,
                             "subject" => $email->email_subject,

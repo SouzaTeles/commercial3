@@ -1,11 +1,11 @@
 $(document).ready(function(){
 
-    Compass.events();
-    Compass.container();
+    Commercial.events();
+    Commercial.container();
 
 });
 
-Compass = {
+Commercial = {
     container: function(){
         global.layout = {
             window: $(window).innerHeight(),
@@ -21,13 +21,13 @@ Compass = {
             e.preventDefault();
             e.stopPropagation();
             if( $(this).attr('href') == '#change-pass' ){
-                Compass.userPass();
+                Commercial.userPass();
             } else if( $(this).attr('href') == '#logout' ){
-                Compass.userLogout();
+                Commercial.userLogout();
             }
         });
         $(window).resize(function(){
-            Compass.container();
+            Commercial.container();
         });
     },
     userLogout: function(){

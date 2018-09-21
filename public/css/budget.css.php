@@ -22,33 +22,33 @@
     display: none;
 }
 
-table tr td img
+table#table-budgets tr td img
 {
     max-width: 28px;
     max-height: 18px;
 }
 
-table tr td:first-child i
+table#table-budgets tr td:first-child i
 {
     margin: 2px 4px;
 }
 
-table tr td:first-child i.fa-mobile
+table#table-budgets tr td:first-child i.fa-mobile
 {
     top: 2px;
     font-size: 20px;
     position: relative;
 }
 
-table tr td:nth-child(2),
-table tr td:nth-child(5)
+table#table-budgets tr td:nth-child(2),
+table#table-budgets tr td:nth-child(5)
 {
     text-align: left;
     padding-left: 20px;
 }
 
-table .client,
-table .seller
+table#table-budgets .client,
+table#table-budgets .seller
 {
     overflow: hidden;
     white-space: nowrap;
@@ -68,16 +68,18 @@ footer i
     font-size: 18px !important;
 }
 
-footer button i.fa-mobile
+footer button
 {
-    top: -4px;
-    font-size: 20px;
-    position: relative;
+    padding: 4px !important;
 }
 
-footer button[data-selected="true"]
+footer button.selected
 {
-    padding: 4px;
     background: lightgray;
     border-radius: 4px !important;
+}
+
+.dropdown-budget ul
+{
+    position: absolute;
 }

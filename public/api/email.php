@@ -170,7 +170,7 @@
             $subject = "Mensagem de Teste";
             $from = (Object)[
                 "email" => $post->config->email_config_user,
-                "name" => "Compass"
+                "name" => "Commercial"
             ];
             $recipients = [(Object)[
                 "email" => $recipient,

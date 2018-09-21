@@ -22,7 +22,6 @@
             $this->user_profile_id = (int)$data->user_profile_id;
             $this->person_id = @$data->person_id ? $data->person_id : NULL;
             $this->user_active = $data->user_active;
-            $this->user_only_session = $data->user_only_session;
             $this->user_user = $data->user_user;
             $this->user_name = $data->user_name;
             $this->user_email = @$data->user_email ? $data->user_email : NULL;
@@ -36,6 +35,20 @@
             ]);
 
             GLOBAL $conn, $commercial, $dafel;
+
+            if( @$gets["get_user_access"] || @$_POST["get_user_access"] ){
+                $this->user_access = UserAccess::treeAccess(Model::getList($commercial,(Object)[
+                    "class" => "UserAccess",
+                    "tables" => [ "UserAccess" ],
+                    "fields" => [
+                        "user_access_id",
+                        "user_access_name",
+                        "user_access_value",
+                        "user_access_data_type"
+                    ],
+                    "filters" => [[ "user_id", "i", "=", $data->user_id ]]
+                ]));
+            }
 
             if( @$gets["get_user_profile"] || @$_POST["get_user_profile"] ){
                 $this->user_profile = Model::get($commercial,(Object)[
