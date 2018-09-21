@@ -280,7 +280,29 @@ Registration = {
     });
 
     $('#save-product').click(function(){
-      global.
+      global.modal({
+          icon: 'fa-warning',
+          title: 'Confirmação',
+          html: '<p>Produto: ' + $('#registration_product_code').val() + ', Nome: ' + $('#registration_product_name').val() + ' e codigo de barras: ' + $('#registration_product_EAN').val() + '<br> Confirma gravar essas informações?</p>',
+          buttons: [{
+              icon: 'fa-check',
+              title: 'Não',
+              action: function(){
+                  window.close();
+              }
+          },
+          {
+            icon: 'fa-check',
+            title: 'Sim',
+            action: function(){
+                window.close();
+            }
+          }
+        ],
+          hidden: function(){
+              window.close();
+          }
+      });
     })
   }
 }
