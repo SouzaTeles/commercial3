@@ -17,214 +17,6 @@
 
     switch( $get->action ) {
 
-        case "delivery":
-
-            if( !@$post->budget_id || !@$post->budget_delivery || !@$post->budget_delivery_date ){
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "O ID do pedido não foi informado."
-                ]);
-            }
-
-            Model::update($commercial,(Object)[
-                "table" => "Budget",
-                "fields" => [
-                    [ "budget_delivery", "s", $post->budget_delivery ],
-                    [ "budget_delivery_date", "s", $post->budget_delivery_date ],
-                    [ "budget_note_document", "s", @$post->budget_note_document ? $post->budget_note_document : NULL ]
-                ],
-                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
-            ]);
-
-            postLog((Object)[
-                "parent_id" => $post->budget_id
-            ]);
-
-            Json::get($headerStatus[200]);
-
-        break;
-
-        case "edit":
-
-            if (!@$post->budget_id) headerResponse((Object)["code" => 417, "message" => "O ID do pedido não foi informado."]);
-            if (!@$post->company_id) headerResponse((Object)["code" => 417, "message" => "Verifique se a empresa foi informada."]);
-            if (!@$post->client_id) headerResponse((Object)["code" => 417, "message" => "Verifique se o cliente foi informado."]);
-            if (!@$post->seller_id) headerResponse((Object)["code" => 417, "message" => "Verifique se o vendedor foi informado ."]);
-            if (!@$post->address_code) headerResponse((Object)["code" => 417, "message" => "Verifique se o endereço foi informado."]);
-            if (is_null($post->budget_value)) headerResponse((Object)["code" => 417, "message" => "O valor do pedido nao foi informado."]);
-            if (is_null($post->budget_aliquot_discount)) headerResponse((Object)["code" => 417, "message" => "A alíquota de desconto do pedido nao foi informada."]);
-            if (is_null($post->budget_value_discount)) headerResponse((Object)["code" => 417, "message" => "O valor de desconto do pedido nao foi informado.."]);
-            if (is_null($post->budget_value_addition)) headerResponse((Object)["code" => 417, "message" => "O valor de acréscimo do pedido nao foi informado.."]);
-            if (is_null($post->budget_value_total)) headerResponse((Object)["code" => 417, "message" => "O valor total do pedido nao foi informado."]);
-            if (!@$post->budget_credit) headerResponse((Object)["code" => 417, "message" => "A informação de crédito do pedido nao foi informada."]);
-            if (!@$post->budget_delivery) headerResponse((Object)["code" => 417, "message" => "A informação de entrega do pedido nao foi informada."]);
-            if (!@$post->items || !sizeof($post->items)) headerResponse((Object)["code" => 417, "message" => "Nenhum produto informado para o pedido."]);
-
-            $budget = $post;
-            $date = date("Y-m-d H:i:s");
-            $budget_id = $budget->budget_id;
-
-            if( @$budget->export ){
-                $operation = Model::get($dafel,(Object)[
-                    "tables" => [ "Operacao (NoLock)" ],
-                    "fields" => [
-                        "StAtualizaFinanceiro",
-                        "CDSituacaoTributariaCOFINS",
-                        "CDSituacaoTributariaPIS",
-                        "IdCFOPIntraUF",
-                        "IdCFOPEntreUF",
-                        "StCalculaICMS",
-                        "StCalculaSubstTributariaICMS"
-                    ],
-                    "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
-                ]);
-                $seller = Model::get($dafel,(Object)[
-                    "tables" => [ "Representante (NoLock)" ],
-                    "fields" => [
-                        "AlComissaoFaturamento",
-                        "AlComissaoDuplicata",
-                        "StComissao",
-                        "TpComissao"
-                    ],
-                    "filters" => [[ "IdPessoaRepresentante", "s", "=", $budget->seller_id ]]
-                ]);
-                Budget::taxes();
-                Budget::export();
-            }
-
-            $budget_origin = "D";
-
-            Model::update($commercial, (Object)[
-                "table" => "Budget",
-                "fields" => [
-                    ["client_id", "s", $budget->client_id],
-                    ["seller_id", "s", $budget->seller_id],
-                    ["address_code", "s", $budget->address_code],
-                    ["term_id", "s", @$budget->term_id ? $budget->term_id : NULL],
-                    ["external_id", "s", @$budget->external_id ? $budget->external_id : NULL],
-                    ["external_type", "s", @$budget->external_type ? $budget->external_type : NULL],
-                    ["external_code", "s", @$budget->external_code ? $budget->external_code : NULL],
-                    ["budget_value", "d", $budget->budget_value],
-                    ["budget_aliquot_discount", "d", $budget->budget_aliquot_discount],
-                    ["budget_value_discount", "d", $budget->budget_value_discount],
-                    ["budget_value_addition", "d", $budget->budget_value_addition],
-                    ["budget_value_icms", "d", $budget->budget_value_icms],
-                    ["budget_value_st", "d", $budget->budget_value_st],
-                    ["budget_value_total", "d", $budget->budget_value_total],
-                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
-                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
-                    ["budget_credit", "s", $budget->budget_credit],
-                    ["budget_delivery", "s", $budget->budget_delivery],
-                    ["budget_status", "s", @$budget->export ? "L" : "O" ],
-                    ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
-                    ["budget_update", "s", $date]
-                ],
-                "filters" => [[ "budget_id", "i", "=", $budget_id ]]
-            ]);
-
-            $items = [];
-            foreach ($budget->items as $item) {
-                $item = (Object)$item;
-                $fields = [
-                    ["external_id", "s", @$item->external_id ? $item->external_id : NULL],
-                    ["price_id", "s", $item->price_id],
-                    ["budget_item_quantity", "d", $item->budget_item_quantity],
-                    ["budget_item_value", "d", $item->budget_item_value],
-                    ["budget_item_value_unitary", "d", $item->budget_item_value_unitary],
-                    ["budget_item_aliquot_discount", "d", $item->budget_item_aliquot_discount],
-                    ["budget_item_value_discount", "d", $item->budget_item_value_discount],
-                    ["budget_item_value_total", "d", $item->budget_item_value_total],
-                    ["budget_item_value_icms", "d", @$item->budget_item_value_icms ? $item->budget_item_value_icms : "0"],
-                    ["budget_item_value_st", "d", @$item->budget_item_value_st ? $item->budget_item_value_st : "0"],
-                ];
-                if( @$item->budget_item_id ) {
-                    $items[] = $item->budget_item_id;
-                    $fields[] = ["budget_item_update", "s", $date];
-                    Model::update($commercial, (Object)[
-                        "table" => "BudgetItem",
-                        "fields" => $fields,
-                        "filters" => [[ "budget_item_id", "i", "=", $item->budget_item_id ]]
-                    ]);
-                } else {
-                    $fields[] = ["budget_id", "i", $budget_id];
-                    $fields[] = ["product_id", "s", $item->product_id];
-                    $fields[] = ["budget_item_date", "s", $date];
-                    $items[] = (int)Model::insert($commercial, (Object)[
-                        "table" => "BudgetItem",
-                        "fields" => $fields
-                    ]);
-                }
-            }
-
-            $payments = [];
-            if( @$budget->payments ){
-                foreach( $budget->payments as $payment ){
-                    $payment = (Object)$payment;
-                    $fields = [
-                        ["modality_id", "s", $payment->modality_id],
-                        ["external_id", "s", @$payment->external_id ? $payment->external_id : NULL],
-                        ["bank_id", "s", @$payment->bank_id ? $payment->bank_id : NULL],
-                        ["agency_id", "s", @$payment->agency_id ? $payment->agency_id : NULL],
-                        ["agency_code", "s", @$payment->agency_code ? $payment->agency_code : NULL],
-                        ["check_number", "s", @$payment->check_number ? $payment->check_number : NULL],
-                        ["budget_payment_value", "d", $payment->budget_payment_value],
-                        ["budget_payment_installment", "d", $payment->budget_payment_installment],
-                        ["budget_payment_entry", "s", $payment->budget_payment_entry],
-                        ["budget_payment_credit", "s", "N"],
-                        ["budget_payment_deadline", "s", $payment->budget_payment_deadline]
-                    ];
-                    if( @$payment->budget_payment_id ){
-                        $payments[] = $payment->budget_payment_id;
-                        $fields[] = ["budget_payment_update", "s", $date];
-                        Model::update($commercial, (Object)[
-                            "table" => "BudgetPayment",
-                            "fields" => $fields,
-                            "filters" => [[ "budget_payment_id", "i", "=", $payment->budget_payment_id ]]
-                        ]);
-                    } else {
-                        $fields[] = ["budget_id", "i", $budget_id];
-                        $fields[] = ["budget_payment_date", "s", $date];
-                        $payments[] = (int)Model::insert($commercial, (Object)[
-                            "table" => "BudgetPayment",
-                            "fields" => $fields
-                        ]);
-                    }
-                }
-            }
-
-            Model::delete($commercial,(Object)[
-                "top" => 999,
-                "table" => "BudgetItem",
-                "filters" => [
-                    [ "budget_id", "i", "=", $budget_id ],
-                    [ "budget_item_id", "i", "not in", $items ]
-                ]
-            ]);
-
-            Model::delete($commercial,(Object)[
-                "top" => 999,
-                "table" => "BudgetPayment",
-                "filters" => [
-                    [ "budget_id", "i", "=", $budget_id ],
-                    [ "budget_payment_id", "i", "not in", sizeof($payments) ? $payments : NULL ]
-                ]
-            ]);
-
-            postLog((Object)[
-                "parent_id" => $budget_id
-            ]);
-
-            Json::get($headerStatus[200], (Object)[
-                "budget_id" => $budget_id,
-                "budget_code" => substr("00000{$budget_id}", -6),
-                "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
-                "external_id" => $budget->external_id,
-                "external_type" => $budget->external_type,
-                "external_code" => $budget->external_code
-            ]);
-
-        break;
-
         case "get":
 
             if (!@$post->budget_id ){
@@ -287,28 +79,463 @@
 
         break;
 
-        case "getDelivery":
+        case "edit":
 
-            if( !@$post->budget_id ) {
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Parâmetro POST não encontrado."
+            if (!@$post->budget_id) headerResponse((Object)["code" => 417, "message" => "O ID do pedido não foi informado."]);
+            if (!@$post->company_id) headerResponse((Object)["code" => 417, "message" => "Verifique se a empresa foi informada."]);
+            if (!@$post->client_id) headerResponse((Object)["code" => 417, "message" => "Verifique se o cliente foi informado."]);
+            if (!@$post->seller_id) headerResponse((Object)["code" => 417, "message" => "Verifique se o vendedor foi informado ."]);
+            if (!@$post->address_code) headerResponse((Object)["code" => 417, "message" => "Verifique se o endereço foi informado."]);
+            if (is_null($post->budget_value)) headerResponse((Object)["code" => 417, "message" => "O valor do pedido nao foi informado."]);
+            if (is_null($post->budget_aliquot_discount)) headerResponse((Object)["code" => 417, "message" => "A alíquota de desconto do pedido nao foi informada."]);
+            if (is_null($post->budget_value_discount)) headerResponse((Object)["code" => 417, "message" => "O valor de desconto do pedido nao foi informado.."]);
+            if (is_null($post->budget_value_addition)) headerResponse((Object)["code" => 417, "message" => "O valor de acréscimo do pedido nao foi informado.."]);
+            if (is_null($post->budget_value_total)) headerResponse((Object)["code" => 417, "message" => "O valor total do pedido nao foi informado."]);
+            if (!@$post->budget_credit) headerResponse((Object)["code" => 417, "message" => "A informação de crédito do pedido nao foi informada."]);
+            if (!@$post->budget_delivery) headerResponse((Object)["code" => 417, "message" => "A informação de entrega do pedido nao foi informada."]);
+            if (!@$post->items || !sizeof($post->items)) headerResponse((Object)["code" => 417, "message" => "Nenhum produto informado para o pedido."]);
+
+            $budget = $post;
+            $date = date("Y-m-d H:i:s");
+            $budget_id = $budget->budget_id;
+            $budget->credit = (Object)$budget->credit;
+
+            if( $budget->credit->value > 0 ){
+                foreach( $budget->credit->payable as $credit ){
+                    $credit = (Object)$credit;
+                    $table = Model::get($dafel,(Object)[
+                        "tables" => [ "TempDB..sysObjects (NoLock)" ],
+                        "fields" => [ "Name" ],
+                        "filters" => [
+                            [ "SUBSTRING(Name,12,10)", "s", "=", $credit->payable_id ],
+                            [ "SUBSTRING(Name,23,10)", "s", "=", $budget->instance_id ]
+                        ]
+                    ]);
+                    if( !@$table->Name ){
+                        headerResponse((Object)[
+                            "code" => 417,
+                            "message" => "O crédito não foi empenhado. Contate o setor de TI."
+                        ]);
+                    }
+                }
+            }
+
+            if( @$budget->export ){
+                $operation = Model::get($dafel,(Object)[
+                    "tables" => [ "Operacao (NoLock)" ],
+                    "fields" => [
+                        "StAtualizaFinanceiro",
+                        "CDSituacaoTributariaCOFINS",
+                        "CDSituacaoTributariaPIS",
+                        "IdCFOPIntraUF",
+                        "IdCFOPEntreUF",
+                        "StCalculaICMS",
+                        "StCalculaSubstTributariaICMS"
+                    ],
+                    "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
+                ]);
+                $seller = Model::get($dafel,(Object)[
+                    "tables" => [ "Representante (NoLock)" ],
+                    "fields" => [
+                        "AlComissaoFaturamento",
+                        "AlComissaoDuplicata",
+                        "StComissao",
+                        "TpComissao"
+                    ],
+                    "filters" => [[ "IdPessoaRepresentante", "s", "=", $budget->seller_id ]]
+                ]);
+                Budget::taxes();
+                Budget::export();
+            }
+
+            $budget_origin = "D";
+            $payment_icon = NULL;
+            if( @$budget->payments ){
+                $payment_icon = sizeof($budget->payments) > 1 ? "SEVERAL" : $budget->payments[0]["modality_id"];
+            }
+            else if( $budget->credit->value > 0 ){
+                $payment_icon = $config->credit->modality_id;
+            }
+
+            Model::update($commercial, (Object)[
+                "table" => "Budget",
+                "fields" => [
+                    ["client_id", "s", $budget->client_id],
+                    ["seller_id", "s", $budget->seller_id],
+                    ["address_code", "s", $budget->address_code],
+                    ["term_id", "s", @$budget->term_id ? $budget->term_id : NULL],
+                    ["external_id", "s", @$budget->external_id ? $budget->external_id : NULL],
+                    ["external_type", "s", @$budget->external_type ? $budget->external_type : NULL],
+                    ["external_code", "s", @$budget->external_code ? $budget->external_code : NULL],
+                    ["budget_value", "d", $budget->budget_value],
+                    ["budget_aliquot_discount", "d", $budget->budget_aliquot_discount],
+                    ["budget_value_discount", "d", $budget->budget_value_discount],
+                    ["budget_value_addition", "d", $budget->budget_value_addition],
+                    ["budget_value_icms", "d", $budget->budget_value_icms],
+                    ["budget_value_st", "d", $budget->budget_value_st],
+                    ["budget_value_total", "d", $budget->budget_value_total],
+                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
+                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
+                    ["budget_payment_icon","s", $payment_icon],
+                    ["budget_credit", "s", $budget->budget_credit],
+                    ["budget_delivery", "s", $budget->budget_delivery],
+                    ["budget_status", "s", @$budget->export ? "L" : "O" ],
+                    ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
+                    ["budget_update", "s", $date]
+                ],
+                "filters" => [[ "budget_id", "i", "=", $budget_id ]]
+            ]);
+
+            $items = [];
+            foreach ($budget->items as $item) {
+                $item = (Object)$item;
+                $fields = [
+                    ["external_id", "s", @$item->external_id ? $item->external_id : NULL],
+                    ["price_id", "s", $item->price_id],
+                    ["budget_item_quantity", "d", $item->budget_item_quantity],
+                    ["budget_item_value", "d", $item->budget_item_value],
+                    ["budget_item_value_unitary", "d", $item->budget_item_value_unitary],
+                    ["budget_item_aliquot_discount", "d", $item->budget_item_aliquot_discount],
+                    ["budget_item_value_discount", "d", $item->budget_item_value_discount],
+                    ["budget_item_value_total", "d", $item->budget_item_value_total],
+                    ["budget_item_value_icms", "d", @$item->budget_item_value_icms ? $item->budget_item_value_icms : "0"],
+                    ["budget_item_value_st", "d", @$item->budget_item_value_st ? $item->budget_item_value_st : "0"],
+                ];
+                if( @$item->budget_item_id ) {
+                    $items[] = $item->budget_item_id;
+                    $fields[] = ["budget_item_update", "s", $date];
+                    Model::update($commercial, (Object)[
+                        "table" => "BudgetItem",
+                        "fields" => $fields,
+                        "filters" => [[ "budget_item_id", "i", "=", $item->budget_item_id ]]
+                    ]);
+                } else {
+                    $fields[] = ["budget_id", "i", $budget_id];
+                    $fields[] = ["product_id", "s", $item->product_id];
+                    $fields[] = ["budget_item_date", "s", $date];
+                    $items[] = (int)Model::insert($commercial, (Object)[
+                        "table" => "BudgetItem",
+                        "fields" => $fields
+                    ]);
+                }
+            }
+
+            if( $budget->credit->value > 0 ){
+                $payment_id = Model::insert($commercial, (Object)[
+                    "table" => "BudgetPayment",
+                    "fields" => [
+                        ["budget_id", "i", $budget_id],
+                        ["modality_id", "s", $config->credit->modality_id],
+                        ["external_id", "s", $budget->credit->external_id],
+                        ["budget_payment_value", "d", $budget->credit->value],
+                        ["budget_payment_installment", "i", 1],
+                        ["budget_payment_entry", "s", "N"],
+                        ["budget_payment_credit", "s", "Y"],
+                        ["budget_payment_deadline", "s", date("Y-m-d")],
+                        ["budget_payment_date", "s", date("Y-m-d")]
+                    ]
+                ]);
+                foreach( $budget->credit->payable as $credit ){
+                    $credit = (Object)$credit;
+                    Model::insert($commercial, (Object)[
+                        "table" => "BudgetPaymentCredit",
+                        "fields" => [
+                            ["budget_payment_id", "i", $payment_id],
+                            ["payable_id", "s", $credit->payable_id],
+                            ["payable_value", "s", $credit->payable_value],
+                            ["budget_payment_credit_date", "s", date("Y-m-d H:i:s")]
+                        ]
+                    ]);
+                }
+            }
+
+            $payments = [];
+            if( @$budget->payments ){
+                foreach( $budget->payments as $payment ){
+                    $payment = (Object)$payment;
+                    $fields = [
+                        ["modality_id", "s", $payment->modality_id],
+                        ["external_id", "s", @$payment->external_id ? $payment->external_id : NULL],
+                        ["bank_id", "s", @$payment->bank_id ? $payment->bank_id : NULL],
+                        ["agency_id", "s", @$payment->agency_id ? $payment->agency_id : NULL],
+                        ["agency_code", "s", @$payment->agency_code ? $payment->agency_code : NULL],
+                        ["check_number", "s", @$payment->check_number ? $payment->check_number : NULL],
+                        ["budget_payment_value", "d", $payment->budget_payment_value],
+                        ["budget_payment_installment", "d", $payment->budget_payment_installment],
+                        ["budget_payment_entry", "s", $payment->budget_payment_entry],
+                        ["budget_payment_credit", "s", "N"],
+                        ["budget_payment_deadline", "s", $payment->budget_payment_deadline]
+                    ];
+                    if( @$payment->budget_payment_id ){
+                        $payments[] = $payment->budget_payment_id;
+                        $fields[] = ["budget_payment_update", "s", $date];
+                        Model::update($commercial, (Object)[
+                            "table" => "BudgetPayment",
+                            "fields" => $fields,
+                            "filters" => [[ "budget_payment_id", "i", "=", $payment->budget_payment_id ]]
+                        ]);
+                    } else {
+                        $fields[] = ["budget_id", "i", $budget_id];
+                        $fields[] = ["budget_payment_date", "s", $date];
+                        $payments[] = (int)Model::insert($commercial, (Object)[
+                            "table" => "BudgetPayment",
+                            "fields" => $fields
+                        ]);
+                    }
+                }
+            }
+
+            Model::delete($commercial,(Object)[
+                "top" => 99,
+                "table" => "BudgetItem",
+                "filters" => [
+                    [ "budget_id", "i", "=", $budget_id ],
+                    [ "budget_item_id", "i", "not in", $items ]
+                ]
+            ]);
+
+            Model::delete($commercial,(Object)[
+                "top" => 99,
+                "table" => "BudgetPayment",
+                "filters" => [
+                    [ "budget_id", "i", "=", $budget_id ],
+                    [ "budget_payment_credit", "s", "=", "N" ],
+                    [ "budget_payment_id", "i", "not in", sizeof($payments) ? $payments : NULL ]
+                ]
+            ]);
+
+            if( @$budget->authorization ){
+                Model::update($commercial,(Object)[
+                    "table" => "[Log]",
+                    "top" => sizeof($budget->authorization),
+                    "fields" => [[ "log_parent_id", "s", $budget_id ]],
+                    "filters" => [[ "log_id", "i", "in", $budget->authorization ]]
                 ]);
             }
 
-            $delivery = Model::get($commercial, (Object)[
-                "tables" => [ "Budget" ],
-                "fields" => [
-                    "budget_delivery",
-                    "budget_note_document",
-                    "budget_delivery_date=FORMAT(budget_delivery_date,'yyyy-MM-dd')"
-                ],
-                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+            postLog((Object)[
+                "parent_id" => $budget_id
             ]);
 
-            Json::get($headerStatus[200], $delivery);
+            Json::get($headerStatus[200], (Object)[
+                "budget_id" => $budget_id,
+                "budget_code" => substr("00000{$budget_id}", -6),
+                "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
+                "external_id" => $budget->external_id,
+                "external_type" => $budget->external_type,
+                "external_code" => $budget->external_code
+            ]);
 
-         break;
+            break;
+
+        case "insert":
+
+            if (!@$post->company_id) headerResponse((Object)["code" => 417, "message" => "Verifique se a empresa foi informada."]);
+            if (!@$post->client_id) headerResponse((Object)["code" => 417, "message" => "Verifique se o cliente foi informado."]);
+            if (!@$post->seller_id) headerResponse((Object)["code" => 417, "message" => "Verifique se o vendedor foi informado ."]);
+            if (!@$post->address_code) headerResponse((Object)["code" => 417, "message" => "Verifique se o endereço foi informado."]);
+            if (is_null($post->budget_value)) headerResponse((Object)["code" => 417, "message" => "O valor do pedido nao foi informado."]);
+            if (is_null($post->budget_aliquot_discount)) headerResponse((Object)["code" => 417, "message" => "A alíquota de desconto do pedido nao foi informada."]);
+            if (is_null($post->budget_value_discount)) headerResponse((Object)["code" => 417, "message" => "O valor de desconto do pedido nao foi informado.."]);
+            if (is_null($post->budget_value_addition)) headerResponse((Object)["code" => 417, "message" => "O valor de acréscimo do pedido nao foi informado.."]);
+            if (is_null($post->budget_value_total)) headerResponse((Object)["code" => 417, "message" => "O valor total do pedido nao foi informado."]);
+            if (!@$post->budget_credit) headerResponse((Object)["code" => 417, "message" => "A informação de crédito do pedido nao foi informada."]);
+            if (!@$post->budget_delivery) headerResponse((Object)["code" => 417, "message" => "A informação de entrega do pedido nao foi informada."]);
+            if (!@$post->items || !sizeof($post->items)) headerResponse((Object)["code" => 417, "message" => "Nenhum produto informado para o pedido."]);
+
+            $budget = $post;
+            $date = date("Y-m-d H:i:s");
+            $budget->credit = (Object)$budget->credit;
+
+            if( $budget->credit->value > 0 ){
+                foreach( $budget->credit->payable as $credit ){
+                    $credit = (Object)$credit;
+                    $table = Model::get($dafel,(Object)[
+                        "tables" => [ "TempDB..sysObjects (NoLock)" ],
+                        "fields" => [ "Name" ],
+                        "filters" => [
+                            [ "SUBSTRING(Name,12,10)", "s", "=", $credit->payable_id ],
+                            [ "SUBSTRING(Name,23,10)", "s", "=", $budget->instance_id ]
+                        ]
+                    ]);
+                    if( !@$table->Name ){
+                        headerResponse((Object)[
+                            "code" => 417,
+                            "message" => "O crédito não foi empenhado. Contate o setor de TI."
+                        ]);
+                    }
+                }
+            }
+
+            if( @$budget->export ){
+                $operation = Model::get($dafel,(Object)[
+                    "tables" => [ "Operacao (NoLock)" ],
+                    "fields" => [
+                        "StAtualizaFinanceiro",
+                        "CDSituacaoTributariaCOFINS",
+                        "CDSituacaoTributariaPIS",
+                        "IdCFOPIntraUF",
+                        "IdCFOPEntreUF",
+                        "StCalculaICMS",
+                        "StCalculaSubstTributariaICMS"
+                    ],
+                    "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
+                ]);
+                $seller = Model::get($dafel,(Object)[
+                    "tables" => [ "Representante (NoLock)" ],
+                    "fields" => [
+                        "AlComissaoFaturamento",
+                        "AlComissaoDuplicata",
+                        "StComissao",
+                        "TpComissao"
+                    ],
+                    "filters" => [[ "IdPessoaRepresentante", "s", "=", $budget->seller_id ]]
+                ]);
+                Budget::taxes();
+                Budget::export();
+            }
+
+            $budget_origin = "D";
+            $payment_icon = NULL;
+            if( @$budget->payments ){
+                $payment_icon = sizeof($budget->payments) > 1 ? "SEVERAL" : $budget->payments[0]["modality_id"];
+            }
+            else if( $budget->credit->value > 0 ){
+                $payment_icon = $config->credit->modality_id;
+            }
+
+            $budget_id = (int)Model::insert($commercial, (Object)[
+                "table" => "Budget",
+                "fields" => [
+                    ["company_id", "i", $budget->company_id],
+                    ["user_id", "s", $login->user_id],
+                    ["client_id", "s", $budget->client_id],
+                    ["seller_id", "s", $budget->seller_id],
+                    ["address_code", "s", $budget->address_code],
+                    ["term_id", "s", @$budget->term_id ? $budget->term_id : NULL],
+                    ["external_id", "s", @$budget->external_id ? $budget->external_id : NULL],
+                    ["external_type", "s", @$budget->external_type ? $budget->external_type : NULL],
+                    ["external_code", "s", @$budget->external_code ? $budget->external_code : NULL],
+                    ["budget_value", "d", $budget->budget_value],
+                    ["budget_aliquot_discount", "d", $budget->budget_aliquot_discount],
+                    ["budget_value_discount", "d", $budget->budget_value_discount],
+                    ["budget_value_addition", "d", $budget->budget_value_addition],
+                    ["budget_value_icms", "d", $budget->budget_value_icms],
+                    ["budget_value_st", "d", $budget->budget_value_st],
+                    ["budget_value_total", "d", $budget->budget_value_total],
+                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
+                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
+                    ["budget_payment_icon","s",$payment_icon],
+                    ["budget_credit", "s", $budget->budget_credit],
+                    ["budget_delivery", "s", $budget->budget_delivery],
+                    ["budget_status", "s", @$budget->export ? "L" : "O" ],
+                    ["budget_origin", "s", $budget_origin],
+                    ["budget_trash", "s", "N"],
+                    ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
+                    ["budget_date", "s", $date]
+                ]
+            ]);
+
+            foreach ($budget->items as $item) {
+                $item = (Object)$item;
+                Model::insert($commercial, (Object)[
+                    "table" => "BudgetItem",
+                    "fields" => [
+                        ["budget_id", "i", $budget_id],
+                        ["external_id", "s", @$item->external_id ? $item->external_id : NULL],
+                        ["product_id", "s", $item->product_id],
+                        ["price_id", "s", $item->price_id],
+                        ["budget_item_quantity", "d", $item->budget_item_quantity],
+                        ["budget_item_value", "d", $item->budget_item_value],
+                        ["budget_item_value_unitary", "d", $item->budget_item_value_unitary],
+                        ["budget_item_aliquot_discount", "d", $item->budget_item_aliquot_discount],
+                        ["budget_item_value_discount", "d", $item->budget_item_value_discount],
+                        ["budget_item_value_total", "d", $item->budget_item_value_total],
+                        ["budget_item_value_icms", "d", @$item->budget_item_value_icms ? $item->budget_item_value_icms : "0"],
+                        ["budget_item_value_st", "d", @$item->budget_item_value_st ? $item->budget_item_value_st : "0"],
+                        ["budget_item_date", "s", $date]
+                    ]
+                ]);
+            }
+
+            if( $budget->credit->value > 0 ){
+                $payment_id = Model::insert($commercial, (Object)[
+                    "table" => "BudgetPayment",
+                    "fields" => [
+                        ["budget_id", "i", $budget_id],
+                        ["modality_id", "s", $config->credit->modality_id],
+                        ["external_id", "s", $budget->credit->external_id],
+                        ["budget_payment_value", "d", $budget->credit->value],
+                        ["budget_payment_installment", "i", 1],
+                        ["budget_payment_entry", "s", "N"],
+                        ["budget_payment_credit", "s", "Y"],
+                        ["budget_payment_deadline", "s", date("Y-m-d")],
+                        ["budget_payment_date", "s", date("Y-m-d")]
+                    ]
+                ]);
+                foreach( $budget->credit->payable as $credit ){
+                    $credit = (Object)$credit;
+                    Model::insert($commercial, (Object)[
+                        "table" => "BudgetPaymentCredit",
+                        "fields" => [
+                            ["budget_payment_id", "i", $payment_id],
+                            ["payable_id", "s", $credit->payable_id],
+                            ["payable_value", "s", $credit->payable_value],
+                            ["budget_payment_credit_date", "s", date("Y-m-d H:i:s")]
+                        ]
+                    ]);
+                }
+            }
+
+            if (@$budget->payments) {
+                foreach ($budget->payments as $payment) {
+                    $payment = (Object)$payment;
+                    Model::insert($commercial, (Object)[
+                        "table" => "BudgetPayment",
+                        "fields" => [
+                            ["budget_id", "i", $budget_id],
+                            ["modality_id", "s", $payment->modality_id],
+                            ["external_id", "s", @$payment->external_id ? $payment->external_id : NULL],
+                            ["bank_id", "s", @$payment->bank_id ? $payment->bank_id : NULL],
+                            ["agency_id", "s", @$payment->agency_id ? $payment->agency_id : NULL],
+                            ["agency_code", "s", @$payment->agency_code ? $payment->agency_code : NULL],
+                            ["check_number", "s", @$payment->check_number ? $payment->check_number : NULL],
+                            ["budget_payment_value", "d", $payment->budget_payment_value],
+                            ["budget_payment_installment", "i", $payment->budget_payment_installment],
+                            ["budget_payment_entry", "s", $payment->budget_payment_entry],
+                            ["budget_payment_credit", "s", "N"],
+                            ["budget_payment_deadline", "s", $payment->budget_payment_deadline],
+                            ["budget_payment_date", "s", $date]
+                        ]
+                    ]);
+                }
+            }
+
+            if( @$budget->authorization ){
+                Model::update($commercial,(Object)[
+                    "table" => "[Log]",
+                    "top" => sizeof($budget->authorization),
+                    "fields" => [[ "log_parent_id", "s", $budget_id ]],
+                    "filters" => [[ "log_id", "i", "in", $budget->authorization ]]
+                ]);
+            }
+
+            $ret = (Object)[
+                "budget_id" => $budget_id,
+                "budget_code" => substr("00000{$budget_id}", -6),
+                "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
+                "external_id" => $budget->external_id,
+                "external_type" => $budget->external_type,
+                "external_code" => $budget->external_code
+            ];
+
+            postLog((Object)[
+                "parent_id" => $budget_id
+            ]);
+
+            Json::get($headerStatus[200], $ret);
+
+        break;
 
         case "getList":
 
@@ -347,6 +574,7 @@
                     "B.budget_origin",
                     "B.budget_status",
                     "B.budget_delivery",
+                    "B.budget_payment_icon",
                     "budget_date=FORMAT(B.budget_date,'yyyy-MM-dd HH:mm:ss')"
                 ],
                 "filters" => [
@@ -354,11 +582,23 @@
                     ["B.seller_id", "s", "=", @$post->seller_id ? $post->seller_id : NULL],
                     ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
                 ],
-                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_date"
+                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_payment_icon,B.budget_date"
             ]);
 
             $ret = [];
             foreach ($budgets as $budget) {
+                $icon = NULL;
+                if( @$budget->budget_payment_icon ){
+                    if( $budget->budget_payment_icon == "SEVERAL" ){
+                        $icon = URI_FILES . "modality/several.png";
+                    } else {
+                        $icon = getImage((Object)[
+                            "image_id" => $budget->budget_payment_icon,
+                            "image_dir" => "modality"
+                        ]);
+                    }
+
+                }
                 $ret[] = (Object)[
                     "budget" => (Object)[
                         "id" => (int)$budget->budget_id,
@@ -371,7 +611,9 @@
                         "status" => $budget->budget_status,
                         "delivery" => $budget->budget_delivery,
                         "date" => $budget->budget_date,
-                        "date_formatted" => date_format(date_create($budget->budget_date),"d/m/Y")
+                        "date_formatted" => date_format(date_create($budget->budget_date),"d/m/Y"),
+                        "payment" => $budget->budget_payment_icon,
+                        "icon" => $icon
                     ],
                     "external" => (Object)[
                         "id" => $budget->external_id,
@@ -405,156 +647,6 @@
                     ]
                 ];
             }
-
-            Json::get($headerStatus[200], $ret);
-
-        break;
-
-        case "insert":
-
-            if (!@$post->company_id) headerResponse((Object)["code" => 417, "message" => "Verifique se a empresa foi informada."]);
-            if (!@$post->client_id) headerResponse((Object)["code" => 417, "message" => "Verifique se o cliente foi informado."]);
-            if (!@$post->seller_id) headerResponse((Object)["code" => 417, "message" => "Verifique se o vendedor foi informado ."]);
-            if (!@$post->address_code) headerResponse((Object)["code" => 417, "message" => "Verifique se o endereço foi informado."]);
-            if (is_null($post->budget_value)) headerResponse((Object)["code" => 417, "message" => "O valor do pedido nao foi informado."]);
-            if (is_null($post->budget_aliquot_discount)) headerResponse((Object)["code" => 417, "message" => "A alíquota de desconto do pedido nao foi informada."]);
-            if (is_null($post->budget_value_discount)) headerResponse((Object)["code" => 417, "message" => "O valor de desconto do pedido nao foi informado.."]);
-            if (is_null($post->budget_value_addition)) headerResponse((Object)["code" => 417, "message" => "O valor de acréscimo do pedido nao foi informado.."]);
-            if (is_null($post->budget_value_total)) headerResponse((Object)["code" => 417, "message" => "O valor total do pedido nao foi informado."]);
-            if (!@$post->budget_credit) headerResponse((Object)["code" => 417, "message" => "A informação de crédito do pedido nao foi informada."]);
-            if (!@$post->budget_delivery) headerResponse((Object)["code" => 417, "message" => "A informação de entrega do pedido nao foi informada."]);
-            if (!@$post->items || !sizeof($post->items)) headerResponse((Object)["code" => 417, "message" => "Nenhum produto informado para o pedido."]);
-
-            $budget = $post;
-            $date = date("Y-m-d H:i:s");
-            
-            if( @$budget->export ){
-                $operation = Model::get($dafel,(Object)[
-                    "tables" => [ "Operacao (NoLock)" ],
-                    "fields" => [
-                        "StAtualizaFinanceiro",
-                        "CDSituacaoTributariaCOFINS",
-                        "CDSituacaoTributariaPIS",
-                        "IdCFOPIntraUF",
-                        "IdCFOPEntreUF",
-                        "StCalculaICMS",
-                        "StCalculaSubstTributariaICMS"
-                    ],
-                    "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
-                ]);
-                $seller = Model::get($dafel,(Object)[
-                    "tables" => [ "Representante (NoLock)" ],
-                    "fields" => [
-                        "AlComissaoFaturamento",
-                        "AlComissaoDuplicata",
-                        "StComissao",
-                        "TpComissao"
-                    ],
-                    "filters" => [[ "IdPessoaRepresentante", "s", "=", $budget->seller_id ]]
-                ]);
-                Budget::taxes();
-                Budget::export();
-            }
-
-            $budget_origin = "D";
-
-            $budget_id = (int)Model::insert($commercial, (Object)[
-                "table" => "Budget",
-                "fields" => [
-                    ["company_id", "i", $budget->company_id],
-                    ["user_id", "s", $login->user_id],
-                    ["client_id", "s", $budget->client_id],
-                    ["seller_id", "s", $budget->seller_id],
-                    ["address_code", "s", $budget->address_code],
-                    ["term_id", "s", @$budget->term_id ? $budget->term_id : NULL],
-                    ["external_id", "s", @$budget->external_id ? $budget->external_id : NULL],
-                    ["external_type", "s", @$budget->external_type ? $budget->external_type : NULL],
-                    ["external_code", "s", @$budget->external_code ? $budget->external_code : NULL],
-                    ["budget_value", "d", $budget->budget_value],
-                    ["budget_aliquot_discount", "d", $budget->budget_aliquot_discount],
-                    ["budget_value_discount", "d", $budget->budget_value_discount],
-                    ["budget_value_addition", "d", $budget->budget_value_addition],
-                    ["budget_value_icms", "d", $budget->budget_value_icms],
-                    ["budget_value_st", "d", $budget->budget_value_st],
-                    ["budget_value_total", "d", $budget->budget_value_total],
-                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
-                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
-                    ["budget_credit", "s", $budget->budget_credit],
-                    ["budget_delivery", "s", $budget->budget_delivery],
-                    ["budget_status", "s", @$budget->export ? "L" : "O" ],
-                    ["budget_origin", "s", $budget_origin],
-                    ["budget_trash", "s", "N"],
-                    ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
-                    ["budget_date", "s", $date]
-                ]
-            ]);
-
-            foreach ($budget->items as $item) {
-                $item = (Object)$item;
-                Model::insert($commercial, (Object)[
-                    "table" => "BudgetItem",
-                    "fields" => [
-                        ["budget_id", "i", $budget_id],
-                        ["external_id", "s", @$item->external_id ? $item->external_id : NULL],
-                        ["product_id", "s", $item->product_id],
-                        ["price_id", "s", $item->price_id],
-                        ["budget_item_quantity", "d", $item->budget_item_quantity],
-                        ["budget_item_value", "d", $item->budget_item_value],
-                        ["budget_item_value_unitary", "d", $item->budget_item_value_unitary],
-                        ["budget_item_aliquot_discount", "d", $item->budget_item_aliquot_discount],
-                        ["budget_item_value_discount", "d", $item->budget_item_value_discount],
-                        ["budget_item_value_total", "d", $item->budget_item_value_total],
-                        ["budget_item_value_icms", "d", @$item->budget_item_value_icms ? $item->budget_item_value_icms : "0"],
-                        ["budget_item_value_st", "d", @$item->budget_item_value_st ? $item->budget_item_value_st : "0"],
-                        ["budget_item_date", "s", $date]
-                    ]
-                ]);
-            }
-
-            if (@$budget->payments) {
-                foreach ($budget->payments as $payment) {
-                    $payment = (Object)$payment;
-                    Model::insert($commercial, (Object)[
-                        "table" => "BudgetPayment",
-                        "fields" => [
-                            ["budget_id", "i", $budget_id],
-                            ["modality_id", "s", $payment->modality_id],
-                            ["external_id", "s", @$payment->external_id ? $payment->external_id : NULL],
-                            ["bank_id", "s", @$payment->bank_id ? $payment->bank_id : NULL],
-                            ["agency_id", "s", @$payment->agency_id ? $payment->agency_id : NULL],
-                            ["agency_code", "s", @$payment->agency_code ? $payment->agency_code : NULL],
-                            ["check_number", "s", @$payment->check_number ? $payment->check_number : NULL],
-                            ["budget_payment_value", "d", $payment->budget_payment_value],
-                            ["budget_payment_installment", "i", $payment->budget_payment_installment],
-                            ["budget_payment_entry", "s", $payment->budget_payment_entry],
-                            ["budget_payment_credit", "s", "N"],
-                            ["budget_payment_deadline", "s", $payment->budget_payment_deadline],
-                            ["budget_payment_date", "s", $date]
-                        ]
-                    ]);
-                }
-            }
-
-            if( @$budget->authorization ){
-                Model::update($commercial,(Object)[
-                    "table" => "[Log]",
-                    "fields" => [[ "log_parent_id", "s", $budget_id ]],
-                    "filters" => [[ "log_id", "i", "in", $budget->authorization ]]
-                ]);
-            }
-
-            $ret = (Object)[
-                "budget_id" => $budget_id,
-                "budget_code" => substr("00000{$budget_id}", -6),
-                "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
-                "external_id" => $budget->external_id,
-                "external_type" => $budget->external_type,
-                "external_code" => $budget->external_code
-            ];
-
-            postLog((Object)[
-                "parent_id" => $budget_id
-            ]);
 
             Json::get($headerStatus[200], $ret);
 
@@ -607,6 +699,102 @@
                 ]);
             }
 
+            if( $budget->budget_credit == "Y" ){
+                $credits = Model::getList($commercial,(Object)[
+                    "tables" => [
+                        "Budget B",
+                        "BudgetPayment BP",
+                        "BudgetPaymentCredit BPC"
+                    ],
+                    "fields" => [
+                        "BP.budget_payment_id",
+                        "BP.external_id",
+                        "BPC.payable_id",
+                        "BPC.payable_value"
+                    ],
+                    "filters" => [
+                        [ "B.budget_id = BP.budget_id" ],
+                        [ "BP.budget_payment_id = BPC.budget_payment_id" ],
+                        [ "BP.budget_payment_credit", "s", "=", "Y" ],
+                        [ "B.budget_id", "i", "=", $budget->budget_id ]
+                    ]
+                ]);
+
+                $payable = [];
+                $IdEntidadeOrigem = NULL;
+                $budget_payment_id = NULL;
+                foreach( $credits as $credit ){
+                    $payable[] = $credit->payable_id;
+                    $IdEntidadeOrigem = $credit->external_id;
+                    $budget_payment_id = $credit->budget_payment_id;
+                }
+
+                if( !@$IdEntidadeOrigem || !@$budget_payment_id ){
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "Não foi possível recuperar o orçamento. Contate o setor de TI."
+                    ]);
+                }
+
+                $drops = Model::getList($dafel,(Object)[
+                    "tables" => [ "APagarBaixa" ],
+                    "fields" => [ "IdAPagarBaixa", "IdLoteAPagar" ],
+                    "filters" => [
+                        [ "IdEntidadeOrigem", "s", "=", $IdEntidadeOrigem ],
+                        [ "IdAPagar", "s", "in", $payable ]
+                    ]
+                ]);
+
+                if( sizeof($drops) != sizeof($payable) ){
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "Não foi possível recuperar o orçamento. Uma ou mais Baixas do crédito não foram encontradas."
+                    ]);
+                }
+
+                $payableDrop=[];
+                $payableLot=[];
+                foreach( $drops as $drop ){
+                    $payableDrop[] = $drop->IdAPagarBaixa;
+                    $payableLot[] = $drop->IdLoteAPagar;
+                }
+
+                Model::delete($dafel,(Object)[
+                    "table" => "LoteAPagar",
+                    "filters" => [[ "IdLoteAPagar", "s", "in", $payableLot ]],
+                    "top" => sizeof($payableLot)
+                ]);
+
+                Model::delete($dafel,(Object)[
+                    "table" => "APagarBaixa",
+                    "filters" => [
+                        [ "IdEntidadeOrigem", "s", "=", $IdEntidadeOrigem ],
+                        [ "IdAPagarBaixa", "s", "in", $payableDrop ]
+                    ],
+                    "top" => sizeof($payableDrop)
+                ]);
+
+                Model::update($dafel,(Object)[
+                    "table" => "APagar",
+                    "fields" => [[ "DtBaixa", "s", NULL ]],
+                    "filters" => [[ "IdAPagar", "s", "in", $payable ]],
+                    "top" => sizeof($payable)
+                ]);
+
+                Model::delete($commercial,(Object)[
+                    "table" => "BudgetPayment",
+                    "filters" => [
+                        ["budget_id", "i", "=", $budget->budget_id],
+                        ["budget_payment_id", "i", "=", $budget_payment_id]
+                    ]
+                ]);
+
+                Model::delete($commercial,(Object)[
+                    "table" => "BudgetPaymentCredit",
+                    "filters" => [["budget_payment_id", "i", "=", $budget_payment_id]]
+                ]);
+            }
+
             Model::update($dafel,(Object)[
                 "table" => "PedidoDeVenda",
                 "fields" => [[ "StPedidoDeVenda", "s", "X" ]],
@@ -629,8 +817,59 @@
 
         break;
 
+        case "delivery":
+
+            if( !@$post->budget_id || !@$post->budget_delivery || !@$post->budget_delivery_date ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O ID do pedido não foi informado."
+                ]);
+            }
+
+            Model::update($commercial,(Object)[
+                "table" => "Budget",
+                "fields" => [
+                    [ "budget_delivery", "s", $post->budget_delivery ],
+                    [ "budget_delivery_date", "s", $post->budget_delivery_date ],
+                    [ "budget_note_document", "s", @$post->budget_note_document ? $post->budget_note_document : NULL ]
+                ],
+                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+            ]);
+
+            postLog((Object)[
+                "parent_id" => $post->budget_id
+            ]);
+
+            Json::get($headerStatus[200]);
+
+            break;
+
+        case "getDelivery":
+
+            if( !@$post->budget_id ) {
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $delivery = Model::get($commercial, (Object)[
+                "tables" => [ "Budget" ],
+                "fields" => [
+                    "budget_delivery",
+                    "budget_note_document",
+                    "budget_delivery_date=FORMAT(budget_delivery_date,'yyyy-MM-dd')"
+                ],
+                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+            ]);
+
+            Json::get($headerStatus[200], $delivery);
+
+            break;
+
         case "creditAuthorization":
-        case "discountItemAuthorization":
+        case "itemDiscountAuthorization":
+        case "generalDiscountAuthorization":
 
             if( !@$post->user_user || !@$post->user_pass || !@$post->data ){
                 headerResponse((Object)[
@@ -646,9 +885,7 @@
                 "fields" => [
                     "user_id",
                     "user_name",
-                    "user_active",
-                    "user_credit_authorization",
-                    "user_max_discount=CAST(user_max_discount AS FLOAT)"
+                    "user_active"
                 ],
                 "filters" => [
                     [ "user_user", "s", "=", $post->user_user ],
@@ -669,18 +906,46 @@
                     "message" => "O usuário está inativo."
                 ]);
             }
-
-            if( $get->action == "creditAuthorization" ) {
-                if ($user->user_credit_authorization == "N") {
+            if( $get->action == "creditAuthorization" ){
+                $access = Model::get( $commercial, (Object)[
+                    "tables" => [ "[UserAccess]" ],
+                    "fields" => [ "credit_authorization=user_access_value" ],
+                    "filters" => [
+                        [ "user_id", "s", "=", $user->user_id ],
+                        [ "user_access_name", "s", "=", "credit_authorization" ]
+                    ]
+                ]);
+                if( !@$access || $access->credit_authorization == "N"){
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "O usuário não possui permissão para liberação de crédito."
                     ]);
                 }
-            } else {
-                $user->user_max_discount = (float)$user->user_max_discount;
-                $post->data->item_aliquot_discount = (float)$post->data->item_aliquot_discount;
-                if ($user->user_max_discount < $post->data->item_aliquot_discount) {
+            } else if( $get->action == "itemDiscountAuthorization" ){
+                $access = Model::get( $commercial, (Object)[
+                    "tables" => [ "[UserAccess]" ],
+                    "fields" => [ "max_discount=user_access_value" ],
+                    "filters" => [
+                        [ "user_id", "s", "=", $user->user_id ],
+                        [ "user_access_name", "s", "=", "max_discount" ]
+                    ]
+                ]);
+                if( !@$access || (float)$access->max_discount < (float)$post->data->item_aliquot_discount) {
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "Desconto acima do permitido."
+                    ]);
+                }
+            } else if( $get->action == "generalDiscountAuthorization" ){
+                $access = Model::get( $commercial, (Object)[
+                    "tables" => [ "[UserAccess]" ],
+                    "fields" => [ "max_discount=user_access_value" ],
+                    "filters" => [
+                        [ "user_id", "s", "=", $user->user_id ],
+                        [ "user_access_name", "s", "=", "max_discount" ]
+                    ]
+                ]);
+                if( !@$access || (float)$access->max_discount < (float)$post->data->aliquot_discount ){
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "Desconto acima do permitido."

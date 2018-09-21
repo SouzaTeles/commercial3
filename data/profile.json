@@ -1,4 +1,5 @@
 {
+
 	"agenda": {
 		"name": "Agenda",
 		"access": {
@@ -74,7 +75,7 @@
 		}
 	},
 	"compass": {
-		"name": "Compass",
+		"name": "Commercial",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",

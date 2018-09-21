@@ -3,4 +3,7 @@
 /log
 /doc
 /public/files
+/public/credit/del
+/public/credit/log
+/public/credit/new
 /templates/compiled

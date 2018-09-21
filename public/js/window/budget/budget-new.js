@@ -206,6 +206,23 @@ Budget = {
         });
     },
     afterRecover: function(){
+        if( Budget.budget.budget_credit == 'Y' ) {
+            Budget.budget.budget_credit = 'N';
+            Budget.budget.credit = {
+                value: 0,
+                payable: []
+            };
+            var index = -1;
+            $.each(Budget.budget.payments,function(key,payment){
+                if( payment.budget_payment_credit == 'Y' ){
+                    index = key;
+                }
+            });
+            Budget.budget.payments.splice(index,1);
+            Payment.total();
+            Payment.showList();
+            $('#payment-credit-value').text('R$ 0,00');
+        }
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-recovered',
             dataType: 'html'
@@ -311,6 +328,50 @@ Budget = {
         $('#button-budget-cancel').click(function(){
             Budget.close();
         });
+    },
+    discount: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-discount',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'small',
+                icon: 'fa-usd',
+                id: 'modal-budget-discount',
+                class: 'modal-budget-discount',
+                title: 'Desconto Geral',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Cancelar'
+                },{
+                    icon: 'fa-check',
+                    title: 'Aplicar',
+                    unclose: true,
+                    action: function(){
+                        ModalBudgetDiscount.discountAuthorization();
+                    }
+                }],
+                show: function(){
+                    $('#modal_discount_aliquot').focus();
+                }
+            });
+        });
+    },
+    discountAliquot: function(data){
+        console.log(data);
+        Budget.budget.budget_value_discount = 0;
+        Budget.budget.budget_aliquot_discount = data.aliquot_discount;
+        $.each(Budget.budget.items,function(key,item){
+            item.budget_item_aliquot_discount = data.aliquot_discount.toFixed(2);
+            item.budget_item_value_discount = parseFloat(((data.aliquot_discount / 100) * item.budget_item_value).toFixed(2));
+            item.budget_item_value_total = item.budget_item_value - item.budget_item_value_discount;
+            Budget.budget.budget_value_discount += item.budget_item_value_discount;
+        });
+        Budget.budget.budget_value_total = Budget.budget.budget_value - Budget.budget.budget_value_discount + Budget.budget.budget_value_addition;
+        Item.total();
+        Item.showList();
+        Payment.total();
     },
     edit: function(){
         global.post({
@@ -425,8 +486,8 @@ Budget = {
             Budget.note();
         }).prop('disabled',false);
         $panel.find('button[data-action="discount"]').click(function(){
-
-        }).prop('disabled',false);
+            Budget.discount();
+        });
         $panel.find('button[data-action="delivery"]').click(function(){
             Budget.setDelivery();
         }).prop('disabled',false);
@@ -456,6 +517,7 @@ Budget = {
             delete budget.person;
             delete budget.address;
             Budget.budget = budget;
+            Budget.budget.instance_id = Budget.instance();
             Budget.budget.address_uf_id = Address.delivery.uf_id;
             Company.get();
         });
@@ -507,13 +569,16 @@ Budget = {
                 budget_delivery_date: global.dateAddDays(global.today(),3),
                 items: [],
                 payments: [],
-                person: {},
+                credit: {
+                    value: 0,
+                    payable: []
+                },
                 export: null,
-                authorization: []
+                authorization: [],
+                instance_id: Budget.instance(),
             };
             Item.init();
             Person.init();
-            Address.init();
             Term.init();
         }
         Person.data2form();
@@ -524,6 +589,9 @@ Budget = {
         Term.data2form();
         Payment.showList();
         Payment.total();
+    },
+    instance: function(){
+        return ('00000'+btoa(global.random(1000000,9999999)).toUpperCase().substr(0,10)).slice(-10);
     },
     item: function(){
         Item.search();
@@ -720,8 +788,27 @@ Budget = {
             });
             return false;
         }
-        if( !!Budget.budget.export && !Budget.budget.payments.length ){
-            global.validateMessage('As informações de pagamentos deverão ser adicionadas.');
+        if( !!Budget.budget.export ){
+            if(!Budget.budget.payments.length && Budget.budget.credit.value == 0){
+                global.validateMessage('As informações de pagamentos deverão ser adicionadas.');
+                global.scrollTo({
+                    delay: 500,
+                    addition: 200,
+                    selector: '.panel-payment'
+                });
+                return false;
+            }
+            if(Budget.budget.export == 'dav' && Budget.budget.credit.value > 0){
+                global.validateMessage('Não será possível exportar o DAV utilizando uma carta de crédito.');
+                global.scrollTo({
+                    delay: 500,
+                    addition: 200,
+                    selector: '.panel-payment'
+                });
+                return false;
+            }
+        } else if(Budget.budget.credit.value > 0){
+            global.validateMessage('Este orçamento está utilizando uma Carta de Crédito como forma de pagamento e por esse motivo não será permitido salvá-lo, você deverá exporta-lo.');
             global.scrollTo({
                 delay: 500,
                 addition: 200,
@@ -729,7 +816,7 @@ Budget = {
             });
             return false;
         }
-        if( !!Budget.budget.payments.length && Payment.payment_remaining != 0 ){
+        if( (!!Budget.budget.payments.length || Budget.budget.credit.value > 0) && Payment.payment_remaining != 0 ){
             global.validateMessage('A soma das parcelas é diferente do valor total do pedido.');
             global.scrollTo({
                 delay: 500,
@@ -777,10 +864,16 @@ Budget = {
 };
 
 Seller = {
-    seller: {},
+    seller: {
+        seller_id: null,
+        seller_code: '',
+        seller_name: '',
+        seller_image: null
+    },
     search: function(success){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-seller-search',
+            data: Seller.seller,
             dataType: 'html'
         },function(html){
             global.modal({
@@ -792,24 +885,15 @@ Seller = {
                 buttons: [{
                     icon: 'fa-check',
                     title: 'Selecionar',
-                    unclose: true,
-                    action: function(){
-                        if( !ModalSeller.seller.seller_id ){
-                            global.validateMessage('Nenhum vendedor foi informado.',function(){
-                                $('#modal_seller_code').focus().select();
-                            });
-                            return;
-                        }
-                        Seller.seller = ModalSeller.seller;
-                        Budget.budget.seller_id = Seller.seller.seller_id;
-                        $('#modal-seller-search').modal('hide');
-                        if( success ) success();
-                    }
+                    id: 'button-seller-select',
+                    unclose: true
                 }],
                 shown: function(){
-                    if( !!Seller.seller.seller_id ){
-                        ModalSeller.seller = Seller.seller;
-                        ModalSeller.show();
+                    $('#modal_seller_code').focus();
+                    ModalSeller.success = function(seller){
+                        Seller.seller = seller;
+                        Budget.budget.seller_id = seller.seller_id;
+                        if( !!success ) success();
                     }
                 }
             })
@@ -1143,32 +1227,6 @@ Item = {
             }
             Item.add();
         });
-        $('#budget_value_addition').on('keyup',function(e) {
-            var keycode = e.keyCode || e.which;
-            if (keycode == '13' && $(this).val().length) {
-                var budget_value_addition = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-                Item.totalAddition(budget_value_addition);
-            }
-        }).blur(function(){
-            var budget_value_addition = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-            $(this).val(global.float2Br(budget_value_addition));
-            if( budget_value_addition != Budget.budget.budget_value_total_addition ){
-                Item.totalAddition(budget_value_addition);
-            }
-        });
-        $('#budget_value_discount').on('keyup',function(e) {
-            var keycode = e.keyCode || e.which;
-            if (keycode == '13' && $(this).val().length) {
-                var budget_value_discount = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-                Item.totalDiscount(budget_value_discount);
-            }
-        }).blur(function(){
-            var budget_value_discount = $(this).val().length ? global.br2Float($(this).val()) : $(this).attr('data-value');
-            $(this).val(global.float2Br(budget_value_discount));
-            if( budget_value_discount != Budget.budget.budget_value_total_discount ){
-                Item.totalDiscount(budget_value_discount);
-            }
-        });
         Item.table.on('draw',function(){
             var $table = $('#table-budget-items');
             $table.find('button[data-action="info"]').click(function(){
@@ -1369,35 +1427,11 @@ Item = {
             });
         });
         Item.table.draw();
+        $('.panel-tools button[data-action="discount"]').prop('disabled',!Budget.budget.items.length);
     },
     total: function(){
-        $('#budget_value').val('R$ ' + global.float2Br(Budget.budget.budget_value));
-        $('#budget_value_addition').val(global.float2Br(Budget.budget.budget_value_addition)).prop({
-            'readonly': true || !Budget.budget.items.length
-        }).attr({
-            'data-value': Budget.budget.budget_value_addition
-        });
-        $('#budget_value_discount').val(global.float2Br(Budget.budget.budget_value_discount)).prop({
-            'readonly': true || !Budget.budget.items.length
-        }).attr({
-            'data-value': Budget.budget.budget_value_discount
-        });
-        $('#budget_value_total').val('R$ ' + global.float2Br(Budget.budget.budget_value_total));
+        $('.panel-items .total').html('Valor Total: <b>R$' + global.float2Br(Budget.budget.budget_value_total) + '</b>');
         Payment.total();
-    },
-    totalAddition: function(budget_value_addition){
-        Budget.budget.budget_value_addition = budget_value_addition;
-        Budget.budget.budget_value_total = Budget.budget.budget_value;
-        Budget.budget.budget_value_total += Budget.budget.budget_value_addition;
-        Budget.budget.budget_value_total -= Budget.budget.budget_value_discount;
-        Item.total();
-    },
-    totalDiscount: function(budget_value_discount){
-        Budget.budget.budget_value_discount = budget_value_discount;
-        Budget.budget.budget_value_total = Budget.budget.budget_value;
-        Budget.budget.budget_value_total += Budget.budget.budget_value_addition;
-        Budget.budget.budget_value_total -= Budget.budget.budget_value_discount;
-        Item.total();
     }
 };
 
@@ -1468,7 +1502,7 @@ Person = {
         $('#button-image-person-remove').prop('disabled',!Person.person.image);
         $('#button-image-person-web-cam').prop('disabled',!Person.person.person_id);
         $('#button-budget-person-address').prop('disabled',!Person.person.person_id);
-        $('#button-budget-payment-credit').prop('disabled',!Person.person.credits.length);
+        $('#button-budget-payment-credit').prop('disabled',!Person.person.person_id);
         Person.showAttributes();
         PersonImage.show();
     },
@@ -1491,7 +1525,7 @@ Person = {
                 }
             }
         });
-        $('#button-budget-person-search').click(function () {
+        $('#button-budget-person-code-search').click(function () {
             if( $('#person_code').val().length ){
                 Person.get({
                     person_id: null,
@@ -1522,6 +1556,9 @@ Person = {
                     });
                 },Item.typeahead.delay);
             }
+        });
+        $('#button-budget-person-name-search').click(function(){
+            Person.search();
         });
         $('#button-budget-person-remove').click(function () {
             if( !Person.person.person_id ) return;
@@ -1554,7 +1591,6 @@ Person = {
         global.post({
             url: global.uri.uri_public_api + 'person.php?action=get',
             data: {
-                get_person_credit: 1,
                 get_person_address: 1,
                 get_person_attribute: 1,
                 get_person_credit_limit: 1,
@@ -1820,7 +1856,7 @@ Address = {
                 $('a[href="#tab-person-2"]').click();
             }
         });
-        $('#button-address-new').click(function(){
+        $('#button-budget-person-address-new').click(function(){
             Address.new();
         });
         $('#button-budget-person-address-back').click(function(){
@@ -1852,22 +1888,6 @@ Address = {
             $('#button-budget-person-address-back').show();
             Address.showList();
         });
-    },
-    init: function(){
-        Address.address = {
-            uf_id: null,
-            city_id: null,
-            district_id: null,
-            address_code: ('0'+(Person.person.address.length+1)).slice(-2),
-            address_main: ( !Person.person.address.length ? 'Y' : 'N' ),
-            address_cep: '',
-            address_public_place: '',
-            address_number: '',
-            address_complement: '',
-            address_lat: '',
-            address_lng: ''
-        };
-        Address.delivery = null;
     },
     main: function(key){
         global.post({
@@ -1912,7 +1932,10 @@ Address = {
                 buttons: [{
                     icon: 'fa-check',
                     title: 'Ok'
-                }]
+                }],
+                hidden: function(){
+                    map.destroy();
+                }
             });
         });
     },
@@ -1931,11 +1954,12 @@ Address = {
         var $panel = $('#tab-person-2');
         $panel.find('.address-card').parent().remove();
         $.each( Person.person.address, function(key,address){
+            address.key = key;
             var main = address.address_main == 'Y';
             var selected = Budget.budget && Budget.budget.address_code == address.address_code;
             $panel.append(
                 '<div class="col-xs-12 col-sm-4">' +
-                    '<div class="box-shadow address-card address-card-' + ( selected ? 'selected' : 'un-selected' ) + '">' +
+                    '<div data-key="' + key +'" class="box-shadow no-select address-card address-card-' + ( selected ? 'selected' : 'un-selected' ) + '">' +
                         '<div class="address-header">' +
                             'Endereço ' + address.address_code +
                             '<label>selecionado</label>' +
@@ -1950,20 +1974,13 @@ Address = {
                         '<div class="address-footer">' +
                             '<button data-toggle="tooltip" data-title="Editar" data-key="' + key +'" data-action="edit" class="btn btn-empty-blue pull-right"><i class="fa fa-pencil"></i></button>' +
                             '<button disabled data-toggle="tooltip" data-title="Excluir" data-key="' + key +'" data-action="del" class="btn btn-empty-red pull-right"><i class="fa fa-trash-o"></i></button>' +
-                            '<button data-toggle="tooltip" data-title="Selecionar"' + ( selected ? ' disabled' : '' ) + ' data-key="' + key +'" data-action="select" class="btn btn-empty-orange pull-left"><i class="fa fa-check"></i></button>' +
                             '<button data-toggle="tooltip" data-title="Contatos" data-key="' + key +'" data-action="contact" class="btn btn-empty-blue pull-left"><i class="fa fa-phone"></i></button>' +
                         '</div>' +
                     '</div>' +
                 '</div>'
             );
         });
-        $panel.find('button[data-action="map"]').click(function(){
-            Address.map($(this).attr('data-key'));
-        });
-        $panel.find('button[data-action="main"]').click(function(){
-            Address.main($(this).attr('data-key'));
-        });
-        $panel.find('button[data-action="select"]').click(function(){
+        $panel.find('.address-card').click(function(){
             Address.delivery = Person.person.address[$(this).attr('data-key')];
             Budget.budget.address_code = Address.delivery.address_code;
             Budget.budget.address_uf_id = Address.delivery.uf_id;
@@ -1974,23 +1991,62 @@ Address = {
             Address.showDelivery();
             Address.showList();
         });
-        $panel.find('button[data-action="contact"]').click(function(){
+        $panel.find('button[data-action="map"]').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            Address.map($(this).attr('data-key'));
+
+        });
+        $panel.find('button[data-action="main"]').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            Address.main($(this).attr('data-key'));
+        });
+        $panel.find('button[data-action="contact"]').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
             Address.contact($(this).attr('data-key'));
         });
-        $panel.find('button[data-action="edit"]').click(function(){
-            global.waiting();
-        });
-        $panel.find('button[data-action="del"]').click(function(){
-            global.waiting();
+        $panel.find('button[data-action="edit"]').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            Address.new($(this).attr('data-key'));
         });
         global.tooltip();
     },
-    new: function(){
-        Address.init();
-        $('#button-address-add').show();
-        $('#button-address-edit').hide();
-        $('#address-panel-title span').text('Novo Endereço');
-        $('a[href="#tab-person-3"]').click();
+    new: function(key){
+        var address = (key && Person.person.address[key] ? Person.person.address[key] : null);
+        if( address ) address.key = key;
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-address-new',
+            data: {
+                person_id: Person.person.person_id,
+                address: address
+            },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                icon: 'fa-plus',
+                size: 'big',
+                id: 'modal-address-new',
+                class: 'modal-address-new',
+                title: 'Novo Endereço',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Cancelar',
+                    class: 'pull-left btn-red'
+                },{
+                    unclose: true,
+                    icon: (key && Person.person.address[key] ? 'fa-floppy-o' : 'fa-plus'),
+                    title: (key && Person.person.address[key] ? 'Atualizar' : 'Cadastrar'),
+                    class: (key && Person.person.address[key] ? 'btn-blue' : 'btn-green'),
+                    action: function(){
+                        ModalAddressNew.submit();
+                    }
+                }]
+            });
+        });
     }
 };
 
@@ -2075,7 +2131,7 @@ Term = {
                     } else {
                         Term.get({
                             term_id: null,
-                            term_code: $(this).val()
+                            term_code: $('#term_code').val()
                         });
                     }
                 }
@@ -2226,6 +2282,82 @@ Payment = {
                     }
                 }
             }]
+        });
+    },
+    beforeRemoveCredit: function(){
+        global.modal({
+            icon: 'fa-question-circle-o',
+            title: 'Confirmação',
+            html: '<p>Deseja remover a carta de crédito do orçamento?</p>',
+            buttons: [{
+                icon: 'fa-times',
+                title: 'Não',
+                class: 'pull-left'
+            }, {
+                icon: 'fa-check',
+                title: 'Sim',
+                action: function () {
+                    Payment.removeCredit();
+                }
+            }]
+        });
+    },
+    credit: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-credit',
+            data: {
+                instance_id: Budget.budget.instance_id,
+                company_id: Company.company.company_id,
+                person: {
+                    person_id: Person.person.person_id,
+                    person_code: Person.person.person_code,
+                    person_name: Person.person.person_name
+                },
+                selected: Budget.budget.credit.payable
+            },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                hideClose: 1,
+                icon: 'fa-money',
+                id: 'modal-credit',
+                class: 'modal-credit',
+                title: 'Cartas de crédito',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Cancelar',
+                    class: 'pull-left btn-red',
+                    id: 'button-credit-cancel',
+                    unclose: true
+                },{
+                    icon: 'fa-check',
+                    title: 'Ok',
+                    class: 'btn-blue-dark',
+                    id: 'button-credit-select',
+                    unclose: true
+                }],
+                shown: function(){
+                    ModalCredit.success = function(credits){
+                        Budget.budget.credit.value = 0;
+                        Budget.budget.credit.payable = [];
+                        Budget.budget.budget_credit = 'N';
+                        $.each(credits,function(key,credit){
+                            if( Budget.budget.credit.value < ( Budget.budget.budget_value_total - Payment.payment_value ) ) {
+                                if( Budget.budget.credit.value + credit.payable_value > ( Budget.budget.budget_value_total - Payment.payment_value )) {
+                                    credit.payable_value = Budget.budget.budget_value_total - Payment.payment_value;
+                                }
+                                Budget.budget.credit.value += credit.payable_value;
+                                Budget.budget.credit.payable.push(credit);
+                                Budget.budget.budget_credit = 'Y';
+                            }
+                        });
+                        Payment.total();
+                        Payment.showList();
+                    }
+                }
+            })
         });
     },
     creditAuthorization: function(params){
@@ -2465,18 +2597,26 @@ Payment = {
         $('#button-budget-notes').click(function(){
             Budget.note();
         });
+        $('#button-budget-payment-credit').click(function(){
+            if( Budget.budget.budget_value_total == 0 ){
+                global.validateMessage('O valor do pedido está zerado. Verifique.');
+                return;
+            }
+            Payment.credit();
+        });
         Payment.table.on('draw',function(){
-            var $table = $('#table-budget-payments');
-            $table.find('tbody tr').dblclick(function(){
-                var key = $(this).attr('data-key');
-                if( !!key ){
-                    Payment.beforeEdit(key);
+            var table = $('#table-budget-payments');
+            $(table).find('tr').on('dblclick',function(){
+                if( $(this).attr('data-key') == -1 ){
+                    Payment.credit();
+                } else {
+                    Payment.beforeEdit($(this).attr('data-key'));
                 }
-            });
-            $table.find('button').click(function(){
+            }).find('button').click(function(){
                 Payment[$(this).attr('data-action')]($(this).attr('data-key'));
+            }).tooltip({
+                container: 'body'
             });
-            global.tooltip();
         });
     },
     new: function(){
@@ -2536,28 +2676,65 @@ Payment = {
     },
     recalculate: function(){
         var installment = Budget.budget.payments.length;
-        var budget_payment_value = parseInt((100*Budget.budget.budget_value_total)/installment)/100;
+        var value_total = Budget.budget.budget_value_total - Budget.budget.credit.value;
+        var budget_payment_value = parseInt((100*value_total)/installment)/100;
         for( var i=0; i<installment; i++ ){
             if( (i+1) == installment ){
-                budget_payment_value = parseFloat((budget_payment_value + parseFloat((Budget.budget.budget_value_total-(installment*budget_payment_value)).toFixed(2))).toFixed(2));
+                budget_payment_value = parseFloat((budget_payment_value + parseFloat((value_total-(installment*budget_payment_value)).toFixed(2))).toFixed(2));
             }
             Budget.budget.payments[i].budget_payment_value = budget_payment_value;
         }
         Payment.total();
         Payment.showList();
     },
+    removeCredit: function(){
+        var payable = [];
+        $.each(Budget.budget.credit.payable,function(key,credit){
+             payable.push(credit.payable_id);
+        });
+        global.post({
+            url: global.uri.uri_public_api + 'credit.php?action=redeem',
+            data: {
+                payable: payable,
+                instance_id: Budget.budget.instance_id
+            },
+            dataType: 'json'
+        },function(){
+            Budget.budget.credit.value = 0;
+            Budget.budget.credit.payable = [];
+            Budget.budget.budget_credit = 'Y';
+            $('#payment-credit-value').text('R$ 0,00');
+            Payment.total();
+            Payment.showList();
+        });
+    },
     showList: function(){
         Payment.table.clear();
+        if( Budget.budget.credit.value > 0 ){
+            var row = Payment.table.row.add([
+                '1x',
+                '<img src="' + global.uri.uri_public + 'files/modality/00A000000P.png"/>Carta de Crédito',
+                '<span>' + global.today() + '</span>' + global.date2Br(global.today()),
+                global.float2Br(Budget.budget.credit.value),
+                '<button data-toggle="tooltip" data-title="Editar Parcela" data-action="credit" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
+                '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="beforeRemoveCredit" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
+            ]).node();
+            $(row).attr('data-key',-1);
+            $('#payment-credit-value').text('R$ '+global.float2Br(Budget.budget.credit.value));
+        }
         $.each( Budget.budget.payments, function(key, payment){
             var row = Payment.table.row.add([
-                ( payment.budget_payment_entry == 'Y' ? '<i class="fa fa-check-circle"></i> ' : '' ) + payment.budget_payment_installment + 'x ',
-                ( payment.image ? '<img src="' + payment.image + '" style="max-width:40px;max-height:18px;"/> ' : '<i class="fa fa-credit-card"></i> ' ) + payment.modality_description,
+                ( payment.budget_payment_entry == 'Y' ? '<i class="fa fa-check-circle"></i> ' : '' ) + payment.budget_payment_installment + 'x',
+                ( payment.image ? '<img src="' + payment.image + '"/> ' : '<i class="fa fa-credit-card"></i> ' ) + payment.modality_description,
                 '<span>' + payment.budget_payment_deadline + '</span>' + global.date2Br(payment.budget_payment_deadline),
                 global.float2Br(payment.budget_payment_value),
                 '<button data-toggle="tooltip" data-title="Editar Parcela" data-action="beforeEdit" data-key="' + key + '" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
                 '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="del" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
             ]).node();
             $(row).attr('data-key',key);
+            if( payment.budget_payment_credit == 'Y' ){
+                $('#payment-credit-value').text('R$ '+global.float2Br(payment.budget_payment_value));
+            }
         });
         $('#button-budget-payment-remove').prop('disabled',!Budget.budget.payments.length);
         $('#button-budget-payment-recalculate').prop('disabled',!Budget.budget.payments.length);
@@ -2578,7 +2755,7 @@ Payment = {
         $.each(Budget.budget.payments,function(e,payment){
             Payment.payment_value += payment.budget_payment_value;
         });
-        Payment.payment_value = parseFloat(Payment.payment_value.toFixed(2));
+        Payment.payment_value = parseFloat(Payment.payment_value.toFixed(2)) + Budget.budget.credit.value;
         Payment.payment_aliquot = (Payment.payment_value/(Budget.budget.budget_value_total ? Budget.budget.budget_value_total : 1))*100;
         Payment.payment_remaining = Budget.budget.budget_value_total - Payment.payment_value;
         $('#budget_payment_value').val('R$ '+global.float2Br(Payment.payment_value));

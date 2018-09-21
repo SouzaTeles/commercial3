@@ -9,6 +9,7 @@
         public $user_user;
         public $user_name;
         public $user_email;
+        public $user_only_session;
         public $user_login;
         public $user_update;
         public $user_date;
@@ -34,6 +35,20 @@
             ]);
 
             GLOBAL $conn, $commercial, $dafel;
+
+            if( @$gets["get_user_access"] || @$_POST["get_user_access"] ){
+                $this->user_access = UserAccess::treeAccess(Model::getList($commercial,(Object)[
+                    "class" => "UserAccess",
+                    "tables" => [ "UserAccess" ],
+                    "fields" => [
+                        "user_access_id",
+                        "user_access_name",
+                        "user_access_value",
+                        "user_access_data_type"
+                    ],
+                    "filters" => [[ "user_id", "i", "=", $data->user_id ]]
+                ]));
+            }
 
             if( @$gets["get_user_profile"] || @$_POST["get_user_profile"] ){
                 $this->user_profile = Model::get($commercial,(Object)[

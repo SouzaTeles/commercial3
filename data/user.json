@@ -1,0 +1,30 @@
+{
+	"max_discount": {
+		"name": "Desconto Máximo",
+		"value": 0
+	},
+	"credit_authorization": {
+		"name": "Autoriza crédito",
+		"value": "N"
+	},
+	"only_session": {
+		"name": "Sessão única",
+		"value": "Y"
+	},
+	"mobile_access": {
+		"name": "Acessa o aplicativo",
+		"value": "N"
+	},
+	"mobile_unlock": {
+		"name": "Desbloqueia aplicativo no celular",
+		"value": "N"
+	},
+	"budget_delivery": {
+		"name": "Altera opção de entrega do pedido de venda",
+		"value": "N"
+	},
+	"budget_audit": {
+		"name": "Auditoria dos pedidos de venda",
+		"value": "N"
+	}
+}

@@ -1,0 +1,3 @@
+<textarea id="modal_text_json" disabled style="width:100%;height:400px;"></textarea>
+<script src="{$URI_PUBLIC}js/modal/modal-audit-info.js?{$smarty.now}"></script>
+<script> ModalAuditInfo.data = {$smarty.post|@json_encode}; </script>

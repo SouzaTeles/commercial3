@@ -36,8 +36,6 @@
                 "user_pass",
                 "user_name",
                 "user_email",
-                "user_max_discount=CAST(user_max_discount AS FLOAT)",
-                "user_credit_authorization",
                 "user_active",
                 "user_login=FORMAT(user_login,'yyyy-MM-dd HH:mm:ss')",
                 "user_update=FORMAT(user_update,'yyyy-MM-dd HH:mm:ss')",
@@ -46,6 +44,7 @@
             "filters" => [[ "user_id", "i", "=", $_SESSION["user_id"] ]],
             "gets" => [
                 "get_user_price" => 1,
+                "get_user_access" => 1,
                 "get_user_person" => 1,
                 "get_user_company" => 1,
                 "get_user_profile" => 1,
@@ -53,7 +52,15 @@
                 "get_user_profile_access" => 1
             ]
         ]);
-        $login->user_current_session = (Object)$_SESSION;
+        if( @$login ) {
+            $login->user_current_session = (Object)$_SESSION;
+            $login->access = (Object)array_merge(
+                (Array)$login->user_access,
+                (Array)$login->user_profile->user_profile_access
+            );
+            unset($login->user_access);
+            unset($login->user_profile->user_profile_access);
+        }
     }
 
     $config = Config::getList();

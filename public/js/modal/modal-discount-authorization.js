@@ -15,7 +15,7 @@ ModalDiscountAuthorization = {
     },
     authorize: function(){
         global.post({
-            url: global.uri.uri_public_api + 'budget.php?action=discountItemAuthorization',
+            url: global.uri.uri_public_api + 'budget.php?action=itemDiscountAuthorization',
             data: {
                 user_user: $('#modal_user_user').val(),
                 user_pass: $('#modal_user_pass').val(),

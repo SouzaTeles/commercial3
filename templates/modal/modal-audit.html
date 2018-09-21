@@ -1,0 +1,15 @@
+<link href="{$URI_PUBLIC}css/modal/modal-audit.css?{$smarty.now}" rel="stylesheet" />
+<table id="modal-table-audit" class="table-custom no-select nowrap">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Evento</th>
+            <th>Usuário</th>
+            <th>Data</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<script src="{$URI_PUBLIC}js/modal/modal-audit.js?{$smarty.now}"></script>
+<script> ModalAudit.data = {$smarty.post|@json_encode}; </script>

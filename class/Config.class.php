@@ -21,7 +21,8 @@
                 if(
                     ($config->config_category == "person" && $config->config_name == "attributes") ||
                     ($config->config_category == "bank" && $config->config_name == "authorized" ) ||
-                    ($config->config_category == "credit" && $config->config_name == "authorized_modality_id" )
+                    ($config->config_category == "credit" && $config->config_name == "authorized_modality_id" ) ||
+                    ($config->config_category == "budget" && $config->config_name == "authorized_modality_id" )
                 ){
                     $config->config_value = explode(":", $config->config_value);
                 }

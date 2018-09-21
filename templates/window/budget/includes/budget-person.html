@@ -4,7 +4,6 @@
         <ul class="nav nav-tabs hidden">
             <li class="active"><a href="#tab-person-1" data-toggle="tab"></a></li>
             <li><a href="#tab-person-2" data-toggle="tab"></a></li>
-            <li><a href="#tab-person-3" data-toggle="tab"></a></li>
         </ul>
         <div class="tab-content">
             <div id="tab-person-1" class="tab-pane fade in active">
@@ -32,7 +31,7 @@
                                 <label for="person_code">Código (F2 Localizar)</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="person_code" name="person_code" placeholder="Código" data-to-mask="code">
-                                    <span id="button-budget-person-code-search" class="input-group-addon"><i class="fa fa-search"></i></span>
+                                    <span id="button-budget-person-code-search" class="btn input-group-addon"><i class="fa fa-search"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -41,7 +40,7 @@
                                 <label for="person_name">Nome do Cliente (F2 Localizar)</label>
                                 <div class="input-group">
                                     <input autocomplete="off" type="text" class="form-control" id="person_name" name="person_name" placeholder="Nome do Cliente">
-                                    <span id="button-budget-person-name-search" class="input-group-addon"><i class="fa fa-search"></i></span>
+                                    <span id="button-budget-person-name-search" class="btn input-group-addon"><i class="fa fa-search"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -90,9 +89,6 @@
                         <i class="fa fa-plus txt-green"></i><br/>Novo Endereço
                     </button>
                 </div>
-            </div>
-            <div id="tab-person-3" class="tab-pane fade in">
-                {include file="{$PATH_LIB}templates/address.html"}
             </div>
         </div>
         <div class="panel-footer">

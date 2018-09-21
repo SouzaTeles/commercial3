@@ -33,6 +33,7 @@
         public $budget_update;
         public $budget_date;
         public $authorization = [];
+        public $credit;
 
         public function __construct( $data, $gets )
         {
@@ -68,6 +69,10 @@
             $this->budget_delivery_date = @$data->budget_delivery_date ? $data->budget_delivery_date : NULL;
             $this->budget_update = @$data->budget_update ? $data->budget_update : NULL;
             $this->budget_date = $data->budget_date;
+            $this->credit = (Object)[
+                "value" => 0,
+                "payable" => []
+            ];
 
             GLOBAL $conn, $commercial, $dafel, $config;
 
@@ -725,7 +730,7 @@
 
         public static function editOrder()
         {
-            GLOBAL $dafel, $config, $budget, $seller, $operation;
+            GLOBAL $dafel, $config, $budget, $seller, $operation, $login;
 
             $date = date("Y-m-d");
             $dateTime = date("Y-m-d H:i:s");
@@ -896,117 +901,260 @@
                 ]
             ]);
 
-            $externalPayments = [];
-            foreach( $budget->payments as $key => $payment ) {
+            // ***** CARTA DE CRÉDITO ***** //
+            $budget->credit = (Object)$budget->credit;
+            if( $budget->credit->value > 0 ){
 
-                $payment = (Object)$payment;
-
-                $covenant = NULL;
-                if( $payment->modality_type == "A" ){
-                    $covenant = Model::get($dafel,(Object)[
-                        "tables" => [ "FormaPagamentoItem (NoLock)" ],
-                        "fields" => [
-                            "NrDiasPrimeiraParcelaVenda",
-                            "NrParcelasRecebimento",
-                            "NrDiasRecebimento",
-                            "NrDiasIntervalo",
-                            "AlConvenio"
-                        ],
-                        "filters" => [
-                            [ "IdFormaPagamento", "s", "=", $payment->modality_id ],
-                            [ "CdEmpresa", "i", "=", $budget->company_id ],
-                            [ "NrParcelas", "i", "=", $payment->budget_payment_installment ]
-                        ]
-                    ]);
-                }
-
-                $days = 0;
-                if( @$covenant && @$covenant->NrDiasRecebimento ){
-                    $covenant->NrDiasRecebimento;
-                } else {
-                    $days = countDays( date("Y-m-d"), $payment->budget_payment_deadline );
-                }
-
-                $nature = NULL;
-                if( @$payment->nature_id ){
-                    $nature = Model::get($dafel,(Object)[
-                        "tables" => [ "NaturezaLancamento (NoLock)" ],
-                        "fields" => [
-                            "IdNaturezaLancamento",
-                            "CdChamada",
-                            "NmNaturezaLancamento",
-                            "StBaixaInclusao",
-                            "IdTipoBaixa"
-                        ],
-                        "filters" => [[ "IdNaturezaLancamento", "s", "=", $payment->nature_id ]]
-                    ]);
-                }
-
-                $paymentAliquot = number_format(((100 * $payment->budget_payment_value) / $budget->budget_value_total), 6, '.', '');
-
-                $orderPaymentParams = (Object)[
-                    "consider_discount" => "S",
-                    "lote_status" => "L",
-                    "edition_type" => "I",
-                    "credit_partial_drop" => "00A000000D",
-                    "credit_total_drop" => "00A000000F",
-                    "credit_agglutinates_banking_movement" => "N"
-                ];
-
-                $fields = [
-                    [ "IdFormaPagamento", "s", $payment->modality_id ],
-                    [ "NrDias", "i", $days ],
-                    [ "IdTipoBaixa", "s", @$nature->IdTipoBaixa ? $nature->IdTipoBaixa : NULL ],
-                    [ "AlParcela", "d", $paymentAliquot ],
-                    [ "IdNaturezaLancamento", "s", @$payment->nature_id ? $payment->nature_id : NULL ],
-                    [ "VlTitulo", "d", $payment->budget_payment_value],
-                    [ "StEntrada", "s", $payment->budget_payment_entry == "Y" ? "S" : "N" ],
-                    [ "IdBanco", "s", @$payment->bank_id ],
-                    [ "IdAgencia", "s", @$payment->agency_id ],
-                    [ "NrAgencia", "s", @$payment->agency_code ],
-                    [ "NrCheque", "s", @$payment->check_number ],
-                    [ "NrParcelas", "i", $payment->budget_payment_installment ],
-                    [ "NrParcelasRecebimento", "i", @$covenant && @$covenant->NrParcelasRecebimento ? $covenant->NrParcelasRecebimento : NULL ],
-                    [ "NrDiasRecebimento", "i", @$covenant && @$covenant->NrDiasRecebimento ? $covenant->NrDiasRecebimento : NULL ],
-                    [ "NrDiasIntervalo", "i", @$covenant && @$covenant->NrDiasIntervalo ? $covenant->NrDiasIntervalo : NULL ],
-                    [ "NrDiasPrimeiraParcelaVenda", "i", @$covenant && @$covenant->NrDiasPrimeiraParcelaVenda ? $covenant->NrDiasPrimeiraParcelaVenda : NULL ],
-                    [ "AlConvenio", "d", @$covenant && @$covenant->AlConvenio ? $covenant->AlConvenio : NULL ]
-                ];
-
-                if( @$payment->external_id ){
-
-                    $externalPayments[] = $payment->external_id;
-
-                    Model::update($dafel, (Object)[
+                $orderPayment = (Object)[
+                    "IdPedidoDeVendaPagamento" => Model::nextCode($dafel, (Object)[
                         "table" => "PedidoDeVendaPagamento",
-                        "fields" => $fields,
-                        "filters" => [[ "IdPedidoDeVendaPagamento", "s", "=", $payment->external_id ]]
+                        "field" => "IdPedidoDeVendaPagamento",
+                        "increment" => "S",
+                        "base36encode" => 1
+                    ])
+                ];
+                Model::insert($dafel,(Object)[
+                    "table" => "PedidoDeVendaPagamento",
+                    "fields" => [
+                        [ "IdPedidoDeVendaPagamento", "s", $orderPayment->IdPedidoDeVendaPagamento ],
+                        [ "IdPedidoDeVenda", "s", $budget->external_id ],
+                        [ "IdFormaPagamento", "s", $config->credit->modality_id ],
+                        [ "AlParcela", "d", 100 ],
+                        [ "IdNaturezaLancamento", "s", $config->credit->entry_id ],
+                        [ "VlTitulo", "d", $budget->credit->value],
+                        [ "StEntrada", "s", "N" ],
+                        [ "StConsideraDesconto", "s", "S" ],
+                        [ "NrParcelas", "i", 1 ],
+                        [ "StCartaCredito", "s", "S" ]
+                    ]
+                ]);
+                $budget->credit->external_id = $orderPayment->IdPedidoDeVendaPagamento;
+
+                foreach( $budget->credit->payable as $credit ) {
+
+                    $credit = (Object)$credit;
+
+                    $payable = Model::get($dafel,(Object)[
+                        "tables" => [ "APagar (NoLock)" ],
+                        "fields" => [
+                            "IdAPagar",
+                            "IdPessoa",
+                            "CdEmpresa",
+                            "NmTitulo",
+                            "NrTitulo",
+                            "VlTitulo=CAST(VlTitulo AS FLOAT)",
+                            "VlBaixado=CAST(VlBaixado AS FLOAT)",
+                            "VlAberto=CAST(VlAberto AS FLOAT)"
+                        ],
+                        "filters" => [[ "IdAPagar", "s", "=", $credit->payable_id ]]
                     ]);
 
-                } else {
+                    $payable->VlTitulo = (float)$payable->VlTitulo;
+                    $payable->VlBaixado = (float)$payable->VlBaixado;
+                    $payable->VlAberto = (float)$payable->VlAberto;
 
-                    $orderPayment = (Object)[
-                        "IdPedidoDeVendaPagamento" => Model::nextCode($dafel, (Object)[
-                            "table" => "PedidoDeVendaPagamento",
-                            "field" => "IdPedidoDeVendaPagamento",
+                    $payable->VlBaixado += $credit->payable_value;
+                    $payable->VlAberto -= $credit->payable_value;
+                    $IdTipoBaixa = $config->credit->total_drop;
+                    if( $payable->VlAberto > 0 ){
+                        $IdTipoBaixa = $config->credit->partial_drop;
+                    }
+
+                    $payableLot = (Object)[
+                        "IdLoteAPagar" => Model::nextCode($dafel,(Object)[
+                            "table" => "LoteAPagar",
+                            "field" => "IdLoteAPagar",
+                            "increment" => "S",
+                            "base36encode" => 1
+                        ]),
+                        "CdChamada" => Model::nextCode($dafel,(Object)[
+                            "table" => "LoteAPagar",
+                            "field" => "CdChamada",
+                            "increment" => "S"
+                        ])
+                    ];
+                    $payableDrop = (Object)[
+                        "IdAPagarBaixa" => Model::nextCode($dafel,(Object)[
+                            "table" => "APagarBaixa",
+                            "field" => "IdAPagarBaixa",
                             "increment" => "S",
                             "base36encode" => 1
                         ])
                     ];
 
-                    $externalPayments[] = $orderPayment->IdPedidoDeVendaPagamento;
-                    $budget->payments[$key]["external_id"] = $orderPayment->IdPedidoDeVendaPagamento;
-
-                    $fields[] = ["IdPedidoDeVendaPagamento", "s", $orderPayment->IdPedidoDeVendaPagamento];
-                    $fields[] = ["IdPedidoDeVenda", "s", $budget->external_id];
-                    $fields[] = ["StConsideraDesconto", "s", $orderPaymentParams->consider_discount];
-                    $fields[] = ["StCartaCredito", "s", $payment->budget_payment_credit == "Y" ? "S" : NULL];
-
-                    Model::insert($dafel, (Object)[
-                        "table" => "PedidoDeVendaPagamento",
-                        "fields" => $fields
+                    Model::insert($dafel,(Object)[
+                        "table" => "LoteAPagar",
+                        "fields" => [
+                            [ "IdLoteAPagar", "s", $payableLot->IdLoteAPagar ],
+                            [ "CdEmpresa", "i", $budget->company_id ],
+                            [ "CdChamada", "s", $payableLot->CdChamada ],
+                            [ "DsLoteAPagar", "s", "Carta de Credito - Pedido de Venda {$budget->external_code}" ],
+                            [ "DtAbertura", "s", $date ],
+                            [ "StLoteAPagar", "s", "L" ],
+                            [ "IdUsuario", "s", $login->external_id ],
+                            [ "TpEdicao", "s", "I" ],
+                            [ "IdSistema", "s", $config->budget->system_id ]
+                        ]
                     ]);
 
+                    Model::insert($dafel,(Object)[
+                        "table" => "APagarBaixa",
+                        "fields" => [
+                            [ "IdAPagarBaixa", "s", $payableDrop->IdAPagarBaixa ],
+                            [ "IdAPagar", "s", $credit->payable_id ],
+                            [ "IdTipoBaixa", "s", $IdTipoBaixa ],
+                            [ "NrDocumento", "s", $payable->NrTitulo ],
+                            [ "DtBaixa", "s", $date ],
+                            [ "VlBaixa", "d", $credit->payable_value ],
+                            [ "DsObservacao", "s", "Baixa criada pela vinculacao da carta de credito (titulo no FinAPagar {$payable->NrTitulo}) ao Pedido de Venda {$budget->external_code}" ],
+                            [ "IdUsuario", "s", $login->external_id ],
+                            [ "IdLoteAPagar", "s", $payableLot->IdLoteAPagar ],
+                            [ "StAglutinaMovBancario", "s", "N" ],
+                            [ "VlBaixaIndexado", "s", $credit->payable_value ],
+                            [ "NmEntidadeOrigem", "s", "PedidoDeVendaPagamento" ],
+                            [ "IdEntidadeOrigem", "s", $orderPayment->IdPedidoDeVendaPagamento ],
+                            [ "DtProcessamento", "s", $date ],
+                            [ "DtBaixaEfetiva", "s", $date ]
+                        ]
+                    ]);
+                    Model::update($dafel,(Object)[
+                        "table" => "APagar",
+                        "fields" => [
+                            [ "VlBaixado", "d", $payable->VlBaixado ],
+                            [ "DtBaixa", "s", $payable->VlBaixado >= $payable->VlTitulo ? $date : NULL ],
+                            [ "VlBaixadoIndexado", "d", $payable->VlBaixado ],
+                            [ "DtProcessamento", "s", ( $payable->VlBaixado >= $payable->VlTitulo ? $date : NULL ) ]
+                        ],
+                        "filters" => [[ "IdAPagar", "s", "=", $credit->payable_id ]]
+                    ]);
+
+                    $data = (Object)[
+                        "id" => $credit->payable_id,
+                        "table" => "##CCredito\${$credit->payable_id}\${$budget->instance_id}\${$login->external_id}\${$config->budget->system_id}\$M",
+                        "description" => "Inclusao do Commercial",
+                        "date" => date("Y-m-d H:i:s"),
+                        "instance_id" => $budget->instance_id,
+                        "login_id" => $login->user_id,
+                        "login_name" => $login->user_name
+                    ];
+                    file_put_contents(PATH_ROOT . "public/credit/del/{$credit->payable_id}.json", json_encode($data));
+                }
+            }
+            // ***** CARTA DE CRÉDITO ***** //
+
+            $externalPayments = [];
+            if( @$budget->payments ) {
+                foreach ($budget->payments as $key => $payment) {
+
+                    $payment = (Object)$payment;
+
+                    $covenant = NULL;
+                    if ($payment->modality_type == "A") {
+                        $covenant = Model::get($dafel, (Object)[
+                            "tables" => ["FormaPagamentoItem (NoLock)"],
+                            "fields" => [
+                                "NrDiasPrimeiraParcelaVenda",
+                                "NrParcelasRecebimento",
+                                "NrDiasRecebimento",
+                                "NrDiasIntervalo",
+                                "AlConvenio"
+                            ],
+                            "filters" => [
+                                ["IdFormaPagamento", "s", "=", $payment->modality_id],
+                                ["CdEmpresa", "i", "=", $budget->company_id],
+                                ["NrParcelas", "i", "=", $payment->budget_payment_installment]
+                            ]
+                        ]);
+                    }
+
+                    $days = 0;
+                    if (@$covenant && @$covenant->NrDiasRecebimento) {
+                        $covenant->NrDiasRecebimento;
+                    } else {
+                        $days = countDays(date("Y-m-d"), $payment->budget_payment_deadline);
+                    }
+
+                    $nature = NULL;
+                    if (@$payment->nature_id) {
+                        $nature = Model::get($dafel, (Object)[
+                            "tables" => ["NaturezaLancamento (NoLock)"],
+                            "fields" => [
+                                "IdNaturezaLancamento",
+                                "CdChamada",
+                                "NmNaturezaLancamento",
+                                "StBaixaInclusao",
+                                "IdTipoBaixa"
+                            ],
+                            "filters" => [["IdNaturezaLancamento", "s", "=", $payment->nature_id]]
+                        ]);
+                    }
+
+                    $paymentAliquot = number_format(((100 * $payment->budget_payment_value) / $budget->budget_value_total), 6, '.', '');
+
+                    $orderPaymentParams = (Object)[
+                        "consider_discount" => "S",
+                        "lote_status" => "L",
+                        "edition_type" => "I",
+                        "credit_partial_drop" => "00A000000D",
+                        "credit_total_drop" => "00A000000F",
+                        "credit_agglutinates_banking_movement" => "N"
+                    ];
+
+                    $fields = [
+                        ["IdFormaPagamento", "s", $payment->modality_id],
+                        ["NrDias", "i", $days],
+                        ["IdTipoBaixa", "s", @$nature->IdTipoBaixa ? $nature->IdTipoBaixa : NULL],
+                        ["AlParcela", "d", $paymentAliquot],
+                        ["IdNaturezaLancamento", "s", @$payment->nature_id ? $payment->nature_id : NULL],
+                        ["VlTitulo", "d", $payment->budget_payment_value],
+                        ["StEntrada", "s", $payment->budget_payment_entry == "Y" ? "S" : "N"],
+                        ["IdBanco", "s", @$payment->bank_id],
+                        ["IdAgencia", "s", @$payment->agency_id],
+                        ["NrAgencia", "s", @$payment->agency_code],
+                        ["NrCheque", "s", @$payment->check_number],
+                        ["NrParcelas", "i", $payment->budget_payment_installment],
+                        ["NrParcelasRecebimento", "i", @$covenant && @$covenant->NrParcelasRecebimento ? $covenant->NrParcelasRecebimento : NULL],
+                        ["NrDiasRecebimento", "i", @$covenant && @$covenant->NrDiasRecebimento ? $covenant->NrDiasRecebimento : NULL],
+                        ["NrDiasIntervalo", "i", @$covenant && @$covenant->NrDiasIntervalo ? $covenant->NrDiasIntervalo : NULL],
+                        ["NrDiasPrimeiraParcelaVenda", "i", @$covenant && @$covenant->NrDiasPrimeiraParcelaVenda ? $covenant->NrDiasPrimeiraParcelaVenda : NULL],
+                        ["AlConvenio", "d", @$covenant && @$covenant->AlConvenio ? $covenant->AlConvenio : NULL]
+                    ];
+
+                    if (@$payment->external_id) {
+
+                        $externalPayments[] = $payment->external_id;
+
+                        Model::update($dafel, (Object)[
+                            "table" => "PedidoDeVendaPagamento",
+                            "fields" => $fields,
+                            "filters" => [["IdPedidoDeVendaPagamento", "s", "=", $payment->external_id]]
+                        ]);
+
+                    } else {
+
+                        $orderPayment = (Object)[
+                            "IdPedidoDeVendaPagamento" => Model::nextCode($dafel, (Object)[
+                                "table" => "PedidoDeVendaPagamento",
+                                "field" => "IdPedidoDeVendaPagamento",
+                                "increment" => "S",
+                                "base36encode" => 1
+                            ])
+                        ];
+
+                        $externalPayments[] = $orderPayment->IdPedidoDeVendaPagamento;
+                        $budget->payments[$key]["external_id"] = $orderPayment->IdPedidoDeVendaPagamento;
+
+                        $fields[] = ["IdPedidoDeVendaPagamento", "s", $orderPayment->IdPedidoDeVendaPagamento];
+                        $fields[] = ["IdPedidoDeVenda", "s", $budget->external_id];
+                        $fields[] = ["StConsideraDesconto", "s", $orderPaymentParams->consider_discount];
+                        $fields[] = ["StCartaCredito", "s", $payment->budget_payment_credit == "Y" ? "S" : NULL];
+
+                        Model::insert($dafel, (Object)[
+                            "table" => "PedidoDeVendaPagamento",
+                            "fields" => $fields
+                        ]);
+
+                    }
                 }
             }
 
@@ -1014,8 +1162,9 @@
                 "top" => 999,
                 "table" => "PedidoDeVendaPagamento",
                 "filters" => [
+                    [ "StCartaCredito", "s", "=", "N" ],
                     [ "IdPedidoDeVenda", "s", "=", $budget->external_id ],
-                    [ "IdPedidoDeVendaPagamento", "s", "not in", $externalPayments ]
+                    [ "IdPedidoDeVendaPagamento", "s", "not in", @$externalPayments ? $externalPayments : NULL ]
                 ]
             ]);
 
@@ -1206,7 +1355,8 @@
                 ]);
             }
 
-            foreach( $budget->payments as $key => $payment ) {
+            $budget->credit = (Object)$budget->credit;
+            if( $budget->credit->value > 0 ){
 
                 $orderPayment = (Object)[
                     "IdPedidoDeVendaPagamento" => Model::nextCode($dafel, (Object)[
@@ -1216,88 +1366,228 @@
                         "base36encode" => 1
                     ])
                 ];
-
-                $payment = (Object)$payment;
-                $budget->payments[$key]["external_id"] = $orderPayment->IdPedidoDeVendaPagamento;
-
-                $covenant = NULL;
-                if( $payment->modality_type == "A" ){
-                    $covenant = Model::get($dafel,(Object)[
-                        "tables" => [ "FormaPagamentoItem (NoLock)" ],
-                        "fields" => [
-                            "NrDiasPrimeiraParcelaVenda",
-                            "NrParcelasRecebimento",
-                            "NrDiasRecebimento",
-                            "NrDiasIntervalo",
-                            "AlConvenio"
-                        ],
-                        "filters" => [
-                            [ "IdFormaPagamento", "s", "=", $payment->modality_id ],
-                            [ "CdEmpresa", "i", "=", $budget->company_id ],
-                            [ "NrParcelas", "i", "=", $payment->budget_payment_installment ]
-                        ]
-                    ]);
-                }
-
-                $days = 0;
-                if( @$covenant && @$covenant->NrDiasRecebimento ){
-                    $covenant->NrDiasRecebimento;
-                } else {
-                    $days = countDays( date("Y-m-d"), $payment->budget_payment_deadline );
-                }
-
-                $nature = NULL;
-                if( @$payment->nature_id ){
-                    $nature = Model::get($dafel,(Object)[
-                        "tables" => [ "NaturezaLancamento (NoLock)" ],
-                        "fields" => [
-                            "IdNaturezaLancamento",
-                            "CdChamada",
-                            "NmNaturezaLancamento",
-                            "StBaixaInclusao",
-                            "IdTipoBaixa"
-                        ],
-                        "filters" => [[ "IdNaturezaLancamento", "s", "=", $payment->nature_id ]]
-                    ]);
-                }
-
-                $paymentAliquot = number_format(((100 * $payment->budget_payment_value) / $budget->budget_value_total), 6, '.', '');
-
-                $orderPaymentParams = (Object)[
-                    "consider_discount" => "S",
-                    "lote_status" => "L",
-                    "edition_type" => "I",
-                    "credit_partial_drop" => "00A000000D",
-                    "credit_total_drop" => "00A000000F",
-                    "credit_agglutinates_banking_movement" => "N"
-                ];
-
                 Model::insert($dafel,(Object)[
                     "table" => "PedidoDeVendaPagamento",
                     "fields" => [
                         [ "IdPedidoDeVendaPagamento", "s", $orderPayment->IdPedidoDeVendaPagamento ],
                         [ "IdPedidoDeVenda", "s", $order->IdPedidoDeVenda ],
-                        [ "IdFormaPagamento", "s", $payment->modality_id ],
-                        [ "NrDias", "i", $days ],
-                        [ "IdTipoBaixa", "s", @$nature->IdTipoBaixa ? $nature->IdTipoBaixa : NULL ],
-                        [ "AlParcela", "d", $paymentAliquot ],
-                        [ "IdNaturezaLancamento", "s", @$payment->nature_id ? $payment->nature_id : NULL ],
-                        [ "VlTitulo", "d", $payment->budget_payment_value],
-                        [ "StEntrada", "s", $payment->budget_payment_entry == "Y" ? "S" : "N" ],
-                        [ "IdBanco", "s", @$payment->bank_id ],
-                        [ "IdAgencia", "s", @$payment->agency_id ],
-                        [ "NrAgencia", "s", @$payment->agency_code ],
-                        [ "NrCheque", "s", @$payment->check_number ],
-                        [ "StConsideraDesconto", "s", $orderPaymentParams->consider_discount ],
-                        [ "NrParcelas", "i", $payment->budget_payment_installment ],
-                        [ "NrParcelasRecebimento", "i", @$covenant && @$covenant->NrParcelasRecebimento ? $covenant->NrParcelasRecebimento : NULL ],
-                        [ "NrDiasRecebimento", "i", @$covenant && @$covenant->NrDiasRecebimento ? $covenant->NrDiasRecebimento : NULL ],
-                        [ "NrDiasIntervalo", "i", @$covenant && @$covenant->NrDiasIntervalo ? $covenant->NrDiasIntervalo : NULL ],
-                        [ "NrDiasPrimeiraParcelaVenda", "i", @$covenant && @$covenant->NrDiasPrimeiraParcelaVenda ? $covenant->NrDiasPrimeiraParcelaVenda : NULL ],
-                        [ "AlConvenio", "d", @$covenant && @$covenant->AlConvenio ? $covenant->AlConvenio : NULL ],
-                        [ "StCartaCredito", "s", $payment->budget_payment_credit == "Y" ? "S" : NULL ]
+                        [ "IdFormaPagamento", "s", $config->credit->modality_id ],
+                        [ "AlParcela", "d", 100 ],
+                        [ "IdNaturezaLancamento", "s", $config->credit->entry_id ],
+                        [ "VlTitulo", "d", $budget->credit->value],
+                        [ "StEntrada", "s", "N" ],
+                        [ "StConsideraDesconto", "s", "S" ],
+                        [ "NrParcelas", "i", 1 ],
+                        [ "StCartaCredito", "s", "S" ]
                     ]
                 ]);
+                $budget->credit->external_id = $orderPayment->IdPedidoDeVendaPagamento;
+
+                foreach( $budget->credit->payable as $credit ) {
+
+                    $credit = (Object)$credit;
+
+                    $payable = Model::get($dafel,(Object)[
+                        "tables" => [ "APagar (NoLock)" ],
+                        "fields" => [
+                            "IdAPagar",
+                            "IdPessoa",
+                            "CdEmpresa",
+                            "NmTitulo",
+                            "NrTitulo",
+                            "VlTitulo=CAST(VlTitulo AS FLOAT)",
+                            "VlBaixado=CAST(VlBaixado AS FLOAT)",
+                            "VlAberto=CAST(VlAberto AS FLOAT)"
+                        ],
+                        "filters" => [[ "IdAPagar", "s", "=", $credit->payable_id ]]
+                    ]);
+
+                    $payable->VlTitulo = (float)$payable->VlTitulo;
+                    $payable->VlBaixado = (float)$payable->VlBaixado;
+                    $payable->VlAberto = (float)$payable->VlAberto;
+
+                    $payable->VlBaixado += $credit->payable_value;
+                    $payable->VlAberto -= $credit->payable_value;
+                    $IdTipoBaixa = $config->credit->total_drop;
+                    if( $payable->VlAberto > 0 ){
+                        $IdTipoBaixa = $config->credit->partial_drop;
+                    }
+
+                    $payableLot = (Object)[
+                        "IdLoteAPagar" => Model::nextCode($dafel,(Object)[
+                            "table" => "LoteAPagar",
+                            "field" => "IdLoteAPagar",
+                            "increment" => "S",
+                            "base36encode" => 1
+                        ]),
+                        "CdChamada" => Model::nextCode($dafel,(Object)[
+                            "table" => "LoteAPagar",
+                            "field" => "CdChamada",
+                            "increment" => "S"
+                        ])
+                    ];
+                    $payableDrop = (Object)[
+                        "IdAPagarBaixa" => Model::nextCode($dafel,(Object)[
+                            "table" => "APagarBaixa",
+                            "field" => "IdAPagarBaixa",
+                            "increment" => "S",
+                            "base36encode" => 1
+                        ])
+                    ];
+
+                    Model::insert($dafel,(Object)[
+                        "table" => "LoteAPagar",
+                        "fields" => [
+                            [ "IdLoteAPagar", "s", $payableLot->IdLoteAPagar ],
+                            [ "CdEmpresa", "i", $budget->company_id ],
+                            [ "CdChamada", "s", $payableLot->CdChamada ],
+                            [ "DsLoteAPagar", "s", "Carta de Credito - Pedido de Venda {$order->CdChamada}" ],
+                            [ "DtAbertura", "s", $date ],
+                            [ "StLoteAPagar", "s", "L" ],
+                            [ "IdUsuario", "s", $login->external_id ],
+                            [ "TpEdicao", "s", "I" ],
+                            [ "IdSistema", "s", $config->budget->system_id ]
+                        ]
+                    ]);
+
+                    Model::insert($dafel,(Object)[
+                        "table" => "APagarBaixa",
+                        "fields" => [
+                            [ "IdAPagarBaixa", "s", $payableDrop->IdAPagarBaixa ],
+                            [ "IdAPagar", "s", $credit->payable_id ],
+                            [ "IdTipoBaixa", "s", $IdTipoBaixa ],
+                            [ "NrDocumento", "s", $payable->NrTitulo ],
+                            [ "DtBaixa", "s", $date ],
+                            [ "VlBaixa", "d", $credit->payable_value ],
+                            [ "DsObservacao", "s", "Baixa criada pela vinculacao da carta de credito (titulo no FinAPagar {$payable->NrTitulo}) ao Pedido de Venda {$order->CdChamada}" ],
+                            [ "IdUsuario", "s", $login->external_id ],
+                            [ "IdLoteAPagar", "s", $payableLot->IdLoteAPagar ],
+                            [ "StAglutinaMovBancario", "s", "N" ],
+                            [ "VlBaixaIndexado", "s", $credit->payable_value ],
+                            [ "NmEntidadeOrigem", "s", "PedidoDeVendaPagamento" ],
+                            [ "IdEntidadeOrigem", "s", $orderPayment->IdPedidoDeVendaPagamento ],
+                            [ "DtProcessamento", "s", $date ],
+                            [ "DtBaixaEfetiva", "s", $date ]
+                        ]
+                    ]);
+                    Model::update($dafel,(Object)[
+                        "table" => "APagar",
+                        "fields" => [
+                            [ "VlBaixado", "d", $payable->VlBaixado ],
+                            [ "DtBaixa", "s", $payable->VlBaixado >= $payable->VlTitulo ? $date : NULL ],
+                            [ "VlBaixadoIndexado", "d", $payable->VlBaixado ],
+                            [ "DtProcessamento", "s", ( $payable->VlBaixado >= $payable->VlTitulo ? $date : NULL ) ]
+                        ],
+                        "filters" => [[ "IdAPagar", "s", "=", $credit->payable_id ]]
+                    ]);
+
+                    $data = (Object)[
+                        "id" => $credit->payable_id,
+                        "table" => "##CCredito\${$credit->payable_id}\${$budget->instance_id}\${$login->external_id}\${$config->budget->system_id}\$M",
+                        "description" => "Inclusao do Commercial",
+                        "date" => date("Y-m-d H:i:s"),
+                        "instance_id" => $budget->instance_id,
+                        "login_id" => $login->user_id,
+                        "login_name" => $login->user_name
+                    ];
+                    file_put_contents(PATH_ROOT . "public/credit/del/{$credit->payable_id}.json", json_encode($data));
+                }
+            }
+
+            if( @$budget->payments ) {
+                foreach ($budget->payments as $key => $payment) {
+
+                    $orderPayment = (Object)[
+                        "IdPedidoDeVendaPagamento" => Model::nextCode($dafel, (Object)[
+                            "table" => "PedidoDeVendaPagamento",
+                            "field" => "IdPedidoDeVendaPagamento",
+                            "increment" => "S",
+                            "base36encode" => 1
+                        ])
+                    ];
+
+                    $payment = (Object)$payment;
+                    $budget->payments[$key]["external_id"] = $orderPayment->IdPedidoDeVendaPagamento;
+
+                    $covenant = NULL;
+                    if ($payment->modality_type == "A") {
+                        $covenant = Model::get($dafel, (Object)[
+                            "tables" => ["FormaPagamentoItem (NoLock)"],
+                            "fields" => [
+                                "NrDiasPrimeiraParcelaVenda",
+                                "NrParcelasRecebimento",
+                                "NrDiasRecebimento",
+                                "NrDiasIntervalo",
+                                "AlConvenio"
+                            ],
+                            "filters" => [
+                                ["IdFormaPagamento", "s", "=", $payment->modality_id],
+                                ["CdEmpresa", "i", "=", $budget->company_id],
+                                ["NrParcelas", "i", "=", $payment->budget_payment_installment]
+                            ]
+                        ]);
+                    }
+
+                    $days = 0;
+                    if (@$covenant && @$covenant->NrDiasRecebimento) {
+                        $covenant->NrDiasRecebimento;
+                    } else {
+                        $days = countDays(date("Y-m-d"), $payment->budget_payment_deadline);
+                    }
+
+                    $nature = NULL;
+                    if (@$payment->nature_id) {
+                        $nature = Model::get($dafel, (Object)[
+                            "tables" => ["NaturezaLancamento (NoLock)"],
+                            "fields" => [
+                                "IdNaturezaLancamento",
+                                "CdChamada",
+                                "NmNaturezaLancamento",
+                                "StBaixaInclusao",
+                                "IdTipoBaixa"
+                            ],
+                            "filters" => [["IdNaturezaLancamento", "s", "=", $payment->nature_id]]
+                        ]);
+                    }
+
+                    $paymentAliquot = number_format(((100 * $payment->budget_payment_value) / $budget->budget_value_total), 6, '.', '');
+
+                    $orderPaymentParams = (Object)[
+                        "consider_discount" => "S",
+                        "lote_status" => "L",
+                        "edition_type" => "I",
+                        "credit_partial_drop" => "00A000000D",
+                        "credit_total_drop" => "00A000000F",
+                        "credit_agglutinates_banking_movement" => "N"
+                    ];
+
+                    Model::insert($dafel, (Object)[
+                        "table" => "PedidoDeVendaPagamento",
+                        "fields" => [
+                            ["IdPedidoDeVendaPagamento", "s", $orderPayment->IdPedidoDeVendaPagamento],
+                            ["IdPedidoDeVenda", "s", $order->IdPedidoDeVenda],
+                            ["IdFormaPagamento", "s", $payment->modality_id],
+                            ["NrDias", "i", $days],
+                            ["IdTipoBaixa", "s", @$nature->IdTipoBaixa ? $nature->IdTipoBaixa : NULL],
+                            ["AlParcela", "d", $paymentAliquot],
+                            ["IdNaturezaLancamento", "s", @$payment->nature_id ? $payment->nature_id : NULL],
+                            ["VlTitulo", "d", $payment->budget_payment_value],
+                            ["StEntrada", "s", $payment->budget_payment_entry == "Y" ? "S" : "N"],
+                            ["IdBanco", "s", @$payment->bank_id],
+                            ["IdAgencia", "s", @$payment->agency_id],
+                            ["NrAgencia", "s", @$payment->agency_code],
+                            ["NrCheque", "s", @$payment->check_number],
+                            ["StConsideraDesconto", "s", $orderPaymentParams->consider_discount],
+                            ["NrParcelas", "i", $payment->budget_payment_installment],
+                            ["NrParcelasRecebimento", "i", @$covenant && @$covenant->NrParcelasRecebimento ? $covenant->NrParcelasRecebimento : NULL],
+                            ["NrDiasRecebimento", "i", @$covenant && @$covenant->NrDiasRecebimento ? $covenant->NrDiasRecebimento : NULL],
+                            ["NrDiasIntervalo", "i", @$covenant && @$covenant->NrDiasIntervalo ? $covenant->NrDiasIntervalo : NULL],
+                            ["NrDiasPrimeiraParcelaVenda", "i", @$covenant && @$covenant->NrDiasPrimeiraParcelaVenda ? $covenant->NrDiasPrimeiraParcelaVenda : NULL],
+                            ["AlConvenio", "d", @$covenant && @$covenant->AlConvenio ? $covenant->AlConvenio : NULL],
+                            ["StCartaCredito", "s", $payment->budget_payment_credit == "Y" ? "S" : NULL]
+                        ]
+                    ]);
+                }
             }
         }
 

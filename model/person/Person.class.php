@@ -35,37 +35,6 @@
                 "image_dir" => "person"
             ]);
 
-            if( @$gets["get_person_credit"] || @$_POST["get_person_credit"] )
-            {
-                $this->credits = Model::getList($dafel,(Object)[
-                    "class" => "PersonCredit",
-                    "tables" => [
-                        "APagar AP (NoLock)",
-                        "FormaPagamento FP (NoLock)"
-                    ],
-                    "fields" => [
-                        "AP.IdAPagar",
-                        "AP.IdPessoa",
-                        "FP.IdFormaPagamento",
-                        "AP.CdEmpresa",
-                        "AP.NrTitulo",
-                        "FP.DsFormaPagamento",
-                        "VlTitulo = (ISNULL(AP.VlTitulo, 0)-ISNULL(AP.VlIRRF, 0)-ISNULL(AP.VlPIS, 0)-ISNULL(AP.VlCOFINS, 0)- ISNULL(AP.VlCSLL, 0)-ISNULL(AP.VlINSS, 0)-ISNULL(AP.VlISS, 0)- ISNULL(AP.VlPIS_COFINS_CSLL, 0)- ISNULL(AP.VlOutros, 0))",
-                        "VlUtilizado = ISNULL(( SELECT Sum(ISNULL(APB.VlBaixa, 0)) FROM APagarBaixa APB WHERE APB.IdAPagar = AP.IdAPagar GROUP BY APB.IdAPagar ),0) + ISNULL(( SELECT Sum(ISNULL(LAPB.VlBaixa, 0)) FROM LoteAPagarBaixa LAPB WHERE LAPB.IdAPagar = AP.IdAPagar AND ( NOT EXISTS( SELECT AB.IdAPagarBaixa FROM APagarBaixa AB WHERE ( AB.IdAPagarBaixa = LAPB.IdAPagarBaixa ))) GROUP BY LAPB.IdAPagar ),0)",
-                        "AP.DtEmissao",
-                        "AP.DsObservacao",
-                        "Empenhado = (SELECT Name FROM TempDB..sysObjects WHERE Name like '##CCredito$%' AND (SUBSTRING(Name,23,10) <> '" . ( @$_POST["instance_id"] ? $_POST["instance_id"] : "XXXXXXXXXX" ) . "') AND (SUBSTRING(Name,12,10) = AP.IdApagar))"
-                    ],
-                    "filters" => [
-                        [ "AP.DtExclusao IS NULL" ],
-                        [ "AP.DtBaixa IS NULL" ],
-                        [ "FP.IdFormaPagamento = AP.IdFormaPagamento" ],
-                        [ "AP.IdPessoa", "s", "=", $data->IdPessoa ],
-                        [ "AP.IdNaturezaLancamento", "s", "=", $config->credit->entry_id ]
-                    ]
-                ]);
-            }
-
             if( @$gets["get_person_attribute"] || @$_POST["get_person_attribute"] )
             {
                 $this->attributes = Model::getList($dafel,(Object)[
@@ -120,7 +89,9 @@
                         "PE.NmLogradouro",
                         "PE.NrLogradouro",
                         "PE.DsComplemento",
-                        "PE.DsObservacao"
+                        "PE.DsObservacao",
+                        "VlLatitude=CAST(PE.VlLatitude AS FLOAT)",
+                        "VlLongitude=CAST(PE.VlLongitude AS FLOAT)"
                     ],
                     "filters" => [[ "PE.IdPessoa", "s", "=", $data->IdPessoa ]],
                     "order" => "PE.StEnderecoPrincipal DESC, PE.CdEndereco"

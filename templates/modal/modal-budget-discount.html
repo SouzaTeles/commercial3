@@ -1,0 +1,23 @@
+<link href="{$URI_PUBLIC}css/modal/modal-budget-discount.css?{$smarty.now}" rel="stylesheet" />
+<div class="modal-box">
+    Valor do Pedido: <b>R$ 0,00</b><br>
+    Valor com Desconto: <b>R$ 0,00</b><br>
+</div>
+<form id="form-discount">
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label for="modal_discount_aliquot">Alíquota %</label>
+                <input value="0,00" data-value="0,00" type="text" class="form-control" id="modal_discount_aliquot" name="modal_discount_aliquot" data-to-mask="percent4">
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label for="modal_discount_value">Valor R$</label>
+                <input value="0,00" data-value="0,00" type="text" class="form-control" id="modal_discount_value" name="modal_discount_value" data-to-mask="money">
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="hidden"></button>
+</form>
+<script src="{$URI_PUBLIC}js/modal/modal-budget-discount.js?{$smarty.now}"></script>

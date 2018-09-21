@@ -1,5 +1,6 @@
 $(document).ready(function(){
     ModalSeller.events();
+    ModalSeller.show();
 });
 
 ModalSeller = {
@@ -56,11 +57,23 @@ ModalSeller = {
                             $('#modal-person-image').css('background-image','url(' + item.item_image + ')');
                             $('#modal_seller_code').val(item.item_code).attr('data-value',item.item_code);
                             $('#modal_seller_name').val(item.item_name).attr('data-value',item.item_name);
+                            setTimeout(function(){
+                                $('#button-seller-select').focus();
+                            },500);
                         }
                     });
                 },ModalSeller.typeahead.delay);
             }
         }).val(ModalSeller.seller.seller_name).attr('data-value',ModalSeller.seller.seller_name);
+        $('#button-seller-select').click(function(){
+            if( !ModalSeller.seller.seller_id ){
+                global.validateMessage('Nenhum vendedor foi informado.',function(){
+                    $('#modal_seller_code').focus().select();
+                });
+            }
+            $('#modal-seller-search').modal('hide');
+            ModalSeller.success(ModalSeller.seller);
+        });
     },
     get: function(data){
         global.post({
@@ -79,6 +92,7 @@ ModalSeller = {
             if( !!person.image ){
                 $('#modal-person-image').css('background-image', 'url(' + person.image + ')');
             }
+            $('#button-seller-select').focus();
         });
     },
     show: function(){

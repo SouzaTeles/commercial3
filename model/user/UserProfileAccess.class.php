@@ -21,48 +21,30 @@
 
         public static function treeAccess($l_access)
         {
-            $user_access = json_decode( file_get_contents( PATH_DATA . "access.json" ));
+            $profile_access = json_decode( file_get_contents( PATH_DATA . "profile.json" ));
 
             foreach ($l_access as $access) {
                 $module = "{$access->user_profile_access_module}";
-                $object = "{$access->user_profile_access_name}";
-                if (!@$user_access->$module){
+                $name = "{$access->user_profile_access_name}";
+                if (!@$profile_access->$module){
                     echo "Chave do banco de dados não encontrada: {$module}";
-                    die(var_dump($user_access));
+                    var_dump($profile_access);
+                    die();
                 }
-                if (!@$user_access->$module->$object) {
-                    $user_access->$module->$object = new StdClass();
+                $profile_access->$module->$name = new StdClass();
+                $type = $access->user_profile_access_data_type;
+                $value = $access->user_profile_access_value;
+                if( $type == "float" ){
+                    $value = (float)$value;
                 }
-                $user_access->$module->$object->value = $access->user_profile_access_value;
-                $user_access->$module->$object->data_type = $access->user_profile_access_data_type;
+                if( $type == "int" ){
+                    $value = (int)$value;
+                }
+                $profile_access->$module->$name->value = $value;
+                unset($profile_access->$module->name);
             }
 
-            return $user_access;
-        }
-
-        public static function insert($user_profile_id)
-        {
-            GLOBAL $commercial, $post;
-
-            foreach( $post->user_profile_access as $module => $access ){
-                foreach( $access as $name => $data ){
-                    if( is_array($data) ){
-                        $data = (Object)$data;
-                        if( $data->data_type != "bool" || ( $data->data_type == "bool" && $data->value == "Y" )) {
-                            Model::insert($commercial, (Object)[
-                                "table" => "user_profile_access",
-                                "fields" => [
-                                    ["user_profile_id", "i", $user_profile_id],
-                                    ["user_profile_access_module", "s", $module],
-                                    ["user_profile_access_name", "s", $name],
-                                    ["user_profile_access_value", "s", $data->value],
-                                    ["user_profile_access_data_type", "s", $data->data_type]
-                                ]
-                            ]);
-                        }
-                    }
-                }
-            }
+            return $profile_access;
         }
     }
 

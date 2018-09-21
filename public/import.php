@@ -34,18 +34,68 @@
                 [ "user_pass", "s", $user->user_pass ],
                 [ "user_name", "s", utf8_decode($user->user_name) ],
                 [ "user_email", "s", $user->user_mail ],
-                [ "user_max_discount", "s", $user->user_max_discount ],
-                [ "user_credit_authorization", "s", @$user->user_max_credit_authorization ? "Y" : "N" ],
-                [ "user_only_session", "s", $user->user_session_expires ],
-                [ "user_mobile_access", "s", $user->user_mobile_access ],
-                [ "user_mobile_unlock", "s", $user->user_unlock_device ],
-                [ "user_budget_delivery", "s", "N" ],
                 [ "user_active", "s", $user->user_active ],
                 [ "user_login", "s", @$user->user_login ? $user->user_login : NULL ],
                 [ "user_update", "s", @$user->user_update ? $user->user_update : NULL ],
                 [ "user_date", "s", $user->user_date ],
             ]
         ]);
+        $access = [
+            (Object)[
+                "user_id" => $user_id,
+                "user_access_name" => "max_discount",
+                "user_access_value" => $user->user_max_discount,
+                "user_access_data_type" => "float"
+            ],
+            (Object)[
+                "user_id" => $user_id,
+                "user_access_name" => "credit_authorization",
+                "user_access_value" => @$user->user_max_credit_authorization ? "Y" : "N",
+                "user_access_data_type" => "bool"
+            ],
+            (Object)[
+                "user_id" => $user_id,
+                "user_access_name" => "only_session",
+                "user_access_value" => $user->user_session_expires,
+                "user_access_data_type" => "bool"
+            ],
+            (Object)[
+                "user_id" => $user_id,
+                "user_access_name" => "mobile_access",
+                "user_access_value" => $user->user_mobile_access,
+                "user_access_data_type" => "bool"
+            ],
+            (Object)[
+                "user_id" => $user_id,
+                "user_access_name" => "mobile_unlock",
+                "user_access_value" => $user->user_unlock_device,
+                "user_access_data_type" => "bool"
+            ],
+            (Object)[
+                "user_id" => $user_id,
+                "user_access_name" => "budget_delivery",
+                "user_access_value" => "N",
+                "user_access_data_type" => "bool"
+            ],
+            (Object)[
+                "user_id" => $user_id,
+                "user_access_name" => "budget_audit",
+                "user_access_value" => "N",
+                "user_access_data_type" => "bool"
+            ]
+        ];
+        foreach ($access as $data) {
+            Model::insert($commercial, (Object)[
+                "table" => "[UserAccess]",
+                "fields" => [
+                    ["user_id", "i", $user_id],
+                    ["user_access_name", "s", $data->user_access_name],
+                    ["user_access_value", "s", $data->user_access_value],
+                    ["user_access_data_type", "s", $data->user_access_data_type],
+                    ["user_access_date", "s", date("Y-m-d H:i:s")]
+                ]
+            ]);
+        }
         if( @$user->companies ) {
             foreach ($user->companies as $company) {
                 Model::insert($commercial, (Object)[
