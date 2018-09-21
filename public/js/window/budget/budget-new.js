@@ -1567,12 +1567,12 @@ Person = {
                 title: 'Confirmação',
                 html: '<p>Deseja realmente remover a pessoa do pedido?</p>',
                 buttons: [{
-                    icon: 'fa-times',
                     title: 'Não',
+                    icon: 'fa-times',
                     class: 'pull-left'
                 }, {
-                    icon: 'fa-check',
                     title: 'Sim',
+                    icon: 'fa-check',
                     action: function(){
                         Person.init();
                         Person.data2form();
@@ -1765,6 +1765,7 @@ PersonImage = {
         });
         if( typeof(Electron) == 'object' ){
             ipcRenderer.on('taken-photo',(event, response) => {
+                global.unLoader();
                 if( !!response.fileImage ){
                     PersonImage.electronWebcam(response.fileImage);
                 }
@@ -1801,6 +1802,7 @@ PersonImage = {
         $('#file-image-person').filestyle('clear');
     },
     webcam: function(){
+        global.onLoader();
         ipcRenderer.send('take-photo',{
             open: false
         });
