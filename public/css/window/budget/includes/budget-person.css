@@ -4,9 +4,25 @@
     padding-bottom: 58px;
 }
 
+.panel-person #button-budget-person-new
+{
+    top: 0;
+    right: 0;
+    width: 148px;
+    height: 62px;
+    position: absolute;
+    text-transform: uppercase;
+}
+
 .panel-person .image-cover
 {
     height: 266px;
+    background-image: url('../../../../images/empty-image.png');
+}
+
+.panel-person .image-cover .text
+{
+    display: none !important;
 }
 
 .panel-person .person-attributes

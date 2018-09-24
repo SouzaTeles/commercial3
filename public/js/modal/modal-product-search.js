@@ -102,6 +102,26 @@ ModalProductSearch = {
             ModalProductSearch.legend();
         });
     },
+    info: function(product){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-product-info',
+            data: product,
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                icon: 'fa-info-circle',
+                id: 'modal-product-info',
+                class: 'modal-product-info',
+                title: 'Informações do Produto',
+                html: html,
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Ok'
+                }]
+            })
+        });
+    },
     legend: function(){
         var $modal = $('#modal-product-search');
         var found = ModalProductSearch.products.length;
@@ -125,7 +145,7 @@ ModalProductSearch = {
                 '<span>' + product.product_price + '</span>R$ ' + global.float2Br(product.product_price),
                 product.unit_code,
                 product.unit_code == 'I' ? parseInt(product.product_stock) : global.float2Br(product.product_stock,'0',3),
-                '<button class="btn btn-empty-orange"><i class="fa fa-info-circle"></i></button>'
+                '<button data-key="' + key + '" class="btn btn-empty-orange"><i class="fa fa-info-circle"></i></button>'
             ]).node();
             if( product.product_active == 'Y' ){
                 $(row).on('dblclick',function(){
@@ -143,6 +163,16 @@ ModalProductSearch = {
                         ModalProductSearch.selected.splice(1,key);
                         ModalProductSearch.select();
                     }
+                });
+                $(row).find('button').click(function(){
+                    var product = ModalProductSearch.products[$(this).attr('data-key')];
+                    ModalProductSearch.info({
+                        image: product.image,
+                        product_id: product.product_id,
+                        product_code: product.product_code,
+                        product_name: product.product_name,
+                        unit_code: product.unit_code
+                    });
                 });
             }
             $(row).addClass(product.product_active == 'N' ? 'txt-gray' : ( product.product_stock <= 0 ? 'txt-red-light' : ''));

@@ -982,60 +982,19 @@ Item = {
             }
         });
     },
-    discountAuthorization: function(params){
+    complement: function(key){
+        var item = Budget.budget.items[key];
         global.post({
-            url: global.uri.uri_public_api + 'modal.php?modal=modal-discount-authorization',
+            url: global.uri.uri_public_api + 'product.php?action=complement',
             data: {
-                product_id: Item.item.product_id,
-                product_name: Item.item.product_name,
-                product_max_discount: Item.item.product_discount,
-                item_quantity: Item.item.budget_item_quantity,
-                item_value_total: (Item.item.budget_item_quantity * Item.item.budget_item_value_total) - params.value,
-                item_value_discount: params.value,
-                item_aliquot_discount: params.aliquot
+                company_id: Company.company.company_id,
+                product_id: item.product_id
             },
-            dataType: 'html'
-        },function(html){
-            global.modal({
-                size: 'small',
-                icon: 'fa-lock',
-                id: 'modal-discount-authorization',
-                class: 'modal-discount-authorization',
-                title: 'Autorização de Desconto',
-                html: html,
-                buttons: [{
-                    icon: 'fa-times',
-                    class: 'pull-left btn-red',
-                    title: 'Cancelar'
-                },{
-                    icon: 'fa-unlock',
-                    title: 'Autorizar',
-                    class: 'btn-green',
-                    unclose: true,
-                    action: function(){
-                        ModalDiscountAuthorization.authorize();
-                    }
-                }],
-                shown: function(){
-                    $('#modal_user_user').focus();
-                },
-                hidden: function(){
-                    if( Item.item.budget_item_value_discount > 0 ){
-                        $('#button-budget-item-add').focus();
-                    } else {
-                        $('#budget_item_aliquot_discount').focus().select();
-                    }
-                }
-            });
+            dataType: 'json'
+        }, function(data){
+            Budget.budget.items[key].prices = data.prices;
+            Item.edit(key);
         });
-    },
-    discountAliquot: function(budget_item_aliquot_discount){
-        Item.item.budget_item_aliquot_discount = budget_item_aliquot_discount;
-        Item.item.budget_item_value_discount = parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2));
-        Item.item.budget_item_aliquot_discount = (Item.item.budget_item_value_discount / (Item.item.budget_item_value ? Item.item.budget_item_value : 1)) * 100;
-        Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
-        $('#button-budget-item-add').focus().select();
-        Item.data2form();
     },
     beforeEdit: function(key){
         if( !!Item.item.product_id ){
@@ -1086,8 +1045,8 @@ Item = {
         $('#product_name').val(Item.item.product_name).attr('data-value',Item.item.product_name);
         $('#stock_value, #budget_item_quantity').unmask();
         if( Item.item.unit_type == 'F' ){
-            $('#product_stock').val(global.float2Br(Item.item.stock_value,4,4).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
-            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,4)).prop({
+            $('#product_stock').val(global.float2Br(Item.item.stock_value,3,3).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
+            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,3)).prop({
                 'readonly': !Item.item.product_id
             }).attr({
                 'data-value': Item.item.budget_item_quantity
@@ -1149,6 +1108,61 @@ Item = {
             }]
         });
     },
+    discountAuthorization: function(params){
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-discount-authorization',
+            data: {
+                product_id: Item.item.product_id,
+                product_name: Item.item.product_name,
+                product_max_discount: Item.item.product_discount,
+                item_quantity: Item.item.budget_item_quantity,
+                item_value_total: (Item.item.budget_item_quantity * Item.item.budget_item_value_total) - params.value,
+                item_value_discount: params.value,
+                item_aliquot_discount: params.aliquot
+            },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'small',
+                icon: 'fa-lock',
+                id: 'modal-discount-authorization',
+                class: 'modal-discount-authorization',
+                title: 'Autorização de Desconto',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    class: 'pull-left btn-red',
+                    title: 'Cancelar'
+                },{
+                    icon: 'fa-unlock',
+                    title: 'Autorizar',
+                    class: 'btn-green',
+                    unclose: true,
+                    action: function(){
+                        ModalDiscountAuthorization.authorize();
+                    }
+                }],
+                shown: function(){
+                    $('#modal_user_user').focus();
+                },
+                hidden: function(){
+                    if( Item.item.budget_item_value_discount > 0 ){
+                        $('#button-budget-item-add').focus();
+                    } else {
+                        $('#budget_item_aliquot_discount').focus().select();
+                    }
+                }
+            });
+        });
+    },
+    discountAliquot: function(budget_item_aliquot_discount){
+        Item.item.budget_item_aliquot_discount = budget_item_aliquot_discount;
+        Item.item.budget_item_value_discount = parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2));
+        Item.item.budget_item_aliquot_discount = (Item.item.budget_item_value_discount / (Item.item.budget_item_value ? Item.item.budget_item_value : 1)) * 100;
+        Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
+        $('#button-budget-item-add').focus().select();
+        Item.data2form();
+    },
     edit: function(key){
         var item = Budget.budget.items[key];
         Budget.budget.budget_value -= item.budget_item_value_total;
@@ -1161,6 +1175,17 @@ Item = {
         $('#budget_item_quantity').focus().select();
     },
     events: function(){
+        $('#button-item-info').click(function(){
+            if( !!Item.item.product_id ){
+                Item.info({
+                    image: Item.item.image,
+                    product_id: Item.item.product_id,
+                    product_code: Item.item.product_code,
+                    product_name: Item.item.product_name,
+                    unit_code: Item.item.unit_code
+                });
+            }
+        });
         $('#product_code, #product_name').on('focus',function(){
             Budget.section = 1;
         });
@@ -1299,7 +1324,14 @@ Item = {
         Item.table.on('draw',function(){
             var $table = $('#table-budget-items');
             $table.find('button[data-action="info"]').click(function(){
-                Item.info($(this).attr('data-key'));
+                var product = Budget.budget.items[$(this).attr('data-key')];
+                Item.info({
+                    image: product.image,
+                    product_id: product.product_id,
+                    product_code: product.product_code,
+                    product_name: product.product_name,
+                    unit_code: product.unit_code
+                });
             });
             $table.find('button[data-action="edit"]').click(function(){
                 Item.beforeEdit($(this).attr('data-key'));
@@ -1308,6 +1340,7 @@ Item = {
                 Item.del($(this).attr('data-key'));
             });
             $table.find('button').tooltip({
+                trigger : 'hover',
                 container: 'body'
             })
         });
@@ -1385,18 +1418,24 @@ Item = {
             $('#budget_item_quantity').focus().select();
         });
     },
-    complement: function(key){
-        var item = Budget.budget.items[key];
+    info: function(product){
         global.post({
-            url: global.uri.uri_public_api + 'product.php?action=complement',
-            data: {
-                company_id: Company.company.company_id,
-                product_id: item.product_id
-            },
-            dataType: 'json'
-        }, function(data){
-            Budget.budget.items[key].prices = data.prices;
-            Item.edit(key);
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-product-info',
+            data: product,
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                icon: 'fa-info-circle',
+                id: 'modal-product-info',
+                class: 'modal-product-info',
+                title: 'Informações do Produto',
+                html: html,
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Ok'
+                }]
+            })
         });
     },
     init: function(){
