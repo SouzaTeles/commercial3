@@ -1,48 +1,39 @@
-<!-- Cadastro por produto -->
-<div id="product-registation" class="col-xs-12 col-sm-12">
-   <div class="col-xs-12 col-sm-6">
-      <h1>Por Produto</h1>
-      <div class="row">
-         <!-- Codigo do produto -->
-         <div class="col-xs-12 col-sm-4">
-            <div class="form-group">
-               <label for="registration_product_code">Codigo</label>
-               <input type="text" class="form-control" id="registration_product_code" placeholder="Codigo">
-            </div>
-         </div>
-         <!-- Nome do produto -->
-         <div class="col-xs-12 col-sm-8">
-            <div class="form-group">
-               <label for="registration_product_name">Produto</label>
-               <input type="text" class="form-control" id="registration_product_name" placeholder="Produto">
-            </div>
-         </div>
-         <!-- Codigo de barras -->
-         <div class="col-xs-12 col-sm-12">
-            <div class="form-group">
-               <label for="registration_product_EAN">Codigo de Barras</label>
-               <input type="text" class="form-control" id="registration_product_EAN" placeholder="Ex: 7897095012642">
-            </div>
-         </div>
-      </div>
-   </div>
-   <div class="col-xs-12 col-sm-6">
-      <div class="form-group form-group-file">
-         <!-- <label for="file-image-product">Foto</label> -->
-         <div id="product-image-cover" class="image-cover image-place">
-            <span class="text">Sem imagem</span>
-            <input data-disabled="true" type="file" id="file-image-product" accept=".jpg, .jpeg, .png|images/*" class="filestyle" data-buttonText="Procurar" data-buttonName="btn-block btn-green" data-iconName="fa fa-file-image-o" data-input="false">
-            <button disabled type="button" id="button-image-product-remove" class="btn btn-red"><i class="fa fa-times"></i> Remover</button>
-         </div>
-      </div>
-      <button type="button" class="btn-green pull-right" id="save-product">Salvar</button>
-   </div>
-</div>
-
-<!-- Cadastro por grupo de produto -->
-<div id="product-group-registation" class="col-xs-12 col-sm-12">
-   <div class="col-xs-12 col-sm-6">
-      <h1>Por Grupo</h1>
+<div class="col-xs-12 col-sm-6">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Produto</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="false">Grupo</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+    <div class="row">
+       <!-- Codigo do produto -->
+       <div class="col-xs-12 col-sm-4">
+          <div class="form-group">
+             <label for="registration_product_code">Codigo</label>
+             <input type="text" class="form-control" id="registration_product_code" placeholder="Codigo">
+          </div>
+       </div>
+       <!-- Nome do produto -->
+       <div class="col-xs-12 col-sm-8">
+          <div class="form-group">
+             <label for="registration_product_name">Produto</label>
+             <input type="text" class="form-control" id="registration_product_name" placeholder="Produto">
+          </div>
+       </div>
+       <!-- Codigo de barras -->
+       <div class="col-xs-12 col-sm-12">
+          <div class="form-group">
+             <label for="registration_product_EAN">Codigo de Barras</label>
+             <input type="text" class="form-control" id="registration_product_EAN" placeholder="Ex: 7897095012642">
+          </div>
+       </div>
+    </div>
+  </div>
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
       <div class="row">
         <!-- Codigo do produto -->
         <div class="col-xs-12 col-sm-4">
@@ -73,7 +64,19 @@
             </table>
          </div>
       </div>
-   </div>
-   <div class="col-xs-12 col-sm-6">
-   </div>
+    </div>
+  </div>
 </div>
+
+
+  <div class="col-xs-12 col-sm-6">
+     <div class="form-group form-group-file">
+        <!-- <label for="file-image-product">Foto</label> -->
+        <div id="product-image-cover" class="image-cover image-place">
+           <span class="text">Sem imagem</span>
+           <input data-disabled="true" type="file" id="file-image-product" accept=".jpg, .jpeg, .png|images/*" class="filestyle" data-buttonText="Procurar" data-buttonName="btn-block btn-green" data-iconName="fa fa-file-image-o" data-input="false">
+           <button disabled type="button" id="button-image-product-remove" class="btn btn-red"><i class="fa fa-times"></i> Remover</button>
+        </div>
+     </div>
+     <button type="button" class="btn btn-green pull-right" id="save-product">Salvar</button>
+  </div>
