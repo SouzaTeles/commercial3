@@ -96,8 +96,6 @@ Budget = {
     table: global.table({
         selector: '#table-budgets',
         searching: 1,
-        // scrollY: $(window).innerHeight()-372,
-        // scrollCollapse: 1,
         noControls: [7,8,9],
         order: [[0,'desc']]
     }),
@@ -422,7 +420,7 @@ Budget = {
     showList: function(){
         Budget.table.clear();
         $.each( Budget.budgets, function(key, budget){
-            budget.status = budget.budget.type + (budget.budget.status == 'B' ? 'B' : '');
+            budget.status = budget.budget.status == 'O' ? 'B' : (budget.budget.type + (budget.budget.status == 'B' ? 'B' : ''));
             if(
                 (!Budget.filters.status.length || Budget.filters.status.indexOf(budget.status) != -1) &&
                 (!Budget.filters.delivery.length || Budget.filters.delivery.indexOf(budget.budget.delivery) != -1)
