@@ -33,11 +33,13 @@ ModalPayment = {
             $agency.val(null).prop('required',false);
             $agency2.val(null).prop('required',false);
             $check.val(null).prop('required',false);
+            $('#modal-payment .bank-section').hide();
         } else {
             $bank.val(null).prop('required',true);
             $agency.val(null);
             $agency2.val(null);
             $check.val(null).prop('required',true);
+            $('#modal-payment .bank-section').show();
         }
         if( !ModalPayment.payment.agency_code ){
             $('#col-agency').show();

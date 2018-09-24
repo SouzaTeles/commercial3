@@ -753,6 +753,19 @@ Budget = {
         });
     },
     validate: function(){
+        if( !!Item.item && !!Item.item.product_id ){
+            global.validateMessage('Existe um produto em edição. Verifique.',function(){
+                setTimeout(function(){
+                    $('#product_code').focus();
+                },200);
+            });
+            global.scrollTo({
+                delay: 500,
+                addition: 200,
+                selector: '.panel-budget'
+            });
+            return false;
+        }
         if( !Budget.budget.items.length ){
             global.validateMessage('Ao menos um produto deverá ser adicionado ao pedido.',function(){
                 setTimeout(function(){
@@ -929,6 +942,172 @@ Item = {
             $('#product_code').focus();
         },200);
     },
+    beforeAdd: function(){
+        if( Item.item.budget_item_quantity == 0 ){
+            global.modal({
+                icon: 'fa-warning-triangle',
+                title: 'Informação',
+                html: '<p>A quantidade do produto não poderá ficar zerada.</p>',
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Ok'
+                }],
+                hidden: function(){
+                    $('budget_item_quantity').focus().select();
+                }
+            });
+            return;
+        }
+        Item.add();
+    },
+    beforeRemove: function(){
+        global.modal({
+            icon: 'fa-question-circle',
+            title: 'Confirmação',
+            html: '<p>Deseja remover o item em edição <b>' + Item.item.product_code + ' - ' + Item.item.product_name + '</b>?.</p>',
+            buttons: [{
+                icon: 'fa-times',
+                title: 'Não',
+                class: 'pull-left'
+            },{
+                icon: 'fa-check',
+                title: 'Sim',
+                action: function(){
+                    Item.init();
+                    Item.data2form();
+                }
+            }],
+            hidden: function(){
+                $('budget_code').focus().select();
+            }
+        });
+    },
+    complement: function(key){
+        var item = Budget.budget.items[key];
+        global.post({
+            url: global.uri.uri_public_api + 'product.php?action=complement',
+            data: {
+                company_id: Company.company.company_id,
+                product_id: item.product_id
+            },
+            dataType: 'json'
+        }, function(data){
+            Budget.budget.items[key].prices = data.prices;
+            Item.edit(key);
+        });
+    },
+    beforeEdit: function(key){
+        if( !!Item.item.product_id ){
+            global.modal({
+                icon: 'fa-question-circle',
+                title: 'Confirmação',
+                html: '<p>O produto <b>' + Item.item.product_code + ' - ' + Item.item.product_name + '</b> está em edição. Deseja descartá-lo?</p>',
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Não',
+                    class: 'pull-left'
+                },{
+                    icon: 'fa-check',
+                    title: 'Sim',
+                    action: function(){
+                        var item = Budget.budget.items[key];
+                        if (!item.prices) {
+                            Item.complement(key);
+                            return;
+                        }
+                        Item.edit(key);
+                    }
+                }],
+                hidden: function(){
+                    $('budget_item_quantity').focus().select();
+                }
+            });
+        } else {
+            var item = Budget.budget.items[key];
+            if (!item.prices) {
+                Item.complement(key);
+                return;
+            }
+            Item.edit(key);
+        }
+    },
+    check: function(){
+        var noStock = 0;
+        $.each(Budget.budget.items,function(key,item){
+            if( item.stock_value <= 0 ){
+                noStock++;
+            }
+        });
+        return noStock;
+    },
+    data2form: function(){
+        $('#product_code').val(Item.item.product_code).attr('data-value',Item.item.product_code);
+        $('#product_name').val(Item.item.product_name).attr('data-value',Item.item.product_name);
+        $('#stock_value, #budget_item_quantity').unmask();
+        if( Item.item.unit_type == 'F' ){
+            $('#product_stock').val(global.float2Br(Item.item.stock_value,3,3).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
+            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,3)).prop({
+                'readonly': !Item.item.product_id
+            }).attr({
+                'data-value': Item.item.budget_item_quantity
+            }).unmask().mask("999999,9999");
+        } else {
+            $('#product_stock').val(parseInt(Item.item.stock_value));
+            $('#budget_item_quantity').val(Item.item.budget_item_quantity).prop({
+                'readonly': !Item.item.product_id
+            }).attr({
+                'data-value': Item.item.budget_item_quantity
+            }).unmask().mask("999999");
+        }
+        $('#price_id').prop('disabled',!Item.item.product_id);
+        $('#price_id option').remove();
+        $.each( Item.item.prices, function(key,price){
+            $('#price_id').append($('<option>',{
+                'value': price.price_id,
+                'selected': Item.item.price_id == price.price_id,
+                'text': price.price_code + ' ' + price.price_name + ' (R$ ' + global.float2Br(price.price_value) + ')'
+            }));
+        });
+        $('#price_id').selectpicker('refresh');
+        $('.budget-item-unit-code').text(Item.item.product_id ? Item.item.unit_code : 'UN');
+        $('#budget_item_aliquot_discount').val(global.float2Br(Item.item.budget_item_aliquot_discount,2,4)).prop({
+            'readonly': !Item.item.product_id
+        }).attr({
+            'data-value': Item.item.budget_item_aliquot_discount
+        });
+        $('#budget_item_value_discount').val(global.float2Br(Item.item.budget_item_value_discount)).prop({
+            'readonly': !Item.item.product_id
+        }).attr({
+            'data-value': Item.item.budget_item_value_discount
+        });
+        $('#budget_item_value_total').val('R$ ' + global.float2Br(Item.item.budget_item_value_total));
+        $('#button-budget-item-add').prop('disabled',!Item.item.product_id);
+        $('#button-budget-item-remove').prop('disabled',!Item.item.product_id);
+    },
+    del: function(key){
+        global.modal({
+            icon: 'fa-question-circle-o',
+            title: 'Confirmação',
+            html: '<p>Deseja realmente remover o produto <b>' + Budget.budget.items[key].product_name + '</b> do pedido?</p>',
+            buttons: [{
+                icon: 'fa-times',
+                title: 'Não',
+                class: 'pull-left'
+            }, {
+                icon: 'fa-check',
+                title: 'Sim',
+                action: function(){
+                    var item = Budget.budget.items[key];
+                    Budget.budget.budget_value -= item.budget_item_value_total;
+                    Budget.budget.budget_value_total -= item.budget_item_value_total;
+                    Budget.budget.items.splice(key,1);
+                    Item.showList();
+                    Item.total();
+                    Payment.total();
+                }
+            }]
+        });
+    },
     discountAuthorization: function(params){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-discount-authorization',
@@ -984,90 +1163,6 @@ Item = {
         $('#button-budget-item-add').focus().select();
         Item.data2form();
     },
-    beforeEdit: function(key){
-        var item = Budget.budget.items[key];
-        if( !item.prices ){
-            Item.complement(key);
-            return;
-        }
-        Item.edit(key);
-    },
-    check: function(){
-        var noStock = 0;
-        $.each(Budget.budget.items,function(key,item){
-            if( item.stock_value <= 0 ){
-                noStock++;
-            }
-        });
-        return noStock;
-    },
-    data2form: function(){
-        $('#product_code').val(Item.item.product_code).attr('data-value',Item.item.product_code);
-        $('#product_name').val(Item.item.product_name).attr('data-value',Item.item.product_name);
-        $('#stock_value, #budget_item_quantity').unmask();
-        if( Item.item.unit_type == 'F' ){
-            $('#product_stock').val(global.float2Br(Item.item.stock_value,4,4).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
-            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,4)).prop({
-                'readonly': !Item.item.product_id
-            }).attr({
-                'data-value': Item.item.budget_item_quantity
-            }).unmask().mask("999999,9999");
-        } else {
-            $('#product_stock').val(parseInt(Item.item.stock_value));
-            $('#budget_item_quantity').val(Item.item.budget_item_quantity).prop({
-                'readonly': !Item.item.product_id
-            }).attr({
-                'data-value': Item.item.budget_item_quantity
-            }).unmask().mask("999999");
-        }
-        $('#price_id').prop('disabled',!Item.item.product_id);
-        $('#price_id option').remove();
-        $.each( Item.item.prices, function(key,price){
-            $('#price_id').append($('<option>',{
-                'value': price.price_id,
-                'selected': Item.item.price_id == price.price_id,
-                'text': price.price_code + ' ' + price.price_name + ' (R$ ' + global.float2Br(price.price_value) + ')'
-            }));
-        });
-        $('#price_id').selectpicker('refresh');
-        $('.budget-item-unit-code').text(Item.item.product_id ? Item.item.unit_code : 'UN');
-        $('#budget_item_aliquot_discount').val(global.float2Br(Item.item.budget_item_aliquot_discount,2,4)).prop({
-            'readonly': !Item.item.product_id
-        }).attr({
-            'data-value': Item.item.budget_item_aliquot_discount
-        });
-        $('#budget_item_value_discount').val(global.float2Br(Item.item.budget_item_value_discount)).prop({
-            'readonly': !Item.item.product_id
-        }).attr({
-            'data-value': Item.item.budget_item_value_discount
-        });
-        $('#budget_item_value_total').val('R$ ' + global.float2Br(Item.item.budget_item_value_total));
-        $('#button-budget-item-add').prop('disabled',!Item.item.product_id);
-    },
-    del: function(key){
-        global.modal({
-            icon: 'fa-question-circle-o',
-            title: 'Confirmação',
-            html: '<p>Deseja realmente remover o produto <b>' + Budget.budget.items[key].product_name + '</b> do pedido?</p>',
-            buttons: [{
-                icon: 'fa-times',
-                title: 'Não',
-                class: 'pull-left'
-            }, {
-                icon: 'fa-check',
-                title: 'Sim',
-                action: function(){
-                    var item = Budget.budget.items[key];
-                    Budget.budget.budget_value -= item.budget_item_value_total;
-                    Budget.budget.budget_value_total -= item.budget_item_value_total;
-                    Budget.budget.items.splice(key,1);
-                    Item.showList();
-                    Item.total();
-                    Payment.total();
-                }
-            }]
-        });
-    },
     edit: function(key){
         var item = Budget.budget.items[key];
         Budget.budget.budget_value -= item.budget_item_value_total;
@@ -1080,6 +1175,17 @@ Item = {
         $('#budget_item_quantity').focus().select();
     },
     events: function(){
+        $('#button-item-info').click(function(){
+            if( !!Item.item.product_id ){
+                Item.info({
+                    image: Item.item.image,
+                    product_id: Item.item.product_id,
+                    product_code: Item.item.product_code,
+                    product_name: Item.item.product_name,
+                    unit_code: Item.item.unit_code
+                });
+            }
+        });
         $('#product_code, #product_name').on('focus',function(){
             Budget.section = 1;
         });
@@ -1210,27 +1316,22 @@ Item = {
             $(this).val(global.float2Br($(this).attr('data-value')));
         });
         $('#button-budget-item-add').click(function(){
-            if( Item.item.budget_item_quantity == 0 ){
-                global.modal({
-                    icon: 'fa-warning-triangle',
-                    title: 'Informação',
-                    html: '<p>A quantidade do produto não poderá ficar zerada.</p>',
-                    buttons: [{
-                        icon: 'fa-check',
-                        title: 'Ok'
-                    }],
-                    hidden: function(){
-                        $('budget_item_quantity').focus().select();
-                    }
-                });
-                return;
-            }
-            Item.add();
+            Item.beforeAdd();
+        });
+        $('#button-budget-item-remove').click(function(){
+            Item.beforeRemove();
         });
         Item.table.on('draw',function(){
             var $table = $('#table-budget-items');
             $table.find('button[data-action="info"]').click(function(){
-                Item.info($(this).attr('data-key'));
+                var product = Budget.budget.items[$(this).attr('data-key')];
+                Item.info({
+                    image: product.image,
+                    product_id: product.product_id,
+                    product_code: product.product_code,
+                    product_name: product.product_name,
+                    unit_code: product.unit_code
+                });
             });
             $table.find('button[data-action="edit"]').click(function(){
                 Item.beforeEdit($(this).attr('data-key'));
@@ -1238,7 +1339,10 @@ Item = {
             $table.find('button[data-action="del"]').click(function(){
                 Item.del($(this).attr('data-key'));
             });
-            global.tooltip();
+            $table.find('button').tooltip({
+                trigger : 'hover',
+                container: 'body'
+            })
         });
     },
     get: function(data){
@@ -1275,11 +1379,11 @@ Item = {
             dataType: 'json'
         }, function(product){
             if( !product.prices.length ) {
-                global.validateMessage('O produto <b>' + product.product_code + ' - ' + product.product_name + '</b> não possui preço vinculado para venda na empresa selecionada. Verifique com o setor responsável');
+                global.validateMessage('O produto <b>' + product.product_code + ' - ' + product.product_name + '</b> não possui preço vinculado para venda na empresa selecionada. Verifique com o setor responsável.');
                 return;
             }
             if( product.product_active == 'N' ) {
-                global.validateMessage('O produto <b>' + product.product_code + ' - ' + product.product_name + '</b> não está ativo para venda na empresa selecionada.');
+                global.validateMessage('O produto <b>' + product.product_code + ' - ' + product.product_name + '</b> não está ativo para venda na empresa selecionada.. Verifique com o setor responsável.');
                 return;
             }
             Item.item = {
@@ -1314,18 +1418,24 @@ Item = {
             $('#budget_item_quantity').focus().select();
         });
     },
-    complement: function(key){
-        var item = Budget.budget.items[key];
+    info: function(product){
         global.post({
-            url: global.uri.uri_public_api + 'product.php?action=complement',
-            data: {
-                company_id: Company.company.company_id,
-                product_id: item.product_id
-            },
-            dataType: 'json'
-        }, function(data){
-            Budget.budget.items[key].prices = data.prices;
-            Item.edit(key);
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-product-info',
+            data: product,
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                icon: 'fa-info-circle',
+                id: 'modal-product-info',
+                class: 'modal-product-info',
+                title: 'Informações do Produto',
+                html: html,
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Ok'
+                }]
+            })
         });
     },
     init: function(){
@@ -1422,7 +1532,7 @@ Item = {
             if( item.budget_item_quantity > item.stock_value ){
                 $(row).addClass('txt-red-light');
             }
-            $(row).dblclick(function(){
+            $(row).on('dblclick',function(){
                 Item.beforeEdit(key);
             });
         });
@@ -1520,6 +1630,10 @@ Person = {
                 e.stopPropagation();
                 var person_id = !$(this).val().length ? Company.company.company_consumer_id : null;
                 var person_code = $(this).val().length ? $(this).val() : null;
+                if( !!person_code && !!Person.person && person_code == Person.person.person_code ){
+                    Budget.goTo(3);
+                    return;
+                }
                 if( (!!person_id || !!person_code) && global.posts < 1 ){
                     Person.get({
                         person_id: person_id,

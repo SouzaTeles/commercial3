@@ -1,3 +1,19 @@
+.modal.modal-big.modal-product-search
+{
+    top: 88px;
+}
+
+.modal.modal-big.modal-product-search .modal-dialog
+{
+    width: 980px;
+}
+
+.modal.modal-big.modal-product-search .modal-body
+{
+    max-height: 522px;
+}
+
+
 .modal-product-search .dataTables_scrollHeadInner,
 .modal-product-search .dataTables_scrollHeadInner .dataTable
 {
@@ -39,6 +55,10 @@
 }
 
 @media(max-height:700px) {
+    .modal.modal-big.modal-product-search
+    {
+        top: 20px;
+    }
     .modal-product-search .dataTables_scrollBody
     {
         height: 222px;

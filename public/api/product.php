@@ -156,6 +156,97 @@
 
         break;
 
+        case "getInfo":
+
+            if( !@$post->product_id ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $info = [];
+            $data = Model::getList($dafel,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "Produto P (NoLock)",
+	                "INNER JOIN Produto_Empresa (NoLock) PE ON(P.IdProduto = PE.IdProduto)"
+                ],
+                "fields" => [
+                    "PE.CdEmpresa",
+                    "PE.StAtivoVenda",
+                    "PE.StAtivoCompra",
+                    "QtPedidoCompra=ISNULL(PE.QtPedidoCompra,0)",
+                    "QtEstoque=(CASE WHEN P.IdProdutoOrigem IS NULL THEN ( SELECT TOP 1 QtEstoque FROM EstoqueEmpresa WHERE IdProduto = P.IdProduto AND CdEmpresa = PE.CdEmpresa ORDER BY DtReferencia DESC ) ELSE ( ( SELECT TOP 1 QtEstoque FROM EstoqueEmpresa WHERE IdProduto = P.IdProdutoOrigem AND CdEmpresa = PE.CdEmpresa ORDER BY DtReferencia DESC ) * P.FtConversaoUnidade ) END)"
+                ],
+                "filters" => [[ "P.IdProduto", "s", "=", $post->product_id ]]
+            ]);
+
+            foreach( $data as $d ){
+                $info[] = (Object)[
+                    "company_code" => substr("0{$d->CdEmpresa}",-2),
+                    "sale_active" => $d->StAtivoVenda == "S" ? "Y" : "N",
+                    "buy_active" => $d->StAtivoCompra == "S" ? "Y" : "N",
+                    "bought" => (float)$d->QtPedidoCompra,
+                    "stock" => (float)$d->QtEstoque
+                ];
+            }
+
+            Json::get( $headerStatus[200], $info );
+
+        break;
+
+        case "getInfoBuy":
+
+            if( !@$post->product_id ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $items = Model::getList($dafel,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "PedidoDeCompra PC (NoLock)",
+	                "INNER JOIN PedidoDeCompraItem PCI (NoLock) ON(PCI.IdPedidoDeCompra = PC.IdPedidoDeCompra)",
+	                "LEFT JOIN Pessoa PF (NoLock) ON(PF.IdPessoa = PC.IdPessoaFornecedor)"
+                ],
+                "fields" => [
+                    "CdPedido=PC.CdChamada",
+                    "CdPessoa=PF.CdChamada",
+                    "PF.NmPessoa",
+                    "DtEmissao=CONVERT(VARCHAR(10),PC.DtEmissao,126)",
+                    "DtEntrega=CONVERT(VARCHAR(10),PC.DtEntrega,126)",
+                    "PCI.QtPedida",
+                    "PCI.QtAtendida",
+                    "PCI.StPedidoDeCompraItem"
+                ],
+                "filters" => [
+                    [ "PC.CdEmpresa", "s", "=", $post->company_id ],
+                    [ "PCI.IdProduto", "s", "=", $post->product_id ],
+                    [ "PCI.StPedidoDeCompraItem", "s", "in", ['G','A','P'] ]
+                ]
+            ]);
+
+            $ret = [];
+            foreach( $items as $item ){
+                $ret[] = (Object)[
+                    "budget_code" => $item->CdPedido,
+                    "budget_date" => $item->DtEmissao,
+                    "budget_delivery" => $item->DtEntrega,
+                    "provider_code" => $item->CdPessoa,
+                    "provider_name" => $item->NmPessoa,
+                    "required" => (float)$item->QtPedida,
+                    "attended" => (float)$item->QtAtendida,
+                    "status" => $item->StPedidoDeCompraItem
+                ];
+            }
+
+            Json::get( $headerStatus[200], $ret );
+
+        break;
+
         case "complement":
 
             if( !@$post->product_id || !@$post->company_id ){

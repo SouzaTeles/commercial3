@@ -1,0 +1,30 @@
+<link href="{$URI_PUBLIC}css/modal/modal-product-info.css?{$smarty.now}" rel="stylesheet" />
+<div class="info-top">
+    <div class="image"></div>
+    <div class="name">--</div>
+    <div class="default">
+        <div class="default-info code">Código<br/>--</div>
+        <div class="default-info unit">Unidade<br/>--</div>
+    </div>
+</div>
+<table id="table-product-info" class="table-custom no-select">
+    <thead>
+        <tr>
+            <th>Empresa</th>
+            <th>Estoque</th>
+            <th>Qt. Comprada</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<div class="legend">
+    <div class="item pull-right txt-red-light">
+        <i class="fa fa-stop"></i> Sem estoque
+    </div>
+    <div class="item pull-right">
+        <i class="fa fa-stop txt-gray-light"></i> Inativo
+    </div>
+</div>
+<script src="{$URI_PUBLIC}js/modal/modal-product-info.js?{$smarty.now}"></script>
+<script> ModalProductInfo.product = {$smarty.post|@json_encode}; </script>

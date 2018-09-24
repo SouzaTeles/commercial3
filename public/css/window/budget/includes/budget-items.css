@@ -30,3 +30,10 @@
     text-align: right;
     padding: 10px 0 0;
 }
+
+.panel-items #button-budget-item-add,
+.panel-items #button-budget-item-remove
+{
+    width: 60px;
+    height: 34px;
+}

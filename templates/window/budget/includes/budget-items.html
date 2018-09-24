@@ -4,10 +4,7 @@
         <div class="col-xs-12 col-sm-2">
             <div class="form-group">
                 <label for="product_code">Código (F2 localizar)</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="product_code" name="product_code" placeholder="Código" data-to-mask="code">
-                    <span id="button-budget-product-code-search" class="input-group-addon"><i class="fa fa-search"></i></span>
-                </div>
+                <input type="text" class="form-control" id="product_code" name="product_code" placeholder="Código" data-to-mask="code">
             </div>
         </div>
         <div class="col-xs-12 col-sm-6">
@@ -15,7 +12,7 @@
                 <label for="product_name">Nome do Produto (F2 localizar)</label>
                 <div class="input-group">
                     <input autocomplete="off" type="text" class="form-control" id="product_name" name="product_name" placeholder="Nome do Produto">
-                    <span id="button-budget-product-name-search" class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <span id="button-budget-product-name-search" class="btn input-group-addon"><i class="fa fa-search"></i></span>
                 </div>
             </div>
         </div>
@@ -33,7 +30,7 @@
                 <label for="product_stock">Estoque</label>
                 <div class="input-group">
                     <input readonly type="text" class="form-control" id="product_stock" name="product_stock" placeholder="Estoque">
-                    <span class="budget-item-unit-code input-group-addon">UN</span>
+                    <span id="button-item-info" class="btn input-group-addon"><i class="fa fa-info-circle"></i></span>
                 </div>
             </div>
         </div>
@@ -67,8 +64,11 @@
         <div class="col-xs-12 col-sm-2">
             <div class="form-group">
                 <label for="button-budget-item-add">&nbsp;</label>
-                <button disabled id="button-budget-item-add" class="btn btn-green btn-block" type="button">
-                    <i class="fa fa-plus"></i> Adicionar
+                <button disabled id="button-budget-item-add" class="btn btn-green" type="button">
+                    <i class="fa fa-plus"></i>
+                </button>
+                <button disabled id="button-budget-item-remove" class="btn btn-red" type="button">
+                    <i class="fa fa-trash-o"></i>
                 </button>
             </div>
         </div>
