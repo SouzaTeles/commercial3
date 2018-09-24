@@ -753,7 +753,7 @@ Budget = {
         });
     },
     validate: function(){
-        if( !!Item.item.product_id ){
+        if( !!Item.item && !!Item.item.product_id ){
             global.validateMessage('Existe um produto em edição. Verifique.',function(){
                 setTimeout(function(){
                     $('#product_code').focus();
@@ -1630,6 +1630,10 @@ Person = {
                 e.stopPropagation();
                 var person_id = !$(this).val().length ? Company.company.company_consumer_id : null;
                 var person_code = $(this).val().length ? $(this).val() : null;
+                if( !!person_code && !!Person.person && person_code == Person.person.person_code ){
+                    Budget.goTo(3);
+                    return;
+                }
                 if( (!!person_id || !!person_code) && global.posts < 1 ){
                     Person.get({
                         person_id: person_id,
