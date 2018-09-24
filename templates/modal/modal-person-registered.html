@@ -1,0 +1,21 @@
+<link href="{$URI_PUBLIC}css/modal/modal-person-registered.css" rel="stylesheet" />
+<table id="modal-table-person-registered" class="table-custom no-select nowrap">
+    <thead>
+    <tr>
+        <th>Tipo</th>
+        <th>Código</th>
+        <th>Nome</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<div class="legend">
+    <div class="found">
+        <i class="fa fa-users"></i> 0 Pessoas localizadas
+    </div>
+    <div class="pull-right">
+        <i class="fa fa-stop txt-gray-light"></i> Inativo
+    </div>
+</div>
+<script src="{$URI_PUBLIC}js/modal/modal-person-registered.js?{$smarty.now}"></script>
+<script> ModalPersonRegistered.data = {$smarty.post.data|@json_encode}; </script>

@@ -53,48 +53,8 @@ ModalPersonNew = {
             data: ModalPersonNew.person,
             dataType: 'json'
         },function(data){
-            ModalPersonNew.person.address.address_main = 'Y';
-            ModalPersonNew.person.address.address_code = '01';
-            ModalPersonNew.person.address.address_active = 'Y';
-            ModalPersonNew.person.address.address_delivery = 'Y';
-            Person.person = {
-                image: null,
-                person_active: 'Y',
-                person_credit_limit: 0,
-                person_id: data.person_id,
-                person_code: data.person_code,
-                person_name: ModalPersonNew.person.person_name,
-                person_type: ModalPersonNew.person.person_type,
-                person_birth: ModalPersonNew.person.person_birth,
-                person_gender: ModalPersonNew.person.person_gender,
-                person_document: ModalPersonNew.person.person_document,
-                person_short_name: ModalPersonNew.person.person_short_name,
-                person_cpf: ModalPersonNew.person.person_type == 'F' ? ModalPersonNew.person.person_document : null,
-                person_cnpj: ModalPersonNew.person.person_type == 'J' ? ModalPersonNew.person.person_document : null,
-                address: [ModalPersonNew.person.address],
-                credits: [],
-                credit_limit: {
-                    delay: 0,
-                    balance: 0,
-                    expired_value: 0,
-                    expiring_value: 0,
-                    expired_quantity: 0,
-                    expiring_quantity: 0,
-                    receivable: []
-                },
-                attributes: []
-            };
-            Address.getAddress = true;
-            Budget.budget.client_id = data.person_id;
-            Address.delivery = ModalPersonNew.person.address;
-            Budget.budget.address_code = '01';
-            Budget.budget.address_uf_id = ModalPersonNew.person.address.uf_id;
-            if( ModalPersonNew.person.address.address_note.length ){
-                Budget.budget.budget_note_document =  '\n\nObs de Entrega: ' + ModalPersonNew.person.address.address_note;
-            }
-            Person.data2form();
-            Address.showDelivery();
             $('#modal-person-new').modal('hide');
+            ModalPersonNew.success(data.person_id);
             setTimeout(function(){
                 global.modal({
                     icon: 'fa-info',
@@ -108,11 +68,53 @@ ModalPersonNew = {
             },500);
         });
     },
+    checkDocument: function(document){
+        global.post({
+            url: global.uri.uri_public_api + 'person.php?action=checkDocument',
+            data: { document: document },
+            dataType: 'json'
+        },function(data){
+             if( !data.length ) return;
+             global.post({
+                 url: global.uri.uri_public_api + 'modal.php?modal=modal-person-registered',
+                 data: { data: data },
+                 dataType: 'html'
+             },function(html){
+                 global.modal({
+                     icon: 'fa-plus',
+                     id: 'modal-person-registered',
+                     class: 'modal-person-registered',
+                     title: 'Documento já cadastrado',
+                     html: html,
+                     buttons: [{
+                         title: 'Fechar'
+                     }],
+                     show: function(){
+                         $('#modal-person-new').focus()
+                     },
+                     shown: function(){
+                         setTimeout(function(){
+                             ModalPersonRegistered.success = function(person){
+                                 $('#modal-person-new').modal('hide');
+                                 ModalPersonNew.success(person.person_id);
+                             }
+                         },1000);
+                     }
+                 });
+             });
+        });
+    },
     events: function(){
         $('#modal_person_type').on('change',function(){
             $('label[for="modal_person_document"]').text($(this).val() == 'F' ? 'CPF' : 'CNPJ');
             $('#modal_person_document').unmask().attr('data-to-mask',($(this).val() == 'F' ? 'cpf' : 'cnpj')).focus().select();
             global.mask();
+        });
+        $('#modal_person_document').on('keyup',function(){
+            var document = $(this).val();
+            if( global.posts == 0 && document.length == 14 || document.length == 18 ){
+                ModalPersonNew.checkDocument(document);
+            }
         });
         $('#modal_person_birth').datepicker({
             format: 'dd/mm/yyyy',

@@ -1795,7 +1795,16 @@ Person = {
                     action: function(){
                         ModalPersonNew.submit();
                     }
-                }]
+                }],
+                shown: function(){
+                    setTimeout(function(){
+                        ModalPersonNew.success = function(person_id){
+                            Person.get({
+                                person_id: person_id
+                            });
+                        }
+                    },1000);
+                }
             });
         });
     },

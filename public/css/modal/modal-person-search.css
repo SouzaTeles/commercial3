@@ -1,3 +1,9 @@
+.modal-person-search .modal-dialog
+{
+    top: 80px;
+    width: 920px;
+}
+
 .modal-person-search .dataTables_scrollHeadInner,
 .modal-person-search .dataTables_scrollHeadInner .dataTable
 {
@@ -7,6 +13,11 @@
 .modal-person-search .dataTables_scrollBody tr td.dataTables_empty
 {
     height: 304px;
+}
+
+.modal-person-search .modal-body
+{
+    max-height: 522px;
 }
 
 .modal-person-search .cover
@@ -46,6 +57,21 @@
 
 @media(max-height:700px)
 {
+    .modal-person-search .modal-dialog
+    {
+        top: 20px;
+    }
+
+    .modal-person-search .modal-body
+    {
+        max-height: 428px;
+    }
+
+    .modal-person-search .dataTables_scrollBody
+    {
+        max-height: 226px;
+    }
+
     .modal-person-search .dataTables_scrollBody tr td.dataTables_empty
     {
         height: 222px;

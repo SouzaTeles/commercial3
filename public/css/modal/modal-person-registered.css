@@ -1,0 +1,29 @@
+.modal-person-registered .dataTables_scrollHeadInner,
+.modal-person-registered .dataTables_scrollHeadInner .dataTable
+{
+    min-width: 100%;
+}
+
+.modal-person-registered .dataTables_scrollBody tr td.dataTables_empty
+{
+    height: 120px;
+}
+
+.modal-person-registered .dataTables_scrollBody
+{
+    min-height: 136px;
+}
+
+.modal-person-registered .legend
+{
+    width: 100%;
+    padding: 12px;
+    display: table;
+    border: 1px solid #ddd;
+}
+
+.modal-person-registered .legend > div
+{
+    float: left;
+    margin-right: 10px;
+}

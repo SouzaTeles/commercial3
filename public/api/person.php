@@ -87,6 +87,38 @@
 
         break;
 
+        case "checkDocument":
+
+            if( !@$post->document ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não localizado."
+                ]);
+            }
+
+            $data = Model::getList($dafel,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "Pessoa P (NoLock)",
+                    "INNER JOIN PessoaCategoria PC (NoLock) ON(PC.IdPessoa = P.IdPessoa)"
+                ],
+                "fields" => [
+                    "person_id=P.IdPessoa",
+                    "person_code=P.CdChamada",
+                    "person_name=P.NmPessoa",
+                    "person_type=P.TpPessoa",
+                    "person_active=PC.StAtivo"
+                ],
+                "filters" => [
+                    [ "P.CdCPF_CGC", "s", "=", $post->document ],
+                    [ "PC.IdCategoria", "s", "=", $config->person->client_category_id ]
+                ]
+            ]);
+
+            Json::get( $headerStatus[200], $data );
+
+        break;
+
         case "get":
 
             if( (!@$post->person_id && !@$post->person_code) || !@$post->person_category_id ){
