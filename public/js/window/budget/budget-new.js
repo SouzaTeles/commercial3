@@ -753,6 +753,19 @@ Budget = {
         });
     },
     validate: function(){
+        if( !!Item.item.product_id ){
+            global.validateMessage('Existe um produto em edição. Verifique.',function(){
+                setTimeout(function(){
+                    $('#product_code').focus();
+                },200);
+            });
+            global.scrollTo({
+                delay: 500,
+                addition: 200,
+                selector: '.panel-budget'
+            });
+            return false;
+        }
         if( !Budget.budget.items.length ){
             global.validateMessage('Ao menos um produto deverá ser adicionado ao pedido.',function(){
                 setTimeout(function(){
@@ -985,12 +998,39 @@ Item = {
         Item.data2form();
     },
     beforeEdit: function(key){
-        var item = Budget.budget.items[key];
-        if( !item.prices ){
-            Item.complement(key);
-            return;
+        if( !!Item.item.product_id ){
+            global.modal({
+                icon: 'fa-question-circle',
+                title: 'Confirmação',
+                html: '<p>O produto <b>' + Item.item.product_code + ' - ' + Item.item.product_name + '</b> está em edição. Deseja descartá-lo?</p>',
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Não',
+                    class: 'pull-left'
+                },{
+                    icon: 'fa-check',
+                    title: 'Sim',
+                    action: function(){
+                        var item = Budget.budget.items[key];
+                        if (!item.prices) {
+                            Item.complement(key);
+                            return;
+                        }
+                        Item.edit(key);
+                    }
+                }],
+                hidden: function(){
+                    $('budget_item_quantity').focus().select();
+                }
+            });
+        } else {
+            var item = Budget.budget.items[key];
+            if (!item.prices) {
+                Item.complement(key);
+                return;
+            }
+            Item.edit(key);
         }
-        Item.edit(key);
     },
     check: function(){
         var noStock = 0;
@@ -1422,7 +1462,7 @@ Item = {
             if( item.budget_item_quantity > item.stock_value ){
                 $(row).addClass('txt-red-light');
             }
-            $(row).dblclick(function(){
+            $(row).on('dblclick',function(){
                 Item.beforeEdit(key);
             });
         });
