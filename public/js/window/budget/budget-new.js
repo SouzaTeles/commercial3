@@ -942,6 +942,46 @@ Item = {
             $('#product_code').focus();
         },200);
     },
+    beforeAdd: function(){
+        if( Item.item.budget_item_quantity == 0 ){
+            global.modal({
+                icon: 'fa-warning-triangle',
+                title: 'Informação',
+                html: '<p>A quantidade do produto não poderá ficar zerada.</p>',
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Ok'
+                }],
+                hidden: function(){
+                    $('budget_item_quantity').focus().select();
+                }
+            });
+            return;
+        }
+        Item.add();
+    },
+    beforeRemove: function(){
+        global.modal({
+            icon: 'fa-question-circle',
+            title: 'Confirmação',
+            html: '<p>Deseja remover o item em edição <b>' + Item.item.product_code + ' - ' + Item.item.product_name + '</b>?.</p>',
+            buttons: [{
+                icon: 'fa-times',
+                title: 'Não',
+                class: 'pull-left'
+            },{
+                icon: 'fa-check',
+                title: 'Sim',
+                action: function(){
+                    Item.init();
+                    Item.data2form();
+                }
+            }],
+            hidden: function(){
+                $('budget_code').focus().select();
+            }
+        });
+    },
     discountAuthorization: function(params){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-discount-authorization',
@@ -1083,6 +1123,7 @@ Item = {
         });
         $('#budget_item_value_total').val('R$ ' + global.float2Br(Item.item.budget_item_value_total));
         $('#button-budget-item-add').prop('disabled',!Item.item.product_id);
+        $('#button-budget-item-remove').prop('disabled',!Item.item.product_id);
     },
     del: function(key){
         global.modal({
@@ -1250,22 +1291,10 @@ Item = {
             $(this).val(global.float2Br($(this).attr('data-value')));
         });
         $('#button-budget-item-add').click(function(){
-            if( Item.item.budget_item_quantity == 0 ){
-                global.modal({
-                    icon: 'fa-warning-triangle',
-                    title: 'Informação',
-                    html: '<p>A quantidade do produto não poderá ficar zerada.</p>',
-                    buttons: [{
-                        icon: 'fa-check',
-                        title: 'Ok'
-                    }],
-                    hidden: function(){
-                        $('budget_item_quantity').focus().select();
-                    }
-                });
-                return;
-            }
-            Item.add();
+            Item.beforeAdd();
+        });
+        $('#button-budget-item-remove').click(function(){
+            Item.beforeRemove();
         });
         Item.table.on('draw',function(){
             var $table = $('#table-budget-items');
@@ -1278,7 +1307,9 @@ Item = {
             $table.find('button[data-action="del"]').click(function(){
                 Item.del($(this).attr('data-key'));
             });
-            global.tooltip();
+            $table.find('button').tooltip({
+                container: 'body'
+            })
         });
     },
     get: function(data){
@@ -1315,11 +1346,11 @@ Item = {
             dataType: 'json'
         }, function(product){
             if( !product.prices.length ) {
-                global.validateMessage('O produto <b>' + product.product_code + ' - ' + product.product_name + '</b> não possui preço vinculado para venda na empresa selecionada. Verifique com o setor responsável');
+                global.validateMessage('O produto <b>' + product.product_code + ' - ' + product.product_name + '</b> não possui preço vinculado para venda na empresa selecionada. Verifique com o setor responsável.');
                 return;
             }
             if( product.product_active == 'N' ) {
-                global.validateMessage('O produto <b>' + product.product_code + ' - ' + product.product_name + '</b> não está ativo para venda na empresa selecionada.');
+                global.validateMessage('O produto <b>' + product.product_code + ' - ' + product.product_name + '</b> não está ativo para venda na empresa selecionada.. Verifique com o setor responsável.');
                 return;
             }
             Item.item = {
