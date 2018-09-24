@@ -117,7 +117,7 @@ Budget = {
                     '<li class="divider"></li>' +
                     '<li><a data-action="beforePrint" disabled="' + ( global.login.access.budget.print.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-print txt-green"></i>Imprimir</a></li>' +
                     '<li><a data-action="beforeDelivery" disabled="' + ( budget.budget.status == 'B' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-truck txt-blue"></i>Entrega</a></li>' +
-                    '<li><a data-action="mail" disabled="' + ( true || global.login.access.budget.mail.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-envelope-o txt-blue"></i>E-mail</a></li>' +
+                    '<li><a data-action="mail" disabled="' + ( global.login.access.budget.mail.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-envelope-o txt-blue"></i>E-mail</a></li>' +
                     '<li><a data-action="recover" disabled="' + ( true || global.login.access.budget.recover.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-unlock txt-red"></i>Recuperar Pedido</a></li>' +
                     '<li><a data-action="order" disabled="' + ( true || global.login.access.budget.order.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-powerpoint-o txt-orange"></i>Exportar Pedido</a></li>' +
                     '<li><a data-action="dav" disabled="' + ( true || global.login.access.budget.dav.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-file-text-o txt-blue"></i>Exportar Dav</a></li>' +
@@ -334,6 +334,11 @@ Budget = {
     new: function(){
         global.window({
             url: global.uri.uri_public + 'window.php?module=budget&action=new&company_id=' + Budget.company.company_id
+        });
+    },
+    mail: function(key,id){
+        global.window({
+            url: global.uri.uri_public + 'window.php?module=budget&action=mail&budget_id=' + id +'&company_id=' + Budget.company.company_id
         });
     },
     open: function(key,id){

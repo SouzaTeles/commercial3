@@ -56,11 +56,19 @@ th, td
     text-align: center;
 }
 
+.mail-order
+{
+    width: 780px;
+    height: 356px;
+    padding: 20px;
+    margin: 0 auto 20px;
+}
+
 .print-order
 {
+    width: 780px;
     padding: 20px;
     margin: 0 auto;
-    max-width: 780px;
 }
 
 .print-order .products table tr td,
@@ -176,17 +184,17 @@ th, td
 
 button.btn
 {
-    right: 20px;
-    width: 56px;
-    height: 56px;
-    bottom: 20px;
-    position: fixed;
-    font-size: 24px;
-    border-radius: 50% !important;
+    float: right;
+    margin: 10px 14px;
 }
 
 @media print
 {
+    .mail-order
+    {
+        display: none;
+    }
+
     .container,
     .print-order
     {
