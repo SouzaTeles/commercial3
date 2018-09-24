@@ -1505,6 +1505,9 @@ Person = {
         $('#button-budget-payment-credit').prop('disabled',!Person.person.person_id);
         Person.showAttributes();
         PersonImage.show();
+        if( Budget.budget.credit.value > 0){
+            Payment.removeCredit();
+        }
     },
     events: function(){
         $('#person_code, #person_name').on('focus',function(){
