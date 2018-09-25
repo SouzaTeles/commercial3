@@ -79,6 +79,43 @@
 
         break;
 
+        case "mail":
+
+            if( !@$post->budget_id || !@$post->to || !@$post->subject || !@$post->pdfFileData || !@$post->pdfFileName ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $to=[];
+            foreach( $post->to as $email ){
+                $to[] = (Object)[
+                    "email" => $email,
+                    "name" => $email
+                ];
+            }
+
+            $path = PATH_FILES . "email/" . date("Y/F/d");
+            if (!is_dir($path)) {
+                mkdir($path, 0755, true);
+            }
+
+            $pdf = "{$path}/{$post->pdfFileName}";
+            file_put_contents( $pdf, pack('H*',$post->pdfFileData) );
+
+            email((Object)[
+                "origin" => "budget",
+                "parent_id" => $post->budget_id,
+                "subject" => $post->subject,
+                "recipient" => $to,
+                "files" => [$post->pdfFileName]
+            ]);
+
+            Json::get( $headerStatus[200] );
+
+        break;
+
         case "edit":
 
             if (!@$post->budget_id) headerResponse((Object)["code" => 417, "message" => "O ID do pedido não foi informado."]);

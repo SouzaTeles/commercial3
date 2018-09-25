@@ -6,13 +6,43 @@ $(document).ready(function(){
 });
 
 Mail = {
+    data: {
+        to: [],
+        subject: '',
+        message: '',
+        pdfFileData: '',
+        budget_id: global.url.searchParams.get('budget_id'),
+        pdfFileName: parseInt(Math.random().toString().replace('0.','')) + '.pdf'
+    },
     budget: null,
     company: null,
     budget_id: global.url.searchParams.get('budget_id'),
     events: function(){
-        $('button').click(function(){
-            Mail.mail();
+        $(document).ready(function(){
+            Mail.pdfGenerator();
         });
+        $('#to').tagsinput();
+        $('button').click(function(){
+            if( typeof(Electron) != 'object' ){
+                global.validateMessage('Este recurso só está disponível através do aplicativo.');
+                return;
+            }
+            Mail.form2data();
+            if( Mail.validate() ){
+                Mail.mail();
+            }
+        });
+        if( typeof(Electron) == 'object' ){
+            ipcRenderer.on('wrote-pdf',(event, response) => {
+                Mail.data.pdfFileData = response.pdf;
+                global.unLoader();
+            });
+        }
+    },
+    form2data: function(){
+        Mail.data.to = $('#to').tagsinput('items');
+        Mail.data.subject = $('#subject').val();
+        Mail.data.message = $('#message').val();
     },
     getBudget: function(){
         global.post({
@@ -59,8 +89,41 @@ Mail = {
             });
         }
     },
-    send: function(){
-
+    mail: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'budget.php?action=mail',
+            data: Mail.data,
+            dataType: 'json'
+        },function(){
+            global.modal({
+                size: 'small',
+                icon: 'fa-info-circle',
+                title: 'Informação',
+                html: '<p>O e-mail será enviado em breve.</p>',
+                buttons: [{
+                    title: 'Ok'
+                }],
+                hidden: function(){
+                    window.close();
+                }
+            })
+        });
+    },
+    pdfGenerator: function(){
+        global.onLoader();
+        if( typeof(Electron) == 'object' ){
+            ipcRenderer.send('print-to-pdf',{
+                open: false
+            });
+        } else {
+            // var pdf = new jsPDF('p', 'in', 'a4');
+            // pdf.internal.scaleFactor = 30;
+            // pdf.addHTML($('.print-order')[0], function(){
+            //     pdf.save(parseInt(Math.random().toString().replace('0.','')) + '.pdf');
+            // });
+            $('.files-files').html('<i class="fa fa-file-pdf-o txt-red"></i> ' + Mail.data.pdfFileName );
+            global.unLoader();
+        }
     },
     showBudget: function(){
 
@@ -173,5 +236,24 @@ Mail = {
         setTimeout(function(){
             Mail.events();
         },1000);
+    },
+    validate: function(){
+        if( !Mail.data.to.length ) {
+            global.validateMessage('Ao menos um destinatário deverá ser informado.', function () {
+                setTimeout(function () {
+                    $('#to').focus();
+                }, 200);
+            });
+            return false;
+        }
+        if( !Mail.data.subject.length ) {
+            global.validateMessage('O assunto do e-mail deverá ser informado.', function () {
+                setTimeout(function () {
+                    $('#to').focus();
+                }, 200);
+            });
+            return false;
+        }
+        return true;
     }
 };

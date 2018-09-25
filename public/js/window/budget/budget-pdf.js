@@ -20,7 +20,6 @@ Pdf = {
         });
         if( typeof(Electron) == 'object' ){
             ipcRenderer.on('wrote-pdf',(event, response) => {
-                console.log(response);
                 global.unLoader();
             });
         }

@@ -77,7 +77,7 @@
                 "login_id" => $login->user_id,
                 "login_name" => $login->user_name
             ];
-            file_put_contents(PATH_ROOT . "public/credit/new/{$post->payable_id}.json", json_encode($data));
+            file_put_contents(PATH_ROOT . "public/service/new/{$post->payable_id}.json", json_encode($data));
 
             Json::get($headerStatus[200]);
 
@@ -102,7 +102,7 @@
                     "login_id" => $login->user_id,
                     "login_name" => $login->user_name
                 ];
-                file_put_contents(PATH_ROOT . "public/credit/del/{$payable_id}.json", json_encode($data));
+                file_put_contents(PATH_ROOT . "public/service/del/{$payable_id}.json", json_encode($data));
             }
 
             Json::get($headerStatus[200]);
