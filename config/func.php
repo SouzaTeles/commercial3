@@ -42,7 +42,7 @@
                 [ "user_id", "i", @$login->user_id ? $login->user_id : NULL ],
                 [ "parent_id", "i", @$params->parent_id ? $params->parent_id : NULL ],
                 [ "email_origin", "s", $params->origin ],
-                [ "email_subject", "s", $params->subject ],
+                [ "email_subject", "s", removeSpecialChar($params->subject) ],
                 [ "email_status", "s", "O" ],
                 [ "email_trash", "s", "N" ],
                 [ "email_date", "s", $date]

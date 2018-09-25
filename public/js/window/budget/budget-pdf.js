@@ -98,7 +98,7 @@ Pdf = {
         $('#company-phone').text(Pdf.budget.company.company_phone);
 
         if( Pdf.budget.budget_status != 'O' ){
-            $('#external-code').text(Pdf.budget.external_type == "D" ? 'DAV' : 'Pedido' + ': ' + Pdf.budget.external_code);
+            $('#external-code').text((Pdf.budget.external_type == "D" ? 'DAV' : 'Pedido') + ': ' + Pdf.budget.external_code);
         } else {
             $('#external-code').remove();
         }

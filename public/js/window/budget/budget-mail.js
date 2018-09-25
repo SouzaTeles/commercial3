@@ -35,6 +35,7 @@ Mail = {
         if( typeof(Electron) == 'object' ){
             ipcRenderer.on('wrote-pdf',(event, response) => {
                 Mail.data.pdfFileData = response.pdf;
+                $('.files-files').html('<i class="fa fa-file-pdf-o txt-red"></i> ' + Mail.data.pdfFileName );
                 global.unLoader();
             });
         }
@@ -139,7 +140,7 @@ Mail = {
         $('#company-phone').text(Mail.budget.company.company_phone);
 
         if( Mail.budget.budget_status != 'O' ){
-            $('#external-code').text(Mail.budget.external_type == "D" ? 'DAV' : 'Pedido' + ': ' + Mail.budget.external_code);
+            $('#external-code').text((Mail.budget.external_type == "D" ? 'DAV' : 'Pedido') + ': ' + Mail.budget.external_code);
         } else {
             $('#external-code').remove();
         }
