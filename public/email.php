@@ -82,7 +82,7 @@
                 $ret = $mail->send((Object)[
                     "from" => (Object)[
                         "email" => $config->email_account_user,
-                        "name" => "Compass"
+                        "name" => "Commercial"
                     ],
                     "recipients" => $email->recipients,
                     "subject" => $email->email_subject,
