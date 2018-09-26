@@ -115,7 +115,7 @@
                         "budget_item_value_unitary=CAST(BI.budget_item_value_unitary AS FLOAT)",
                         "budget_item_value_icms=CAST(BI.budget_item_value_icms AS FLOAT)",
                         "budget_item_value_st=CAST(BI.budget_item_value_st AS FLOAT)",
-                        "BI.budget_item_aliquot_discount",
+                        "budget_item_aliquot_discount=CAST(BI.budget_item_aliquot_discount AS FLOAT)",
                         "ncm_id=P.IdClassificacaoFiscal",
                         "icms_id=P.IdCalculoICMS",
                         "product_code=CP.CdChamada",
