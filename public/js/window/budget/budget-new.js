@@ -206,23 +206,23 @@ Budget = {
         });
     },
     afterRecover: function(){
-        if( Budget.budget.budget_credit == 'Y' ) {
-            Budget.budget.budget_credit = 'N';
-            Budget.budget.credit = {
-                value: 0,
-                payable: []
-            };
-            var index = -1;
-            $.each(Budget.budget.payments,function(key,payment){
-                if( payment.budget_payment_credit == 'Y' ){
-                    index = key;
-                }
-            });
-            Budget.budget.payments.splice(index,1);
-            Payment.total();
-            Payment.showList();
-            $('#payment-credit-value').text('R$ 0,00');
-        }
+        // if( Budget.budget.budget_credit == 'Y' ) {
+        //     Budget.budget.budget_credit = 'N';
+        //     Budget.budget.credit = {
+        //         value: 0,
+        //         payable: []
+        //     };
+        //     var index = -1;
+        //     $.each(Budget.budget.payments,function(key,payment){
+        //         if( payment.budget_payment_credit == 'Y' ){
+        //             index = key;
+        //         }
+        //     });
+        //     Budget.budget.payments.splice(index,1);
+        //     Payment.total();
+        //     Payment.showList();
+        //     $('#payment-credit-value').text('R$ 0,00');
+        // }
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-recovered',
             dataType: 'html'
@@ -238,12 +238,13 @@ Budget = {
                     title: 'Ok'
                 }],
                 hidden: function(){
-                    if( !!window.opener ){
-                        window.opener.Budget.getList();
-                    }
-                    Budget.budget.budget_status = 'O';
-                    Company.afterGet();
-                    $('.panel-tools').find('button[data-action="recover"]').prop('disabled',true);
+                    location.reload();
+                    // if( !!window.opener ){
+                    //     window.opener.Budget.getList();
+                    // }
+                    // Budget.budget.budget_status = 'O';
+                    // Company.afterGet();
+                    // $('.panel-tools').find('button[data-action="recover"]').prop('disabled',true);
                 }
             })
         });
@@ -2893,6 +2894,19 @@ Payment = {
         $('#budget_payment_value').val('R$ '+global.float2Br(Payment.payment_value));
         $('#budget_payment_aliquot').val(global.float2Br(Payment.payment_aliquot)+'%');
         $('#budget_payment_remaining').val('R$ '+global.float2Br(Payment.payment_remaining));
+        $('#resume-st').text('R$ ' + global.float2Br(Budget.budget.budget_value_st));
+        $('#resume-icms').text('R$ ' + global.float2Br(Budget.budget.budget_value_icms));
+        $('#resume-total').text('R$ ' + global.float2Br(Budget.budget.budget_value));
+        $('#resume-addition').text('R$ ' + global.float2Br(Budget.budget.budget_value_addition));
+        $('#resume-total-liquid').text('R$ ' + global.float2Br(Budget.budget.budget_value_total));
+        var value_discount = 0;
+        var aliquot_discount = 0;
+        $.each(Budget.budget.items,function(key,item){
+            value_discount += item.budget_item_value_discount;
+            aliquot_discount += item.budget_item_aliquot_discount;
+        });
+        $('#resume-discount').text(global.float2Br(aliquot_discount) + '% / R$ ' + global.float2Br(value_discount));
+        $('#resume-items').text(Budget.budget.items.length + ' Ite' + (Budget.budget.items.length == 1 ? 'm' : 'ns'));
     },
     getModalities: function(success){
         global.post({
