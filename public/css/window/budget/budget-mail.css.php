@@ -4,7 +4,6 @@ body
 {
     font-size: 12px;
     background-color: #fff;
-    font-family: sans-serif;
 }
 
 table
@@ -62,6 +61,7 @@ th, td
     height: 356px;
     padding: 20px;
     margin: 0 auto 20px;
+    background-color: #fff;
 }
 
 .print-order
@@ -69,6 +69,8 @@ th, td
     width: 780px;
     padding: 20px;
     margin: 0 auto;
+    background-color: #fff;
+    font-family: sans-serif;
 }
 
 .print-order .products table tr td,
@@ -185,7 +187,7 @@ th, td
 button.btn
 {
     float: right;
-    margin: 10px 14px;
+    margin: 4px 0;
 }
 
 @media print

@@ -4,7 +4,7 @@
         <div class="col-xs-12">
             <div class="form-group">
                 <label for="to">Para</label>
-                <input type="text" class="form-control" id="to" name="to" placeholder="Para">
+                <input data-role="tagsinput" type="text" class="form-control" id="to" name="to" placeholder="Para">
             </div>
         </div>
         <div class="col-xs-12">
@@ -19,9 +19,17 @@
                 <textarea rows="6" class="form-control" id="message" name="message" placeholder="Mensagem"></textarea>
             </div>
         </div>
-        <button class="btn btn-blue box-shadow" type="button">
-            <i class="fa fa-envelope-o"></i> Enviar E-mail
-        </button>
+        <div class="col-xs-12 col-sm-6">
+            <div class="files">
+                <i class="fa fa-paperclip"></i> Anexo:<br/>
+                <div class="files-files"></div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <button class="btn btn-blue box-shadow" type="button">
+                <i class="fa fa-envelope-o"></i> Enviar E-mail
+            </button>
+        </div>
     </form>
 </div>
 <div class="print-order box-shadow">

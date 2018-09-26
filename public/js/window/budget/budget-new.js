@@ -740,9 +740,7 @@ Budget = {
             });
         });
     },
-    submit: function(){
-
-    },
+    submit: function(){},
     ticket: function(budget_id){
         global.window({
             url: global.uri.uri_public + 'window.php?module=commercial&action=ticket&budget_id=' + budget_id,
@@ -903,11 +901,13 @@ Seller = {
                 }],
                 shown: function(){
                     $('#modal_seller_code').focus();
-                    ModalSeller.success = function(seller){
-                        Seller.seller = seller;
-                        Budget.budget.seller_id = seller.seller_id;
-                        if( !!success ) success();
-                    }
+                    setTimeout(function(){
+                        ModalSeller.success = function(seller){
+                            Seller.seller = seller;
+                            Budget.budget.seller_id = seller.seller_id;
+                            if( !!success ) success();
+                        }
+                    },500);
                 }
             })
         });
@@ -1842,7 +1842,7 @@ Person = {
                 '</div>'
             );
         });
-        global.tooltip();
+        $('#person-attributes div').tooltip();
     }
 };
 
@@ -2140,7 +2140,7 @@ Address = {
             e.stopPropagation();
             Address.new($(this).attr('data-key'));
         });
-        global.tooltip();
+        $panel.find('[data-toggle="tooltip"]').tooltip();
     },
     new: function(key){
         var address = (key && Person.person.address[key] ? Person.person.address[key] : null);

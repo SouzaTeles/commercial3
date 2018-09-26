@@ -314,6 +314,7 @@ Budget = {
             $table.find('[data-toggle="tooltip"]').tooltip({container:'body'});
             Budget.total();
         });
+        global.mask();
     },
     getList: function(){
         Budget.data.company_id = $('#budget_company_id').val();
@@ -322,6 +323,9 @@ Budget = {
         }
         Budget.data.start_date = global.date2Us($('#budget_start_date').val());
         Budget.data.end_date = global.date2Us($('#budget_end_date').val());
+
+        var diff
+        if( global.dateDiff(Budget.data.start_date,Budget.data.end_date) )
         global.post({
             url: global.uri.uri_public_api + 'budget.php?action=getList',
             data: Budget.data,

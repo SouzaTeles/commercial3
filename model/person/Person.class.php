@@ -68,9 +68,9 @@
                     "join" => 1,
                     "class" => "PersonAddress",
                     "tables" => [
-                        "PessoaEndereco PE",
-                        "INNER JOIN Cidade C ON(C.IdCidade = PE.IdCidade)",
-	                    "INNER JOIN Bairro B ON(B.IdBairro = PE.IdBairro)"
+                        "PessoaEndereco PE (NoLock)",
+                        "INNER JOIN Cidade C (NoLock) ON(C.IdCidade = PE.IdCidade)",
+	                    "INNER JOIN Bairro B (NoLock) ON(B.IdBairro = PE.IdBairro)"
                     ],
                     "fields" => [
                         "PE.IdPessoa",
@@ -111,8 +111,8 @@
                     "top" => 999,
                     "tables" => [
                         "AReceber AR (NoLock)",
-                        "LEFT OUTER JOIN APagar AP (NoLock) On ((AP.NmEntidadeOrigem = 'AReceber') and (AP.IdEntidadeOrigem = AR.IdAReceber))",
-                        "LEFT JOIN FormaPagamento FP ON(AR.IdFormaPagamento = FP.IdFormaPagamento)"
+                        "LEFT OUTER JOIN APagar AP (NoLock) ON((AP.NmEntidadeOrigem = 'AReceber') and (AP.IdEntidadeOrigem = AR.IdAReceber))",
+                        "LEFT JOIN FormaPagamento FP (NoLock) ON(AR.IdFormaPagamento = FP.IdFormaPagamento)"
                     ],
                     "fields" => [
                         "FP.DsFormaPagamento",

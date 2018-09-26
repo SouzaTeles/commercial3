@@ -1037,7 +1037,7 @@
                         "login_id" => $login->user_id,
                         "login_name" => $login->user_name
                     ];
-                    file_put_contents(PATH_ROOT . "public/credit/del/{$credit->payable_id}.json", json_encode($data));
+                    file_put_contents(PATH_ROOT . "public/service/del/{$credit->payable_id}.json", json_encode($data));
                 }
             }
             // ***** CARTA DE CRÉDITO ***** //
@@ -1490,7 +1490,7 @@
                         "login_id" => $login->user_id,
                         "login_name" => $login->user_name
                     ];
-                    file_put_contents(PATH_ROOT . "public/credit/del/{$credit->payable_id}.json", json_encode($data));
+                    file_put_contents(PATH_ROOT . "public/service/del/{$credit->payable_id}.json", json_encode($data));
                 }
             }
 

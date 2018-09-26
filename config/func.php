@@ -34,26 +34,44 @@
     {
         GLOBAL $commercial, $login, $smarty;
 
+        $date = date("Y-m-d");
+
         $email_id = Model::insert($commercial,(Object)[
-            "table" => "email",
+            "table" => "Email",
             "fields" => [
                 [ "user_id", "i", @$login->user_id ? $login->user_id : NULL ],
+                [ "parent_id", "i", @$params->parent_id ? $params->parent_id : NULL ],
                 [ "email_origin", "s", $params->origin ],
-                [ "email_subject", "s", $params->subject ],
+                [ "email_subject", "s", removeSpecialChar($params->subject) ],
                 [ "email_status", "s", "O" ],
-                [ "email_trash", "s", "N" ]
+                [ "email_trash", "s", "N" ],
+                [ "email_date", "s", $date]
             ]
         ]);
 
         foreach( $params->recipient as $recipient ){
             Model::insert($commercial,(Object)[
-                "table" => "email_recipient",
+                "table" => "EmailRecipient",
                 "fields" => [
                     [ "email_id", "i", $email_id ],
                     [ "email_recipient_email", "s", $recipient->email ],
-                    [ "email_recipient_name", "s", @$recipient->name ? $recipient->name : NULL ]
+                    [ "email_recipient_name", "s", @$recipient->name ? $recipient->name : NULL ],
+                    [ "email_recipient_date", "s", $date ]
                 ]
             ]);
+        }
+
+        if( @$params->files ) {
+            foreach ($params->files as $file) {
+                Model::insert($commercial, (Object)[
+                    "table" => "EmailFile",
+                    "fields" => [
+                        ["email_id", "i", $email_id],
+                        ["email_file_name", "s", $file],
+                        ["email_file_date", "s", $date]
+                    ]
+                ]);
+            }
         }
 
         $smarty->assign( "login", $login );

@@ -27,12 +27,14 @@
 
     $file = [];
     $debug = 0;
+    $counter = 0;
 
     echo "entrando no loop... boa sorte!\n";
     while( !file_exists("die/die.json") ){
 
         $log = [];
         $del = 0;
+
         foreach( glob("del/*.json") as $filename ){
             if( file_exists($filename)) {
                 $data = json_decode(file_get_contents($filename));
@@ -105,6 +107,14 @@
         }
 
         sleep(1);
+        $counter++;
+
+        if( $counter % 60 == 0 ){
+            $counter = 0;
+            $ch = curl_init("http://172.16.0.166/commercial3/email.php?token=BsO6dot0DtnTuqfzoWoTj5FZW4ZfAqxj");
+            curl_exec($ch);
+            echo "Email disparado\n";
+        }
     }
 
     echo "servico parado!\n";

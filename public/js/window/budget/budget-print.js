@@ -76,7 +76,7 @@ Print = {
         $('#company-phone').text(Print.budget.company.company_phone);
 
         if( Print.budget.budget_status != 'O' ){
-            $('#external-code').text(Print.budget.external_type == "D" ? 'DAV' : 'Pedido' + ': ' + Print.budget.external_code);
+            $('#external-code').text((Print.budget.external_type == "D" ? 'DAV' : 'Pedido') + ': ' + Print.budget.external_code);
         } else {
             $('#external-code').remove();
         }
