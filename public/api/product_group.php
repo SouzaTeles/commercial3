@@ -43,7 +43,7 @@
                     ],
                     "filters" => [
                         ["cp.StCodigoPrincipal", "s", "=", "S"],
-                        ["cp.CdChamada", "s", "=", "{$post->product_code}"]
+                        [ "CP.CdChamada", "s", "=", substr("00000{$post->product_code}",( strlen($post->product_code) > 6 ? -(strlen($post->product_code)) : -6)) ],
                     ]
                 ]);
 
@@ -110,7 +110,7 @@
                         ]);
                     }
                     else {
-                      $productList = Model::get($dafel,(Object)[
+                      $productGroupList = Model::get($dafel,(Object)[
                         "tables" => [
                             "GrupoProduto"
                         ],
@@ -121,24 +121,42 @@
                             ["CdClassificacao", "s", "like", "{$group->CdClassificacao}.%"]
                         ]
                       ]);
-
                       //var_dump($productList);
 
-                      if($productList){
-                        headerResponse((Object)[
-                        "code" => 417,
-                        "message" => "Existe(m) subgrupo(s) associado(s) à esse grupo, verifique."
-                        ]);
-                      } else {
+                 if($productGroupList){
+                       headerResponse((Object)[
+                       "code" => 417,
+                       "message" => "Existe(m) subgrupo(s) associado(s) à esse grupo, verifique."
+                       ]);
+                     } else {
+                         $productList = Model::getlist($dafel,(Object)[
+                           "tables" => [
+                               "vw_Produto"
+                           ],
+                           "fields" => [
+                               "IdProduto",
+                               "CdChamada",
+                               "NmProduto",
 
-                      }
+                           ],
+                           "filters" => [
+                               ["IdGrupoProduto", "s", "=", "{$group->IdGrupoProduto}"]
+                           ]
+                         ]);
+                        // var_dump($productList);
+                        $ret = [];
+                        foreach($productList as $product){
+                            $ret[] = (Object)[
+                              "product_id" => $product->IdProduto,
+                              "product_code" => $product->CdChamada,
+                              "product_name" => $product->NmProduto
 
+                            ];
+                        }
 
-                      Json::getlist($httpStatus[200], (Object)[
-                          "product_group_id" => $group->IdProduto,
-                          "product_group_code" => $group->CdChamada,
-                          "product_group_name" => $group->NmGrupoProduto
-                      ]);
+                        Json::get($httpStatus[200], $ret);
+                  }
+
                     }
               break;
             }
@@ -182,7 +200,6 @@
                             "<b>{$group->NmGrupoProduto}</b><br/>".
                             "<span>Cód: {$group->CdChamada}</span>".
                             "<span>Class: {$group->CdClassificacao}</span>"
-
                         )
                     ];
                 }
