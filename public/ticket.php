@@ -81,21 +81,16 @@
         }
 
         foreach( $post->images as $key => $image ){
+
             $fileName = date("YmdHis") + ($key+1);
-            $data = explode( ',', $image );
-            $extension = explode( ";", explode( "/", $data[0] )[1] )[0];
-
-            $ifp = fopen( "{$path}/{$fileName}.{$extension}", 'wb' );
-            fwrite( $ifp, base64_decode( $data[ 1 ] ) );
-            fclose( $ifp );
-
-            $files[] = "{$fileName}.{$extension}";
+            $fileName = base64toFile($path, $fileName, $image);
+            $files[] = $fileName;
 
             Model::insert($commercial,(Object)[
                 "table" => "TicketFile",
                 "fields" => [
                     [ "ticket_note_id", "i", $ticket_note_id ],
-                    [ "ticket_file_name", "s", "{$fileName}.{$extension}" ],
+                    [ "ticket_file_name", "s", "{$fileName}" ],
                     [ "ticket_file_date", "s", date("Y-m-d H:i:s") ]
                 ]
             ]);

@@ -206,23 +206,6 @@ Budget = {
         });
     },
     afterRecover: function(){
-        // if( Budget.budget.budget_credit == 'Y' ) {
-        //     Budget.budget.budget_credit = 'N';
-        //     Budget.budget.credit = {
-        //         value: 0,
-        //         payable: []
-        //     };
-        //     var index = -1;
-        //     $.each(Budget.budget.payments,function(key,payment){
-        //         if( payment.budget_payment_credit == 'Y' ){
-        //             index = key;
-        //         }
-        //     });
-        //     Budget.budget.payments.splice(index,1);
-        //     Payment.total();
-        //     Payment.showList();
-        //     $('#payment-credit-value').text('R$ 0,00');
-        // }
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-recovered',
             dataType: 'html'
@@ -238,13 +221,8 @@ Budget = {
                     title: 'Ok'
                 }],
                 hidden: function(){
+                    global.onLoader();
                     location.reload();
-                    // if( !!window.opener ){
-                    //     window.opener.Budget.getList();
-                    // }
-                    // Budget.budget.budget_status = 'O';
-                    // Company.afterGet();
-                    // $('.panel-tools').find('button[data-action="recover"]').prop('disabled',true);
                 }
             })
         });
@@ -280,9 +258,11 @@ Budget = {
         });
     },
     blocked: function(){
+        $('input, button').prop('disabled',true);
         $('.panel-tools').find('button[data-action="recover"]').click(function(){
             Budget.beforeRecover();
-        }).prop('disabled',false);
+        }).prop('disabled',false).tooltip();
+        $('#button-budget-cancel, button[data-action="close"]').prop('disabled',false).tooltip();
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-blocked',
             dataType: 'html'
@@ -1526,9 +1506,9 @@ Item = {
                 global.float2Br(item.budget_item_aliquot_discount,2,4),
                 global.float2Br(item.budget_item_value_discount),
                 global.float2Br(item.budget_item_value_total),
-                '<button data-toggle="tooltip" title="Informações do item" data-action="info" data-key="' + key + '" class="btn-empty"><i class="fa fa-info-circle txt-orange"></i></button>' +
-                '<button data-toggle="tooltip" data-action="edit" title="Editar item" data-key="' + key + '" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
-                '<button data-toggle="tooltip" data-action="del" title="Remover item" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red-light"></i></button>'
+                '<button data-toggle="tooltip" data-action="info" data-title="Informações do item" data-key="' + key + '" class="btn-empty"><i class="fa fa-info-circle txt-orange"></i></button>' +
+                '<button data-toggle="tooltip" data-action="edit" data-title="Editar item" data-key="' + key + '" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
+                '<button data-toggle="tooltip" data-action="del" data-title="Remover item" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red-light"></i></button>'
             ]).node();
             if( item.budget_item_quantity > item.stock_value ){
                 $(row).addClass('txt-red-light');

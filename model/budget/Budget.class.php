@@ -235,12 +235,13 @@
                         "BP.budget_payment_entry",
                         "BP.budget_payment_credit",
                         "budget_payment_deadline=CONVERT(VARCHAR(10),BP.budget_payment_deadline,126)",
+                        "nature_id=FP.IdNaturezaLancamento",
                         "modality_type=FP.TpFormaPagamento",
                         "modality_description=FP.DsFormaPagamento",
                         "modality_installment=COUNT(FPI.IdFormaPagamentoItem)"
                     ],
                     "filters" => [[ "BP.budget_id", "i", "=", $data->budget_id ]],
-                    "group" => "BP.budget_payment_id,BP.external_id,BP.modality_id,BP.bank_id,BP.agency_id,BP.agency_code,BP.check_number,BP.budget_payment_value,BP.budget_payment_installment,BP.budget_payment_entry,BP.budget_payment_credit,BP.budget_payment_deadline,FP.TpFormaPagamento,FP.DsFormaPagamento"
+                    "group" => "BP.budget_payment_id,BP.external_id,BP.modality_id,BP.bank_id,BP.agency_id,BP.agency_code,BP.check_number,BP.budget_payment_value,BP.budget_payment_installment,BP.budget_payment_entry,BP.budget_payment_credit,BP.budget_payment_deadline,FP.IdNaturezaLancamento,FP.TpFormaPagamento,FP.DsFormaPagamento"
                 ]);
                 if( sizeof($payments) ){
                     foreach( $payments as $payment ){
@@ -733,7 +734,6 @@
             GLOBAL $dafel, $config, $budget, $seller, $operation, $login;
 
             $date = date("Y-m-d");
-            $dateTime = date("Y-m-d H:i:s");
 
             $orderParams = (Object)[
                 "status" => "L",
@@ -797,6 +797,7 @@
                     [ "TpDescontoItem", "s", $item->budget_item_value_discount ? "V" : NULL ],
                     ["IdPreco", "s", $item->price_id],
                     ["VlUnitarioTabelaPreco", "d", $item->budget_item_value_unitary],
+                    ["StPedidoDeVendaItem", "s", $orderItemParams->status],
                     // campos de tributação
                     [ "AlICMS", "d", @$item->AlICMS ? $item->AlICMS : NULL ],
                     [ "AlFCP", "d", @$item->AlFCP ? $item->AlFCP : NULL ],
@@ -865,7 +866,6 @@
                     $fields[] = ["IdPedidoDeVendaItem", "s", $orderItem->IdPedidoDeVendaItem];
                     $fields[] = ["IdProduto", "s", $item->product_id];
                     $fields[] = ["IdPedidoDeVenda", "s", $budget->external_id];
-                    $fields[] = ["StPedidoDeVendaItem", "s", $orderItemParams->status];
                     $fields[] = ["TpAcrescimoItem", "s", $orderItemParams->addition_type];
                     $fields[] = ["StVendaMostruario", "s", $orderItemParams->sale_showcase];
                     $fields[] = ["TpOrigemProduto", "s", $orderItemParams->origin_type];
@@ -1159,10 +1159,10 @@
             }
 
             Model::delete($dafel,(Object)[
-                "top" => 999,
+                "top" => 99,
                 "table" => "PedidoDeVendaPagamento",
                 "filters" => [
-                    [ "StCartaCredito", "s", "=", "N" ],
+                    [ "StCartaCredito", "s", "!=", "S" ],
                     [ "IdPedidoDeVenda", "s", "=", $budget->external_id ],
                     [ "IdPedidoDeVendaPagamento", "s", "not in", @$externalPayments ? $externalPayments : NULL ]
                 ]
