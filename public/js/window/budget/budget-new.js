@@ -303,7 +303,7 @@ Budget = {
         });
     },
     cloned: function(){
-        Budget.budget.clone = 1;
+        Budget.budget.clone_id = Budget.budget.budget_id;
         Budget.budget.budget_id = null;
         Budget.budget.budget_credit = 'N';
         Budget.budget.budget_status = 'O';

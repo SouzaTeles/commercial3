@@ -469,7 +469,8 @@
                     ["budget_origin", "s", $budget_origin],
                     ["budget_trash", "s", "N"],
                     ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
-                    ["budget_date", "s", $date]
+                    ["budget_date", "s", $date],
+                    ["clone_id", "i", @$budget->clone_id ? $budget->clone_id : NULL ]
                 ]
             ]);
 
