@@ -33,6 +33,7 @@
                     "CdChamada",
                     "DsPrazo",
                     "NrParcelas",
+                    "NrDiasEntrada",
                     "NrDias1aParcela",
                     "NrDiasEntreParcelas",
                     "StAtivo",
