@@ -76,7 +76,7 @@ Company = {
     },
     get: function(){
         var company_id = global.url.searchParams.get('company_id');
-        if( !!company_id ) {
+        if( !!company_id ){
             $.each(global.login.companies, function (key, company) {
                 if (company.company_id == company_id) {
                     Company.company = company;
@@ -84,12 +84,16 @@ Company = {
                     Company.show();
                     Item.table.draw();
                     Payment.table.draw();
-                    if( Budget.budget.budget_status == 'L' ){
-                        Budget.blocked();
+                    if( !!global.url.searchParams.get('clone') ){
+                        Budget.cloned();
                     } else {
-                        Company.afterGet();
+                        Budget.tools();
+                        if( Budget.budget.budget_status == 'L' ){
+                            Budget.blocked();
+                        } else {
+                            Company.afterGet();
+                        }
                     }
-                    Budget.defaultEvents();
                 }
             });
         }
@@ -258,11 +262,10 @@ Budget = {
         });
     },
     blocked: function(){
-        $('input, button').prop('disabled',true);
-        $('.panel-tools').find('button[data-action="recover"]').click(function(){
-            Budget.beforeRecover();
-        }).prop('disabled',false).tooltip();
-        $('#button-budget-cancel, button[data-action="close"]').prop('disabled',false).tooltip();
+        $('input').prop('disabled',true);
+        $('.panel-items button').prop('disabled',true);
+        $('.panel-person button').prop('disabled',true);
+        $('.panel-payment button').prop('disabled',true);
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-blocked',
             dataType: 'html'
@@ -279,6 +282,57 @@ Budget = {
                 }]
             })
         });
+    },
+    clone: function(){
+        global.modal({
+            icon: 'fa-question-circle',
+            title: 'Confirmação',
+            html: '<p>Deseja realmente duplicar o orçamento?</p><p>Observação: Os descontos e a carta de crédito serão removidos do orçamento original.</p>',
+            buttons: [{
+                icon: 'fa-times',
+                class: 'pull-left',
+                title: 'Cancelar'
+            },{
+                icon: 'fa-check',
+                title: 'Confirmar',
+                action: function(){
+                    global.onLoader();
+                    location.href = global.uri.uri_public + 'window.php?module=budget&action=new&clone=1&budget_id=' + Budget.budget.budget_id + '&company_id=' + Company.company.company_id
+                }
+            }]
+        });
+    },
+    cloned: function(){
+        Budget.budget.clone = 1;
+        Budget.budget.budget_id = null;
+        Budget.budget.budget_credit = 'N';
+        Budget.budget.budget_status = 'O';
+        Budget.budget.budget_delivery = 'N';
+        Budget.budget.budget_delivery_date = global.dateAddDays(global.today(),3);
+
+        Budget.budget.budget_value_st = 0;
+        Budget.budget.budget_value_icms = 0;
+        Budget.budget.budget_value_addition = 0;
+        Budget.budget.budget_value_discount = 0;
+        Budget.budget.budget_aliquot_discount = 0;
+        Budget.budget.budget_value_total = Budget.budget.budget_value;
+
+        $.each(Budget.budget.items,function(key,item){
+            item.budget_item_value_st = 0;
+            item.budget_item_value_icms = 0;
+            item.budget_item_value_discount = 0;
+            item.budget_item_aliquot_discount = 0;
+            item.budget_item_value_total = item.budget_item_quantity * item.budget_item_value_unitary;
+        });
+
+        $.each(Budget.budget.payments,function(key,payment){
+            if( payment.budget_payment_credit == 'Y'){
+                Budget.budget.payments.splice(key,1);
+            }
+        });
+
+        Budget.tools();
+        Company.afterGet();
     },
     close: function(){
         global.modal({
@@ -300,14 +354,6 @@ Budget = {
                     }
                 }
             }]
-        });
-    },
-    defaultEvents: function(){
-        $('.panel-tools button[data-action="close"]').click(function(){
-            Budget.close();
-        });
-        $('#button-budget-cancel').click(function(){
-            Budget.close();
         });
     },
     discount: function(){
@@ -367,6 +413,9 @@ Budget = {
         });
     },
     events: function(){
+        $('#button-budget-cancel').click(function(){
+            Budget.close();
+        }).prop('disabled',false);
         $('#button-budget-save').click(function(){
             Budget.budget.export = null;
             if( Budget.validate() ){
@@ -435,44 +484,6 @@ Budget = {
                 });
             }
         }).prop('disabled',Budget.budget.budget_status != 'O');
-        var $panel = $('.panel-tools');
-        $panel.find('button[data-action="clone"]').click(function(){
-
-        }).prop('disabled',!Budget.budget.budget_id);
-        $panel.find('button[data-action="save"]').click(function(){
-
-        }).prop('disabled',!Budget.budget.budget_id);
-        $panel.find('button[data-action="print"]').click(function(){
-
-        }).prop('disabled',!Budget.budget.budget_id);
-        $panel.find('button[data-action="pdf"]').click(function(){
-
-        }).prop('disabled',!Budget.budget.budget_id);
-        $panel.find('button[data-action="mail"]').click(function(){
-
-        }).prop('disabled',!Budget.budget.budget_id);
-        $panel.find('button[data-action="seller"]').click(function(){
-            Seller.search();
-        }).prop('disabled',false);
-        $panel.find('button[data-action="item"]').click(function(){
-            Item.search();
-        }).prop('disabled',false);
-        $panel.find('button[data-action="client"]').click(function(){
-            Person.search();
-        }).prop('disabled',false);
-        $panel.find('button[data-action="clientInfo"]').click(function(){
-            Person.info();
-        }).prop('disabled',false);
-        $panel.find('button[data-action="note"]').click(function(){
-            Budget.note();
-        }).prop('disabled',false);
-        $panel.find('button[data-action="discount"]').click(function(){
-            Budget.discount();
-        });
-        $panel.find('button[data-action="delivery"]').click(function(){
-            Budget.setDelivery();
-        }).prop('disabled',false);
-        global.mask();
     },
     get: function(budget_id){
         global.post({
@@ -730,6 +741,86 @@ Budget = {
         },function(){
             console.log('fechou');
         });
+    },
+    tools: function(){
+        var $panel = $('.panel-tools');
+        $panel.find('button[data-action="new"]').click(function(){
+            Budget.new();
+        });
+        $panel.find('button[data-action="clone"]').click(function(){
+            Budget.clone();
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="recover"]').click(function(){
+            Budget.recover();
+        }).prop('disabled',Budget.budget.budget_status != 'L');
+        $panel.find('button[data-action="save"]').click(function(){
+            $('#button-budget-save').click();
+        }).prop('disabled',Budget.budget.budget_status == 'L');
+        $panel.find('button[data-action="close"]').click(function(){
+            Budget.close();
+        });
+        $panel.find('button[data-action="print"]').click(function(){
+            if( !!window.opener ){
+                window.opener.Budget.print({
+                    budget_id: Budget.budget.budget_id,
+                    action: 'print'
+                });
+            } else{
+               global.validateMessage('A janela é órfã e não sera possível realizar esta operação.')
+            }
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="pdf"]').click(function(){
+            if( !!window.opener ){
+                window.opener.Budget.print({
+                    budget_id: Budget.budget.budget_id,
+                    action: 'print'
+                });
+            } else{
+                global.validateMessage('A janela é órfã e não sera possível realizar esta operação.')
+            }
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="mail"]').click(function(){
+            if( !!window.opener ){
+                window.opener.Budget.print({
+                    budget_id: Budget.budget.budget_id,
+                    action: 'mail'
+                });
+            } else{
+                global.validateMessage('A janela é órfã e não sera possível realizar esta operação.')
+            }
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="pdf"]').click(function(){
+            if( !!window.opener ){
+                window.opener.Budget.print({
+                    budget_id: Budget.budget.budget_id,
+                    action: 'pdf'
+                });
+            } else{
+                global.validateMessage('A janela é órfã e não sera possível realizar esta operação.')
+            }
+        }).prop('disabled',!Budget.budget.budget_id);
+        $panel.find('button[data-action="seller"]').click(function(){
+            Seller.search();
+        }).prop('disabled',Budget.budget.budget_status == 'L');
+        $panel.find('button[data-action="item"]').click(function(){
+            Item.search();
+        }).prop('disabled',Budget.budget.budget_status == 'L');
+        $panel.find('button[data-action="client"]').click(function(){
+            Person.search();
+        }).prop('disabled',Budget.budget.budget_status == 'L');
+        $panel.find('button[data-action="clientInfo"]').click(function(){
+            Person.info();
+        }).prop('disabled',Budget.budget.budget_status == 'L');
+        $panel.find('button[data-action="note"]').click(function(){
+            Budget.note();
+        }).prop('disabled',Budget.budget.budget_status == 'L');
+        $panel.find('button[data-action="discount"]').click(function(){
+            Budget.discount();
+        }).prop('disabled',Budget.budget.budget_status == 'L');
+        $panel.find('button[data-action="delivery"]').click(function(){
+            Budget.setDelivery();
+        }).prop('disabled',Budget.budget.budget_status == 'L');
+        $panel.find('[data-toggle="tooltip"]').tooltip();
     },
     validate: function(){
         if( !!Item.item && !!Item.item.product_id ){

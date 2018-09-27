@@ -134,19 +134,21 @@
                 if( sizeof($items) ){
                     foreach( $items as $item ){
                         $item->budget_item_id = (int)$item->budget_item_id;
-                        $item->budget_item_quantity = (float)$item->budget_item_quantity;
-                        $item->budget_item_value = (float)$item->budget_item_value;
-                        $item->budget_item_value_discount = (float)$item->budget_item_value_discount;
-                        $item->budget_item_value_total = (float)$item->budget_item_value_total;
-                        $item->budget_item_value_unitary = (float)$item->budget_item_value_unitary;
                         $item->product_discount = (float)$item->product_discount;
+                        $item->budget_item_value = (float)$item->budget_item_value;
                         $item->product_commission = (float)$item->product_commission;
                         $item->product_weight_net = (float)$item->product_weight_net;
+                        $item->budget_item_value_st = (float)$item->budget_item_value_st;
                         $item->product_weight_gross = (float)$item->product_weight_gross;
-                        $item->product_cfop = @$item->product_cfop ? $item->product_cfop : NULL;
-                        $item->product_cfop_extra = @$item->product_cfop_extra ? $item->product_cfop_extra : NULL;
-                        $item->budget_item_aliquot_discount = (float)$item->budget_item_aliquot_discount;
+                        $item->budget_item_quantity = (float)$item->budget_item_quantity;
+                        $item->budget_item_value_icms = (float)$item->budget_item_value_icms;
                         $item->external_id = @$item->external_id ? $item->external_id : NULL;
+                        $item->budget_item_value_total = (float)$item->budget_item_value_total;
+                        $item->product_cfop = @$item->product_cfop ? $item->product_cfop : NULL;
+                        $item->budget_item_value_unitary = (float)$item->budget_item_value_unitary;
+                        $item->budget_item_value_discount = (float)$item->budget_item_value_discount;
+                        $item->budget_item_aliquot_discount = (float)$item->budget_item_aliquot_discount;
+                        $item->product_cfop_extra = @$item->product_cfop_extra ? $item->product_cfop_extra : NULL;
                         if( @$gets["get_product_stock"] || @$_POST["get_product_stock"] ){
                             $item->stock_value = 0;
                             $item->stock_date = NULL;
