@@ -296,11 +296,6 @@
 			"name": "Excluir",
 			"value": "N",
 			"data_type": "bool"
-		},
-		"user_pass": {
-			"name": "Alterar Senha",
-			"value": "N",
-			"data_type": "bool"
 		}
 	},
 	"profile": {
