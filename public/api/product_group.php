@@ -99,7 +99,7 @@
 
                         ],
                         "filters" => [
-                            ["GP.CdChamada", "s", "=", "{$post->product_group_code}"]
+                        [ "GP.CdChamada", "s", "=", substr("00000{$post->product_group_code}",( strlen($post->product_group_code) > 6 ? -(strlen($post->product_group_code)) : -6)) ],
                         ]
                     ]);
 
@@ -265,6 +265,18 @@
                     // $EanCode-CdChamada = NULL;
                 }
                 Json::get( $headerStatus[200], $items );
+          }
+        break;
+        case "up":
+          if( !@$post->product_id){
+            headerResponse((Object)[
+                  "code" => 417,
+                  "message" => "Parâmetro POST não encontrado."
+              ]);
+          } else {
+            //var_dump();
+            base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
+            Json::get($httpStatus[200], ("foi foi foi foi foi"));
           }
         break;
     }
