@@ -24,6 +24,42 @@
 
             GLOBAL $dafel, $post, $config;
 
+//            if( @$gets["get_entry_modalities"] || @$_POST["get_entry_modalities"] ){
+//                $this->entry_modalities = [];
+//                $entry_modalities = Model::getList($dafel,(Object)[
+//                    "tables" => [ "modality m", "term_modality tm" ],
+//                    "fields" => [ "m.modality_id" ],
+//                    "filters" => [
+//                        [ "tm.modality_id = m.modality_id" ],
+//                        [ "tm.term_id", "i", "=", $data->term_id ],
+//                        [ "tm.term_modality_type", "s", "=", "E" ],
+//                        [ "m.modality_active", "s", "=", "Y" ],
+//                        [ "m.modality_trash", "s", "=", "N" ]
+//                    ]
+//                ]);
+//                foreach( $entry_modalities as $modality ){
+//                    $this->entry_modalities[] = $modality->modality_id;
+//                }
+//            }
+//
+//            if( @$gets["get_parcel_modalities"] || @$_POST["get_parcel_modalities"] ){
+//                $this->parcel_modalities = [];
+//                $parcel_modalities = Model::getList($dafel,(Object)[
+//                    "tables" => [ "modality m", "term_modality tm" ],
+//                    "fields" => [ "m.modality_id" ],
+//                    "filters" => [
+//                        [ "tm.modality_id = m.modality_id" ],
+//                        [ "tm.term_id", "i", "=", $data->term_id ],
+//                        [ "tm.term_modality_type", "s", "=", "P" ],
+//                        [ "m.modality_active", "s", "=", "Y" ],
+//                        [ "m.modality_trash", "s", "=", "N" ]
+//                    ]
+//                ]);
+//                foreach( $parcel_modalities as $modality ){
+//                    $this->parcel_modalities[] = $modality->modality_id;
+//                }
+//            }
+
             if( @$gets["get_term_modalities"] || @$_POST["get_term_modalities"] ){
                 $modalities = Model::getList($dafel,(Object)[
                     "join" => 1,
