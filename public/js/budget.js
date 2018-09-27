@@ -321,11 +321,21 @@ Budget = {
         if( !Budget.data.company_id ){
             global.validateMessage('A empresa deverá ser selecionada.');
         }
+
         Budget.data.start_date = global.date2Us($('#budget_start_date').val());
         Budget.data.end_date = global.date2Us($('#budget_end_date').val());
 
-        var diff
-        if( global.dateDiff(Budget.data.start_date,Budget.data.end_date) )
+        if( parseInt(Budget.data.start_date.split('-').join('')) > parseInt(Budget.data.end_date.split('-').join('')) ){
+            global.validateMessage('<p>A data inicial não pode ser maior que a data final.</p>');
+            return;
+        }
+
+        var diff = global.dateDiff(Budget.data.start_date,Budget.data.end_date);
+        if( diff > 31 ){
+            global.validateMessage('<p>Verifique o intervalo entre as datas selecionadas.<br/>O período máximo permitido será de 31 dias.</p>')
+            return;
+        }
+
         global.post({
             url: global.uri.uri_public_api + 'budget.php?action=getList',
             data: Budget.data,

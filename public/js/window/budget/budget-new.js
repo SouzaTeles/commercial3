@@ -206,23 +206,6 @@ Budget = {
         });
     },
     afterRecover: function(){
-        if( Budget.budget.budget_credit == 'Y' ) {
-            Budget.budget.budget_credit = 'N';
-            Budget.budget.credit = {
-                value: 0,
-                payable: []
-            };
-            var index = -1;
-            $.each(Budget.budget.payments,function(key,payment){
-                if( payment.budget_payment_credit == 'Y' ){
-                    index = key;
-                }
-            });
-            Budget.budget.payments.splice(index,1);
-            Payment.total();
-            Payment.showList();
-            $('#payment-credit-value').text('R$ 0,00');
-        }
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-recovered',
             dataType: 'html'
@@ -238,12 +221,8 @@ Budget = {
                     title: 'Ok'
                 }],
                 hidden: function(){
-                    if( !!window.opener ){
-                        window.opener.Budget.getList();
-                    }
-                    Budget.budget.budget_status = 'O';
-                    Company.afterGet();
-                    $('.panel-tools').find('button[data-action="recover"]').prop('disabled',true);
+                    global.onLoader();
+                    location.reload();
                 }
             })
         });
@@ -279,9 +258,11 @@ Budget = {
         });
     },
     blocked: function(){
+        $('input, button').prop('disabled',true);
         $('.panel-tools').find('button[data-action="recover"]').click(function(){
             Budget.beforeRecover();
-        }).prop('disabled',false);
+        }).prop('disabled',false).tooltip();
+        $('#button-budget-cancel, button[data-action="close"]').prop('disabled',false).tooltip();
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-blocked',
             dataType: 'html'
@@ -1525,9 +1506,9 @@ Item = {
                 global.float2Br(item.budget_item_aliquot_discount,2,4),
                 global.float2Br(item.budget_item_value_discount),
                 global.float2Br(item.budget_item_value_total),
-                '<button data-toggle="tooltip" title="Informações do item" data-action="info" data-key="' + key + '" class="btn-empty"><i class="fa fa-info-circle txt-orange"></i></button>' +
-                '<button data-toggle="tooltip" data-action="edit" title="Editar item" data-key="' + key + '" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
-                '<button data-toggle="tooltip" data-action="del" title="Remover item" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red-light"></i></button>'
+                '<button data-toggle="tooltip" data-action="info" data-title="Informações do item" data-key="' + key + '" class="btn-empty"><i class="fa fa-info-circle txt-orange"></i></button>' +
+                '<button data-toggle="tooltip" data-action="edit" data-title="Editar item" data-key="' + key + '" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
+                '<button data-toggle="tooltip" data-action="del" data-title="Remover item" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red-light"></i></button>'
             ]).node();
             if( item.budget_item_quantity > item.stock_value ){
                 $(row).addClass('txt-red-light');
@@ -2893,6 +2874,19 @@ Payment = {
         $('#budget_payment_value').val('R$ '+global.float2Br(Payment.payment_value));
         $('#budget_payment_aliquot').val(global.float2Br(Payment.payment_aliquot)+'%');
         $('#budget_payment_remaining').val('R$ '+global.float2Br(Payment.payment_remaining));
+        $('#resume-st').text('R$ ' + global.float2Br(Budget.budget.budget_value_st));
+        $('#resume-icms').text('R$ ' + global.float2Br(Budget.budget.budget_value_icms));
+        $('#resume-total').text('R$ ' + global.float2Br(Budget.budget.budget_value));
+        $('#resume-addition').text('R$ ' + global.float2Br(Budget.budget.budget_value_addition));
+        $('#resume-total-liquid').text('R$ ' + global.float2Br(Budget.budget.budget_value_total));
+        var value_discount = 0;
+        var aliquot_discount = 0;
+        $.each(Budget.budget.items,function(key,item){
+            value_discount += item.budget_item_value_discount;
+            aliquot_discount += item.budget_item_aliquot_discount;
+        });
+        $('#resume-discount').text(global.float2Br(aliquot_discount) + '% / R$ ' + global.float2Br(value_discount));
+        $('#resume-items').text(Budget.budget.items.length + ' Ite' + (Budget.budget.items.length == 1 ? 'm' : 'ns'));
     },
     getModalities: function(success){
         global.post({
