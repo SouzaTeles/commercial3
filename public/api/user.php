@@ -13,7 +13,7 @@
         ]);
     }
 
-    if( !in_array($get->action,["loginPass","userPassForm","loginPassForm"])){
+    if( !in_array($get->action,["editPass","userPass"])){
         checkAccess();
     }
 

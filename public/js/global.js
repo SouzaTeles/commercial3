@@ -1,21 +1,10 @@
 $(document).ready(function(){
 
     Commercial.events();
-    Commercial.container();
 
 });
 
 Commercial = {
-    container: function(){
-        global.layout = {
-            window: $(window).innerHeight(),
-            header: $('header').outerHeight(),
-            footer: $('footer').innerHeight()
-        };
-        $('.container').css({
-            'min-height': global.layout.window
-        });
-    },
     events: function(){
         $('header .dropdown li a').click(function(e){
             e.preventDefault();
@@ -26,8 +15,11 @@ Commercial = {
                 Commercial.userLogout();
             }
         });
-        $(window).resize(function(){
-            Commercial.container();
+        $('#button-ticket').click(function(){
+            global.window({
+                width: 800,
+                url: global.uri.uri_public + 'window.php?module=ticket&action=new'
+            });
         });
     },
     userLogout: function(){

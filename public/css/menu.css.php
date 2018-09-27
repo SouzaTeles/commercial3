@@ -10,6 +10,7 @@
     height: 100%;
     z-index: 1001;
     position: fixed;
+    background-color: #333333;
 }
 
 .menu ul
@@ -36,7 +37,6 @@
 {
     width: 268px;
     padding-right: 20px;
-    background-color: <?php echo brightness("#333333",20); ?>;
 }
 
 .menu ul li a i
@@ -75,6 +75,16 @@
     border-width: 10px;
     background-color: <?php echo $color; ?>;
     border-color: <?php echo brightness($color,-20); ?>;
+}
+
+#button-ticket
+{
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 60px;
+    position: fixed;
+    font-size: 36px;
 }
 
 <?php } ?>
