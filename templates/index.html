@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>{$config->system->system_name} - {$data->$route->title}</title>
-        <link rel="SHORTCUT ICON" href="{$URI_PUBLIC}favicon.ico?{$smarty.now}" type="image/x-icon">
+        <link rel="SHORTCUT ICON" href="{$URI_PUBLIC}favicon.ico?{$config->system->system_version}" type="image/x-icon">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -67,10 +67,10 @@
     <script src="{$URI_LIB}js/highcharts/export-data.js"></script>
     <script src="{$URI_LIB}js/decimal.min.js"></script>
     <script src="{$URI_LIB}js/keypress.js"></script>
-    <script src="{$URI_LIB}js/global.js?{$smarty.now}"></script>
-    <script src="{$URI_PUBLIC}js/global.js?{$smarty.now}"></script>
     <script src="{$URI_PUBLIC}js/webcam.min.js"></script>
-    <script src="{$URI_PUBLIC}js/{$route}.js?{$smarty.now}"></script>
+    <script src="{$URI_LIB}js/global.js?{$config->system->system_version}"></script>
+    <script src="{$URI_PUBLIC}js/global.js?{$config->system->system_version}"></script>
+    <script src="{$URI_PUBLIC}js/{$route}.js?{$config->system->system_version}"></script>
     <script>
         global.login = {$login|json_encode};
         global.uri = {$config->uri|json_encode};

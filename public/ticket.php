@@ -47,7 +47,7 @@
         }
     }
 
-    $ticket_id = Model::insert($commercial,(Object)[
+    $ticket_id = (int)Model::insert($commercial,(Object)[
         "table" => "Ticket",
         "fields" => [
             [ "company_id", "i", $post->data->company_id ],

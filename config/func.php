@@ -8,7 +8,7 @@
             "table" => "[Log]",
             "fields" => [
                 [ "user_id", "s", @$params->user_id ? $params->user_id : $login->user_id ],
-                [ "log_script", "s", SCRIPT_NAME ],
+                [ "log_script", "s", @$params->script ? $params->script : SCRIPT_NAME ],
                 [ "log_action", "s", $get->action ],
                 [ "log_system_version", "s", $config->system->system_version ],
                 [ "log_parent_id", "s", @$params->parent_id ? $params->parent_id : NULL ],

@@ -169,7 +169,7 @@
 
         case "getList":
 
-            if( !@$post->person_category_id ){
+            if( !@$post->person_category_id || !@$post->person_active ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -191,11 +191,11 @@
                 [ "LEN(P.CdChamada) > 0" ],
                 [ "LEN(P.NmPessoa) > 0" ],
                 [ "PC.IdCategoria", "s", "=", $post->person_category_id ],
-                [ "PC.StAtivo", "s", "=", ($post->person_active == "Y" ? "S" : NULL) ]
+                [ "PC.StAtivo", "s", "=", (@$post->person_active && $post->person_active == "Y" ? "S" : NULL) ]
             ];
             $group = [ "P.IdPessoa", "P.CdChamada", "P.NmPessoa", "P.NmCurto", "P.CdCPF_CGC", "P.TpPessoa", "PC.StATivo" ];
 
-            if( $post->person_address == "Y" ){
+            if( @$post->person_address && $post->person_address == "Y" ){
 
                 $tables[] = "PessoaEndereco PE (NoLock)";
                 $tables[] = "Cidade C (NoLock)";
@@ -236,7 +236,7 @@
                 $filters[] = ["REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(PETC.DsContato,')',''),'(',''),'.',''),'-',''),'/','')", "s", "LIKE", "%" . str_replace( ["(",")","-",".","/"], ["","","","",""], $post->person_contact ) . "%"];
 
             $people = Model::getList($dafel,(Object)[
-                "top" => 200,
+                "top" => @$post->limit ? $post->limit : 200,
                 "tables" => $tables,
                 "fields" => $fields,
                 "filters" => $filters,

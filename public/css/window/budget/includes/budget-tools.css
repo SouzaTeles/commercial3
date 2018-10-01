@@ -35,16 +35,24 @@
 .panel .panel-tools .action.new:before
 {
     left: 202px;
+    border-left: 0 solid #379939;
     border-top: 60px solid #379939;
-    border-left: 0px solid #379939;
 }
 
 .panel .panel-tools .action.edit:before
 {
     left: 217px;
+    border-left: 0 solid #337be0;
     border-top: 60px solid #337be0;
-    border-left: 0px solid #337be0;
 }
+
+.panel .panel-tools .action.clone:before
+{
+    left: 241px;
+    border-left: 0 solid #fe9045;
+    border-top: 60px solid #fe9045;
+}
+
 
 .panel .panel-tools button
 {

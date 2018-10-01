@@ -1,11 +1,18 @@
 <div class="panel-tools bg-white box-shadow">
-    {if empty($smarty.get.budget_id)}<div class="action new bg-green txt-white"><i class="fa fa-plus"></i> Novo orçamento</div>{/if}
-    {if !empty($smarty.get.budget_id)}<div class="action edit bg-blue txt-white"><i class="fa fa-edit"></i> Editar orçamento</div>{/if}
-    <button data-action="new" data-toggle="tooltip" data-placement="bottom" title="Novo Pedido" class="btn btn-empty"><i class="fa fa-file-o txt-gray-dark"></i></button>
-    <button disabled data-action="clone" data-toggle="tooltip" data-placement="bottom" title="Duplicar" class="btn btn-empty"><i class="fa fa-files-o txt-orange"></i></button>
-    <button disabled data-action="recover" data-toggle="tooltip" data-placement="bottom" title="Recuperar" class="btn btn-empty"><i class="fa fa-unlock txt-orange"></i></button>
-    <button disabled data-action="save" data-toggle="tooltip" data-placement="bottom" title="Salvar" class="btn btn-empty"><i class="fa fa-floppy-o txt-blue"></i></button>
-    <button data-action="close" data-toggle="tooltip" data-placement="bottom" title="Fechar" class="btn btn-empty"><i class="fa fa-times txt-red"></i></button>
+    {if empty($smarty.get.clone)}
+        {if empty($smarty.get.budget_id)}
+            <div class="action new bg-green txt-white"><i class="fa fa-plus"></i> Novo orçamento</div>
+        {else}
+            <div class="action edit bg-blue txt-white"><i class="fa fa-edit"></i> Editar orçamento</div>
+        {/if}
+    {else}
+        <div class="action clone bg-orange txt-white"><i class="fa fa-files-o"></i> Duplicar orçamento</div>
+    {/if}
+    <button data-action="new" data-toggle="tooltip" data-placement="bottom" title="Novo Pedido" class="btn btn-empty-gray-dark"><i class="fa fa-file-o"></i></button>
+    <button disabled data-action="clone" data-toggle="tooltip" data-placement="bottom" title="Duplicar" class="btn btn-empty-orange"><i class="fa fa-files-o"></i></button>
+    <button disabled data-action="recover" data-toggle="tooltip" data-placement="bottom" title="Recuperar" class="btn btn-empty-orange"><i class="fa fa-unlock"></i></button>
+    <button disabled data-action="save" data-toggle="tooltip" data-placement="bottom" title="Salvar" class="btn btn-empty-blue"><i class="fa fa-floppy-o"></i></button>
+    <button data-action="close" data-toggle="tooltip" data-placement="bottom" title="Fechar" class="btn btn-empty-red"><i class="fa fa-times"></i></button>
     <div class="pipe bg-gray-light"></div>
     <button disabled data-action="print" data-toggle="tooltip" data-placement="bottom" title="Imprimir" class="btn btn-empty"><i class="fa fa-print txt-blue-light"></i></button>
     <button disabled data-action="pdf" data-toggle="tooltip" data-placement="bottom" title="Gerar PDF" class="btn btn-empty"><i class="fa fa-file-pdf-o txt-red-light"></i></button>

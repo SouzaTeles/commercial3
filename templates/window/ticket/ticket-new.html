@@ -1,0 +1,81 @@
+<div class="panel-body">
+    <div class="panel panel-ticket">
+        <header class="box-shadow">
+            <img src="{$URI_PUBLIC}images/futura.png" />
+        </header>
+        <form>
+            <h2>Entre em contato com o suporte!</h2>
+            <div class="row">
+                <div class="col-xs-12 col-sm-2">
+                    <div class="form-group">
+                        <label for="person_code">Cod. CRM</label>
+                        <input type="text" class="form-control" id="person_code" name="person_code" placeholder="Cod. CRM" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-10">
+                    <div class="form-group">
+                        <label for="person_id">Nome</label>
+                        <select data-live-search="true" data-size="8" class="selectpicker show-tick" id="person_id" name="person_id" title="-- Selecione a Pessoa --"></select>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="form-group">
+                        <label for="company_id">Unidade</label>
+                        <select data-size="8" class="selectpicker show-tick" id="company_id" name="company_id" title="-- Selecione a Unidade --">
+                            <option value="01">01 - Dafel Teresópolis</option>
+                            <option value="02">02 - Dafel Cabo Frio</option>
+                            <option value="03">03 - Dafel Macaé</option>
+                            <option value="04">04 - Dafel Industria</option>
+                            <option value="11">11 - Dafel Express São José</option>
+                            <option value="12">12 - Dafel Express Unamar</option>
+                            <option value="13">13 - Dafel Express Nova Friburgo</option>
+                            <option value="31">31 - Carton</option>
+                            <option value="32">32 - Ecin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="form-group">
+                        <label for="ticket_type_id">Tipo de Chamado</label>
+                        <select class="selectpicker show-tick" id="ticket_type_id" name="ticket_type_id" title="-- Tipo de Chamado --">
+                            <option value="1">ERP</option>
+                            <option value="2">Commercial</option>
+                            <option value="3">Impressora</option>
+                            <option value="4">Informatica Hardware</option>
+                            <option value="5">Telefonia</option>
+                            <option value="6">Outros</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="form-group">
+                        <label for="urgency_id">Categoria</label>
+                        <select class="selectpicker show-tick" id="urgency_id" name="urgency_id" title="-- Categoria --">
+                            <option value="1">Pouco Urgente</option>
+                            <option value="2">Mediano</option>
+                            <option value="3">Urgente!</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <label for="file">Imagens</label>
+                    <input multiple type="file" id="file" name="file" accept=".jpg, .jpeg|images/*" class="filestyle" data-buttonText="Procurar Imagens" data-buttonName="btn-block btn-primary" data-iconName="fa fa-file-image-o" data-buttonBefore="true">
+                </div>
+                <div class="col-xs-12">
+                    <div id="images" class="images"></div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="message">Descreva seu Problema</label>
+                        <textarea rows="6" class="form-control" id="message" name="message" placeholder="Descreva seu Problema"></textarea>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <button id="submit" type="button" class="btn btn-success btn-block btn-lg">
+                        Abrir Chamado
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

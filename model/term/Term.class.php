@@ -19,7 +19,7 @@
             $this->term_code = $data->CdChamada;
             $this->term_description = $data->DsPrazo;
             $this->term_installment = (int)$data->NrParcelas;
-            $this->term_delay = (int)$data->NrDias1aParcela;
+            $this->term_delay = @$data->NrDias1aParcela ? (int)$data->NrDias1aParcela : ( @$data->NrDiasEntrada ? (int)$data->NrDiasEntrada : 0);
             $this->term_interval = (int)$data->NrDiasEntreParcelas;
 
             GLOBAL $dafel, $post, $config;

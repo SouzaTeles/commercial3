@@ -113,7 +113,7 @@ Budget = {
                 '</button>' +
                 '<ul class="dropdown-menu pull-right">' +
                     '<li><a data-action="open" disabled="' + ( global.login.access.budget.open.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-folder-open-o"></i>Abrir</a></li>' +
-                    '<li><a data-action="clone" disabled="' + ( true || global.login.access.budget.clone.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-clone txt-orange"></i>Duplicar</a></li>' +
+                    '<li><a data-action="clone" disabled="' + ( global.login.access.budget.clone.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-clone txt-orange"></i>Duplicar</a></li>' +
                     '<li class="divider"></li>' +
                     '<li><a data-action="beforePrint" disabled="' + ( global.login.access.budget.print.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-print txt-green"></i>Imprimir</a></li>' +
                     '<li><a data-action="beforeDelivery" disabled="' + ( budget.budget.status == 'B' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-truck txt-blue"></i>Entrega</a></li>' +
@@ -185,6 +185,26 @@ Budget = {
                     title: 'Fechar'
                 }]
             });
+        });
+    },
+    clone: function(key,id){
+        global.modal({
+            icon: 'fa-question-circle',
+            title: 'Confirmação',
+            html: '<p>Deseja realmente duplicar o orçamento?</p><p>Observação: Os descontos e a carta de crédito serão removidos do orçamento original.</p>',
+            buttons: [{
+                icon: 'fa-times',
+                class: 'pull-left',
+                title: 'Cancelar'
+            },{
+                icon: 'fa-check',
+                title: 'Confirmar',
+                action: function(){
+                    global.window({
+                        url: global.uri.uri_public + 'window.php?module=budget&action=new&clone=1&budget_id=' + id + '&company_id=' + Budget.company.company_id
+                    });
+                }
+            }]
         });
     },
     events: function(){
@@ -451,7 +471,7 @@ Budget = {
                 var row = Budget.table.row.add([
                     '<i data-toggle="tooltip" title="' + type.title + '" class="fa fa-' + status.icon + ' txt-' + type.color + '"></i><br/>' + budget.budget.code,
                     '<label>' + budget.seller.code + '</label><div class="seller">' + ( budget.seller.short_name || budget.seller.name ) + '</div>',
-                    ( budget.budget.status == 'L' && budget.external.code ? budget.external.code : '--' ),
+                    ( budget.budget.status != 'O' && budget.external.code ? budget.external.code : '--' ),
                     ( budget.document.code || '--' ),
                     '<div class="person-cover"' + ( budget.person.image ? 'style="background-image:url(' + budget.person.image + ')"' : '' ) + '></div><label>' + budget.person.code + '</label><div class="client">' + budget.person.name + '</div>',
                     '<span>' + budget.budget.value_total_order + '</span>R$ ' + global.float2Br(budget.budget.value_total),
