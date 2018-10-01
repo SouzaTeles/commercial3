@@ -1,5 +1,5 @@
 <?php
-
+    die();
     include "../config/start.php";
 
     if( !@$_GET["token"] || $_GET["token"] != "BsO6dot0DtnTuqfzoWoTj5FZW4ZfAqxj" ){

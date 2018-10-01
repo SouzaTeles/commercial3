@@ -88,7 +88,9 @@ Company = {
                         Budget.cloned();
                     } else {
                         Budget.tools();
-                        if( Budget.budget.budget_status == 'L' ){
+                        if( Budget.budget.budget_status == 'B' ){
+                            Budget.billed();
+                        } else if( Budget.budget.budget_status == 'L' ){
                             Budget.blocked();
                         } else {
                             Company.afterGet();
@@ -261,6 +263,23 @@ Budget = {
             });
         });
     },
+    billed: function(){
+        $('input').prop('disabled',true);
+        $('.panel-items button').prop('disabled',true);
+        $('.panel-person button').prop('disabled',true);
+        $('.panel-payment button').prop('disabled',true);
+        global.modal({
+            icon: 'fa-info-circle',
+            id: 'modal-budget-recover',
+            class: 'modal-budget-recover',
+            title: 'Aviso',
+            html: '<p>O pedido encontra-se exportado e faturado.</p>',
+            buttons: [{
+                icon: 'fa-check',
+                title: 'Fechar'
+            }]
+        });
+    },
     blocked: function(){
         $('input').prop('disabled',true);
         $('.panel-items button').prop('disabled',true);
@@ -316,6 +335,11 @@ Budget = {
         Budget.budget.budget_value_discount = 0;
         Budget.budget.budget_aliquot_discount = 0;
         Budget.budget.budget_value_total = Budget.budget.budget_value;
+
+        Budget.budget.document_id = null;
+        Budget.budget.document_type = null;
+        Budget.budget.document_code = null;
+        Budget.budget.document_canceled = null;
 
         $.each(Budget.budget.items,function(key,item){
             item.budget_item_value_st = 0;
@@ -755,7 +779,7 @@ Budget = {
         }).prop('disabled',Budget.budget.budget_status != 'L');
         $panel.find('button[data-action="save"]').click(function(){
             $('#button-budget-save').click();
-        }).prop('disabled',Budget.budget.budget_status == 'L');
+        }).prop('disabled',Budget.budget.budget_status != 'O');
         $panel.find('button[data-action="close"]').click(function(){
             Budget.close();
         });
@@ -801,25 +825,25 @@ Budget = {
         }).prop('disabled',!Budget.budget.budget_id);
         $panel.find('button[data-action="seller"]').click(function(){
             Seller.search();
-        }).prop('disabled',Budget.budget.budget_status == 'L');
+        }).prop('disabled',Budget.budget.budget_status != 'O');
         $panel.find('button[data-action="item"]').click(function(){
             Item.search();
-        }).prop('disabled',Budget.budget.budget_status == 'L');
+        }).prop('disabled',Budget.budget.budget_status != 'O');
         $panel.find('button[data-action="client"]').click(function(){
             Person.search();
-        }).prop('disabled',Budget.budget.budget_status == 'L');
+        }).prop('disabled',Budget.budget.budget_status != 'O');
         $panel.find('button[data-action="clientInfo"]').click(function(){
             Person.info();
-        }).prop('disabled',Budget.budget.budget_status == 'L');
+        }).prop('disabled',Budget.budget.budget_status != 'O');
         $panel.find('button[data-action="note"]').click(function(){
             Budget.note();
-        }).prop('disabled',Budget.budget.budget_status == 'L');
+        }).prop('disabled',Budget.budget.budget_status != 'O');
         $panel.find('button[data-action="discount"]').click(function(){
             Budget.discount();
-        }).prop('disabled',Budget.budget.budget_status == 'L');
+        }).prop('disabled',Budget.budget.budget_status != 'O');
         $panel.find('button[data-action="delivery"]').click(function(){
             Budget.setDelivery();
-        }).prop('disabled',Budget.budget.budget_status == 'L');
+        }).prop('disabled',Budget.budget.budget_status != 'O');
         $panel.find('[data-toggle="tooltip"]').tooltip();
     },
     validate: function(){
