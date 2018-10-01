@@ -113,7 +113,7 @@
             $counter = 0;
             $ch = curl_init("http://172.16.0.166/commercial3/service.php?token=r0zUBn6o7tbggzZQXCusGT2DUPJ4wHF3");
             curl_exec($ch);
-            echo "Email disparado\n";
+            echo date("Y-m-d H:i:s") . " Serviços disparados\n";
         }
     }
 
