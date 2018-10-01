@@ -226,17 +226,17 @@
             $users = Model::getList($commercial,(Object)[
                 "join" => 1,
                 "tables" => [
-                    "user u",
-                    "inner join user_profile up on(u.user_profile_id = up.user_profile_id)"
+                    "[User] u",
+                    "inner join [UserProfile] up on(u.user_profile_id = up.user_profile_id)"
                 ],
                 "fields" => [
                     "u.user_id",
                     "u.user_active",
                     "u.user_name",
                     "up.user_profile_name",
-                    "u.user_login"
+                    "user_login=FORMAT(u.user_login,'yyyy-MM-dd HH:mm:ss')"
                 ],
-                "filters" => [[ "u.user_trash", "s", "=", "N" ]]
+                "order" => "u.user_name"
             ]);
 
             if( !sizeof($users) ){

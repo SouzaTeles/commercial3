@@ -21,7 +21,7 @@
             $post->person = (Object)$post->person;
 
             $to[0] = (Object)[
-                "email" => "ti@dafel.com.br",
+                "email" => "alessandro@dafel.com.br",
                 "name" => "TI DAFEL"
             ];
 
@@ -126,6 +126,46 @@
             ]);
 
             Json::get($headerStatus[200], $ticket );
+
+        break;
+
+        case "getList":
+
+            if( !@$post->start_date || !@$post->end_date ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "Parâmetro POST não localizado."
+                ]);
+            }
+
+            $tickets = Model::getList($commercial,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "Ticket T",
+                    "LEFT JOIN [User] U ON(U.user_id = T.user_id)",
+                    "LEFT JOIN [User] O ON(O.user_id = T.user_id)"
+                ],
+                "fields" => [
+                    "T.ticket_id",
+                    "U.user_id",
+                    "U.user_name",
+                    "owner_id=O.user_id",
+                    "owner_name=O.user_name",
+                    "T.owner_id",
+                    "T.company_id",
+                    "T.ticket_type_id",
+                    "T.urgency_id",
+                    "T.ticket_status",
+                    "T.ticket_origin",
+                    "ticket_update=FORMAT(T.ticket_update,'yyyy-MM-dd HH:mm:ss')"
+                ],
+                "filters" => [
+                    [ "T.company_id", "i", "=", @$post->company_id ? $post->company_id : NULL ],
+                    [ "T.ticket_date", "s", "between", [$post->start_date,$post->end_date]]
+                ]
+            ]);
+
+            Json::get($headerStatus[200],$tickets);
 
         break;
 

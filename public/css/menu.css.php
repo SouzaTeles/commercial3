@@ -77,6 +77,8 @@
     border-color: <?php echo brightness($color,-20); ?>;
 }
 
+<?php } ?>
+
 #button-ticket
 {
     left: 0;
@@ -86,8 +88,6 @@
     position: fixed;
     font-size: 36px;
 }
-
-<?php } ?>
 
 @media( max-height: 768px )
 {

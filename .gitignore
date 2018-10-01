@@ -2,6 +2,8 @@
 /data/conn.json
 /log
 /doc
+/public/import.php
+/public/import2.php
 /public/files
 /public/service/del
 /public/service/log

@@ -1,5 +1,4 @@
 {
-
 	"agenda": {
 		"name": "Agenda",
 		"access": {
@@ -82,6 +81,22 @@
 			"data_type": "bool"
 		}
 	},
+	"crm": {
+		"name": "CRM",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"cube": {
+		"name": "Cube Report",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
 	"devolution": {
 		"name": "Devoluções",
 		"access": {
@@ -114,6 +129,14 @@
 			"data_type": "bool"
 		}
 	},
+	"logistics": {
+		"name": "Logística",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
 	"management": {
 		"name": "Gestão",
 		"access": {
@@ -138,8 +161,32 @@
 			"data_type": "bool"
 		}
 	},
+	"sge": {
+		"name": "SGELog",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
 	"person": {
 		"name": "Pessoas",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"production": {
+		"name": "Produção",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
+	"report": {
+		"name": "Relatórios",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -162,16 +209,6 @@
 			"data_type": "bool"
 		}
 	},
-
-
-	"logistics": {
-		"name": "Logística",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
 	"shipment": {
 		"name": "Mapa de Carregamento",
 		"access": {
@@ -185,34 +222,6 @@
 			"data_type": "bool"
 		}
 	},
-
-	"production": {
-		"name": "Produção",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-
-	"report": {
-		"name": "Relatórios",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-
-	"crm": {
-		"name": "CRM",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-
 	"target": {
 		"name": "Metas",
 		"access": {
@@ -221,16 +230,34 @@
 			"data_type": "bool"
 		}
 	},
-
-	"cube": {
-		"name": "Cube Report",
+	"ticket": {
+		"name": "Chamados",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
 			"data_type": "bool"
+		},
+		"add": {
+			"name": "Novo Chamado",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"open": {
+			"name": "Abrir Chamado",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar Chamado",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Excluir Chamado",
+			"value": "N",
+			"data_type": "bool"
 		}
 	},
-
 	"stock": {
 		"name": "Estoque",
 		"access": {
@@ -239,7 +266,6 @@
 			"data_type": "bool"
 		}
 	},
-
 	"inventory": {
 		"name": "Inventário",
 		"access": {
@@ -248,7 +274,6 @@
 			"data_type": "bool"
 		}
 	},
-
 	"rh": {
 		"name": "RH",
 		"access": {
@@ -257,7 +282,6 @@
 			"data_type": "bool"
 		}
 	},
-
 	"registration": {
 		"name": "Cadastro",
 		"access": {
@@ -266,7 +290,6 @@
 			"data_type": "bool"
 		}
 	},
-
 	"config": {
 		"name": "Configurações",
 		"access": {
@@ -331,7 +354,6 @@
 			"data_type": "bool"
 		}
 	},
-
 	"config_billing_timing": {
 		"name": "Configurações - Faturamento >> Sincronização",
 		"access": {
@@ -345,7 +367,6 @@
 			"data_type": "bool"
 		}
 	},
-
 	"config_financial": {
 		"name": "Configurações - Financeiro",
 		"access": {
@@ -377,7 +398,6 @@
 			"data_type": "bool"
 		}
 	},
-
 	"config_rh": {
 		"name": "Configurações - RH",
 		"access": {
@@ -386,7 +406,6 @@
 			"data_type": "bool"
 		}
 	},
-
 	"config_general": {
 		"name": "Configurações - Geral",
 		"access": {

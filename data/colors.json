@@ -8,5 +8,6 @@
 	"rh": "#CDDC39",
 	"production": "#F57C00",
 	"crm": "#795548",
-	"config": "#616161"
+	"config": "#616161",
+	"ticket": "#F57C00"
 }

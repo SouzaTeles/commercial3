@@ -172,6 +172,11 @@
 		"title": "Metas",
 		"parent": "sale"
 	},
+	"ticket": {
+		"key": "ticket",
+		"icon": "fa-phone-square",
+		"title": "Chamados"
+	},
 	"user": {
 		"key": "user",
 		"icon": "fa-user",
