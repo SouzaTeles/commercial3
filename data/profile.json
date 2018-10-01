@@ -8,6 +8,14 @@
 			"data_type": "bool"
 		}
 	},
+	"ticket": {
+		"name": "Chamado",
+		"access": {
+			"name": "Visualiza",
+			"value": "Y",
+			"data_type": "bool"
+		}
+	},
 	"budget": {
 		"name": "Commercial > Pedidos",
 		"access": {
