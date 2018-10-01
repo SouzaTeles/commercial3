@@ -152,13 +152,14 @@
             GLOBAL $commercial, $dafel, $config, $post, $get;
 
             $data = Model::getList($dafel,(Object)[
-                "top" => 10,
+                "top" => 100,
                 "tables" => [ "Documento D" ],
                 "fields" => [
                     "D.IdDocumento",
                     "D.NrDocumento",
                     "D.CdEspecie",
                     "D.StDocumentoCancelado",
+                    "D.IdEntidadeOrigem",
                     "IdPedidoDeVenda=(SELECT PVI_DI.IdPedidodeVenda FROM PedidoDeVendaItem_DocumentoItem PVI_DI WHERE PVI_DI.IdDocumentoItem = (SELECT TOP 1 DI.IdDocumentoItem FROM DocumentoItem DI WHERE DI.IdDocumento = D.IdDocumento))"
                 ],
                 "filters" => [[ "D.IdDocumento", "s", ">", $config->budget->last_document ]],
@@ -168,11 +169,12 @@
             if( @$data ){
                 $IdDocumento = NULL;
                 foreach ($data as $item) {
-                    if( @$item->IdPedidoDeVenda ){
+                    $IdPedidoDeVenda = @$item->IdPedidoDeVenda ? $item->IdPedidoDeVenda : $item->IdEntidadeOrigem;
+                    if( @$IdPedidoDeVenda ){
                         $budget = Model::get($commercial,(Object)[
                             "tables" => [ "Budget" ],
                             "fields" => [ "budget_id" ],
-                            "filters" => [[ "external_id", "s", "=", $item->IdPedidoDeVenda ]]
+                            "filters" => [[ "external_id", "s", "=", $IdPedidoDeVenda ]]
                         ]);
                         if( @$budget ){
                             Model::update($commercial, (Object)[
@@ -200,7 +202,10 @@
                 if( @$IdDocumento ){
                     Model::update($commercial,(Object)[
                         "table" => "Config",
-                        "fields" => [[ "config_value", "s", $IdDocumento ]],
+                        "fields" => [
+                            [ "config_value", "s", $IdDocumento ],
+                            [ "config_date", "s", date("Y-m-d H:i:s") ]
+                        ],
                         "filters" => [[ "config_id", "i", "=", 25 ]]
                     ]);
                 }
