@@ -145,6 +145,7 @@
                          ]);
                         // var_dump($productList);
                         $ret = [];
+                        $ret2=[];
                         foreach($productList as $product){
                             $ret[] = (Object)[
                               "product_id" => $product->IdProduto,
@@ -153,8 +154,15 @@
 
                             ];
                         }
+                        $ret2[] = (object)[
+                          "group_info" => (object)[
+                            "product_group_code" =>$group->CdChamada,
+                            "product_group_name" =>$group->NmGrupoProduto
+                          ],
+                          "product_info" =>$ret
+                        ];
 
-                        Json::get($httpStatus[200], $ret);
+                        Json::get($httpStatus[200], $ret2);
                   }
 
                     }
@@ -268,15 +276,84 @@
           }
         break;
         case "up":
+        //echo $post->product_id;
+        // var_dump($post);
+        // echo "[LOG]Entrou no UP/n";;
           if( !@$post->product_id){
+            // echo "entrou no if";
             headerResponse((Object)[
                   "code" => 417,
                   "message" => "Parâmetro POST não encontrado."
               ]);
           } else {
-            //var_dump();
-            base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
-            Json::get($httpStatus[200], ("foi foi foi foi foi"));
+            if(@$post->product_image64){
+              // echo "entrou no salvar imagem";
+              base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
+              Json::get($httpStatus[200], ("foi foi foi foi foi"));
+            }
+            // echo "[LOG]Entrou no IF/n";
+            if(@$post->product_EAN){
+              // echo "entrou";
+              $eanTemp = Model::get($dafel,(Object)[
+                "top" => 1,
+                "tables" => [
+                    "CodigoProduto"
+                ],
+                "fields" => [
+                    "CdChamada"
+                ],
+                "filters" => [
+                    ["IdTipoCodigoProduto", "s", "=", $EAN],
+                    ["IdProduto", "s", "=", $post->product_id]
+                ]
+              ]);
+
+              if(@$eanTemp->CdChamada){
+                //Update
+                // echo "Teste";
+                Model::update($dafel,(Object)[
+                  "top" => 1,
+                  "table" =>
+                      "CodigoProduto",
+                  "fields" => [
+                      ["CdChamada", "s", $post->product_EAN],
+                  ],
+                  "filters" => [
+                      ["IdTipoCodigoProduto", "s", "=", $EAN],
+                      ["IdProduto", "s", "=", $post->product_id]
+                  ]
+                ]);
+              }
+              else {
+                //Insert
+                $query = Model::nextCode($dafel,(Object)[
+                        "table" => "CodigoProduto",
+                        "field" => "IdCodigoProduto",
+                        "increment" => "S",
+                        "base36encode" => 1
+                    ]);
+
+                // var_dump($query);
+
+                Model::insert($dafel,(Object)[
+                  "top" => 1,
+                  "table" =>
+                      "CodigoProduto",
+                  "fields" => [
+                      ["CdChamada", "s", $post->product_EAN],
+                      ["IdCodigoProduto", "s", $query],
+                      ["IdProduto", "s", $post->product_id],
+                      ["IdTipoCodigoProduto", "s", $EAN],
+                    	["StCodigoPrincipal", "s", 'N']
+                  ],
+                ]);
+
+              }
+            }
+            Json::get($headerStatus[200], (Object)[
+                  "code" => 200,
+                  "message" => "Cadastro efetuado com sucesso."
+              ]);
           }
         break;
     }
