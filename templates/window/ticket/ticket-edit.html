@@ -13,53 +13,64 @@
             <span>Status</span><br/>------
         </div>
     </header>
-    <div class="panel panel-note">
-        <div class="panel-heading ph-green"><i class="fa fa-commenting-o"></i> Novo Parecer</div>
-        <div class="panel-body">
-            <form id="form-ticket-note">
-                <div class="col-xs-12 col-sm-3">
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select class="selectpicker show-tick" id="status" name="status" title="-- Selecione --"></select>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-3">
-                    <div class="form-group">
-                        <label for="urgency">Urgência</label>
-                        <select class="selectpicker show-tick" id="urgency" name="urgency" title="-- Selecione --"></select>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-6">
-                    <div class="form-group">
-                        <label for="owner">Responsável</label>
-                        <select data-live-search="true" data-size="10" class="selectpicker show-tick" id="owner" name="owner" title="-- Selecione --"></select>
-                    </div>
-                </div>
-                <div class="col-xs-12">
-                    <label for="file">Imagens</label>
-                    <input multiple type="file" id="file" name="file" accept=".jpg, .jpeg|images/*" class="filestyle" data-buttonText="Procurar Imagens" data-buttonName="btn-block btn-primary" data-iconName="fa fa-file-image-o" data-buttonBefore="true">
-                </div>
-                <div class="col-xs-12">
-                    <div id="images" class="images"></div>
-                </div>
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label for="ticket_note">Parecer</label>
-                        <textarea rows="6" class="form-control" id="ticket_note" name="ticket_note" placeholder="Parecer"></textarea>
-                    </div>
-                </div>
-                <div class="col-xs-12">
-                    <button class="btn btn-green pull-right">
-                        <i class="fa fa-plus"></i> Adicionar Parecer
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="notes">
+    <div class="panel-group">
         <div class="panel panel-note">
-            <div class="panel-heading ph-red"><i class="fa fa-clock-o"></i> Histórico</div>
-            <div id="notes" class="panel-body">
+            <div class="panel-heading ph-green collapsed" data-toggle="collapse" href="#collapse1">
+                <i class="fa fa-commenting-o"></i> Novo Parecer
+                <i class="fa fa-chevron-up"></i>
+                <i class="fa fa-chevron-down"></i>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+                <div class="panel-body">
+                <form id="form-ticket-note">
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="selectpicker show-tick" id="status" name="status" title="-- Selecione --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="urgency">Urgência</label>
+                            <select class="selectpicker show-tick" id="urgency" name="urgency" title="-- Selecione --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="owner">Responsável</label>
+                            <select data-live-search="true" data-size="10" class="selectpicker show-tick" id="owner" name="owner" title="-- Selecione --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <label for="file">Imagens</label>
+                        <input multiple type="file" id="file" name="file" accept=".jpg, .jpeg|images/*" class="filestyle" data-buttonText="Procurar Imagens" data-buttonName="btn-block btn-primary" data-iconName="fa fa-file-image-o" data-buttonBefore="true">
+                    </div>
+                    <div class="col-xs-12">
+                        <div id="images" class="images"></div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="ticket_note">Parecer</label>
+                            <textarea rows="6" class="form-control" id="ticket_note" name="ticket_note" placeholder="Parecer"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-green pull-right"{if $login->access->ticket->note->value == 'N'} disabled{/if}">
+                            <i class="fa fa-plus"></i> Adicionar Parecer
+                        </button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        <div class="panel panel-note notes">
+            <div class="panel-heading ph-red" data-toggle="collapse" href="#collapse2">
+                <i class="fa fa-clock-o"></i> Histórico
+                <i class="fa fa-chevron-up"></i>
+                <i class="fa fa-chevron-down"></i>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="notes" class="panel-body"></div>
             </div>
         </div>
     </div>

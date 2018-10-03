@@ -7,14 +7,6 @@
 			"data_type": "bool"
 		}
 	},
-	"ticket": {
-		"name": "Chamado",
-		"access": {
-			"name": "Visualiza",
-			"value": "Y",
-			"data_type": "bool"
-		}
-	},
 	"budget": {
 		"name": "Commercial > Pedidos",
 		"access": {
@@ -255,13 +247,8 @@
 			"value": "N",
 			"data_type": "bool"
 		},
-		"edit": {
-			"name": "Editar Chamado",
-			"value": "N",
-			"data_type": "bool"
-		},
-		"del": {
-			"name": "Excluir Chamado",
+		"note": {
+			"name": "Novo Parecer",
 			"value": "N",
 			"data_type": "bool"
 		}

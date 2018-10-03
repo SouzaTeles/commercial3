@@ -10,6 +10,9 @@
 
     $post->data = (Object)$post->data;
     $post->person = (Object)$post->person;
+    $post->person->person_id = $post->person->IdPessoa;
+    $post->person->person_code = $post->person->CdChamada;
+    $post->person->person_name = $post->person->NmPessoa;
 
     $to[0] = (Object)[
         "email" => "ti@dafel.com.br",

@@ -256,6 +256,11 @@
                 ]);
             }
 
+            $companies = [];
+            foreach( $login->companies as $company ){
+                $companies[] = $company->company_id;
+            }
+
             $tickets = Model::getList($commercial,(Object)[
                 "join" => 1,
                 "tables" => [
@@ -278,13 +283,14 @@
                     "ticket_update=FORMAT(T.ticket_update,'yyyy-MM-dd HH:mm:ss')"
                 ],
                 "filters" => [
+                    [ "T.company_id", "i", "in", $companies ],
                     [ "T.user_id", "i", "=", @$post->user_id ? $post->user_id : NULL ],
-                    [ "T.type_id", "i", "=", @$post->type_id ? $post->type_id : NULL ],
                     [ "T.owner_id", "i", "=", @$post->owner_id ? $post->owner_id : NULL ],
-                    [ "T.status_id", "s", "=", @$post->status_id ? $post->status_id : NULL ],
+                    [ "T.ticket_type_id", "i", "=", @$post->type_id ? $post->type_id : NULL ],
                     [ "T.urgency_id", "i", "=", @$post->urgency_id ? $post->urgency_id : NULL ],
                     [ "T.company_id", "i", "=", @$post->company_id ? $post->company_id : NULL ],
-                    [ "T.ticket_date", "s", "between", ["{$post->start_date} 00:00:00","{$post->end_date} 23:59:59"]]
+                    [ "T.ticket_status", "s", "=", @$post->status_id ? $post->status_id : NULL ],
+                    [ "T.ticket_date", "s", "between", ["{$post->start_date} 00:00:00","{$post->end_date} 23:59:59"]],
                 ]
             ]);
 

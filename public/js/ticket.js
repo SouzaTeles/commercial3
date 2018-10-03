@@ -116,15 +116,25 @@ Ticket = {
                 $(this).val(global.date2Br(global.today()));
             }
         }).val(global.date2Br(global.today()));
+        Ticket.table.on('draw',function(){
+            var $table = $('#table-tickets');
+            $table.find('a[disabled="false"]').unbind('click').click(function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                $('.dropdown-budget').removeClass('open');
+                Ticket[$(this).attr('data-action')]($(this).attr('data-key'),$(this).attr('data-id'));
+            });
+            $table.find('[data-toggle="tooltip"]').tooltip({container:'body'});
+        });
     },
     getList: function(){
         Ticket.data.ticket_code = $('#ticket_code').val();
         Ticket.data.company_id = $('#company_id').val();
         Ticket.data.user_id = $('#user_id').val();
         Ticket.data.owner_id = $('#owner_id').val();
-        Ticket.data.type_id = $('#type').val();
-        Ticket.data.status_id = $('#status').val();
-        Ticket.data.urgency_id = $('#urgency').val();
+        Ticket.data.type_id = $('#type_id').val();
+        Ticket.data.status_id = $('#status_id').val();
+        Ticket.data.urgency_id = $('#urgency_id').val();
         Ticket.data.start_date = global.date2Us($('#start_date').val());
         Ticket.data.end_date = global.date2Us($('#end_date').val());
         if( parseInt(Ticket.data.start_date.split('-').join('')) > parseInt(Ticket.data.end_date.split('-').join('')) ){
@@ -169,6 +179,7 @@ Ticket = {
     showList: function(){
         Ticket.table.clear();
         $.each( Ticket.tickets, function(key, ticket){
+            ticket.key = key;
             var type = Ticket.types[ticket.ticket_type_id-1];
             var urgency = Ticket.urgency[ticket.urgency_id-1];
             var status = Ticket.status[ticket.ticket_status];
@@ -192,30 +203,30 @@ Ticket = {
     },
     showTypes: function(){
         $.each( Ticket.types, function(key,type){
-            $('#type').append($('<option>',{
+            $('#type_id').append($('<option>',{
                 'value': key+1,
                 'data-content': type.name
             }));
         });
-        $('#type').selectpicker('refresh');
+        $('#type_id').selectpicker('refresh');
     },
     showStatus: function(){
         $.each( Ticket.status, function(key,status){
-            $('#status').append($('<option>',{
+            $('#status_id').append($('<option>',{
                 'value': key,
                 'data-content': '<i class="fa fa-' + status.icon + ' txt-' + status.color + '"></i> ' + status.title
             }));
         });
-        $('#status').selectpicker('refresh');
+        $('#status_id').selectpicker('refresh');
     },
     showUrgency: function(){
         $.each( Ticket.urgency, function(key,urgency){
-            $('#urgency').append($('<option>',{
+            $('#urgency_id').append($('<option>',{
                 'value': key+1,
                 'data-content': '<i class="fa fa-stop txt-' + urgency.color + '"></i> ' + urgency.name
             }));
         });
-        $('#urgency').selectpicker('refresh');
+        $('#urgency_id').selectpicker('refresh');
     },
     showUsers: function(){
         $.each( Ticket.users, function(key,user){
@@ -227,6 +238,7 @@ Ticket = {
         $('#user_id, #owner_id').selectpicker('refresh');
     },
     open: function(key,id){
+        if( global.login.access.ticket.open.value == 'N' ) return;
         global.window({
             url: global.uri.uri_public + 'window.php?module=ticket&action=edit&ticket_id=' + id + '&company_id=' + Ticket.tickets[key].company_id
         });

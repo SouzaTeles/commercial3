@@ -19,6 +19,11 @@
     list-style: none;
 }
 
+.menu ul li
+{
+    position: relative;
+}
+
 .menu ul li a
 {
     color: #fff;
@@ -91,11 +96,20 @@
 
 @media( max-height: 768px )
 {
-    .menu .sub-menu-crm {
-        top: 250px;
+    .menu ul li a
+    {
+        height: 45px;
+    }
+
+    .menu ul li a i
+    {
+        height: 45px;
+        padding: 12px;
+        font-size: 18px;
     }
 
     .menu .sub-menu-config {
-        top: 250px;
+        top: auto;
+        bottom: 100%;
     }
 }
