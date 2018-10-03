@@ -376,6 +376,7 @@ Budget = {
         });
     },
     open: function(key,id){
+        if( global.login.access.budget.open.value == 'N' ) return;
         global.window({
             url: global.uri.uri_public + 'window.php?module=budget&action=new&budget_id=' + id +'&company_id=' + Budget.company.company_id
         });

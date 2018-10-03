@@ -67,7 +67,32 @@ header .cover
 
 .panel .panel-heading
 {
+    cursor: pointer;
     font-size: 22px;
+    position: relative;
+}
+
+.panel .panel-heading .fa-chevron-up,
+.panel .panel-heading .fa-chevron-down
+{
+    top: 10px;
+    right: 10px;
+    position: absolute;
+}
+
+.panel .panel-heading .fa-chevron-down
+{
+    display: none;
+}
+
+.panel .panel-heading.collapsed .fa-chevron-up
+{
+    display: none;
+}
+
+.panel .panel-heading.collapsed .fa-chevron-down
+{
+    display: block;
 }
 
 .notes .note
