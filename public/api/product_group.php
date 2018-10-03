@@ -231,9 +231,11 @@
                              ["NmProduto", "s", "like", "%{$post->item_name}%"]
                         ]
                 ]);
-                $items = [];
+                $itens = [];
                 foreach( $products as $product ){
                     if($product){
+                      // var_dump($product->IdProduto);
+                      // var_dump($EAN);
                       $EanCode = Model::get($dafel,(Object)[
                         "tables" => [
                             "CodigoProduto CP",
@@ -247,6 +249,7 @@
                         ]
                       ]);
                     }
+                    // var_dump($EanCode);
                     $EanCode = ($EanCode ? $EanCode->CdChamada : NULL);
 
                     $productImage = getImage((Object)[
@@ -255,11 +258,12 @@
                     ]);
 
 
-                    $items[] = (Object)[
-                        "item_id" => $product->IdProduto,
-                        "item_name" => $product->NmProduto,
-                        "item_code" => $product->CdChamada,
-                        "item_EAN" => $EanCode,
+                    $itens[] = (Object)[
+                        "product_id" => $product->IdProduto,
+                        "product_name" => $product->NmProduto,
+                        "product_code" => $product->CdChamada,
+                        "product_EAN" => $EanCode,
+                        "product_image" =>@$productImage,
                         "html" => (
                             // "<div class='type-ahead-cover'></div>" .
                             "<div class='type-ahead-cover'" . (@$productImage ? (" style='background-image:url({$productImage})'") : "") . "></div>" .
@@ -270,9 +274,10 @@
 
                         )
                     ];
+                    // var_dump($itens);
                     // $EanCode-CdChamada = NULL;
                 }
-                Json::get( $headerStatus[200], $items );
+                Json::get( $headerStatus[200], $itens);
           }
         break;
         case "up":

@@ -70,7 +70,6 @@ ProductImage = {
     });
   },
   up: function(image) {
-    console.log("LOG 1")
     // var data = {};//= new FormData();
     // data = {
     //   product_id: Product.product_id,
@@ -143,6 +142,15 @@ Registration = {
         });
       };
       reader.readAsDataURL($('#file-image-product')[0].files[0]);
+      $('#file-image-product').filestyle('clear');
+    },
+
+    imageRemove: function(){
+        $('#product-image-cover').css({
+          "background-image": "none"
+        });
+      // };
+      // reader.readAsDataURL($('#file-image-product')[0].files[0]);
       $('#file-image-product').filestyle('clear');
     },
 
@@ -252,9 +260,16 @@ Registration = {
               },
               url: global.uri.uri_public_api + 'product_group.php?action=typeahead',
               callBack: function(item) {
+                product = item;
+                console.log(item);
                 $('#registration_product_name').val(item.item_name);
                 $('#registration_product_code').val(item.item_code);
                 $('#registration_product_EAN').val(item.item_EAN);
+                $('#product-image-cover').css({
+                  "background-image": "url(" + (item.item_image || "") + ")"
+                });
+                $('#file-image-product').filestyle("disabled", false);
+                $('#button-image-product-remove').filestyle("disabled", false);
               }
             });
           }, Item.typeahead.delay);
@@ -263,7 +278,6 @@ Registration = {
 
       //Verificação antes de upar a imagem
       $('#file-image-product').change(function() {
-        console.log("Qual foi?")
         Registration.modification = true;
         Registration.imagePreview();
         // //if
@@ -309,6 +323,10 @@ Registration = {
           }
         });
       })
+
+      $('#button-image-product-remove').click(function(){
+        imageRemove();
+      });
 
       $('#registration_product_EAN').blur(function(){
         if($('#registration_product_EAN').val() != Product.product_EAN)
