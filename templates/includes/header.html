@@ -182,6 +182,13 @@
                 </div>
             </li>
         {/if}
+        {if $login->access->ticket->access->value == 'Y'}
+            <li>
+                <a href="{$URI_PUBLIC}index.php?route=ticket" class="ticket">
+                    <i class="fa fa-phone-square"></i>Chamados
+                </a>
+            </li>
+        {/if}
         {if $login->access->config->access->value == 'Y'}
             <li>
                 <a href="{$URI_PUBLIC}index.php?route=config" class="config">

@@ -204,7 +204,7 @@
                         "P.CdCPF_CGC",
                         "P.TpPessoa",
                         "StATivo=ISNULL(PC.StATivo,'N')",
-                        "PCM.DtNascimento",
+                        "DtNascimento=CONVERT(VARCHAR(10),PCM.DtNascimento,126)",
                         "PCM.TpSexo",
                         "PCM.VlLimiteCredito"
                     ],

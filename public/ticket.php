@@ -50,22 +50,29 @@
     $ticket_id = (int)Model::insert($commercial,(Object)[
         "table" => "Ticket",
         "fields" => [
+            [ "user_id", "i", @$user ? $user->user_id : NULL ],
+            [ "owner_id", "i", 98 ],
+            [ "person_id", "s", $post->person->person_id ],
             [ "company_id", "i", $post->data->company_id ],
             [ "ticket_type_id", "i", $post->data->ticket_type_id ],
             [ "urgency_id", "i", $post->data->urgency_id ],
             [ "ticket_status", "s", "O" ],
             [ "ticket_origin", "s", "W" ],
+            [ "ticket_update", "s", date("Y-m-d H:i:s") ],
             [ "ticket_date", "s", date("Y-m-d H:i:s") ]
         ]
     ]);
 
     $ticket_code = substr("00000{$ticket_id}",-6);
 
-    $post->data->message = "<p>{$post->person->CdChamada} - {$post->person->NmPessoa}</p>" . $post->data->message;
     $ticket_note_id = Model::insert($commercial,(Object)[
         "table" => "TicketNote",
         "fields" => [
             [ "ticket_id", "i", $ticket_id ],
+            [ "user_id", "i", @$user ? $user->user_id : NULL ],
+            [ "owner_id", "i", 98 ],
+            [ "urgency_id", "i", $post->data->urgency_id ],
+            [ "ticket_status", "s", "O" ],
             [ "ticket_note_text", "s", removeSpecialChar($post->data->message) ],
             [ "ticket_note_date", "s", date("Y-m-d H:i:s") ]
         ]
