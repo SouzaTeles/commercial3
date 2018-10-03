@@ -3,6 +3,9 @@ $(document).ready(function(){
     Ticket.events();
     Ticket.getList();
     Ticket.getUsers();
+    Ticket.showTypes();
+    Ticket.showStatus();
+    Ticket.showUrgency();
     Ticket.showCompanies();
 
     global.mask();
@@ -46,9 +49,9 @@ Ticket = {
     table: global.table({
         selector: '#table-tickets',
         noControls: [0,8],
-        order: [[0,'desc']]
+        order: [[1,'desc']]
     }),
-    type:[
+    types:[
         {'name': 'ERP'},
         {'name': 'Commercial'},
         {'name': 'Impressora'},
@@ -57,9 +60,9 @@ Ticket = {
         {'name': 'Outros'}
     ],
     urgency: [
-        {'name': 'Pouco Urgente'},
-        {'name': 'Mediano'},
-        {'name': 'Urgente!'}
+        {'name': 'Pouco Urgente', 'color': 'blue'},
+        {'name': 'Mediano', 'color': 'orange'},
+        {'name': 'Urgente!', 'color': 'red'}
     ],
     actions: function(ticket){
         return(
@@ -91,6 +94,21 @@ Ticket = {
                 Ticket.getList();
             }
         });
+        $('#button-user-remove').click(function(){
+            $('#user_id').selectpicker('val','default');
+        });
+        $('#button-owner-remove').click(function(){
+            $('#owner_id').selectpicker('val','default');
+        });
+        $('#button-type-remove').click(function(){
+            $('#type_id').selectpicker('val','default');
+        });
+        $('#button-status-remove').click(function(){
+            $('#status_id').selectpicker('val','default');
+        });
+        $('#button-urgency-remove').click(function(){
+            $('#urgency_id').selectpicker('val','default');
+        });
         $('#start_date, #end_date').datepicker({
             format: 'dd/mm/yyyy'
         }).blur(function(){
@@ -104,8 +122,9 @@ Ticket = {
         Ticket.data.company_id = $('#company_id').val();
         Ticket.data.user_id = $('#user_id').val();
         Ticket.data.owner_id = $('#owner_id').val();
-        Ticket.data.type_id = $('#type_id').val();
-        Ticket.data.status_id = $('#status_id').val();
+        Ticket.data.type_id = $('#type').val();
+        Ticket.data.status_id = $('#status').val();
+        Ticket.data.urgency_id = $('#urgency').val();
         Ticket.data.start_date = global.date2Us($('#start_date').val());
         Ticket.data.end_date = global.date2Us($('#end_date').val());
         if( parseInt(Ticket.data.start_date.split('-').join('')) > parseInt(Ticket.data.end_date.split('-').join('')) ){
@@ -150,8 +169,8 @@ Ticket = {
     showList: function(){
         Ticket.table.clear();
         $.each( Ticket.tickets, function(key, ticket){
-            var type = Ticket.type[ticket.ticket_type_id];
-            var urgency = Ticket.type[ticket.urgency_id];
+            var type = Ticket.types[ticket.ticket_type_id-1];
+            var urgency = Ticket.urgency[ticket.urgency_id-1];
             var status = Ticket.status[ticket.ticket_status];
             var row = Ticket.table.row.add([
                 '<i data-toggle="tooltip" data-title="' + status.title + '" class="fa fa-' + status.icon + ' txt-' + status.color + '"></i>',
@@ -171,6 +190,33 @@ Ticket = {
         Ticket.table.draw();
         global.tooltip();
     },
+    showTypes: function(){
+        $.each( Ticket.types, function(key,type){
+            $('#type').append($('<option>',{
+                'value': key+1,
+                'data-content': type.name
+            }));
+        });
+        $('#type').selectpicker('refresh');
+    },
+    showStatus: function(){
+        $.each( Ticket.status, function(key,status){
+            $('#status').append($('<option>',{
+                'value': key,
+                'data-content': '<i class="fa fa-' + status.icon + ' txt-' + status.color + '"></i> ' + status.title
+            }));
+        });
+        $('#status').selectpicker('refresh');
+    },
+    showUrgency: function(){
+        $.each( Ticket.urgency, function(key,urgency){
+            $('#urgency').append($('<option>',{
+                'value': key+1,
+                'data-content': '<i class="fa fa-stop txt-' + urgency.color + '"></i> ' + urgency.name
+            }));
+        });
+        $('#urgency').selectpicker('refresh');
+    },
     showUsers: function(){
         $.each( Ticket.users, function(key,user){
             $('#user_id, #owner_id').append($('<option>',{
@@ -182,7 +228,7 @@ Ticket = {
     },
     open: function(key,id){
         global.window({
-            url: global.uri.uri_public + 'window.php?module=ticket&action=edit&ticket_id=' + id
+            url: global.uri.uri_public + 'window.php?module=ticket&action=edit&ticket_id=' + id + '&company_id=' + Ticket.tickets[key].company_id
         });
     }
 };

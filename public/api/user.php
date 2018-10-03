@@ -13,10 +13,6 @@
         ]);
     }
 
-    if( !in_array($get->action,["editPass","userPass"])){
-        checkAccess();
-    }
-
     if( $get->action == "userPass" && $login->access->user->user_pass->value == "N" ){
         headerResponse((Object)[
             "code" => 417,

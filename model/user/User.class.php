@@ -17,22 +17,29 @@
         public function __construct( $data, $gets=[] )
         {
             $this->user_id = $data->user_id;
-            $this->external_id = $data->external_id;
+            $this->external_id = @$data->external_id ? $data->external_id : NULL;
             $this->person_id = @$data->person_id ? $data->person_id : NULL;
-            $this->user_profile_id = (int)$data->user_profile_id;
+            $this->user_profile_id = @$data->user_profile_id ? (int)$data->user_profile_id : NULL;
             $this->person_id = @$data->person_id ? $data->person_id : NULL;
-            $this->user_active = $data->user_active;
-            $this->user_user = $data->user_user;
+            $this->user_active = @$data->user_active ? $data->user_active : NULL;
+            $this->user_user = @$data->user_user ? $data->user_user : NULL;
             $this->user_name = $data->user_name;
             $this->user_email = @$data->user_email ? $data->user_email : NULL;
             $this->user_login = @$data->user_login ? $data->user_login : NULL;
             $this->user_update = @$data->user_update ? $data->user_update : NULL;
-            $this->user_date = $data->user_date;
+            $this->user_date = @$data->user_date ? $data->user_date : NULL;
 
             $this->image = getImage((Object)[
                 "image_id" => $data->user_id,
                 "image_dir" => "user"
             ]);
+
+            if (!@$this->image && @$data->person_id ){
+                $this->image = getImage((Object)[
+                    "image_id" => $data->person_id,
+                    "image_dir" => "person"
+                ]);
+            }
 
             GLOBAL $conn, $commercial, $dafel;
 
