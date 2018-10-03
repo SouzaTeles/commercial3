@@ -70,6 +70,11 @@ ul::-webkit-scrollbar-thumb
     border-left: 60px solid #333;
 }
 
+.container > .panel
+{
+    margin-bottom: 0;
+}
+
 .overlay
 {
     width: 100%;
@@ -140,4 +145,34 @@ ul.typeahead
 {
     overflow-y: auto;
     max-height: 220px;
+}
+
+.panel .panel-heading
+{
+    cursor: pointer;
+    font-size: 22px;
+    position: relative;
+}
+
+.panel .panel-heading .fa-chevron-up,
+.panel .panel-heading .fa-chevron-down
+{
+    top: 10px;
+    right: 10px;
+    position: absolute;
+}
+
+.panel .panel-heading .fa-chevron-down
+{
+    display: none;
+}
+
+.panel .panel-heading.collapsed .fa-chevron-up
+{
+    display: none;
+}
+
+.panel .panel-heading.collapsed .fa-chevron-down
+{
+    display: block;
 }

@@ -17,9 +17,14 @@
 
         case "getList":
 
-            $prices = Model::getList( $commercial, (Object)[
-                "tables" => [ "price" ],
-                "order" => "price_code"
+            $prices = Model::getList( $dafel, (Object)[
+                "tables" => [ "Preco" ],
+                "fields" => [
+                    "price_id=IdPreco",
+                    "price_code=CdPreco",
+                    "price_name=NmPreco"
+                ],
+                "order" => "CdPreco"
             ]);
 
             Json::get( $headerStatus[200], $prices );

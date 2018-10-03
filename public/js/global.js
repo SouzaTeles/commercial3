@@ -10,9 +10,9 @@ Commercial = {
             e.preventDefault();
             e.stopPropagation();
             if( $(this).attr('href') == '#change-pass' ){
-                Commercial.userPass();
+                Commercial.pass();
             } else if( $(this).attr('href') == '#logout' ){
-                Commercial.userLogout();
+                Commercial.logout();
             }
         });
         $('#button-ticket').click(function(){
@@ -22,7 +22,7 @@ Commercial = {
             });
         });
     },
-    userLogout: function(){
+    logout: function(){
         global.modal({
             icon: 'fa-question-circle-o',
             title: 'Confirmação',
@@ -50,14 +50,14 @@ Commercial = {
             }]
         });
     },
-    userPass: function(){
+    pass: function(){
         global.post({
-            url: global.uri.uri_public + 'api/modal.php?modal=modal-user-pass',
+            url: global.uri.uri_public + 'api/modal.php?modal=modal-pass',
             dataType: 'html'
         },function(html){
             global.modal({
-                id: 'modal-user-pass',
-                class: 'modal-user-pass',
+                id: 'modal-pass',
+                class: 'modal-pass',
                 icon: 'fa-lock',
                 title: 'Alteração de senha',
                 html: html,
@@ -69,7 +69,7 @@ Commercial = {
                     icon: 'fa-pencil',
                     title: 'Atualizar',
                     unclose: true,
-                    id: 'button-user-pass-change'
+                    id: 'button-pass-change'
                 }]
             });
         });

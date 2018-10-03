@@ -2,20 +2,14 @@
  
 	include "../../config/start.php";
 
+    GLOBAL $commercial, $site, $login, $headerStatus, $get, $post;
+
     if( !@$get->action ){
         headerResponse((Object)[
             "code" => 417,
             "message" => "Parâmetro POST não informado."
         ]);
     }
-
-    checkAccess();
-
-    if( in_array($get->action,["del","edit","insert"]) ){
-        postLog();
-    }
-
-    GLOBAL $commercial, $site, $login, $headerStatus;
 
 	switch( $get->action )
 	{
@@ -143,30 +137,14 @@
 		case "getList":
 
             $profiles = Model::getList($commercial,(Object)[
-                "join" => 1,
-                "tables" => [
-                    "user_profile up"
-                ],
+                "tables" => ["UserProfile"],
                 "fields" => [
-                    "up.user_profile_id",
-                    "up.user_profile_name",
-                    "up.user_profile_date",
-                    "(select count(*) from user u where u.user_profile_id = up.user_profile_id) as user_quantity"
+                    "user_profile_id",
+                    "user_profile_name",
+                    "user_profile_date",
+                    "user_profile_date_br=user_profile_date",
                 ]
             ]);
-
-            if( !sizeof($profiles) ){
-                headerResponse((Object)[
-                    "code" => 404,
-                    "message" => "Nenhum perfil encontrado."
-                ]);
-            }
-
-            foreach( $profiles as $profile ){
-                $profile->image_id = @$profile->image_id ? $profile->image_id : NULL;
-                $profile->client_name = @$profile->client_name ? $profile->client_name : NULL;
-                $profile->user_profile_date_br = date_format(date_create($profile->user_profile_date),"d/m/Y H:i:s");
-            }
 
             Json::get( $headerStatus[200], $profiles );
 

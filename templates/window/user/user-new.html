@@ -1,0 +1,212 @@
+<header class="box-shadow">
+    Novo Usuário
+</header>
+<div class="panel-group">
+    <div class="panel panel-user">
+        <div class="panel-heading ph-blue" data-toggle="collapse" href="#collapse1">
+            <i class="fa fa-id-badge"></i> Dados do Usuário
+            <i class="fa fa-chevron-up"></i>
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group form-group-file">
+                        <label for="file">Foto</label>
+                        <div id="user-image-cover" class="cover">
+                            <input type="file" id="file" accept=".jpg, .jpeg, .png|images/*" class="filestyle" data-buttonText="Procurar" data-buttonName="btn-block btn-green" data-iconName="fa fa-file-image-o" data-input="false">
+                            <button disabled type="button" id="button-image-remove" class="btn btn-red"><i class="fa fa-times"></i> Remover</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="external_id">Externo</label>
+                            <select data-size="8" data-live-search="true" class="selectpicker show-tick" id="external_id" name="external_id" title="-- Selecione o Usuário --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="person_id">Pessoa</label>
+                            <select data-size="8" data-live-search="true" class="selectpicker show-tick" id="person_id" name="person_id" title="-- Selecione a Pessoa --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="user_active">Ativo</label>
+                            <input type="checkbox" class="form-control" id="user_active" name="user_active" checked />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-9">
+                        <div class="form-group">
+                            <label for="user_name">Nome</label>
+                            <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Nome"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="user_profile_id">Perfil</label>
+                            <select class="selectpicker show-tick" id="user_profile_id" name="user_profile_id" title="-- Selecione o Perfil --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="user_email">E-mail</label>
+                            <input type="email" class="form-control" id="user_email" name="user_email" placeholder="E-mail"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="form-group">
+                            <label for="user_user">Login</label>
+                            <input type="text" class="form-control" id="user_user" name="user_user" placeholder="Login"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="form-group">
+                            <label for="user_pass">Senha</label>
+                            <input type="password" class="form-control" id="user_pass" name="user_pass" placeholder="Senha"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="form-group">
+                            <label for="user_pass_confirm">Confirme a Senha</label>
+                            <input type="password" class="form-control" id="user_pass_confirm" name="user_pass_confirm" placeholder="Confirme a Senha"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-company">
+        <div class="panel-heading ph-orange collapsed" data-toggle="collapse" href="#collapse2">
+            <i class="fa fa-lock"></i> Permissões
+            <i class="fa fa-chevron-up"></i>
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="max_discount">Desconto máximo permitido</label>
+                        <div class="input-group">
+                            <input value="0,00" type="text" class="form-control" id="max_discount" name="max_discount" data-to-mask="percent" />
+                            <span class="btn input-group-addon">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="credit_authorization">Autoriza Crédito</label>
+                        <input type="checkbox" class="form-control" id="credit_authorization" name="credit_authorization" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="only_session">Sessão única</label>
+                        <input type="checkbox" class="form-control" id="only_session" name="only_session" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="mobile_access">Commercial Lite</label>
+                        <input type="checkbox" class="form-control" id="mobile_access" name="mobile_access" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="mobile_unlock">Desbloqueia Aparelho</label>
+                        <input type="checkbox" class="form-control" id="mobile_unlock" name="mobile_unlock" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="budget_delivery">Informações de Entrega</label>
+                        <input type="checkbox" class="form-control" id="budget_delivery" name="budget_delivery" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="audit">Autoria</label>
+                        <input type="checkbox" class="form-control" id="audit" name="audit" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-company">
+        <div class="panel-heading ph-red collapsed" data-toggle="collapse" href="#collapse3">
+            <i class="fa fa-building-o"></i> Empresas
+            <i class="fa fa-chevron-up"></i>
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="companies">Empresas</label>
+                        <div class="input-group">
+                            <select data-size="10" class="selectpicker show-tick" id="companies" name="companies" title="-- Selecione as Empresas --"></select>
+                            <span id="button-company-add" class="btn input-group-addon"><i class="fa fa-plus"></i></span>
+                        </div>
+                    </div>
+                    <table id="table-companies" class="table-custom no-select">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Empresa</th>
+                                <th>Principal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-price">
+        <div class="panel-heading ph-brown collapsed" data-toggle="collapse" href="#collapse4">
+            <i class="fa fa-usd"></i> Tabelas de Preço
+            <i class="fa fa-chevron-up"></i>
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div id="collapse4" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="prices">Tabelas de Preço</label>
+                        <div class="input-group">
+                            <select data-size="8" data-live-search="true" class="selectpicker show-tick" id="prices" name="prices" title="-- Selecione os Preços --"></select>
+                            <span id="button-price-add" class="btn input-group-addon"><i class="fa fa-plus"></i></span>
+                        </div>
+                    </div>
+                    <table id="table-prices" class="table-custom no-select">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Tabela</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="panel-footer">
+    <button type="button" id="button-cancel" class="btn btn-lg btn-red">
+        <i class="fa fa-angle-double-left"></i> Cancelar
+    </button>
+    {if !empty($smarty.get.user_id)}
+        <button type="submit" id="button-edit" class="btn btn-lg btn-blue pull-right">
+            <i class="fa fa-floppy-o"></i> Atualizar
+        </button>
+    {else}
+        <button type="submit" id="button-add" class="btn btn-lg btn-green pull-right">
+            <i class="fa fa-plus"></i> Cadastrar
+        </button>
+    {/if}
+</footer>

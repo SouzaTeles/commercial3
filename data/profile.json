@@ -310,8 +310,8 @@
 			"value": "N",
 			"data_type": "bool"
 		},
-		"del": {
-			"name": "Excluir",
+		"audit": {
+			"name": "Auditoria",
 			"value": "N",
 			"data_type": "bool"
 		}
