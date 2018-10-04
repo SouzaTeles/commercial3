@@ -16,7 +16,7 @@
 
     switch( $get->action ) {
 
-        case "up":
+        case "add":
 
             if (!@$post->image_id || !@$post->image_dir) {
                 headerResponse((Object)[
@@ -42,17 +42,16 @@
             $images = [];
             $success = 0;
             $quantity = sizeof($_FILES['file']['tmp_name']);
-            $path = "files/{$post->image_dir}/";
             $rand = rand(1000,9999);
 
             foreach ($_FILES['file']['tmp_name'] as $key => $tmp) {
 
                 $name = explode(".", $_FILES['file']['name'][$key]);
                 $file = "{$post->image_id}." . end($name);
-                if (File::upload($tmp, PATH_PUBLIC . "{$path}{$file}")) {
+                if( File::upload( $tmp, PATH_FILES . "{$post->image_dir}/{$file}")) {
                     $success++;
                     $images[] = (Object)[
-                        "image" => URI_PUBLIC . "{$path}{$file}?{$rand}"
+                        "image" => URI_PUBLIC . "files/{$post->image_dir}/{$file}?{$rand}"
                     ];
                 }
             }

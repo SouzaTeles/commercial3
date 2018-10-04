@@ -1,19 +1,19 @@
 var user_id = global.url.searchParams.get('user_id');
 
 $(document).ready(function(){
+    User.events();
+    Image.events();
+    Company.events();
+    Price.events();
+    User.getExternal();
+    User.getProfile();
+    User.getPeople();
     if( !!user_id ){
         User.get(user_id);
     } else {
-        User.init();
-        Image.events();
-        User.events();
-        User.getPeople();
-        User.getProfile();
-        User.getExternal();
-        Company.events();
         Company.getList();
-        Price.events();
         Price.getList();
+        User.init();
     }
     global.mask();
     global.unLoader();
@@ -27,16 +27,16 @@ Image = {
         data.append('image_dir','user');
         data.append('file[]',$('#file')[0].files[0]);
         global.post({
-            url: global.uri.uri_public_api + 'user.php?action=addImage',
+            url: global.uri.uri_public_api + 'image.php?action=add',
             data: data,
             cache: false,
             dataType: 'json',
             contentType: false,
             processData: false
         },function(data){
-            User.user.image = data.images.image;
+            User.user.image = data.images[0].image;
             Image.show();
-            $('#button-image-user-remove').prop('disabled',false);
+            $('#button-image-remove').prop('disabled',false);
         });
         $('#file').filestyle('clear');
     },
@@ -61,13 +61,14 @@ Image = {
                     global.post({
                         url: global.uri.uri_public_api + 'image.php?action=del',
                         data: {
-                            image_id: User.user.user_id,
-                            image_dir: 'user'
-                        }
+                            image_dir: 'user',
+                            image_id: User.user.user_id
+                        },
+                        dataType: 'json'
                     },function(){
-                        $('#button-image-user-remove').prop('disabled',true);
+                        $('#button-image-remove').prop('disabled',true);
                         User.user.image = null;
-                        UserImage.show();
+                        Image.show();
                     });
                 }
             }]
@@ -75,8 +76,8 @@ Image = {
     },
     events: function(){
         $('#file').change(function(){
-            if( User.user.user_id ){
-                Image.up();
+            if( !!User.user.user_id ){
+                Image.add();
             } else {
                 Image.preview();
             }
@@ -94,7 +95,7 @@ Image = {
         reader.readAsDataURL($('#file')[0].files[0]);
     },
     show: function(){
-        $('#user-image-cover').css({
+        $('header .user-image, #user-image-cover').css({
             'background-image': 'url(' + (User.user.image || '../../../commercial3/images/empty-image.png') + ')'
         });
         $('#button-image-remove').prop('disabled',!User.user.image);
@@ -113,6 +114,7 @@ User = {
             data: User.user,
             dataType: 'json'
         }, function(data){
+            if( !!window.opener ) window.opener.User.getList();
             global.modal({
                 icon: 'fa-info',
                 title: 'Informação',
@@ -132,22 +134,55 @@ User = {
             });
         });
     },
+    access: function(){
+        var access = User.user.user_access;
+        $('#max_discount').val(global.float2Br(access.max_discount));
+        $('#credit_authorization').bootstrapToggle(access.credit_authorization == 'Y' ? 'on' : 'off');
+        $('#only_session').bootstrapToggle(access.only_session == 'Y' ? 'on' : 'off');
+        $('#mobile_access').bootstrapToggle(access.mobile_access == 'Y' ? 'on' : 'off');
+        $('#mobile_unlock').bootstrapToggle(access.mobile_unlock == 'Y' ? 'on' : 'off');
+        $('#budget_delivery').bootstrapToggle(access.budget_delivery == 'Y' ? 'on' : 'off');
+        $('#audit').bootstrapToggle(access.audit == 'Y' ? 'on' : 'off');
+    },
     data2form: function(){
-        $('#user_id').selectpicker('val',User.user.user_id).prop('disabled',!!User.user.user_id).selectpicker('refresh');
-        $('#user_person_code').val(User.user.person ? User.user.person.person_code : '').attr('data-value',(User.user.person ? User.user.person.person_code : ''));
-        $('#user_person_name').val(User.user.person ? User.user.person.person_name : '').attr('data-value',(User.user.person ? User.user.person.person_name : ''));
+        $('#external_id').val(User.user.external_id).selectpicker('refresh');
+        $('#person_id').val(User.user.person_id).selectpicker('refresh');
         $('#user_active').bootstrapToggle(User.user.user_active == 'Y' ? 'on' : 'off');
         $('#user_name').val(User.user.user_name);
-        $('#person_id').selectpicker('val',User.user.person_id);
-        $('#user_profile_id').selectpicker('val',User.user.user_profile_id);
+        $('header .user-name').text(User.user.user_name);
+        $('#user_profile_id').val(User.user.user_profile_id).selectpicker('refresh');
         $('#user_email').val(User.user.user_email);
         $('#user_user').val(User.user.user_user).prop('readonly',true);
         $('#user_pass').val(User.user.user_id ? '******' : '').prop('readonly',true);
         $('#user_pass_confirm').val(User.user.user_id ? '******' : '').prop('readonly',true);
         $('#button-image-user-remove').prop('disabled',!User.user.image);
-        Company.showSelected();
-        Price.showSelected();
+        User.access();
         Image.show();
+    },
+    edit: function(){
+        if( !!window.opener ) window.opener.User.getList();
+        global.post({
+            url: global.uri.uri_public_api + 'user.php?action=edit',
+            data: User.user,
+            dataType: 'json'
+        }, function(data){
+            global.modal({
+                icon: 'fa-info',
+                title: 'Informação',
+                html: '<p>' + data.message + '</p>',
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Ok'
+                }],
+                hidden: function(){
+                    if( !!window.opener ){
+                        window.close();
+                    } else {
+                        location.reload();
+                    }
+                }
+            });
+        });
     },
     events: function(){
         $('#button-add').click(function(e){
@@ -161,6 +196,9 @@ User = {
             if( User.validate() ) {
                 User.edit();
             }
+        });
+        $('#user_name').on('keyup',function(){
+            $('header .user-name').text($(this).val());
         });
         global.toggle();
     },
@@ -183,6 +221,23 @@ User = {
             {'name': 'budget_delivery', 'value': $('#budget_delivery').prop('checked') ? 'Y' : 'N', 'type': 'bool' },
             {'name': 'audit', 'value': $('#audit').prop('checked') ? 'Y' : 'N', 'type': 'bool' }
         ];
+    },
+    get: function(user_id){
+        global.post({
+            url: global.uri.uri_public_api + 'user.php?action=get',
+            data: {
+                user_id: user_id,
+                get_user_price: 1,
+                get_user_access: 1,
+                get_user_company: 1
+            },
+            dataType: 'json'
+        },function(user){
+            User.user = user;
+            User.data2form();
+            Company.getList();
+            Price.getList();
+        });
     },
     getExternal: function(){
         global.post({
@@ -315,7 +370,6 @@ Company = {
         var company = Company.companies[key-1];
         User.user.companies.push({
             company_id: company.company_id,
-            company_code: company.company_code,
             company_short_name: company.company_short_name,
             user_company_main: 'N'
         });
@@ -373,11 +427,13 @@ Company = {
             }));
         });
         $('#companies').selectpicker('refresh');
+        if( !!user_id ) Company.showSelected();
     },
     showSelected: function(){
         Company.table.clear();
         $('#user_company_id option').prop('disabled',false);
         $.each( User.user.companies, function( key, company ){
+            company.company_code = ('0'+company.company_id).slice(-2);
             Company.table.row.add([
                 company.company_code,
                 company.company_short_name,
@@ -464,6 +520,7 @@ Price = {
             }));
         });
         $('#prices').selectpicker('refresh');
+        if( !!user_id ) Price.showSelected();
     },
     showSelected: function(){
         Price.table.clear();

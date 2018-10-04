@@ -120,19 +120,19 @@
             if( @$gets["get_user_price"] || @$_POST["get_user_price"] ){
                 $this->prices = Model::getList($commercial,(Object)[
                     "tables" => [
-                        "{$conn->commercial->table}.dbo.UserPrice up",
-                        "{$conn->dafel->table}.dbo.Preco p"
+                        "{$conn->commercial->table}.dbo.UserPrice UP",
+                        "{$conn->dafel->table}.dbo.Preco P"
                     ],
                     "fields" => [
-                        "up.price_id",
-                        "price_code=p.CdPreco",
-                        "price_name=p.NmPreco"
+                        "UP.price_id",
+                        "price_code=P.CdPreco",
+                        "price_name=P.NmPreco"
                     ],
                     "filters" => [
-                        [ "up.price_id = p.IdPreco" ],
-                        [ "up.user_id", "s", "=", $data->user_id ]
+                        [ "UP.price_id = P.IdPreco" ],
+                        [ "UP.user_id", "s", "=", $data->user_id ]
                     ],
-                    "order" => "p.CdPreco ASC"
+                    "order" => "P.CdPreco ASC"
                 ]);
             }
 
