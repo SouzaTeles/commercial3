@@ -11,15 +11,7 @@ Item = {
       timer: 0
     },
 },
-Product = {
-  // data2form: function() {
-  //   // $('#product_id').selectpicker('val', User.user.user_id).prop('disabled', !!User.user.user_id).selectpicker('refresh');
-  //   // $('#file-image-product').filestyle('disabled', !Product.product_id);
-  //   // $('#button-image-user-remove').prop('disabled', !User.user.image);
-  //   Product.showUserCompany();
-  //   Product.showUserPrice();
-  // }
-},
+Product = {},
 ProductImage = {
   del: function() {
     global.modal({
@@ -83,7 +75,7 @@ ProductImage = {
     //
     // data = {
     //   //product_id: Product.product_id,
-    //   product_image64: Registration.imagem
+    product_image64 = image;
     // };
     console.log("LOG 2");
     // console.log(data);
@@ -92,7 +84,9 @@ ProductImage = {
       url: global.uri.uri_public_api + 'product_group.php?action=up',
       data: {
         product_id: Product.product_id,
-        product_EAN: Product.product_EAN
+        product_EAN: Product.product_EAN,
+        product_image64: product_image64,
+        product_img_act: Registration.img_act
       },
       //cache: false,
       dataType: 'json'
@@ -119,6 +113,7 @@ ProductImage = {
 };
 Registration = {
     //Utiliza-se false para não houve alterações e true quando algo for alterado
+    img_act: 'N',
     modification : false,
     product: {},
     table: global.table({
@@ -152,6 +147,8 @@ Registration = {
       // };
       // reader.readAsDataURL($('#file-image-product')[0].files[0]);
       $('#file-image-product').filestyle('clear');
+      $('#product-image-cover').prop("disabled", true);
+      Registration.img_act = 'R';
     },
 
     events: function() {
@@ -260,16 +257,10 @@ Registration = {
               },
               url: global.uri.uri_public_api + 'product_group.php?action=typeahead',
               callBack: function(item) {
-                product = item;
                 console.log(item);
-                $('#registration_product_name').val(item.item_name);
-                $('#registration_product_code').val(item.item_code);
-                $('#registration_product_EAN').val(item.item_EAN);
-                $('#product-image-cover').css({
-                  "background-image": "url(" + (item.item_image || "") + ")"
-                });
-                $('#file-image-product').filestyle("disabled", false);
-                $('#button-image-product-remove').filestyle("disabled", false);
+                Product = item;
+                console.log(item);
+                Registration.showInfo();
               }
             });
           }, Item.typeahead.delay);
@@ -279,6 +270,7 @@ Registration = {
       //Verificação antes de upar a imagem
       $('#file-image-product').change(function() {
         Registration.modification = true;
+        Registration.img_act = 'I';
         Registration.imagePreview();
         // //if
         // if(Product.product_image){
@@ -325,7 +317,7 @@ Registration = {
       })
 
       $('#button-image-product-remove').click(function(){
-        imageRemove();
+        Registration.imageRemove();
       });
 
       $('#registration_product_EAN').blur(function(){
@@ -390,23 +382,25 @@ Registration = {
         },
         dataType: "json"
       }, function(data) {
-        console.log(data);
+        // console.log(data);
         Product = data;
-
-
-        $('#registration_product_name').val(data.product_name);
-        $('#registration_product_code').val(data.product_code);
-        $('#registration_product_EAN').val(data.product_EAN);
-        $('#product-image-cover').css({
-          "background-image": "url(" + (data.product_image || "") + ")"
-        });
-        $('#file-image-product').filestyle("disabled", false);
-
-        //  $('#registration_product_code').val(data.product_code);
-        /*  $('#picplace').css({
-              "background-image": "url(" + (data.product_image || "") +  ")"
-          });*/
+        console.log(Product);
+        Registration.showInfo();
       });
+    },
+
+    showInfo: function(){
+      $('#registration_product_name').val(Product.product_name);
+      $('#registration_product_code').val(Product.product_code);
+      $('#registration_product_EAN').val(Product.product_EAN);
+      $('#product-image-cover').css({
+        "background-image": "url(" + (Product.product_image || "") + ")"
+      });
+      $('#file-image-product').filestyle("disabled", false);
+
+      if(Product.product_image){
+        $('#button-image-product-remove').prop("disabled", false);
+      }
     },
 
     EanValidate: function(EAN) {
