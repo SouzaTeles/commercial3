@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
     include "../../config/start.php";
 
@@ -44,7 +44,7 @@
                     "tables" => [ "PessoaEndereco_TipoContato" ],
                     "fields" => [ "DsContato" ],
                     "filters" => [
-                        [ "person_id", "s", "=", $post->person->person_id ],
+                        [ "IdPessoa", "s", "=", $post->person->person_id ],
                         [ "IdTipoContato", "s", "=", "0000000004" ]
                     ]
                 ]);
