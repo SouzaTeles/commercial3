@@ -29,8 +29,27 @@ User = {
             '</div>'
         );
     },
-    audit: function(){
-
+    audit: function(key,user_id){
+        global.post({
+            url: global.uri.uri_public + 'api/modal.php?modal=modal-audit',
+            data: {
+                log_script: 'user',
+                log_parent_id: user_id
+            },
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'big',
+                id: 'modal-audit',
+                class: 'modal-audit',
+                icon: 'fa-shield',
+                title: 'Auditoria do Usuário ' + User.users[key].user_name,
+                html: html,
+                buttons: [{
+                    title: 'Fechar'
+                }]
+            });
+        });
     },
     events: function(){
         $('#user_search').keyup(function(){
@@ -118,6 +137,7 @@ User = {
             e.stopPropagation();
             User.pass($(this).attr('data-key'),$(this).attr('data-id'));
         });
+        $('footer div').html('<i class="fa fa-users"></i> ' + User.users.length + ' Usuários');
         global.tooltip();
     },
     edit: function(key,user_id){

@@ -1,5 +1,11 @@
-<header class="box-shadow">
-    Novo Usuário
+<header class="box-shadow {if empty($smarty.get.user_id)}new{else}edit{/if}">
+    {if empty($smarty.get.user_id)}
+    <div class="title"><i class="fa fa-plus"></i> Novo Usuário</div>
+    {else}
+        <div class="title"><i class="fa fa-edit"></i> Editar Usuário</div>
+    {/if}
+    <div class="user-image"></div>
+    <div class="user-name"></div>
 </header>
 <div class="panel-group">
     <div class="panel panel-user">

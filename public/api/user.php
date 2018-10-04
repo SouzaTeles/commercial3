@@ -4,7 +4,7 @@
 
     Session::checkApi();
 
-    GLOBAL $commercial, $dafel, $smarty, $login, $dimensions, $headerStatus, $get, $post;
+    GLOBAL $conn, $commercial, $dafel, $smarty, $login, $dimensions, $headerStatus, $get, $post;
 
     switch( $get->action ){
 
@@ -19,11 +19,19 @@
 
             $user = Model::get($commercial,(Object)[
                 "class" => "User",
-                "tables" => [ "user" ],
-                "filters" => [
-                    [ "user_trash", "s", "=", "N" ],
-                    [ "user_id", "s", "=", $post->user_id ]
-                ]
+                "tables" => [ "[User]" ],
+                "fields" => [
+                    "user_id",
+                    "external_id",
+                    "person_id",
+                    "user_profile_id",
+                    "user_user",
+                    "user_pass",
+                    "user_name",
+                    "user_email",
+                    "user_active"
+                ],
+                "filters" => [[ "user_id", "i", "=", $post->user_id ]]
             ]);
 
             if( !@$user ){
@@ -54,53 +62,78 @@
             }
 
             Model::update($commercial,(Object)[
-                "table" => "user",
+                "table" => "[User]",
                 "fields" => [
-                    [ "person_id", "s", @$post->person_id ? $post->person_id : NULL ],
+                    [ "external_id", "s", $post->external_id ],
+                    [ "person_id", "s", $post->person_id ],
                     [ "user_profile_id", "i", $post->user_profile_id ],
-                    [ "user_active", "s", $post->user_active ],
                     [ "user_name", "s", $post->user_name ],
-                    [ "user_email", "s", $post->user_email ]
+                    [ "user_email", "s", $post->user_email ],
+                    [ "user_active", "s", $post->user_active ],
+                    [ "user_update", "s", date("Y-m-d H:i:s") ]
                 ],
                 "filters" => [[ "user_id", "s", "=", $post->user_id ]]
             ]);
 
+            foreach( $post->access as $access ){
+                $access = (Object)$access;
+                Model::update($commercial,(Object)[
+                    "table" => "[UserAccess]",
+                    "fields" => [
+                        [ "user_access_value", "s", $access->value ],
+                        [ "user_access_date", "s", date("Y-m-d H:i:s") ]
+                    ],
+                    "filters" => [
+                        [ "user_id", "i", "=", $post->user_id ],
+                        [ "user_access_name", "s", "=", $access->name ]
+                    ]
+                ]);
+            }
+
             Model::delete($commercial,(Object)[
-                "table" => "user_company",
-                "filters" => [[ "user_id", "s", "=", $post->user_id ]]
+                "top" => "20",
+                "table" => "[UserCompany]",
+                "filters" => [[ "user_id", "i", "=", $post->user_id ]]
             ]);
 
             if( @$post->companies ){
                 foreach( $post->companies as $company ){
                     $company = (Object)$company;
                     Model::insert($commercial,(Object)[
-                        "table" => "user_company",
+                        "table" => "[UserCompany]",
                         "fields" => [
                             [ "user_id", "s", $post->user_id ],
                             [ "company_id", "i", $company->company_id ],
                             [ "user_company_main", "s", $company->user_company_main ],
+                            [ "user_company_date", "s", date("Y-m-d H:i:s") ]
                         ]
                     ]);
                 }
             }
 
             Model::delete($commercial,(Object)[
-                "table" => "user_price",
-                "filters" => [[ "user_id", "s", "=", $post->user_id ]]
+                "top" => "20",
+                "table" => "[UserPrice]",
+                "filters" => [[ "user_id", "i", "=", $post->user_id ]]
             ]);
 
             if( @$post->prices ){
                 foreach( $post->prices as $price ){
                     $price = (Object)$price;
                     Model::insert($commercial,(Object)[
-                        "table" => "user_price",
+                        "table" => "[UserPrice]",
                         "fields" => [
                             [ "user_id", "s", $post->user_id ],
-                            [ "price_id", "s", $price->price_id ]
+                            [ "price_id", "s", $price->price_id ],
+                            [ "user_price_date", "s", date("Y-m-d H:i:s") ]
                         ]
                     ]);
                 }
             }
+
+            postLog((Object)[
+                "parent_id" => $post->user_id
+            ]);
 
             Json::get( $headerStatus[200], (Object)[
                 "message" => "Usuário atualizado com sucesso."

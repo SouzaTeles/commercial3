@@ -13,6 +13,41 @@ header
     background-color: #fff;
 }
 
+header.new
+{
+    float: left;
+    border-left: 10px solid <?php echo $colors->hex->palette["green"]; ?>
+}
+
+header.edit
+{
+    float: left;
+    border-left: 10px solid <?php echo $colors->hex->palette["blue"]; ?>
+}
+
+header .title
+{
+    float: left;
+}
+
+header .user-image
+{
+    width: 40px;
+    float: right;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    margin: -5px 10px -4px;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../../../images/empty-image.png');
+}
+
+header .user-name
+{
+    float: right;
+}
+
 .panel-group
 {
     width: 960px;

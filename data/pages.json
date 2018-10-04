@@ -149,6 +149,12 @@
 		"title": "Assistente SGE",
 		"parent": "stock"
 	},
+	"slide": {
+		"key": "slide",
+		"icon": "fa-picture-o",
+		"title": "Slides",
+		"parent": "config"
+	},
 	"shipment": {
 		"key": "sale",
 		"icon": "fa-map-o",
