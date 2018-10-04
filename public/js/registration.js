@@ -62,24 +62,8 @@ ProductImage = {
     });
   },
   up: function(image) {
-    // var data = {};//= new FormData();
-    // data = {
-    //   product_id: Product.product_id,
-    //   product_image64: Registration.imagem
-    // }
-    // if(Product.product_EAN){
-    //   data.product_EAN = Product.product_EAN;
-    //}
-    // data.append('file[]', $('#file-image-product')[0].files[0]);
-    // data.append('file[]', image);
-    //
-    // data = {
-    //   //product_id: Product.product_id,
     product_image64 = image;
-    // };
     console.log("LOG 2");
-    // console.log(data);
-    //console.log(data.product_id);
     global.post({
       url: global.uri.uri_public_api + 'product_group.php?action=up',
       data: {
@@ -88,12 +72,12 @@ ProductImage = {
         product_image64: product_image64,
         product_img_act: Registration.img_act
       },
-      //cache: false,
       dataType: 'json'
-      // contentType: false,
-      // processData: false
     }, function(data) {
-      console.log("response");
+      if(data.code == 200){
+        Registration.modification = false;
+        Registration.img_act = 'N';
+      }
       console.log(data);
       global.modal({
         icon: 'fa-warning',
@@ -107,14 +91,17 @@ ProductImage = {
           }
         }]
       });
+
     });
     $('#file-image-product').filestyle('clear');
   }
 };
 Registration = {
-    //Utiliza-se false para não houve alterações e true quando algo for alterado
+    //Flag de alteração de Imagem (N)othink, (R)emove, (I)nsert
     img_act: 'N',
+    //Utiliza-se false para não houve alterações e true quando algo for alterado
     modification : false,
+
     product: {},
     table: global.table({
       selector: '#table-products',
@@ -127,6 +114,7 @@ Registration = {
       ]
     }),
     imagem: {},
+
     imagePreview: function() {
       var reader = new FileReader();
       reader.onload = function(e) {
@@ -138,17 +126,15 @@ Registration = {
       };
       reader.readAsDataURL($('#file-image-product')[0].files[0]);
       $('#file-image-product').filestyle('clear');
+      $('#button-image-product-remove').prop("disabled", false);
     },
 
+    //Função de remoção da imagem no preview e preparação antes de salvar
     imageRemove: function(){
-        $('#product-image-cover').css({
-          "background-image": "none"
-        });
-      // };
-      // reader.readAsDataURL($('#file-image-product')[0].files[0]);
+      $('#product-image-cover').css({"background-image": "none"});
       $('#file-image-product').filestyle('clear');
       $('#button-image-product-remove').prop("disabled", true);
-      product_image = null;
+      Product.product_image = null;
       Registration.img_act = 'R';
     },
 
@@ -280,33 +266,35 @@ Registration = {
       });
 
       $('#product-group-tab').click(function(){
-        global.modal({
-          icon: 'fa-warning',
-          title: 'Atenção',
-          html: '<p>Algumas alterações ainda não foram salvas, deseja continuar?</p>',
-          buttons: [{
-            icon: 'fa-check',
-            title: 'Sim',
-            action: function() {
+        if(Registration.modification){
+          global.modal({
+            icon: 'fa-warning',
+            title: 'Atenção',
+            html: '<p>Algumas alterações ainda não foram salvas, deseja continuar?</p>',
+            buttons: [{
+              icon: 'fa-check',
+              title: 'Sim',
+              action: function() {
+                window.close();
+                Registration.beforePost();
+              }
+            },
+            {
+              icon: 'fa-times',
+              title: 'Não',
+              action: function() {
+                Registration.modification = false;
+                $('#product-tab').click();
+                window.close();
+              }
+            },
+          ],
+            hidden: function() {
               window.close();
-              Registration.beforePost();
             }
-          },
-          {
-            icon: 'fa-times',
-            title: 'Não',
-            action: function() {
-              Registration.modification = false;
-              $('#product-tab').click();
-              window.close();
-            }
-          },
-        ],
-          hidden: function() {
-            window.close();
-          }
-        });
-      })
+          });
+      }
+    });
 
       $('#button-image-product-remove').click(function(){
         Registration.imageRemove();
@@ -378,9 +366,34 @@ Registration = {
         Product = data;
         console.log(Product);
         Registration.showInfo();
+        console.log(data.length);
+        if(data.length){
+          global.modal({
+            icon: 'fa-warning',
+            title: 'Atenção',
+            html: function(){
+              var html = '';
+              $(data).each(function(key, item){
+                console.log(item);
+              html += '<p>' + item.product_code + " | "+ item.product_name + '</p>';
+              });
+              console.log(data);
+              // console.log(html);
+              return html;
+              },
+            buttons: [{
+              icon: 'fa-check',
+              title: 'Ok',
+              action: function() {
+                window.close();
+              }
+            }]
+          });
+        }
       });
     },
 
+    //Encaminha cada informação do retorno para o elemento correto na pagina
     showInfo: function(){
       $('#registration_product_name').val(Product.product_name);
       $('#registration_product_code').val(Product.product_code);
@@ -392,9 +405,12 @@ Registration = {
 
       if(Product.product_image){
         $('#button-image-product-remove').prop("disabled", false);
+      } else {
+        $('#button-image-product-remove').prop("disabled", true);
       }
     },
 
+    //Validação de codigo de barras
     EanValidate: function(EAN) {
       var soma = 0;
       switch (EAN.length) {

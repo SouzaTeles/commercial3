@@ -47,7 +47,6 @@
                     ]
                 ]);
                 // var_dump($product);
-;
                 if(!@$product->CdChamada){
                   $productList = Model::getlist($dafel, (Object)[
                     "top" => 50,
@@ -57,10 +56,10 @@
                       "inner join CodigoProduto CP (nolock) on (P.IdProduto = Cp.IdProduto)"
                     ],
                     "fields" => [
-                      "CP.CdChamada",
-                      "P.NmProduto",
-                      "P.IdProduto",
-                      "P.CdClassificacao",
+                      "product_code = CP.CdChamada",
+                      "product_name = P.NmProduto",
+                      "product_id = P.IdProduto",
+                      "product_classification = P.CdClassificacao",
                     ],
                     "filters" => [
                       ["CP.CdChamada", "s",  "like", "{$post->product_code}%"],
@@ -255,7 +254,7 @@
                         "inner join CodigoProduto CP (nolock) on (P.IdProduto = Cp.IdProduto)"
                     ],
                     "fields" => [
-                      "CP.CdChamada",
+                      "CP.CdChamada ",
                       "P.NmProduto",
                       "P.IdProduto",
                       "P.CdClassificacao"
@@ -326,19 +325,26 @@
           } else {
 
             switch(@$post->product_img_act){
+
               case 'I':
               if(@$post->product_image64){
+
                 $path = PATH_FILES . "\product" . $post->product_id;
+                // var_dump($path);
                 if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
                 if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
                 if (file_exists("{$path}.png")) unlink("{$path}.png");
                 base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
-                Json::get($httpStatus[200], ("foi foi foi foi foi"));
+                Json::get($headerStatus[200], (Object)[
+                      "code" => 200,
+                      "message" => "Cadastro efetuado com sucesso."
+                  ]);
               }
               break;
 
               case 'R':
-              $path = PATH_FILES . "\product" . $post->product_id;
+              $path = PATH_FILES . "\product\\" . $post->product_id;
+              // var_dump($path);
               if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
               if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
               if (file_exists("{$path}.png")) unlink("{$path}.png");
