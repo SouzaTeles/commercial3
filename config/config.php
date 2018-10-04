@@ -83,17 +83,11 @@
             "message" => "Erro no processamento."
         ]
     ];
-    
+
     $dimensions = [
-        "person" => (Object)[
-            "width" => 640,
-            "height" => 480,
-            "width_small" => 320,
-            "height_small" => 240
-        ],
-        "user" => (Object)[
-            "width" => 640,
-            "height" => 480,
+        "slide" => (Object)[
+            "width" => 1200,
+            "height" => 600,
             "width_small" => 320,
             "height_small" => 240
         ]
