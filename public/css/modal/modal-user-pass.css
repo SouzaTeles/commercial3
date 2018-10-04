@@ -1,0 +1,42 @@
+.modal-user-pass .modal-info
+{
+    width: 100%;
+    height: 88px;
+    display: table;
+    margin-bottom: 20px;
+    padding-left: 114px;
+}
+
+.modal-user-pass .modal-info .image
+{
+    top: 20px;
+    left: 20px;
+    width: 94px;
+    height: 88px;
+    position: absolute;
+    border: 1px solid #ddd;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../../images/empty-image.png');
+}
+
+.modal-user-pass .modal-info .name
+{
+    width: 244px;
+    font-size: 24px;
+    overflow: hidden;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.modal-user-pass .modal-info .default
+{
+    color: gray;
+}
+
+.modal-user-pass .modal-info .default-info
+{
+    float: left;
+    margin-right: 20px;
+}

@@ -6,42 +6,7 @@
 
     GLOBAL $commercial, $dafel, $smarty, $login, $dimensions, $headerStatus, $get, $post;
 
-    if( !@$get->action ){
-        headerResponse((Object)[
-            "code" => 417,
-            "message" => "Parâmetro GET não encontrado."
-        ]);
-    }
-
-    if( $get->action == "userPass" && $login->access->user->user_pass->value == "N" ){
-        headerResponse((Object)[
-            "code" => 417,
-            "message" => "Você não possuí acesso para realizar essa operação."
-        ]);
-    }
-
     switch( $get->action ){
-
-        case "del":
-
-            if( !@$post->user_id ){
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Parâmetro POST não encontrado."
-                ]);
-            }
-
-            Model::update($commercial,(Object)[
-                "table" => "user",
-                "fields" => [[ "user_trash", "s", "Y" ]],
-                "filters" => [[ "user_id", "i", "=", $post->user_id ]]
-            ]);
-
-            Json::get( $headerStatus[200], (Object)[
-                "message" => "Usuário removido com sucesso."
-            ]);
-
-        break;
 
         case "get":
 
@@ -74,7 +39,14 @@
 
         case "edit":
 
-            if( !@$post->user_id || !@$post->user_profile_id || !@$post->user_name || !@$post->user_mail ){
+            if( $login->access->user->edit->value == "N" ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Você não possuí acesso para realizar essa operação."
+                ]);
+            }
+
+            if( !@$post->user_id || !@$post->user_profile_id || !@$post->user_name || !@$post->user_email ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -88,7 +60,7 @@
                     [ "user_profile_id", "i", $post->user_profile_id ],
                     [ "user_active", "s", $post->user_active ],
                     [ "user_name", "s", $post->user_name ],
-                    [ "user_mail", "s", $post->user_mail ]
+                    [ "user_email", "s", $post->user_email ]
                 ],
                 "filters" => [[ "user_id", "s", "=", $post->user_id ]]
             ]);
@@ -136,9 +108,9 @@
 
         break;
 
-        case "insert":
+        case "pass":
 
-            if ( !@$post->user_profile_id || !@$post->user_name) {
+            if( !@$post->pass || !@$post->new_pass ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -146,14 +118,64 @@
             }
 
             $user = Model::get($commercial,(Object)[
-                "tables" => [ "user" ],
-                "fields" => [ "user_user, user_mail" ],
+                "tables" => [ "[User]" ],
+                "fields" => [ "user_id" ],
                 "filters" => [
-                    [
-                        [ "user_user", "s", "=", $post->user_user ],
-                        [ "user_mail", "s", "=", $post->user_mail ]
-                    ]
+                    [ "user_id", "i", "=", $login->user_id ],
+                    [ "user_pass", "s", "=", md5($post->pass) ]
                 ]
+            ]);
+
+            if( !@$user ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "A senha atual está incorreta. Verifique a senha informada."
+                ]);
+            }
+
+            $user = Model::update($commercial,(Object)[
+                "table" => "[User]",
+                "fields" => [[ "user_pass", "s", md5($post->new_pass) ]],
+                "filters" => [[ "user_id", "i", "=", $login->user_id ]]
+            ]);
+
+            postLog([]);
+
+            Json::get($headerStatus[200],(Object)[
+                "message" => "Senha atualizada com sucesso."
+            ]);
+
+        break;
+
+        case "insert":
+
+            if( $login->access->user->add->value == "N" ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Você não possuí acesso para realizar essa operação."
+                ]);
+            }
+
+            if ( 
+                !@$post->external_id || 
+                !@$post->user_active || 
+                !@$post->user_name || 
+                !@$post->user_profile_id ||
+                !@$post->user_email ||
+                !@$post->user_user ||
+                !@$post->user_pass ||
+                !@$post->access
+            ) {
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $user = Model::get($commercial,(Object)[
+                "tables" => [ "[User]" ],
+                "fields" => [ "user_user, user_email" ],
+                "filters" => [[ "user_user", "s", "=", $post->user_user ]]
             ]);
 
             if ( @$user && $user->user_user == $post->user_user ) {
@@ -163,36 +185,45 @@
                 ]);
             }
 
-            if ( @$user && $user->user_mail == $post->user_mail ) {
-                headerResponse((Object)[
-                    "code" => 409,
-                    "message" => "O e-mail já está cadastrado."
-                ]);
-            }
-
-            $user_id = Model::insert($commercial,(Object)[
-                "table" => "user",
+            $user_id = (int)Model::insert($commercial,(Object)[
+                "table" => "[User]",
                 "fields" => [
-                    [ "user_id", "s", $post->user_id ],
+                    [ "external_id", "s", $post->external_id ],
+                    [ "person_id", "s", @$post->person_id ? $post->person_id : NULL ],
                     [ "user_profile_id", "i", $post->user_profile_id ],
                     [ "user_active", "s", @$post->user_active ? "Y" : "N" ],
                     [ "user_user", "s", $post->user_user ],
                     [ "user_pass", "s", md5($post->user_pass) ],
                     [ "user_name", "s", $post->user_name ],
-                    [ "user_mail", "s", @$post->user_mail ? $post->user_mail : NULL ],
-                    [ "user_trash", "s", "N" ]
+                    [ "user_email", "s", @$post->user_email ? $post->user_email : NULL ],
+                    [ "user_date", "s", date("Y-m-d H:i:s")]
                 ]
             ]);
+
+            foreach( $post->access as $access ){
+                $access = (Object)$access;
+                Model::insert($commercial,(Object)[
+                    "table" => "[UserAccess]",
+                    "fields" => [
+                        [ "user_id", "i", $user_id ],
+                        [ "user_access_name", "s", $access->name ],
+                        [ "user_access_value", "s", "{$access->value}" ],
+                        [ "user_access_data_type", "s", $access->type ],
+                        [ "user_access_date", "s", date("Y-m-d H:i:s")]
+                    ]
+                ]);
+            }
 
             if( @$post->companies ){
                 foreach( $post->companies as $company ){
                     $company = (Object)$company;
                     Model::insert($commercial,(Object)[
-                        "table" => "user_company",
+                        "table" => "[UserCompany]",
                         "fields" => [
-                            [ "user_id", "s", $post->user_id ],
+                            [ "user_id", "s", $user_id ],
                             [ "company_id", "i", $company->company_id ],
                             [ "user_company_main", "s", $company->user_company_main ],
+                            [ "user_company_date", "s", date("Y-m-d H:i:s")]
                         ]
                     ]);
                 }
@@ -202,14 +233,23 @@
                 foreach( $post->prices as $price ){
                     $price = (Object)$price;
                     Model::insert($commercial,(Object)[
-                        "table" => "user_price",
+                        "table" => "[UserPrice]",
                         "fields" => [
-                            [ "user_id", "s", $post->user_id ],
-                            [ "price_id", "s", $price->price_id ]
+                            [ "user_id", "i", $user_id ],
+                            [ "price_id", "s", $price->price_id ],
+                            [ "user_price_date", "s", date("Y-m-d H:i:s")]
                         ]
                     ]);
                 }
             }
+
+            if( @$post->image ){
+                base64toFile( PATH_FILES . "user/", $user_id, $post->image);
+            }
+
+            postLog((Object)[
+                "parent_id" => $user_id
+            ]);
 
             Json::get( $headerStatus[200], (Object)[
                 "message" => "Usuário cadastrado com sucesso."
@@ -227,40 +267,40 @@
                 ],
                 "fields" => [
                     "u.user_id",
+                    "u.person_id",
                     "u.user_active",
                     "u.user_name",
                     "up.user_profile_name",
-                    "user_login=FORMAT(u.user_login,'yyyy-MM-dd HH:mm:ss')"
+                    "user_login=FORMAT(u.user_login,'yyyy-MM-dd HH:mm:ss')",
+                    "user_login_br=u.user_login"
                 ],
                 "order" => "u.user_name"
             ]);
-
-            if( !sizeof($users) ){
-                headerResponse((Object)[
-                    "code" => 404,
-                    "message" => "Nenhum usuário encontrado"
-                ]);
-            }
 
             foreach( $users as $user ){
                 $user->image = getImage((Object)[
                     "image_id" => $user->user_id,
                     "image_dir" => "user"
                 ]);
-                $user->user_login_br = @$user->user_login ? date_format(date_create($user->user_login),"d/m/Y H:i:s") : NULL;
+                if (!@$user->image && @$user->person_id ){
+                    $user->image = getImage((Object)[
+                        "image_id" => $user->person_id,
+                        "image_dir" => "person"
+                    ]);
+                }
             }
 
             Json::get( $headerStatus[200], $users );
 
         break;
 
-        case "getListERP":
+        case "external":
 
             $users = Model::getList( $dafel, (Object)[
                 "tables" => [ "Usuario" ],
                 "fields" => [
-                    "IdUsuario",
-                    "NmUsuario"
+                    "user_id=IdUsuario",
+                    "user_name=NmUsuario"
                 ],
                 "filters" => [[ "StAtivo", "s", "=", "S" ]],
                 "order" => "NmUsuario"
@@ -272,7 +312,14 @@
 
         case "userPass":
 
-            if( !@$post->user_id || !@$post->user_pass ){
+            if( $login->access->user->user_pass->value == "N" ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Você não possuí acesso para realizar essa operação."
+                ]);
+            }
+
+            if( !@$post->user_id || !@$post->user_new_pass ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -280,52 +327,16 @@
             }
 
             Model::update($commercial,(Object)[
-                "table" => "user",
-                "fields" => [[ "user_pass", "s", md5($post->user_pass) ]],
-                "filters" => [
-                    [ "client_id", "i", "=", $client_id ],
-                    [ "user_id", "i", "=", $post->user_id ]
-                ]
+                "table" => "[User]",
+                "fields" => [[ "user_pass", "s", md5($post->user_new_pass) ]],
+                "filters" => [[ "user_id", "i", "=", $post->user_id ]]
+            ]);
+
+            postLog((Object)[
+                "parent_id" => $post->user_id
             ]);
 
             Json::get( $headerStatus[200], (Object)[
-                "message" => "Senha atualizada com sucesso."
-            ]);
-
-        break;
-
-	    case "editPass":
-
-            if( !@$post->user_pass || !@$post->user_new_pass ){
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Parâmetro POST não encontrado."
-                ]);
-            }
-
-            $user = Model::get($commercial,(Object)[
-                "tables" => [ "[User]" ],
-                "fields" => [ "user_id" ],
-                "filters" => [
-                    [ "user_id", "i", "=", $login->user_id ],
-                    [ "user_pass", "s", "=", md5($post->user_pass) ]
-                ]
-            ]);
-
-            if( !@$user ){
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "A senha atual está incorreta. Verifique a senha informada."
-                ]);
-            }
-
-            $user = Model::update($commercial,(Object)[
-                "table" => "[User]",
-                "fields" => [[ "user_pass", "s", md5($post->user_new_pass) ]],
-                "filters" => [[ "user_id", "i", "=", $login->user_id ]]
-            ]);
-
-            Json::get($headerStatus[200],(Object)[
                 "message" => "Senha atualizada com sucesso."
             ]);
 

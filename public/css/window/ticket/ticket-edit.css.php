@@ -54,10 +54,16 @@ header .cover
     background-size: cover;
     background-image: url('../../../images/empty-image.png');
 }
-.container > .panel-body
+
+.panel-group
 {
     width: 960px;
-    margin: 0 auto;
+    margin: 30px auto 0;
+}
+
+.panel-group .panel+.panel
+{
+    margin-top: 20px;
 }
 
 .panel-note

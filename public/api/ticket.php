@@ -21,7 +21,7 @@
             $post->person = (Object)$post->person;
 
             $to[0] = (Object)[
-                "email" => "alessandro@dafel.com.br",
+                "email" => "ti@dafel.com.br",
                 "name" => "TI DAFEL"
             ];
 

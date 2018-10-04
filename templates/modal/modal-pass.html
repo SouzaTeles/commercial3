@@ -1,0 +1,26 @@
+<link href="{$URI_PUBLIC}css/modal/modal-pass.css" rel="stylesheet" />
+<form id="form-pass">
+    <div class="col-xs-12">
+        <div class="form-group">
+            <label for="modal_pass">Senha atual</label>
+            <input placeholder="Senha atual" autocomplete="off" class="form-control" type="password" id="modal_pass" name="modal_pass" required />
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <hr/>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="modal_new_pass">Nova senha</label>
+            <input placeholder="Nova senha" autocomplete="off" class="form-control" type="password" id="modal_new_pass" name="modal_new_pass" required />
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="modal_pass_confirm">Confirme a nova senha</label>
+            <input placeholder="Confirme a nova senha" autocomplete="off" class="form-control" type="password" id="modal_pass_confirm" name="modal_pass_confirm" required />
+        </div>
+    </div>
+    <button class="hidden"></button>
+</form>
+<script src="{$URI_PUBLIC}js/modal/modal-pass.js?{$smarty.now}"></script>

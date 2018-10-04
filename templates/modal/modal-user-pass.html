@@ -1,26 +1,28 @@
-<link href="{$URI_PUBLIC}css/modal/modal-user-pass.css" rel="stylesheet" />
+<link href="{$URI_PUBLIC}css/modal/modal-user-pass.css?{$smarty.now}" rel="stylesheet" />
 <form id="form-user-pass">
-    <div class="col-xs-12">
-        <div class="form-group">
-            <label for="modal_user_pass">Senha atual</label>
-            <input placeholder="Senha atual" autocomplete="off" class="form-control" type="password" id="modal_user_pass" name="modal_user_pass" required />
+    <div class="modal-info">
+        <div class="image"></div>
+        <div class="name">--</div>
+        <div class="default">
+            <div class="default-info profile">Perfil<br/>--</div>
+            <div class="default-info login">Último acesso<br/>--</div>
         </div>
     </div>
-    <div class="col-xs-12">
-        <hr/>
-    </div>
-    <div class="col-xs-12 col-sm-6">
-        <div class="form-group">
-            <label for="modal_user_new_pass">Nova senha</label>
-            <input placeholder="Nova senha" autocomplete="off" class="form-control" type="password" id="modal_user_new_pass" name="modal_user_new_pass" required />
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="modal_user_new_pass">Nova senha</label>
+                <input placeholder="Nova senha" autocomplete="off" class="form-control" type="password" id="modal_user_new_pass" name="modal_user_new_pass" required />
+            </div>
         </div>
-    </div>
-    <div class="col-xs-12 col-sm-6">
-        <div class="form-group">
-            <label for="modal_user_pass_confirm">Confirme a nova senha</label>
-            <input placeholder="Confirme a nova senha" autocomplete="off" class="form-control" type="password" id="modal_user_pass_confirm" name="modal_user_pass_confirm" required />
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="modal_user_pass_confirm">Confirme a nova senha</label>
+                <input placeholder="Confirme a nova senha" autocomplete="off" class="form-control" type="password" id="modal_user_pass_confirm" name="modal_user_pass_confirm" required />
+            </div>
         </div>
     </div>
     <button class="hidden"></button>
 </form>
 <script src="{$URI_PUBLIC}js/modal/modal-user-pass.js?{$smarty.now}"></script>
+<script> ModalUserPass.user = {$smarty.post|@json_encode}; </script>

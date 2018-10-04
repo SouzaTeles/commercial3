@@ -1,4 +1,4 @@
-<p>Olá, um novo chamado foi aberto através do site da Futura!</p>
+{if !empty($smarty.post.person.CdChamada)}<p>Olá, um novo chamado foi aberto através do site da Futura!</p>{else}<p>Olá, um novo chamado foi aberto através do Commercial!</p>{/if}
 <b>Código</b>: {$ticket->ticket_code}<br/>
 <b>Pessoa</b>: {if empty($smarty.post.person.CdChamada)}{$smarty.post.person.person_code} - {$smarty.post.person.person_name}{else}{$smarty.post.person.CdChamada} - {$smarty.post.person.NmPessoa}{/if}<br/>
 <b>Unidade</b>: {$smarty.post.data.company_name}<br/>
