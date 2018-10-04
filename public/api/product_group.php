@@ -249,18 +249,21 @@
               case 'P':
                 $products = Model::getList($dafel,(Object)[
                     "top" => $post->limit,
+                    "join" => 1,
                     "tables" => [
-                        "vw_produto (NoLock)",
+                        "Produto P (NoLock)",
+                        "inner join CodigoProduto CP (nolock) on (P.IdProduto = Cp.IdProduto)"
                     ],
                     "fields" => [
-                        "CdChamada",
-                        "NmProduto",
-                        "IdProduto",
-                        "CdClassificacao"
+                      "CP.CdChamada",
+                      "P.NmProduto",
+                      "P.IdProduto",
+                      "P.CdClassificacao"
                     ],
                     "filters" => [
-                             ["NmProduto", "s", "like", "%{$post->item_name}%"]
-                        ]
+                      ["P.NmProduto", "s", "like", "%{$post->item_name}%"],
+                      ["CP.StCodigoPrincipal", "s", "=", 'S']
+                    ]
                 ]);
                 $itens = [];
                 foreach( $products as $product){

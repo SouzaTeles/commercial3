@@ -11,6 +11,7 @@ body{
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
+  height: 307px;
 }
 
 #product-group-registation{

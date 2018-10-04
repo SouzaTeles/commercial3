@@ -147,7 +147,8 @@ Registration = {
       // };
       // reader.readAsDataURL($('#file-image-product')[0].files[0]);
       $('#file-image-product').filestyle('clear');
-      $('#product-image-cover').prop("disabled", true);
+      $('#button-image-product-remove').prop("disabled", true);
+      product_image = null;
       Registration.img_act = 'R';
     },
 
@@ -272,15 +273,6 @@ Registration = {
         Registration.modification = true;
         Registration.img_act = 'I';
         Registration.imagePreview();
-        // //if
-        // if(Product.product_image){
-        //   console.log("Já existe uma imagem.")
-        // }
-        // $('#product-image-cover').css({
-        //   'background-image': !!Product.image ? 'url(' + Product.image + ')' : ''
-        // });
-        //  Registration.form2data();
-        // // ProductImage.up();
       });
 
       $('#product-tab').click(function() {
