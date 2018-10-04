@@ -209,6 +209,29 @@
 			"data_type": "bool"
 		}
 	},
+	"slide": {
+		"name": "Slides",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Novo Slide",
+			"value": "Y",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar Slide",
+			"value": "Y",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Remover Slide",
+			"value": "Y",
+			"data_type": "bool"
+		}
+	},
 	"shipment": {
 		"name": "Mapa de Carregamento",
 		"access": {
@@ -335,76 +358,6 @@
 		},
 		"del": {
 			"name": "Excluir",
-			"value": "N",
-			"data_type": "bool"
-		}
-
-	},
-
-	"config_billing": {
-		"name": "Configurações - Faturamento",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-	"config_billing_timing": {
-		"name": "Configurações - Faturamento >> Sincronização",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		},
-		"edit": {
-			"name": "Sincronizar",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-	"config_financial": {
-		"name": "Configurações - Financeiro",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-	"config_financial_statement": {
-		"name": "Configurações - Financeiro >> Status do Extrato",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		},
-		"add": {
-			"name": "Adicionar",
-			"value": "N",
-			"data_type": "bool"
-		},
-		"edit": {
-			"name": "Editar",
-			"value": "N",
-			"data_type": "bool"
-		},
-		"del": {
-			"name": "Excluir",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-	"config_rh": {
-		"name": "Configurações - RH",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-	"config_general": {
-		"name": "Configurações - Geral",
-		"access": {
-			"name": "Visualiza",
 			"value": "N",
 			"data_type": "bool"
 		}
@@ -546,14 +499,6 @@
 		},
 		"edit": {
 			"name": "Editar",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-	"erp": {
-		"name": "Configurações - Geral >> ERP",
-		"access": {
-			"name": "Visualiza",
 			"value": "N",
 			"data_type": "bool"
 		}
