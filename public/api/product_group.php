@@ -46,6 +46,37 @@
                         [ "CP.CdChamada", "s", "=", substr("00000{$post->product_code}",( strlen($post->product_code) > 6 ? -(strlen($post->product_code)) : -6)) ],
                     ]
                 ]);
+                // var_dump($product);
+;
+                if(!@$product->CdChamada){
+                  $productList = Model::getlist($dafel, (Object)[
+                    "top" => 50,
+                    "join" => 1,
+                    "tables" => [
+                      "Produto P",
+                      "inner join CodigoProduto CP (nolock) on (P.IdProduto = Cp.IdProduto)"
+                    ],
+                    "fields" => [
+                      "CP.CdChamada",
+                      "P.NmProduto",
+                      "P.IdProduto",
+                      "P.CdClassificacao",
+                    ],
+                    "filters" => [
+                      ["CP.CdChamada", "s",  "like", "{$post->product_code}%"],
+                      ["CP.StCodigoPrincipal", "s",  "=", "S"]
+                    ]
+                  ]);
+                  // var_dump($productList);
+                  Json::get($httpStatus[200], $productList);
+                  // foreach($productList as $product){
+                  // }
+                  return;
+                }
+
+
+                //   });
+                // }
 
                 if($product){
                   $EanCode = Model::get($dafel,(Object)[
@@ -218,22 +249,27 @@
               case 'P':
                 $products = Model::getList($dafel,(Object)[
                     "top" => $post->limit,
+                    "join" => 1,
                     "tables" => [
-                        "vw_produto (NoLock)",
+                        "Produto P (NoLock)",
+                        "inner join CodigoProduto CP (nolock) on (P.IdProduto = Cp.IdProduto)"
                     ],
                     "fields" => [
-                        "CdChamada",
-                        "NmProduto",
-                        "IdProduto",
-                        "CdClassificacao"
+                      "CP.CdChamada",
+                      "P.NmProduto",
+                      "P.IdProduto",
+                      "P.CdClassificacao"
                     ],
                     "filters" => [
-                             ["NmProduto", "s", "like", "%{$post->item_name}%"]
-                        ]
+                      ["P.NmProduto", "s", "like", "%{$post->item_name}%"],
+                      ["CP.StCodigoPrincipal", "s", "=", 'S']
+                    ]
                 ]);
-                $items = [];
-                foreach( $products as $product ){
+                $itens = [];
+                foreach( $products as $product){
                     if($product){
+                      // var_dump($product->IdProduto);
+                      // var_dump($EAN);
                       $EanCode = Model::get($dafel,(Object)[
                         "tables" => [
                             "CodigoProduto CP",
@@ -247,6 +283,7 @@
                         ]
                       ]);
                     }
+                    // var_dump($EanCode);
                     $EanCode = ($EanCode ? $EanCode->CdChamada : NULL);
 
                     $productImage = getImage((Object)[
@@ -255,11 +292,12 @@
                     ]);
 
 
-                    $items[] = (Object)[
-                        "item_id" => $product->IdProduto,
-                        "item_name" => $product->NmProduto,
-                        "item_code" => $product->CdChamada,
-                        "item_EAN" => $EanCode,
+                    $itens[] = (Object)[
+                        "product_id" => $product->IdProduto,
+                        "product_name" => $product->NmProduto,
+                        "product_code" => $product->CdChamada,
+                        "product_EAN" => $EanCode,
+                        "product_image" =>@$productImage,
                         "html" => (
                             // "<div class='type-ahead-cover'></div>" .
                             "<div class='type-ahead-cover'" . (@$productImage ? (" style='background-image:url({$productImage})'") : "") . "></div>" .
@@ -270,9 +308,10 @@
 
                         )
                     ];
+                    // var_dump($itens);
                     // $EanCode-CdChamada = NULL;
                 }
-                Json::get( $headerStatus[200], $items );
+                Json::get( $headerStatus[200], $itens);
           }
         break;
         case "up":
@@ -280,17 +319,33 @@
         // var_dump($post);
         // echo "[LOG]Entrou no UP/n";;
           if( !@$post->product_id){
-            // echo "entrou no if";
             headerResponse((Object)[
                   "code" => 417,
                   "message" => "Parâmetro POST não encontrado."
               ]);
           } else {
-            if(@$post->product_image64){
-              // echo "entrou no salvar imagem";
-              base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
-              Json::get($httpStatus[200], ("foi foi foi foi foi"));
+
+            switch(@$post->product_img_act){
+              case 'I':
+              if(@$post->product_image64){
+                $path = PATH_FILES . "\product" . $post->product_id;
+                if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
+                if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
+                if (file_exists("{$path}.png")) unlink("{$path}.png");
+                base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
+                Json::get($httpStatus[200], ("foi foi foi foi foi"));
+              }
+              break;
+
+              case 'R':
+              $path = PATH_FILES . "\product" . $post->product_id;
+              if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
+              if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
+              if (file_exists("{$path}.png")) unlink("{$path}.png");
+              break;
             }
+
+
             // echo "[LOG]Entrou no IF/n";
             if(@$post->product_EAN){
               // echo "entrou";
