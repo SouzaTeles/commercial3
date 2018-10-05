@@ -21,25 +21,6 @@ $(document).ready(function(){
 });
 
 Image = {
-    add: function(){
-        var data = new FormData();
-        data.append('image_id',User.user.user_id);
-        data.append('image_dir','user');
-        data.append('file[]',$('#file')[0].files[0]);
-        global.post({
-            url: global.uri.uri_public_api + 'image.php?action=add',
-            data: data,
-            cache: false,
-            dataType: 'json',
-            contentType: false,
-            processData: false
-        },function(data){
-            User.user.image = data.images[0].image;
-            Image.show();
-            $('#button-image-remove').prop('disabled',false);
-        });
-        $('#file').filestyle('clear');
-    },
     del: function(){
         if( !User.user.user_id ){
             User.user.image = null;
@@ -77,7 +58,7 @@ Image = {
     events: function(){
         $('#file').change(function(){
             if( !!User.user.user_id ){
-                Image.add();
+                Image.up();
             } else {
                 Image.preview();
             }
@@ -99,6 +80,25 @@ Image = {
             'background-image': 'url(' + (User.user.image || '../../../commercial3/images/empty-image.png') + ')'
         });
         $('#button-image-remove').prop('disabled',!User.user.image);
+    },
+    up: function(){
+        var data = new FormData();
+        data.append('image_id',User.user.user_id);
+        data.append('image_dir','user');
+        data.append('file[]',$('#file')[0].files[0]);
+        global.post({
+            url: global.uri.uri_public_api + 'image.php?action=up',
+            data: data,
+            cache: false,
+            dataType: 'json',
+            contentType: false,
+            processData: false
+        },function(data){
+            User.user.image = data.images[0].image;
+            Image.show();
+            $('#button-image-remove').prop('disabled',false);
+        });
+        $('#file').filestyle('clear');
     }
 };
 

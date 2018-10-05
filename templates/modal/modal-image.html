@@ -1,0 +1,38 @@
+<link href="{$URI_PUBLIC}css/modal/modal-image.css?{$smarty.now}" rel="stylesheet" />
+<form name="modal-form-image">
+    <div class="col-xs-12 col-sm-4">
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="modal_image_preview" class="box-shadow"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-8">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="modal_image_link">Link</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-globe"></i></span>
+                        <input type="text" class="form-control" id="modal_image_link" name="modal_image_link" placeholder="http://www.meulink.com.br/">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="modal_image_name">Nome</label>
+                    <input placeholder="Nome" autocomplete="off" class="form-control" type="text" id="modal_image_name" name="modal_image_name" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <div class="form-group">
+            <label for="modal_image_description">Descrição</label>
+            <textarea rows="6" class="form-control" id="modal_image_description" name="modal_image_description" placeholder="Descrição"></textarea>
+        </div>
+    </div>
+    <button class="hidden"></button>
+</form>
+<script src="{$URI_PUBLIC}js/modal/modal-image.js?{$smarty.now}"></script>
+<script> ModalImage.image = {$smarty.post|@json_encode}; </script>

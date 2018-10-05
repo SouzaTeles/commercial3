@@ -20,8 +20,8 @@
             <i class="fa fa-caret-down text-blue"></i>
         </button>
         <ul class="dropdown-menu">
-            <li><a href="#change-pass"><i class="fa fa-fw fa-lock"></i> Alterar Senha</a></li>
-            <li><a href="#logout"><i class="fa fa-fw fa-sign-out"></i> Efetuar Logout</a></li>
+            <li><a href="#change-pass"><i class="fa fa-fw fa-lock txt-orange"></i> Alterar Senha</a></li>
+            <li><a href="#logout"><i class="fa fa-fw fa-sign-out txt-red-light"></i> Efetuar Logout</a></li>
         </ul>
     </div>
 </header>
@@ -208,6 +208,11 @@
                     {if $login->access->company->access->value == 'Y'}
                         <a href="{$URI_PUBLIC}index.php?route=company" class="config">
                             <i class="fa fa-building"></i>Empresas
+                        </a>
+                    {/if}
+                    {if $login->access->slide->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=slide" class="config">
+                            <i class="fa fa-picture-o"></i>Slides
                         </a>
                     {/if}
                 </div>

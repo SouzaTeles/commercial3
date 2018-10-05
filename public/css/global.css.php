@@ -60,7 +60,7 @@ ul::-webkit-scrollbar-thumb
     width: 12px;
 }
 
-.container
+body>.container
 {
     width: 100%;
     height: 100%;
