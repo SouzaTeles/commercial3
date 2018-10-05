@@ -159,37 +159,55 @@
                        "message" => "Existe(m) subgrupo(s) associado(s) à esse grupo, verifique."
                        ]);
                      } else {
+                         // $productList = Model::getlist($dafel,(Object)[
+                         //   "tables" => [
+                         //       "vw_Produto"
+                         //   ],
+                         //   "fields" => [
+                         //       "IdProduto",
+                         //       "CdChamada",
+                         //       "NmProduto",
+                         //
+                         //   ],
+                         //   "filters" => [
+                         //       ["IdGrupoProduto", "s", "=", "{$group->IdGrupoProduto}"]
+                         //   ]
+                         // ]);
                          $productList = Model::getlist($dafel,(Object)[
-                           "tables" => [
-                               "vw_Produto"
-                           ],
-                           "fields" => [
-                               "IdProduto",
-                               "CdChamada",
-                               "NmProduto",
+                             "join" => 1,
+                             "tables" => [
+                                 "Produto P",
+                                 "INNER JOIN CodigoProduto cp ON (p.IdProduto = cp.IdProduto)"
+                             ],
+                             "fields" => [
+                                 "product_name = P.NmProduto",
+                                 "product_id = P.IdProduto",
+                                 "product_code = CP.CdChamada"
 
-                           ],
-                           "filters" => [
-                               ["IdGrupoProduto", "s", "=", "{$group->IdGrupoProduto}"]
-                           ]
+                             ],
+                             "filters" => [
+                                 ["p.IdGrupoProduto", "s", "=", "{$group->IdGrupoProduto}"],
+                                 ["cp.StCodigoPrincipal", "s", "=", "S"]
+                             ]
                          ]);
+                         // var_dump($productList);
                         // var_dump($productList);
                         $ret = [];
                         $ret2=[];
-                        foreach($productList as $product){
-                            $ret[] = (Object)[
-                              "product_id" => $product->IdProduto,
-                              "product_code" => $product->CdChamada,
-                              "product_name" => $product->NmProduto
-
-                            ];
-                        }
+                        // foreach($productList as $product){
+                        //     $ret[] = (Object)[
+                        //       "product_id" => $product->IdProduto,
+                        //       "product_code" => $product->CdChamada,
+                        //       "product_name" => $product->NmProduto
+                        //
+                        //     ];
+                        // }
                         $ret2[] = (object)[
                           "group_info" => (object)[
                             "product_group_code" =>$group->CdChamada,
                             "product_group_name" =>$group->NmGrupoProduto
                           ],
-                          "product_info" =>$ret
+                          "product_info" =>$productList
                         ];
 
                         Json::get($httpStatus[200], $ret2);

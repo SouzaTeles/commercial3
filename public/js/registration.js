@@ -275,8 +275,10 @@ Registration = {
               icon: 'fa-check',
               title: 'Sim',
               action: function() {
+
                 window.close();
-                Registration.beforePost();
+
+                //Registration.beforePost();
               }
             },
             {
@@ -293,8 +295,18 @@ Registration = {
               window.close();
             }
           });
-      }
+        }
+        $('#product-image-cover').css({"background-image": "none"});
+      //  $('#file-image-product').filestyle('clear');
+        $('#button-image-product-remove').prop("disabled", true);
     });
+
+      $('#product-check-master').click(function(){
+        if( $('#product-check-master').prop("checked"))
+          $('.product-check').prop("checked", true);
+        else if( !$('#product-check-master').prop("checked"))
+          $('.product-check').prop("checked", false)
+      });
 
       $('#button-image-product-remove').click(function(){
         Registration.imageRemove();
@@ -353,6 +365,7 @@ Registration = {
       },
         //};
 
+
     beforePost: function(){
       global.post({
         url: global.uri.uri_public_api + 'product_group.php?action=get',
@@ -378,7 +391,6 @@ Registration = {
               html += '<p>' + item.product_code + " | "+ item.product_name + '</p>';
               });
               console.log(data);
-              // console.log(html);
               return html;
               },
             buttons: [{
@@ -395,8 +407,10 @@ Registration = {
 
     //Encaminha cada informação do retorno para o elemento correto na pagina
     showInfo: function(){
+
       $('#registration_product_name').val(Product.product_name);
       $('#registration_product_code').val(Product.product_code);
+      $('#registration_product_EAN').prop("disabled", false);
       $('#registration_product_EAN').val(Product.product_EAN);
       $('#product-image-cover').css({
         "background-image": "url(" + (Product.product_image || "") + ")"
@@ -471,7 +485,7 @@ Registration = {
       $.each(Registration.products, function(key, product) {
         //Adiciona uma nova linha na lista de exibição
         Registration.table.row.add([
-          '<input data-id="' + product.product_id + '" type="checkbox" data-key="1">',
+          '<input data-id="' + product.product_id + '" type="checkbox" class="product-check" data-key="1">',
           product.product_code,
           product.product_name,
           "♣"
