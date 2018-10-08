@@ -9,7 +9,7 @@
     $EAN = '00A000005R'; //Codigo EAN Principal (Valor fixo Dafel)
     $EanCode;
 
-    if( !@$get->action ){
+    if(!@$get->action ){
         headerResponse((Object)[
             "code" => 417,
             "message" => "Parâmetro GET não encontrado."
@@ -332,108 +332,168 @@
           }
         break;
         case "up":
-        //echo $post->product_id;
-        // var_dump($post);
-        // echo "[LOG]Entrou no UP/n";;
-          if( !@$post->product_id){
+          if( !@$post->registration_type){
             headerResponse((Object)[
                   "code" => 417,
-                  "message" => "Parâmetro POST não encontrado."
+                  "message" => "Parâmetro POST não encontrado. Problema encontrado: Registration_Type"
               ]);
           } else {
+            switch($post->registration_type){
+              case "P":
+                if( !@$post->product_id){
+                  headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "Parâmetro POST não encontrado. Problema encontrado: product_id"
+                    ]);
 
-            switch(@$post->product_img_act){
 
-              case 'I':
-              if(@$post->product_image64){
+                switch(@$post->product_img_act){
 
-                $path = PATH_FILES . "\product" . $post->product_id;
-                // var_dump($path);
-                if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
-                if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
-                if (file_exists("{$path}.png")) unlink("{$path}.png");
-                base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
+                  case 'I':
+                  if(@$post->product_image64){
+
+                    $path = PATH_FILES . "\product" . $post->product_id;
+                    // var_dump($path);
+                    if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
+                    if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
+                    if (file_exists("{$path}.png")) unlink("{$path}.png");
+                    base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
+                    Json::get($headerStatus[200], (Object)[
+                          "code" => 200,
+                          "message" => "Cadastro efetuado com sucesso."
+                      ]);
+                  }
+                  break;
+
+                  case 'R':
+
+                  $path = PATH_FILES . "\product\\" . $post->product_id;
+                  // var_dump($path);
+                  if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
+                  if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
+                  if (file_exists("{$path}.png")) unlink("{$path}.png");
+                  break;
+                }
+
+
+                // echo "[LOG]Entrou no IF/n";
+                if(@$post->product_EAN){
+                  // echo "entrou";
+                  $eanTemp = Model::get($dafel,(Object)[
+                    "top" => 1,
+                    "tables" => [
+                        "CodigoProduto"
+                    ],
+                    "fields" => [
+                        "CdChamada"
+                    ],
+                    "filters" => [
+                        ["IdTipoCodigoProduto", "s", "=", $EAN],
+                        ["IdProduto", "s", "=", $post->product_id]
+                    ]
+                  ]);
+
+                  if(@$eanTemp->CdChamada){
+                    //Update
+                    // echo "Teste";
+                    Model::update($dafel,(Object)[
+                      "top" => 1,
+                      "table" =>
+                          "CodigoProduto",
+                      "fields" => [
+                          ["CdChamada", "s", $post->product_EAN],
+                      ],
+                      "filters" => [
+                          ["IdTipoCodigoProduto", "s", "=", $EAN],
+                          ["IdProduto", "s", "=", $post->product_id]
+                      ]
+                    ]);
+                  }
+                  else {
+                    //Insert
+                    $query = Model::nextCode($dafel,(Object)[
+                            "table" => "CodigoProduto",
+                            "field" => "IdCodigoProduto",
+                            "increment" => "S",
+                            "base36encode" => 1
+                        ]);
+
+                    // var_dump($query);
+
+                    Model::insert($dafel,(Object)[
+                      "top" => 1,
+                      "table" =>
+                          "CodigoProduto",
+                      "fields" => [
+                          ["CdChamada", "s", $post->product_EAN],
+                          ["IdCodigoProduto", "s", $query],
+                          ["IdProduto", "s", $post->product_id],
+                          ["IdTipoCodigoProduto", "s", $EAN],
+                          ["StCodigoPrincipal", "s", 'N']
+                      ],
+                    ]);
+
+                  }
+                }
                 Json::get($headerStatus[200], (Object)[
                       "code" => 200,
                       "message" => "Cadastro efetuado com sucesso."
                   ]);
               }
               break;
+              case "G":
+                if( !@$post->product_list){
+                headerResponse((Object)[
+                      "code" => 417,
+                      "message" => "Parâmetro POST não encontrado. Problema encontrado: product_list."
+                  ]);
+                }
 
-              case 'R':
-              $path = PATH_FILES . "\product\\" . $post->product_id;
-              // var_dump($path);
-              if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
-              if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
-              if (file_exists("{$path}.png")) unlink("{$path}.png");
+                switch(@$post->product_img_act){
+
+                  case 'I':
+                  if(@$post->product_image64){
+                    // echo "entrou no I";
+                    try{
+                      foreach(@$post->product_list as $product){
+                          //var_dump($product);
+
+                        $path = PATH_FILES . "\product" . $product;
+                        // var_dump($path);
+                        // echo $path;
+                        if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
+                        if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
+                        if (file_exists("{$path}.png")) unlink("{$path}.png");
+                        base64toFile(PATH_FILES . "\product",$product, $post->product_image64);
+                      }
+                    } catch(Exception $e) {
+                      Json::get($headerStatus[417], (Object)[
+                            "code" => 417,
+                            "message" => 'Exceção capturada: ',  $e->getMessage()
+                        ]);
+                    }
+
+
+                  }
+                  break;
+
+                  case 'R':
+                  $path = PATH_FILES . "\product\\" . $post->product_id;
+                  // var_dump($path);
+                  if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
+                  if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
+                  if (file_exists("{$path}.png")) unlink("{$path}.png");
+                  break;
+                }
+
+                Json::get($headerStatus[200], (Object)[
+                      "code" => 200,
+                      "message" => "Cadastro efetuado com sucesso."
+                  ]);
               break;
             }
 
-
-            // echo "[LOG]Entrou no IF/n";
-            if(@$post->product_EAN){
-              // echo "entrou";
-              $eanTemp = Model::get($dafel,(Object)[
-                "top" => 1,
-                "tables" => [
-                    "CodigoProduto"
-                ],
-                "fields" => [
-                    "CdChamada"
-                ],
-                "filters" => [
-                    ["IdTipoCodigoProduto", "s", "=", $EAN],
-                    ["IdProduto", "s", "=", $post->product_id]
-                ]
-              ]);
-
-              if(@$eanTemp->CdChamada){
-                //Update
-                // echo "Teste";
-                Model::update($dafel,(Object)[
-                  "top" => 1,
-                  "table" =>
-                      "CodigoProduto",
-                  "fields" => [
-                      ["CdChamada", "s", $post->product_EAN],
-                  ],
-                  "filters" => [
-                      ["IdTipoCodigoProduto", "s", "=", $EAN],
-                      ["IdProduto", "s", "=", $post->product_id]
-                  ]
-                ]);
-              }
-              else {
-                //Insert
-                $query = Model::nextCode($dafel,(Object)[
-                        "table" => "CodigoProduto",
-                        "field" => "IdCodigoProduto",
-                        "increment" => "S",
-                        "base36encode" => 1
-                    ]);
-
-                // var_dump($query);
-
-                Model::insert($dafel,(Object)[
-                  "top" => 1,
-                  "table" =>
-                      "CodigoProduto",
-                  "fields" => [
-                      ["CdChamada", "s", $post->product_EAN],
-                      ["IdCodigoProduto", "s", $query],
-                      ["IdProduto", "s", $post->product_id],
-                      ["IdTipoCodigoProduto", "s", $EAN],
-                    	["StCodigoPrincipal", "s", 'N']
-                  ],
-                ]);
-
-              }
-            }
-            Json::get($headerStatus[200], (Object)[
-                  "code" => 200,
-                  "message" => "Cadastro efetuado com sucesso."
-              ]);
-          }
         break;
     }
+  }
 ?>
