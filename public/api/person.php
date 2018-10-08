@@ -25,10 +25,11 @@
             }
 
             $person = Model::get($dafel,(Object)[
-                "tables" => [ "Pessoa P (NoLock)", "PessoaCategoria PC (NoLock)" ],
-                "fields" => [ "P.IdPessoa", "P.CdChamada", "P.NmPessoa", "P.CdCPF_CGC" ],
+                "tables" => [ "Pessoa P (NoLock)", "PessoaCategoria PC (NoLock)", "PessoaComplementar PCM (NoLock)" ],
+                "fields" => [ "P.IdPessoa", "P.CdChamada", "P.NmPessoa", "P.CdCPF_CGC", "PCM.VlLimiteCredito" ],
                 "filters" => [
                     [ "P.IdPessoa = PC.IdPessoa" ],
+                    [ "P.IdPessoa = PCM.IdPessoa" ],
                     [ "P.IdPessoa", "s", "=", $post->person_id ],
                     [ "PC.IdCategoria", "s", "=", $post->person_category_id ]
                 ]
@@ -77,6 +78,22 @@
                 "table" => "PessoaComplementar",
                 "fields" => [[ "VlLimiteCredito", "d", "0" ]],
                 "filters" => [[ "IdPessoa", "s", "=", $post->person_id ]]
+            ]);
+
+            $document = Model::get($dafel,(Object)[
+                "table" => "Documento",
+                "fields" => [ "DtUltimaCompra=CONVERT(VARCHAR(10),D.DtEmissao),126)"]
+            ]);
+
+            Model::insert($commercial,(Object)[
+                "table" => "[CreditLog]",
+                "fields" => [
+                    [ "person_id", "s", $person->IdPessoa ],
+                    [ "origin", "s", "budget-person-active" ],
+                    [ "last_credit_value", "d", $person->VlLimiteCredito ],
+                    [ "last_bill_date", "s", $person->DtUltimaCompra ],
+                    [ "credit_log_date", "s", date("Y-m-d H:i:s") ],
+                ]
             ]);
 
             postLog((Object)[

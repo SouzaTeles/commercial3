@@ -11,7 +11,6 @@
     include "func.php";
 
     loadClass();
-
     $conn = json_decode(file_get_contents( PATH_DATA . "conn.json" ));
 
     $dafel = new MSSQL($conn->dafel);
@@ -52,7 +51,7 @@
                 "get_user_profile_access" => 1
             ]
         ]);
-        if( @$login ) {
+        if( @$login ){
             $login->user_current_session = (Object)$_SESSION;
             $login->access = (Object)array_merge(
                 (Array)$login->user_access,
@@ -60,6 +59,11 @@
             );
             unset($login->user_access);
             unset($login->user_profile->user_profile_access);
+            Model::update($commercial,(Object)[
+                "table" => "[User]",
+                "fields" => [[ "user_timestamp", "i", strtotime(date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s"))) . " + 2 minutes") ]],
+                "filters" => [[ "user_id", "i", "=", $login->user_id ]]
+            ]);
         }
     }
 

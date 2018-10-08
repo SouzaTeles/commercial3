@@ -212,6 +212,52 @@
             }
         }
 
+        public static function clearCredit()
+        {
+            GLOBAL $dafel, $commercial;
+
+            $date = date("Y-m-d", strtotime(date("Y-m-d", strtotime(date("Y-m-d"))) . " - 1 year"));
+            $people = Model::getList($dafel,(Object)[
+                "top" => 3,
+                "tables" => [
+                    "Pessoa P",
+	                "PessoaComplementar PC"
+                ],
+                "fields" => [
+                    "P.IdPessoa",
+                    "P.CdChamada",
+                    "P.NmPessoa",
+                    "PC.VlLimiteCredito",
+                    "DtUltimaCompra=CONVERT(VARCHAR(10),(SELECT TOP 1 D.DtEmissao FROM Documento D WHERE D.IdPessoa = P.IdPessoa ORDER BY D.DtEmissao DESC),126)"
+                ],
+                "filters" => [
+                    [ "P.IdPessoa = PC.IdPessoa" ],
+                    [ "ISNULL(PC.VlLimiteCredito,0)", "d", ">", 0.01 ],
+                    [ "(SELECT TOP 1 D.DtEmissao FROM Documento D WHERE D.IdPessoa = P.IdPessoa ORDER BY D.DtEmissao DESC)", "s", "<", $date ]
+                ]
+            ]);
+
+            if( @$people ){
+                foreach( $people as $person ){
+                    Model::update($dafel,(Object)[
+                        "table" => "PessoaComplementar",
+                        "fields" => [[ "VlLimiteCredito", "d", "0.01" ]],
+                        "filters" => [[ "IdPessoa", "s", "=", $person->IdPessoa ]]
+                    ]);
+                    Model::insert($commercial,(Object)[
+                        "table" => "[CreditLog]",
+                        "fields" => [
+                            [ "person_id", "s", $person->IdPessoa ],
+                            [ "origin", "s", utf8_decode("serviço") ],
+                            [ "last_credit_value", "d", $person->VlLimiteCredito ],
+                            [ "last_bill_date", "s", $person->DtUltimaCompra ],
+                            [ "credit_log_date", "s", date("Y-m-d H:i:s") ],
+                        ]
+                    ]);
+                }
+            }
+        }
+
     }
 
 ?>

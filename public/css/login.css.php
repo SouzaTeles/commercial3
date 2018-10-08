@@ -7,7 +7,7 @@ html, body, .login
 
 .container
 {
-    border: none;
+    border: none !important;
 }
 
 .box

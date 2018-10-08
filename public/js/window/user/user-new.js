@@ -125,7 +125,6 @@ User = {
                 }],
                 hidden: function(){
                     if( !!window.opener ){
-                        window.opener.User.getList();
                         window.close();
                     } else {
                         location.reload();
@@ -197,6 +196,13 @@ User = {
                 User.edit();
             }
         });
+        $('#button-cancel').click(function(e){
+            if( !!window.opener ){
+                window.close();
+            } else {
+                location.reload();
+            }
+        });
         $('#user_name').on('keyup',function(){
             $('header .user-name').text($(this).val());
         });
@@ -264,7 +270,7 @@ User = {
     },
     getProfile: function(){
         global.post({
-            url: global.uri.uri_public_api + 'user_profile.php?action=getList',
+            url: global.uri.uri_public_api + 'profile.php?action=getList',
             dataType: 'json'
         },function(data){
             User.profiles = data;

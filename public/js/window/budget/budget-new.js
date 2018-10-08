@@ -1028,8 +1028,10 @@ Item = {
         Budget.budget.items.push(Item.item);
         Budget.budget.budget_value += Item.item.budget_item_value_total;
         Budget.budget.budget_value_total += Item.item.budget_item_value_total;
+        Budget.budget.budget_value_discount += Item.item.budget_item_value_discount;
         Budget.budget.budget_value = parseFloat(Budget.budget.budget_value.toFixed(2));
         Budget.budget.budget_value_total = parseFloat(Budget.budget.budget_value_total.toFixed(2));
+        Budget.budget.budget_value_discount = parseFloat(Budget.budget.budget_value_discount.toFixed(2));
         Item.init();
         Item.total();
         Item.data2form();
@@ -1194,8 +1196,9 @@ Item = {
                 title: 'Sim',
                 action: function(){
                     var item = Budget.budget.items[key];
-                    Budget.budget.budget_value -= item.budget_item_value_total;
+                    Budget.budget.budget_value -= item.budget_item_value;
                     Budget.budget.budget_value_total -= item.budget_item_value_total;
+                    Budget.budget.budget_value_discount -= item.budget_item_value_discount;
                     Budget.budget.items.splice(key,1);
                     Item.showList();
                     Item.total();
@@ -1252,17 +1255,18 @@ Item = {
         });
     },
     discountAliquot: function(budget_item_aliquot_discount){
-        Item.item.budget_item_aliquot_discount = budget_item_aliquot_discount;
+        Item.item.budget_item_aliquot_discount = parseFloat(budget_item_aliquot_discount);
         Item.item.budget_item_value_discount = parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2));
-        Item.item.budget_item_aliquot_discount = (Item.item.budget_item_value_discount / (Item.item.budget_item_value ? Item.item.budget_item_value : 1)) * 100;
+        //Item.item.budget_item_aliquot_discount = (Item.item.budget_item_value_discount / (Item.item.budget_item_value ? Item.item.budget_item_value : 1)) * 100;
         Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
         $('#button-budget-item-add').focus().select();
         Item.data2form();
     },
     edit: function(key){
         var item = Budget.budget.items[key];
-        Budget.budget.budget_value -= item.budget_item_value_total;
+        Budget.budget.budget_value -= item.budget_item_value;
         Budget.budget.budget_value_total -= item.budget_item_value_total;
+        Budget.budget.budget_value_discount -= item.budget_item_value_discount;
         Budget.budget.items.splice(key,1);
         Item.item = item;
         Item.data2form();

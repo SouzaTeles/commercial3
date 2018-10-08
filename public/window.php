@@ -16,6 +16,8 @@
 
     $smarty->assign( "module", $get->module );
     $smarty->assign( "action", $get->action );
+    $smarty->assign( "pages", json_decode(file_get_contents(PATH_DATA."pages.json")) );
+    $smarty->assign( "profile", json_decode(file_get_contents(PATH_DATA."profile.json")) );
 
     foreach( get_defined_constants(true)["user"] as $constant => $value ){
         $smarty->assign( $constant, $value );

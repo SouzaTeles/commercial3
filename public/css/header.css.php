@@ -108,6 +108,7 @@ header .cover
 {
     width: 60px;
     height: 60px;
+    margin-left: 10px;
     border-radius: 50%;
     background-size: cover;
     background-position: center;
@@ -146,4 +147,13 @@ header .user .info,
 header .user button
 {
     float: left;
+}
+
+header .user button[data-action="chat"],
+header .user button[data-action="alerts"]
+{
+    font-size: 18px;
+    margin: 12px 4px;
+    background: #efefef;
+    border-radius: 50% !important;
 }

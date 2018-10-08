@@ -17,17 +17,6 @@
 
             GLOBAL $commercial;
 
-            if( @$gets["get_user_profile_client"] || @$_POST["get_user_profile_client"] && @$data->client_id ){
-                $this->user_profile_client = Model::get( $commercial, (Object)[
-                    "class" => "Client",
-                    "tables" => [ "client" ],
-                    "filters" => [
-                        [ "client_id", "i", "=", $data->client_id ]
-                    ],
-                    "gets" => $gets
-                ]);
-            }
-
 			if( @$gets["get_user_profile_access"] || @$_POST["get_user_profile_access"] ){
 				$this->user_profile_access = UserProfileAccess::treeAccess( Model::getList( $commercial, (Object)[
 				    "class" => "UserProfileAccess",

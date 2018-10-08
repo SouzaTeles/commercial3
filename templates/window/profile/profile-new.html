@@ -1,0 +1,68 @@
+<header class="box-shadow {if empty($smarty.get.profile_id)}new{else}edit{/if}">
+    {if empty($smarty.get.profile_id)}
+        <div class="title"><i class="fa fa-plus"></i> Novo Perfil</div>
+    {else}
+        <div class="title"><i class="fa fa-edit"></i> Editar Perfil</div>
+    {/if}
+    <div class="profile-icon">
+        <i class="fa fa-user-circle-o"></i>
+    </div>
+    <div class="profile-name"></div>
+</header>
+<div class="panel-group">
+    <div class="panel panel-profile">
+        <div class="panel-heading ph-blue">
+            <i class="fa fa-user-circle"></i> Dados do Perfil
+        </div>
+        <div class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="profile_name">Nome</label>
+                        <input type="text" class="form-control" id="profile_name" name="profile_name"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {foreach from=$profile key=key item=data}
+        <div class="panel panel-profile">
+            <div class="panel-heading ph-blue collapsed" data-toggle="collapse" href="#collapse{$key}">
+                <i class="fa {$pages->$key->icon}"></i> {$data->name}
+                <i class="fa fa-chevron-up"></i>
+                <i class="fa fa-chevron-down"></i>
+            </div>
+            <div id="collapse{$key}" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="row">
+                        {foreach from=$data key=j item=access}
+                            {if $j != "name"}
+                                <div class="col-xs-12 col-md-3 text-center">
+                                    <div class="form-group">
+                                        <label for="{$key}_{$j}">{$access->name}</label>
+                                        <input type="checkbox" class="form-control" id="{$key}_{$j}" name="{$key}_{$j}" />
+                                    </div>
+                                </div>
+                            {/if}
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/foreach}
+</div>
+<footer class="panel-footer">
+    <button type="button" id="button-cancel" class="btn btn-lg btn-red">
+        <i class="fa fa-angle-double-left"></i> Cancelar
+    </button>
+    {if !empty($smarty.get.profile_id)}
+        <button type="submit" id="button-edit" class="btn btn-lg btn-blue pull-right">
+            <i class="fa fa-floppy-o"></i> Atualizar
+        </button>
+    {else}
+        <button type="submit" id="button-add" class="btn btn-lg btn-green pull-right">
+            <i class="fa fa-plus"></i> Cadastrar
+        </button>
+    {/if}
+</footer>
+<script> var access = {$profile|@json_encode}; </script>
