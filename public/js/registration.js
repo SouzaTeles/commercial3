@@ -9,10 +9,10 @@ Item = {
             delay: 500,
             last: '',
             timer: 0
-        },
+        }
     },
-    Product = {},
-    ProductImage = {
+Product = {},
+ProductImage = {
         del: function() {
             global.modal({
                 icon: 'fa-question-circle-o',
@@ -62,38 +62,72 @@ Item = {
             });
         },
         up: function(image) {
-            product_image64 = image;
-            console.log("LOG 2");
-            global.post({
-                url: global.uri.uri_public_api + 'product_group.php?action=up',
-                data: {
-                    product_id: Product.product_id,
-                    product_EAN: Product.product_EAN,
-                    product_image64: product_image64,
-                    product_img_act: Registration.img_act
-                },
-                dataType: 'json'
-            }, function(data) {
-                if (data.code == 200) {
-                    Registration.modification = false;
-                    Registration.img_act = 'N';
-                }
-                console.log(data);
-                global.modal({
-                    icon: 'fa-warning',
-                    title: 'Atenção',
-                    html: '<p>' + data.message + '</p>',
-                    buttons: [{
-                        icon: 'fa-check',
-                        title: 'Ok',
-                        action: function() {
-                            window.close();
+            switch (Registration.type) {
+                case 'P':
+                    product_image64 = image;
+                    console.log("LOG 2");
+                    global.post({
+                        url: global.uri.uri_public_api + 'product_group.php?action=up',
+                        data: {
+                            product_id: Product.product_id,
+                            product_EAN: Product.product_EAN,
+                            product_image64: product_image64,
+                            registration_type: Registration.type,
+                            product_img_act: Registration.img_act
+                        },
+                        dataType: 'json'
+                    }, function(data) {
+                        if (data.code == 200) {
+                            Registration.modification = false;
+                            Registration.img_act = 'N';
                         }
-                    }]
-                });
+                        console.log(data);
+                        global.modal({
+                            icon: 'fa-warning',
+                            title: 'Atenção',
+                            html: '<p>' + data.message + '</p>',
+                            buttons: [{
+                                icon: 'fa-check',
+                                title: 'Ok',
+                                action: function() {
+                                    window.close();
+                                }
+                            }]
+                        });
 
-            });
-            $('#file-image-product').filestyle('clear');
+                    });
+                    $('#file-image-product').filestyle('clear');
+                    break;
+
+                case 'G':
+                    product_image64 = image;
+                    global.post({
+                        url: global.uri.uri_public_api + 'product_group.php?action=up',
+                        data: {
+                            product_list: Registration.list,
+                            product_image64: product_image64,
+                            registration_type: Registration.type,
+                            product_img_act: 'I'
+                        },
+                        dataType: 'json'
+                    }, function(data) {
+                      global.modal({
+                          icon: 'fa-warning',
+                          title: 'Atenção',
+                          html: '<p>' + data.message + '</p>',
+                          buttons: [{
+                              icon: 'fa-check',
+                              title: 'Ok',
+                              action: function() {
+                                  window.close();
+                              }
+                          }]
+                      });
+                    });
+                    break;
+            }
+
+            //
         }
     };
 Registration = {
@@ -101,7 +135,7 @@ Registration = {
     img_act: 'N',
     //Utiliza-se false para não houve alterações e true quando algo for alterado
     modification: false,
-
+    //Define a aba das alterações que estão sendo feitas.
     type: 'P',
 
     product: {},
@@ -116,6 +150,8 @@ Registration = {
         ]
     }),
     imagem: {},
+    productList: {},
+    list: [],
 
     imagePreview: function() {
         var reader = new FileReader();
@@ -187,22 +223,11 @@ Registration = {
                     dataType: "json"
                 }, function(ret) {
                     if (ret) {
-                        //console.log(ret);
-                        //console.log(ret[0].group_info.product_group_name);
-                        //console.log()
                         $('#registration_product_group').val(ret[0].group_info.product_group_name);
                         $('#registration_product_group_code').val(ret[0].group_info.product_group_code);
-                        //$('#')
-
                         Registration.products = ret[0].product_info;
                         Registration.showList();
                     }
-
-                    //  $('#registration_product_EAN').val(data.product_EAN);
-                    //  $('#registration_product_code').val(data.product_code);
-                    /*  $('#picplace').css({
-                          "background-image": "url(" + (data.product_image || "") +  ")"
-                      });*/
                 });
             }
         });
@@ -218,14 +243,12 @@ Registration = {
                         data: {
                             type: 'G',
                             limit: Item.typeahead.items,
-                            //  company_id: Budget.budget.company_id,
                             item_name: $('#registration_product_group').val()
                         },
                         url: global.uri.uri_public_api + 'product_group.php?action=typeahead',
                         callBack: function(item) {
                             $('#registration_product_group').val(item.item_name);
                             $('#registration_product_group_code').val(item.item_code);
-                            //$('#registration_product_EAN').val(item.item_EAN);
                         }
                     });
                 }, Item.typeahead.delay);
@@ -270,7 +293,8 @@ Registration = {
             Registration.type = 'P';
         });
 
-        $('#product-group-tab').click(function() {
+        $('#product-group-tab').click(function(event) {
+            event.preventDefault();
             if (Registration.modification) {
                 global.modal({
                     icon: 'fa-warning',
@@ -285,9 +309,8 @@ Registration = {
                                 "background-image": "none"
                             });
                             $('#button-image-product-remove').prop("disabled", true);
+                            $('#file-image-product').filestyle("disabled", true);
                             window.close();
-
-                            //Registration.beforePost();
                         }
                     }, {
                         icon: 'fa-times',
@@ -308,25 +331,14 @@ Registration = {
                 $('#product-image-cover').css({
                     "background-image": "none"
                 });
-                //  $('#file-image-product').filestyle('clear');
+
             }
         });
+
         $('#button-image-product-remove').prop("disabled", true);
 
-        $('#product-check-master').click(function() {
-            if ($('#product-check-master').prop("checked")) {
-                $('.product-check').prop("checked", true);
-                $('#file-image-product').filestyle("disabled", false);
-            } else if (!$('#product-check-master').prop("checked")) {
-                $('.product-check').prop("checked", false)
-                $('#file-image-product').filestyle("disabled", true);
-            }
-        });
 
-        $('.product-check').click(function() {
-            $('#file-image-product').filestyle("disabled", false);
-            console.log("Teste....")
-        });
+
 
         $('#button-image-product-remove').click(function() {
             Registration.imageRemove();
@@ -383,7 +395,10 @@ Registration = {
                     }
                     break;
                 case 'G':
-                    alert("Vai dar bom...")
+                    $('.product-check').each(function(key, item){
+                      Registration.list.push($(this).closest(".product-check").attr("data-id"));
+                    });
+                    ProductImage.up(Registration.imagem);
                     break;
                 default:
                     alert("Algo de errado não está certo.")
@@ -393,44 +408,52 @@ Registration = {
     },
     //};
 
-
     beforePost: function() {
-        global.post({
-            url: global.uri.uri_public_api + 'product_group.php?action=get',
-            data: {
-                type: 'P',
-                product_code: $("#registration_product_code").val(),
-            },
-            dataType: "json"
-        }, function(data) {
-            // console.log(data);
-            Product = data;
-            console.log(Product);
-            Registration.showInfo();
-            console.log(data.length);
-            if (data.length) {
-                global.modal({
-                    icon: 'fa-warning',
-                    title: 'Atenção',
-                    html: function() {
-                        var html = '';
-                        $(data).each(function(key, item) {
-                            console.log(item);
-                            html += '<p>' + item.product_code + " | " + item.product_name + '</p>';
-                        });
-                        console.log(data);
-                        return html;
+        switch (Registration.type) {
+            case 'P':
+                global.post({
+                    url: global.uri.uri_public_api + 'product_group.php?action=get',
+                    data: {
+                        type: 'P',
+                        product_code: $("#registration_product_code").val(),
                     },
-                    buttons: [{
-                        icon: 'fa-check',
-                        title: 'Ok',
-                        action: function() {
-                            window.close();
-                        }
-                    }]
+                    dataType: "json"
+                }, function(data) {
+                    // console.log(data);
+                    Product = data;
+                    console.log(Product);
+                    Registration.showInfo();
+                    console.log(data.length);
+                    if (data.length) {
+                        global.modal({
+                            icon: 'fa-warning',
+                            title: 'Atenção',
+                            html: function() {
+                                var html = '';
+                                $(data).each(function(key, item) {
+                                    console.log(item);
+                                    html += '<p>' + item.product_code + " | " + item.product_name + '</p>';
+                                });
+                                console.log(data);
+                                return html;
+                            },
+                            buttons: [{
+                                icon: 'fa-check',
+                                title: 'Ok',
+                                action: function() {
+                                    window.close();
+                                }
+                            }]
+                        });
+                    }
                 });
-            }
-        });
+                break;
+            case 'G':
+
+                break;
+            default:
+
+        }
     },
 
     //Encaminha cada informação do retorno para o elemento correto na pagina
@@ -509,8 +532,15 @@ Registration = {
     showList: function() {
         //Limpa a tabela
         Registration.table.clear();
+        //  Registration.productList = [];
+        //  Registration.productList[1] = 1;
         //Entra no loop de exibição para cada item do array de produtos
         $.each(Registration.products, function(key, product) {
+            Registration.productList= {
+              product_id: product.product_id,
+              update_status: 'N'
+            };
+
             //Adiciona uma nova linha na lista de exibição
             Registration.table.row.add([
                 '<input data-id="' + product.product_id + '" type="checkbox" class="product-check" data-key="1">',
@@ -520,5 +550,29 @@ Registration = {
             ])
         })
         Registration.table.draw();
+
+        $('#product-check-master').click(function() {
+          console.log("click...");
+          if(  $('#product-check-master').is(":checked") ){
+            $('.product-check').prop("checked", true);
+          }
+          else {
+            $('.product-check').prop("checked", false)
+          }
+
+        });
+        $('.product-check').click(function(event) {
+            var id = $(this).closest(".product-check").attr("data-id");
+            console.log(id);
+            if ($('#product-check-master').prop("checked", true)) {
+                $('#file-image-product').filestyle("disabled", false);
+                console.log("Filestyle false")
+            }
+            if ($('#' + id).prop("checked", true))
+                console.log("01")//Registration.productList[id] = 'Y'
+            else {
+                console.log("02")//Registration.productList[id] = 'N'
+            }
+        });
     }
 }
