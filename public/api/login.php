@@ -54,7 +54,8 @@
         Model::update( $commercial, (Object)[
             "table" => "[User]",
             "fields" => [
-                [ "user_login", "s", date("Y-m-d H:i:s") ]
+                [ "user_login", "s", date("Y-m-d H:i:s") ],
+                [ "user_timestamp", "i", strtotime(date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s"))) . " + 2 minutes") ]
             ],
             "filters" => [
                 [ "user_id", "s", "=", $user->user_id ]

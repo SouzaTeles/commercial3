@@ -8,7 +8,7 @@
 		}
 	},
 	"budget": {
-		"name": "Commercial > Pedidos",
+		"name": "Orçamentos",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -105,6 +105,14 @@
 			"data_type": "bool"
 		}
 	},
+	"general": {
+		"name": "Menu Geral",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
 	"followup": {
 		"name": "Follow Up",
 		"access": {
@@ -179,14 +187,6 @@
 	},
 	"production": {
 		"name": "Produção",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-	"report": {
-		"name": "Relatórios",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -317,7 +317,7 @@
 		}
 	},
 	"user": {
-		"name": "Configurações - Usuários",
+		"name": "Usuários",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -340,7 +340,7 @@
 		}
 	},
 	"profile": {
-		"name": "Configurações - Perfis de Usuário",
+		"name": "Perfis de Usuário",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -360,10 +360,15 @@
 			"name": "Excluir",
 			"value": "N",
 			"data_type": "bool"
+		},
+		"audit": {
+			"name": "Auditoria",
+			"value": "N",
+			"data_type": "bool"
 		}
 	},
 	"company": {
-		"name": "Configurações - Geral >> Empresas",
+		"name": "Empresas",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -386,7 +391,7 @@
 		}
 	},
 	"seller": {
-		"name": "Configurações - Geral >> Representantes",
+		"name": "Representantes",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -409,7 +414,7 @@
 		}
 	},
 	"calendar": {
-		"name": "Configurações - Geral >> Calendário",
+		"name": "Calendário",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -417,7 +422,7 @@
 		}
 	},
 	"email": {
-		"name": "Configurações - Geral >> E-mail",
+		"name": "E-mail",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -445,7 +450,7 @@
 		}
 	},
 	"operation": {
-		"name": "Configurações - Geral >> Operações",
+		"name": "Operações",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -458,7 +463,7 @@
 		}
 	},
 	"reports": {
-		"name": "Configurações - Geral >> Relatórios",
+		"name": "Relatórios",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -486,7 +491,7 @@
 		}
 	},
 	"service": {
-		"name": "Configurações - Geral >> Serviços",
+		"name": "Serviços",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",

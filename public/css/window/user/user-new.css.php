@@ -51,7 +51,7 @@ header .user-name
 .panel-group
 {
     width: 960px;
-    margin: 30px auto;
+    margin: 0 auto 30px;
 }
 
 .panel-group .panel+.panel

@@ -51,6 +51,12 @@ User = {
             });
         });
     },
+    edit: function(key,user_id){
+        if( global.login.access.user.edit.value == 'N' ) return;
+        global.window({
+            url: global.uri.uri_public + 'window.php?module=user&action=new&user_id=' + user_id
+        });
+    },
     events: function(){
         $('#user_search').keyup(function(){
             User.table.search(this.value).draw();
@@ -60,7 +66,7 @@ User = {
         });
         $('#button-new').click(function(){
             User.new();
-        })
+        });
     },
     getList: function(){
         global.post({
@@ -139,11 +145,5 @@ User = {
         });
         $('footer div').html('<i class="fa fa-users"></i> ' + User.users.length + ' Usuários');
         global.tooltip();
-    },
-    edit: function(key,user_id){
-        if( global.login.access.user.edit.value == 'N' ) return;
-        global.window({
-            url: global.uri.uri_public + 'window.php?module=user&action=new&user_id=' + user_id
-        });
     }
 };

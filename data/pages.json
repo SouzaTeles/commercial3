@@ -10,6 +10,11 @@
 		"title": "Orçamentos",
 		"parent": "sale"
 	},
+	"calendar": {
+		"key": "calendar",
+		"icon": "fa-calendar",
+		"title": "Calendário"
+	},
 	"client": {
 		"key": "client",
 		"icon": "fa-user",
@@ -50,11 +55,21 @@
 		"title": "Devoluções",
 		"parent": "sale"
 	},
+	"email": {
+		"key": "email",
+		"icon": "fa-envelope-o",
+		"title": "Caixa de Mensagens"
+	},
 	"followup": {
 		"key": "followup",
 		"icon": "fa-phone-square",
 		"title": "Follow Up",
 		"parent": "crm"
+	},
+	"general": {
+		"key": "general",
+		"icon": "fa-bars",
+		"title": "Geral"
 	},
 	"glass": {
 		"key": "glass",
@@ -94,6 +109,11 @@
 		"title": "Gestão",
 		"parent": "logistics"
 	},
+	"operation": {
+		"key": "operation",
+		"icon": "fa-list",
+		"title": "Operações"
+	},
 	"package": {
 		"key": "sale",
 		"icon": "fa-cube",
@@ -111,27 +131,27 @@
 		"title": "Pessoas",
 		"parent": "rh"
 	},
-	"profile": {
-		"key": "profile",
-		"icon": "fa-user-circle-o",
-		"title": "Perfil de Usuário",
-		"parent": "config"
-	},
-	"report": {
-		"key": "report",
-		"icon": "fa-bar-chart",
-		"title": "Relatórios"
-	},
 	"production": {
 		"key": "production",
 		"icon": "fa-dropbox",
 		"title": "Produção"
+	},
+	"profile": {
+		"key": "profile",
+		"icon": "fa-user-circle-o",
+		"title": "Perfis de Usuário",
+		"parent": "config"
 	},
 	"registration": {
 		"key": "registration",
 		"icon": "fa-plus-square-o",
 		"title": "Cadastro",
 		"parent": "stock"
+	},
+	"reports": {
+		"key": "reports",
+		"icon": "fa-bar-chart",
+		"title": "Relatórios"
 	},
 	"rh": {
 		"key": "rh",
@@ -143,17 +163,21 @@
 		"icon": "fa-usd",
 		"title": "Vendas"
 	},
+	"seller": {
+		"key": "seller",
+		"icon": "fa-usd",
+		"title": "Representantes"
+	},
+	"service": {
+		"key": "service",
+		"icon": "fa-cogs",
+		"title": "Serviços"
+	},
 	"sge": {
 		"key": "sale",
 		"icon": "fa-lightbulb-o",
 		"title": "Assistente SGE",
 		"parent": "stock"
-	},
-	"slide": {
-		"key": "slide",
-		"icon": "fa-picture-o",
-		"title": "Slides",
-		"parent": "config"
 	},
 	"shipment": {
 		"key": "sale",
@@ -166,6 +190,12 @@
 		"icon": "fa-cogs",
 		"title": "SisProd",
 		"parent": "production"
+	},
+	"slide": {
+		"key": "slide",
+		"icon": "fa-picture-o",
+		"title": "Slides",
+		"parent": "config"
 	},
 	"stock": {
 		"key": "stock",

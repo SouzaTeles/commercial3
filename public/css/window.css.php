@@ -2,8 +2,8 @@
 
 .container
 {
-    border: none;
     padding: 60px 0 60px;
+    border: none !important;
 }
 
 footer
