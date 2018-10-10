@@ -337,6 +337,11 @@
 			"name": "Auditoria",
 			"value": "N",
 			"data_type": "bool"
+		},
+		"user_pass": {
+			"name": "Alterar a senha do usuario",
+			"value": "N",
+			"data_type": "bool"
 		}
 	},
 	"profile": {
