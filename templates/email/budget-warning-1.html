@@ -1,0 +1,8 @@
+Atenção!<br/>
+O orçamento {$budget->budget_code} foi exportado com alguns produtos sem a aliquota de repasse na duplicata.<br/>
+Verifique!<br/><br/>
+<b>Empresa:</b> {$smarty.post.company_id}<br/>
+<b>Produtos:</b><br/>
+{foreach from=$items item=item}
+    &bull; {$item.product_code} - {$item.product_name}<br/>
+{/foreach}

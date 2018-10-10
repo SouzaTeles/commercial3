@@ -248,7 +248,7 @@
                         "table" => "[CreditLog]",
                         "fields" => [
                             [ "person_id", "s", $person->IdPessoa ],
-                            [ "origin", "s", utf8_decode("serviço") ],
+                            [ "origin", "s", "service" ],
                             [ "last_credit_value", "d", $person->VlLimiteCredito ],
                             [ "last_bill_date", "s", $person->DtUltimaCompra ],
                             [ "credit_log_date", "s", date("Y-m-d H:i:s") ],
