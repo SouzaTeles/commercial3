@@ -326,7 +326,6 @@ Registration = {
                     }
                 });
             } else {
-
                 Registration.type = 'G';
                 $('#product-image-cover').css({
                     "background-image": "none"
@@ -352,7 +351,7 @@ Registration = {
         $('#save-product').click(function() {
             switch (Registration.type) {
                 case 'P':
-                    if (!Registration.EanValidate($('#registration_product_EAN').val()) && $('#registration_product_EAN').val()) {
+                    if (!Registration.eanValidate($('#registration_product_EAN').val()) && $('#registration_product_EAN').val()) {
                         global.modal({
                             icon: 'fa-warning',
                             title: 'Atenção',
@@ -421,20 +420,44 @@ Registration = {
                 }, function(data) {
                     // console.log(data);
                     Product = data;
-                    console.log(Product);
+                    Registration.product = data;
+                    console.log(Registration.product);
                     Registration.showInfo();
-                    console.log(data.length);
+                    //console.log(data.length);
                     if (data.length) {
+                      global.post({
+                          url: global.uri.uri_public + 'api/modal.php?modal=modal-registration-product',
+                          data: {product: Registration.product},
+                          dataType: 'html'
+                      },function(html){
+                          global.modal({
+                              id: 'modal-registration-product',
+                              class: 'modal-registration-product',
+                              icon: 'fa-cubes',
+                              title: 'Listagem de produtos',
+                              html: html,
+                              buttons: [{
+                                  icon: 'fa-times',
+                                  title: 'Cancelar',
+                                  class: 'pull-left'
+                              },{
+                                  icon: 'fa-pencil',
+                                  title: 'Atualizar',
+                                  unclose: true,
+                                  id: 'button-pass-change'
+                              }]
+                          });
+                      });
+/*
                         global.modal({
                             icon: 'fa-warning',
                             title: 'Atenção',
                             html: function() {
                                 var html = '';
                                 $(data).each(function(key, item) {
-                                    console.log(item);
                                     html += '<p>' + item.product_code + " | " + item.product_name + '</p>';
                                 });
-                                console.log(data);
+                                //console.log(data);
                                 return html;
                             },
                             buttons: [{
@@ -445,7 +468,7 @@ Registration = {
                                 }
                             }]
                         });
-                    }
+                */    }
                 });
                 break;
             case 'G':
@@ -459,16 +482,16 @@ Registration = {
     //Encaminha cada informação do retorno para o elemento correto na pagina
     showInfo: function() {
 
-        $('#registration_product_name').val(Product.product_name);
-        $('#registration_product_code').val(Product.product_code);
+        $('#registration_product_name').val(Registration.product.product_name);
+        $('#registration_product_code').val(Registration.product.product_code);
         $('#registration_product_EAN').prop("disabled", false);
-        $('#registration_product_EAN').val(Product.product_EAN);
+        $('#registration_product_EAN').val(Registration.product.product_EAN);
         $('#product-image-cover').css({
-            "background-image": "url(" + (Product.product_image || "") + ")"
+            "background-image": "url(" + (Registration.product.product_image || "") + ")"
         });
         $('#file-image-product').filestyle("disabled", false);
 
-        if (Product.product_image) {
+        if (Registration.product.product_image) {
             $('#button-image-product-remove').prop("disabled", false);
         } else {
             $('#button-image-product-remove').prop("disabled", true);
@@ -476,9 +499,9 @@ Registration = {
     },
 
     //Validação de codigo de barras
-    EanValidate: function(EAN) {
+    eanValidate: function(EAN) {
         var soma = 0;
-        switch (EAN.length) {
+        switch (EAN.length){
             case 8:
             case 12:
             case 14:
@@ -535,8 +558,8 @@ Registration = {
         //  Registration.productList = [];
         //  Registration.productList[1] = 1;
         //Entra no loop de exibição para cada item do array de produtos
-        $.each(Registration.products, function(key, product) {
-            Registration.productList= {
+        $.each(Registration.products, function(key, product){
+            Registration.productList = {
               product_id: product.product_id,
               update_status: 'N'
             };
@@ -553,26 +576,18 @@ Registration = {
 
         $('#product-check-master').click(function() {
           console.log("click...");
-          if(  $('#product-check-master').is(":checked") ){
+          if( $('#product-check-master').is(":checked")){
+            //Marca todos os checks
             $('.product-check').prop("checked", true);
+            //Habilita o botão de procurar
+            $('#file-image-product').filestyle("disabled", false);
           }
           else {
+            //Desmarca todos os checks
             $('.product-check').prop("checked", false)
+            //Desabilita o botão de procurar
+            $('#file-image-product').filestyle("disabled", true);
           }
-
-        });
-        $('.product-check').click(function(event) {
-            var id = $(this).closest(".product-check").attr("data-id");
-            console.log(id);
-            if ($('#product-check-master').prop("checked", true)) {
-                $('#file-image-product').filestyle("disabled", false);
-                console.log("Filestyle false")
-            }
-            if ($('#' + id).prop("checked", true))
-                console.log("01")//Registration.productList[id] = 'Y'
-            else {
-                console.log("02")//Registration.productList[id] = 'N'
-            }
         });
     }
 }
