@@ -1,5 +1,6 @@
-.modal-registration-product .dataTables_scrollHeadInner,
-.modal-registration-product .dataTables_scrollHeadInner .dataTable
+#modal-registration-product .dataTables_scrollHeadInner,
+#modal-registration-product .dataTables_scrollHeadInner .dataTable
 {
     min-width: 100%;
+
 }

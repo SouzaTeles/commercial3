@@ -23,14 +23,17 @@ ModalRegistrationProduct = {
     //console.log(ModalRegistrationProduct.product);
     //Adiciona uma nova linha na lista de exibição
     $.each(ModalRegistrationProduct.product, function(key, product){
-      ModalRegistrationProduct.table.row.add([
+    var row =  ModalRegistrationProduct.table.row.add([
           //'<input data-id="' + product.product_id + '" type="checkbox" class="product-check" data-key="1">',
           product.product_code,
           product.product_name,
           !!product.product_classification ? product.product_classification : '-',
           !!product.product_EAN ? product.product_EAN : '-'
-      ])
-      Registration.table.draw();
+      ]).node();
+      $(row).on("dblclick", function(){
+        ModalRegistrationProduct.success(product);
+      })
     })
+    Registration.table.draw();
   },
 }

@@ -405,7 +405,6 @@ Registration = {
         });
 
     },
-    //};
 
     beforePost: function() {
         switch (Registration.type) {
@@ -445,7 +444,16 @@ Registration = {
                                   title: 'Atualizar',
                                   unclose: true,
                                   id: 'button-pass-change'
-                              }]
+                              }],
+                              shown: function(){
+                                ModalRegistrationProduct.success = function(product){
+                                    $('#modal-registration-product').modal("hide");
+                                    console.log(product);
+                                    Registration.product = product;
+                                    Registration.showInfo();
+                                    
+                                }
+                              }
                           });
                       });
 /*
