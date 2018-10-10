@@ -46,3 +46,19 @@ Slide = {
         });
     }
 };
+
+BirthDays = {
+    people: [],
+    getList: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'person.php?action=birthdays',
+            dataType: 'json'
+        }, function(data) {
+            BirthDays.people = data;
+            BirthDays.showList();
+        });
+    },
+    showList: function(){
+
+    }
+};

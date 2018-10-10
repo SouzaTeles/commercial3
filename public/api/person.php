@@ -117,6 +117,77 @@
 
         break;
 
+        case "birthdays":
+
+            $people = [];
+            $data1 = Model::getList($dafel,(Object)[
+                "top" => 5,
+                "join" => 1,
+                "tables" => [
+                    "Pessoa P (NOLOCK)",
+                    "INNER JOIN PessoaCategoria PC (NOLOCK) ON(PC.IdPessoa = P.IdPessoa)",
+                    "INNER JOIN PessoaComplementar PCM (NOLOCK) ON(PCM.IdPessoa = P.IdPessoa)",
+                ],
+                "fields" => [
+                    "P.IdPessoa",
+                    "P.CdChamada",
+                    "P.NmPessoa",
+                    "DtNascimento=FORMAT(PCM.DtNascimento,'MM-dd')"
+                ],
+                "filters" => [
+                    [ "PC.IdCategoria", "s", "=", $config->person->employ_category_id ],
+                    [ "PC.StAtivo", "s", "=", "S" ],
+                    [ "FORMAT(PCM.DtNascimento,'MM-dd')", "s", "<", date("m-d") ]
+                ],
+                "order" => "FORMAT(PCM.DtNascimento,''MM-dd'') DESC"
+            ]);
+            $data2 = Model::getList($dafel,(Object)[
+                "top" => 6,
+                "join" => 1,
+                "tables" => [
+                    "Pessoa P (NOLOCK)",
+                    "INNER JOIN PessoaCategoria PC (NOLOCK) ON(PC.IdPessoa = P.IdPessoa)",
+                    "INNER JOIN PessoaComplementar PCM (NOLOCK) ON(PCM.IdPessoa = P.IdPessoa)",
+                ],
+                "fields" => [
+                    "P.IdPessoa",
+                    "P.CdChamada",
+                    "P.NmPessoa",
+                    "DtNascimento=FORMAT(PCM.DtNascimento,'MM-dd')"
+                ],
+                "filters" => [
+                    [ "PC.IdCategoria", "s", "=", $config->person->employ_category_id ],
+                    [ "PC.StAtivo", "s", "=", "S" ],
+                    [ "FORMAT(PCM.DtNascimento,'MM-dd')", "s", ">=", date("m-d") ]
+                ],
+                "order" => "FORMAT(PCM.DtNascimento,''MM-dd'')"
+            ]);
+
+            $people = array_merge($data1,$data2);
+
+            usort( $people, function( $a, $b ){
+                return $a->DtNascimento > $b->DtNascimento;
+            });
+
+            $ret = [];
+            foreach( $people as $person ){
+                $ret[] = (Object)[
+                    "image" => getImage((Object)[
+                        "image_id" => $person->IdPessoa,
+                        "image_dir" => "person"
+                    ]),
+                    "happy" => $person->DtNascimento == date("m-d"),
+                    "person_id" => $person->IdPessoa,
+                    "person_code" => $person->CdChamada,
+                    "person_name" => $person->NmPessoa,
+                    "person_birthday" => $person->DtNascimento
+                ];
+            }
+
+            Json::get($headerStatus[200],$ret);
+
+        break;
+
         case "checkDocument":
 
             if( !@$post->document ){

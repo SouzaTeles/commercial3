@@ -354,14 +354,62 @@
                 "parent_id" => $budget_id
             ]);
 
-            Json::get($headerStatus[200], (Object)[
+            $ret = (Object)[
                 "budget_id" => $budget_id,
                 "budget_code" => substr("00000{$budget_id}", -6),
                 "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
                 "external_id" => $budget->external_id,
                 "external_type" => $budget->external_type,
                 "external_code" => $budget->external_code
-            ]);
+            ];
+
+            if( @$budget->export ){
+                $items = [];
+                foreach( $budget->items as $item ){
+                    if( !@$item->product_aliquot ){
+                        $items[] = $item;
+                    }
+                }
+                if( sizeof($items) ){
+                    $to = [
+                        (Object)[
+                            "email" => "adriano@dafel.com.br",
+                            "name" => "Adriano Machado"
+                        ],
+                        (Object)[
+                            "email" => "alessandro@dafel.com.br",
+                            "name" => "Alessandro Menezes"
+                        ],
+                        (Object)[
+                            "email" => "andrecoelho@dafel.com.br",
+                            "name" => "André Coelho"
+                        ],
+                        (Object)[
+                            "email" => "jaqueline@dafel.com.br",
+                            "name" => "Jaqueline de Paula"
+                        ]
+                    ];
+
+                    email((Object)[
+                        "recipient" => $to,
+                        "origin" => "budget-warning-1",
+                        "subject" => "Commercial Atenção",
+                        "parent_id" => $budget_id,
+                        "vars" => [
+                            (Object)[
+                                "key" => "budget",
+                                "data" => $ret
+                            ],
+                            (Object)[
+                                "key" => "items",
+                                "data" => $items
+                            ],
+                        ]
+                    ]);
+                }
+            }
+
+            Json::get($headerStatus[200], $ret);
 
         break;
 
@@ -588,14 +636,14 @@
                             "email" => "alessandro@dafel.com.br",
                             "name" => "Alessandro Menezes"
                         ],
-//                        (Object)[
-//                            "email" => "andrecoelho@dafel.com.br",
-//                            "name" => "André Coelho"
-//                        ],
-//                        (Object)[
-//                            "email" => "jaqueline@dafel.com.br",
-//                            "name" => "Jaqueline de Paula"
-//                        ]
+                        (Object)[
+                            "email" => "andrecoelho@dafel.com.br",
+                            "name" => "André Coelho"
+                        ],
+                        (Object)[
+                            "email" => "jaqueline@dafel.com.br",
+                            "name" => "Jaqueline de Paula"
+                        ]
                     ];
 
                     email((Object)[
