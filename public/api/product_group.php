@@ -38,6 +38,7 @@
                     "fields" => [
                         "P.NmProduto",
                         "P.IdProduto",
+                        "P.CdClassificacao",
                         "CP.CdChamada"
 
                     ],
@@ -50,22 +51,30 @@
                 if(!@$product->CdChamada){
                   $productList = Model::getlist($dafel, (Object)[
                     "top" => 50,
-                    "join" => 1,
+                    "join" => 2,
                     "tables" => [
                       "Produto P",
-                      "inner join CodigoProduto CP (nolock) on (P.IdProduto = Cp.IdProduto)"
+                      "inner join CodigoProduto CP (nolock) on (P.IdProduto = Cp.IdProduto AND CP.StCodigoPrincipal = 'S')",
+                      "LEFT JOIN CodigoProduto CP2 ON (CP2.IdProduto = p.IdProduto
+                      AND CP2.IdTipoCodigoProduto = '{$EAN}')"
                     ],
                     "fields" => [
                       "product_code = CP.CdChamada",
                       "product_name = P.NmProduto",
                       "product_id = P.IdProduto",
                       "product_classification = P.CdClassificacao",
+                      "product_EAN = MIN(cp2.cdchamada)"
                     ],
                     "filters" => [
-                      ["CP.CdChamada", "s",  "like", "{$post->product_code}%"],
-                      ["CP.StCodigoPrincipal", "s",  "=", "S"]
-                    ]
+                      ["CP.CdChamada", "s",  "like", "{$post->product_code}%"]
+                    ],
+                    "group" => "P.IdProduto,
+                                P.NmProduto,
+                                Cp.CdChamada,
+                                P.CdClassificacao"
                   ]);
+                    
+
                   // var_dump($productList);
                   Json::get($httpStatus[200], $productList);
                   // foreach($productList as $product){
@@ -340,18 +349,18 @@
           } else {
             switch($post->registration_type){
               case "P":
+              //var_dump($post->registration_type);
                 if( !@$post->product_id){
                   headerResponse((Object)[
                         "code" => 417,
                         "message" => "Parâmetro POST não encontrado. Problema encontrado: product_id"
                     ]);
+                  }
 
-
+                //echo "antes do switch";
                 switch(@$post->product_img_act){
-
                   case 'I':
                   if(@$post->product_image64){
-
                     $path = PATH_FILES . "\product" . $post->product_id;
                     // var_dump($path);
                     if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
@@ -364,9 +373,7 @@
                       ]);
                   }
                   break;
-
                   case 'R':
-
                   $path = PATH_FILES . "\product\\" . $post->product_id;
                   // var_dump($path);
                   if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
@@ -376,7 +383,7 @@
                 }
 
 
-                // echo "[LOG]Entrou no IF/n";
+                 //echo "[LOG]Entrou no IF/n";
                 if(@$post->product_EAN){
                   // echo "entrou";
                   $eanTemp = Model::get($dafel,(Object)[
@@ -439,7 +446,6 @@
                       "code" => 200,
                       "message" => "Cadastro efetuado com sucesso."
                   ]);
-              }
               break;
               case "G":
                 if( !@$post->product_list){
