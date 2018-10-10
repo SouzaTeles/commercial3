@@ -3,7 +3,7 @@
 .slide
 {
     width: 100%;
-    height: 486px;
+    height: 276px;
     background-size: contain;
     background-color: #9d9d9d;
     background-position: center;
@@ -14,7 +14,7 @@
 
 .slide .image
 {
-    height: 480px;
+    height: 270px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

@@ -3,7 +3,7 @@
 .chat
 {
     top: 90px;
-    bottom: 0;
+    bottom: 60px;
     width: 220px;
     right: -220px;
     z-index: 1001;
@@ -72,8 +72,8 @@
 
 .dialog
 {
-    bottom: 0;
     width: 240px;
+    bottom: 60px;
     height: 310px;
     position: fixed;
     transition: all .3s ease;
@@ -81,7 +81,7 @@
 
 .dialog.dialog-minimized
 {
-    bottom: -270px;
+    bottom: -210px;
 }
 
 .dialog .dialog-header
@@ -115,10 +115,31 @@
 .dialog .dialog-body .balloon
 {
     color: #666;
+    clear: both;
     padding: 6px 10px;
     border-radius: 14px;
     margin-bottom: 10px;
+}
+
+.dialog .dialog-body .balloon span
+{
+    color: gray;
+    display: block;
+    font-size: 10px;
+}
+
+.dialog .dialog-body .my-balloon
+{
+    float: right;
+    text-align: right;
     background-color: #fefefe;
+}
+
+.dialog .dialog-body .him-balloon
+{
+    float: left;
+    text-align: left;
+    background-color: #c5ecff;
 }
 
 .dialog .dialog-footer
@@ -137,4 +158,16 @@
 .dialog .dialog-footer button
 {
     height: 30px;
+}
+
+.dialog .loading
+{
+    left: 0;
+    right: 0;
+    top: 40px;
+    bottom: 0;
+    position: absolute;
+    text-align: center;
+    padding-top: 124px;
+    background-color: rgba(0,0,0,.3);
 }

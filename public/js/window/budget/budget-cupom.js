@@ -78,7 +78,7 @@ Cupom = {
         $('#client-name').text('Cliente: ' + Cupom.budget.person.person_code + ' - ' + Cupom.budget.person.person_name);
         $('#client-contact').text(
             'Contato: ' +
-            ( Cupom.budget.person.address[0] && Cupom.budget.person.address[0].contacts[0] ? Cupom.budget.person.address[0].contacts[0].address_contact_value : '--' )
+            ( !!Cupom.budget.person.address && !!Cupom.budget.person.address[0].contacts ? Cupom.budget.person.address[0].contacts[0].address_contact_value : '--' )
         );
         $('#client-address').text(
             'Endereço: ' +

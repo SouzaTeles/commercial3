@@ -11,9 +11,13 @@ Chat = {
     events: function(){
 
     },
+    getMessages: function(){
+
+    },
     getUsers: function(){
         global.post({
             url: global.uri.uri_public_api + 'chat.php?action=getList',
+            noLoader: 1,
             dataType: 'json'
         },function(data){
             Chat.users = data;
@@ -22,7 +26,7 @@ Chat = {
     },
     new: function(user){
         $('body').append(
-            '<div data-user-id="' + user.user_id + '" class="dialog box-shadow" style="left:' + ( Chat.dialogs.length * 240 + 70 ) + 'px;">' +
+            '<div data-key="' + Chat.dialogs.length + '" data-user-id="' + user.user_id + '" class="dialog box-shadow" style="left:' + ( Chat.dialogs.length * 240 + 70 ) + 'px;">' +
                 '<div class="dialog-header">' +
                     '<i class="fa fa-circle txt-' + (user.status == 'on' ? 'green' : 'red') + '-light"></i> ' + user.user_name +
                     '<button data-toggle="tooltip" data-title="Fechar" data-action="close" class="btn btn-empty-white"><i class="fa fa-times"></i></button>' +
@@ -35,33 +39,87 @@ Chat = {
                         '<input maxlength="255" type="text" class="box-shadow" required />' +
                         '<button data-toggle="tooltip" data-title="Enviar" class="btn btn-green-light"><i class="fa fa-send"></i></button>' +
                 '</div>' +
+                '<div class="loading"><div class="lds-facebook"><div></div><div></div><div></div></div></div>' +
             '</div>'
         );
-        var dialog = $('.dialog[data-user-id="' + user.user_id + '"]');
-        $(dialog).find('[data-toggle="tooltip"]').tooltip();
-        $(dialog).find('button[data-action="minimize"]').click(function(){
-            $(dialog).toggleClass('dialog-minimized');
-            $(this).hide();
-            $(dialog).find('button[data-action="maximize"]').show();
-        });
-        $(dialog).find('button[data-action="maximize"]').click(function(){
-            $(dialog).toggleClass('dialog-minimized');
-            $(this).hide();
-            $(dialog).find('button[data-action="minimize"]').show();
-        });
-        $(dialog).find('form').on('submit',function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            $(dialog).find('.dialog-body').append(
-                '<div class="balloon my-balloon box-shadow">' + $(this).find('input').val() + '</div>'
-            );
-            $(this).find('input').val('')
-        });
-        Chat.dialogs.push({
-            user_id: user.user_id,
-            user_name: user.user_name,
-            timestamp: parseInt(Date.now()/1000),
-            messages: []
+        global.post({
+            url: global.uri.uri_public_api + 'chat.php?action=getMessages',
+            noLoader: 1,
+            data: { user_id: user.user_id },
+            dataType: 'json'
+        },function(data) {
+            Chat.dialogs.push({
+                messages: data,
+                user_id: user.user_id,
+                user_name: user.user_name
+            });
+
+            var dialog = $('.dialog[data-user-id="' + user.user_id + '"]');
+            var body = $(dialog).find('.dialog-body');
+
+            $.each(data,function(key,message){
+                $(body).prepend(
+                    '<div class="balloon ' + (message.from_id == global.login.user_id ? 'my' : 'him' )+ '-balloon box-shadow">' +
+                        message.message_text +
+                        '<span><i class="fa fa-clock-o"></i> ' + message.message_date + '</span>' +
+                    '</div>'
+                );
+            });
+
+            $(body).scrollTop = $(body).scrollHeight;
+            $(dialog).find('.loading').fadeOut();
+            $(dialog).find('[data-toggle="tooltip"]').tooltip();
+
+            $(dialog).find('button[data-action="minimize"]').click(function () {
+                $(dialog).toggleClass('dialog-minimized');
+                $(this).hide();
+                $(dialog).find('button[data-action="maximize"]').show();
+            });
+            $(dialog).find('button[data-action="maximize"]').click(function () {
+                $(dialog).toggleClass('dialog-minimized');
+                $(this).hide();
+                $(dialog).find('button[data-action="minimize"]').show();
+            });
+            $(dialog).find('button[data-action="close"]').click(function () {
+                Chat.dialogs.splice($(dialog).attr('data-key'),1);
+                $(dialog).fadeOut(function(){
+                    $(this).remove();
+                });
+                $.each(Chat.dialogs,function(key,dialog){
+                    $('.dialog[data-user-id="' + dialog.user_id + '"]').attr('data-key',key).css({
+                        'left': key * 240 + 70
+                    });
+                });
+                $('#chat').find('li[data-user-id="' + $(dialog).attr('data-user-id') + '"]').attr('data-opened','false');
+            });
+            $(dialog).find('form').on('submit', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(dialog).find('.loading').fadeIn();
+                global.post({
+                    url: global.uri.uri_public_api + 'chat.php?action=add',
+                    noLoader: 1,
+                    data: {
+                        to_id: user.user_id,
+                        message_type: 'T',
+                        message_text: $(dialog).find('form input').val()
+                    }
+                }, function (data) {
+                    var body = $(dialog).find('.dialog-body');
+                    $(body).append(
+                        '<div class="balloon my-balloon box-shadow">' +
+                        data.message_text +
+                        '<span><i class="fa fa-clock-o"></i> ' + data.message_date + '</span>' +
+                        '</div>'
+                    );
+                    $(body).scrollTop = $(body).scrollHeight;
+                    $(dialog).find('form input').val('');
+                    $(dialog).find('.loading').fadeOut();
+                    $('#chat').find('li[data-user-id="' + $(dialog).attr('data-user-id') + '"]').find('.text').text(data.message_text);
+                    Chat.dialogs[$(dialog).attr('data-key')].messages.push(data);
+                });
+            });
+            $(dialog).find('form input').focus();
         });
     },
     showList: function(){
@@ -73,7 +131,7 @@ Chat = {
                         '<i class="fa fa-circle txt-' + (user.status == 'on' ? 'green' : 'red') + '-light"></i>' +
                     '</div>' +
                     '<div class="name">' + user.user_name + '</div>' +
-                    '<div class="text">Loren ipsum let manant...</div>' +
+                    '<div class="text">' + (user.message_text || '<i>Iniciar conversa</i>') + '</div>' +
                 '</li>'
             );
         });
