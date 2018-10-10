@@ -129,7 +129,7 @@ ModalCredit = {
                 credit.payable_date,
                 credit.pawn ? 'Sim' : 'Não'
             ]).node();
-            $(row).addClass(credit.pawn ? 'txt-red-light' : '').attr('data-key',key).on('dblclick',function(){
+            $(row).addClass((credit.pawn ? 'txt-red-light ' : '') + (credit.company_id != ModalCredit.company_id ? 'txt-gray' : '')).attr('data-key',key).on('dblclick',function(){
                 ModalCredit.select($(this).attr('data-key'));
             }).on('click',function(){
                 $('#modal_credit_note').val(ModalCredit.credits[$(this).attr('data-key')].payable_note);

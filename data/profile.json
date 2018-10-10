@@ -63,6 +63,16 @@
 			"name": "Exportar Dav",
 			"value": "N",
 			"data_type": "bool"
+		},
+		"audit": {
+			"name": "Auditoria",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"info": {
+			"name": "Informações",
+			"value": "N",
+			"data_type": "bool"
 		}
 	},
 	"client": {

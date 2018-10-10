@@ -6,13 +6,8 @@ $(document).ready(function(){
     } else {
         Company.get();
     }
+    global.mask();
     global.unLoader();
-
-    $(window).resize(function(){
-        Item.table.columns.adjust().draw();
-        Payment.table.columns.adjust().draw();
-    });
-
 });
 
 Keyboard = {
@@ -82,8 +77,8 @@ Company = {
                     Company.company = company;
                     Budget.init();
                     Company.show();
-                    Item.table.draw();
-                    Payment.table.draw();
+                    // Item.table.draw();
+                    // Payment.table.draw();
                     if( !!global.url.searchParams.get('clone') ){
                         Budget.cloned();
                     } else {
@@ -336,6 +331,10 @@ Budget = {
         Budget.budget.budget_aliquot_discount = 0;
         Budget.budget.budget_value_total = Budget.budget.budget_value;
 
+        Budget.budget.external_id = null;
+        Budget.budget.external_code = null;
+        Budget.budget.external_type = null;
+
         Budget.budget.document_id = null;
         Budget.budget.document_type = null;
         Budget.budget.document_code = null;
@@ -350,13 +349,17 @@ Budget = {
         });
 
         $.each(Budget.budget.payments,function(key,payment){
-            if( payment.budget_payment_credit == 'Y'){
+            if( !!payment && payment.budget_payment_credit == 'Y'){
                 Budget.budget.payments.splice(key,1);
             }
         });
 
         Budget.tools();
+        Item.total();
+        Item.showList();
         Company.afterGet();
+        Payment.showList();
+        Payment.recalculate();
     },
     close: function(){
         global.modal({
@@ -410,7 +413,6 @@ Budget = {
         });
     },
     discountAliquot: function(data){
-        console.log(data);
         Budget.budget.budget_value_discount = 0;
         Budget.budget.budget_aliquot_discount = data.aliquot_discount;
         $.each(Budget.budget.items,function(key,item){
@@ -775,7 +777,7 @@ Budget = {
             Budget.clone();
         }).prop('disabled',!Budget.budget.budget_id);
         $panel.find('button[data-action="recover"]').click(function(){
-            Budget.recover();
+            Budget.beforeRecover();
         }).prop('disabled',Budget.budget.budget_status != 'L');
         $panel.find('button[data-action="save"]').click(function(){
             $('#button-budget-save').click();
@@ -962,7 +964,7 @@ Budget = {
                     icon: 'fa-files-o',
                     title: 'Duplicar',
                     action: function(){
-                        console.log('trigger clone');
+                        Budget.clone();
                     }
                 }]
             })
@@ -1026,9 +1028,10 @@ Item = {
     }),
     add: function(){
         Budget.budget.items.push(Item.item);
-        Budget.budget.budget_value += Item.item.budget_item_value_total;
+        Budget.budget.budget_value += Item.item.budget_item_value;
         Budget.budget.budget_value_total += Item.item.budget_item_value_total;
         Budget.budget.budget_value_discount += Item.item.budget_item_value_discount;
+        Budget.budget.budget_aliquot_discount = parseFloat((Budget.budget.budget_value_discount/Budget.budget.budget_value*100).toFixed(2));
         Budget.budget.budget_value = parseFloat(Budget.budget.budget_value.toFixed(2));
         Budget.budget.budget_value_total = parseFloat(Budget.budget.budget_value_total.toFixed(2));
         Budget.budget.budget_value_discount = parseFloat(Budget.budget.budget_value_discount.toFixed(2));
@@ -1095,7 +1098,7 @@ Item = {
         });
     },
     beforeEdit: function(key){
-        if( !!Item.item.product_id ){
+        if( !!Item.item && !!Item.item.product_id ){
             global.modal({
                 icon: 'fa-question-circle',
                 title: 'Confirmação',
@@ -2561,8 +2564,8 @@ Payment = {
                     unclose: true
                 },{
                     icon: 'fa-check',
-                    title: 'Ok',
-                    class: 'btn-blue-dark',
+                    title: 'Selecionar',
+                    class: 'btn-blue',
                     id: 'button-credit-select',
                     unclose: true
                 }],

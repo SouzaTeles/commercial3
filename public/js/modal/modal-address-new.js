@@ -297,9 +297,11 @@ ModalAddressNew = {
         $('#modal_address_cep').val(cep.cep_code);
         $('#modal_address_type').selectpicker('val',cep.public_place_type);
         $('#modal_address_public_place').val(cep.public_place);
+        $('#modal_address_number').focus();
         $('#modal_city_name').val(cep.city_name + ' - ' + cep.uf_id).attr('data-value',cep.city_name + ' - ' + cep.uf_id);
         $('#modal_district_name').val(cep.district_name).attr('data-value',cep.district_name);
-        $('#modal_address_number').focus();
+        $('#modal_address_icms_type').selectpicker('val',ModalAddressNew.address.address_icms_type).trigger('change');
+        $('#modal_address_ie').val(ModalAddressNew.address.address_ie);
         if(!!success) success();
     },
     showAddressTypes: function(){
