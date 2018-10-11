@@ -1,5 +1,5 @@
 <div class="col-xs-12 col-sm-3 col-lg-2">
-    <div class="box-shadow bg-blue" style="width:100%;height:200px;"></div>
+    <div class="box-shadow bg-blue" style="width:100%;height:200px;margin-top:20px;"></div>
     <div class="box-shadow bg-purple" style="width:100%;height:300px;margin-top:30px;"></div>
 </div>
 <div class="col-xs-12 col-sm-6 col-lg-8">
@@ -18,7 +18,22 @@
     <div class="box-shadow bg-red" style="width:100%;height:300px;margin-top:30px;"></div>
 </div>
 <div class="col-xs-12 col-sm-3 col-lg-2">
-    <div class="box-shadow bg-green" style="width:100%;height:200px;"></div>
+    <div id="birthdays" class="box-shadow carousel slide" data-ride="slide">
+        <div class="carousel-inner">
+            <div class="card item active">
+                <div class="image box-shadow"></div>
+                <div class="name txt-blue">--</div>
+                <div class="date txt-red">--</div>
+                <div class="text">--</div>
+            </div>
+        </div>
+        <a class="left" href="#birthdays" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right" href="#birthdays" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
     <div class="box-shadow bg-purple" style="width:100%;height:400px;margin-top:30px;"></div>
 </div>
 <footer>
