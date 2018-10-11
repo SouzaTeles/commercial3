@@ -95,33 +95,38 @@
     background-image: url('../images/empty-image.png');
 }
 
-#birthdays .name
+#birthdays .carousel-inner
+{
+    height: 214px;
+}
+
+#birthdays .carousel-inner .name
 {
     font-size: 18px;
 }
 
-#birthdays .date
+#birthdays .carousel-inner .date
 {
     font-size: 26px;
 }
 
-#birthdays .text
+#birthdays .carousel-inner .text
 {
     line-height: 16px;
 }
 
-#birthdays a
+@media(min-width:1300px)
 {
-    bottom: 6px;
-    position: absolute;
+    #birthdays
+    {
+        background-position: center -26px;
+    }
 }
 
-#birthdays a.left
+@media(min-width:1600px)
 {
-    left: 110px;
-}
-
-#birthdays a.right
-{
-    right: 110px;
+    #birthdays
+    {
+        background-position: center -76px;
+    }
 }
