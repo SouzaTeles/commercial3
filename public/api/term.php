@@ -56,6 +56,23 @@
 
         break;
 
+        case "getList":
+
+            $terms = Model::getList($dafel,(Object)[
+                "tables" => [ "Prazo" ],
+                "fields" => [
+                    "term_id=IdPrazo",
+                    "term_code=CdChamada",
+                    "term_description=DsPrazo"
+                ],
+                "filters" => [[ "StAtivo = 'S'" ]],
+                "order" => "NrParcelas,DsPrazo"
+            ]);
+
+            Json::get($headerStatus[200],$terms);
+
+        break;
+
         case "typeahead":
 
             if( !@$post->term_description || !@$post->limit ){

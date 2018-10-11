@@ -6,21 +6,27 @@
                 <div class="col-xs-12 col-sm-3">
                     <div class="form-group">
                         <label for="term_code">Código</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="term_code" name="term_code" placeholder="Código" data-to-mask="code" >
-                            <span id="button-budget-term-search" class="btn input-group-addon"><i class="fa fa-search"></i></span>
-                        </div>
+                        <input type="text" class="form-control" id="term_code" name="term_code" placeholder="Código" data-to-mask="code" >
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <div class="form-group">
-                        <label for="term_description">Descrição do Prazo</label>
+                        <label for="term_id">Tabela de Preço</label>
                         <div class="input-group">
-                            <input autocomplete="off" type="text" class="form-control" id="term_description" name="term_description" placeholder="Prazo" >
+                            <select data-size="8" data-live-search="true" class="selectpicker show-tick" id="term_id" name="term_id" title="-- Prazos --"></select>
                             <span id="button-budget-term-remove" class="btn input-group-addon"><i class="fa fa-trash-o"></i></span>
                         </div>
                     </div>
                 </div>
+                <!--<div class="col-xs-12 col-sm-9">-->
+                    <!--<div class="form-group">-->
+                        <!--<label for="term_description">Descrição do Prazo</label>-->
+                        <!--<div class="input-group">-->
+                            <!--<input autocomplete="off" type="text" class="form-control" id="term_description" name="term_description" placeholder="Prazo" >-->
+                            <!--<span id="button-budget-term-remove" class="btn input-group-addon"><i class="fa fa-trash-o"></i></span>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
                 <div class="col-xs-12">
                     <table id="table-budget-payments" class="table table-bordered table-hover no-select">
                         <thead>

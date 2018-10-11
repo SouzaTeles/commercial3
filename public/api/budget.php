@@ -366,7 +366,7 @@
             if( @$budget->export ){
                 $items = [];
                 foreach( $budget->items as $item ){
-                    if( !@$item->product_aliquot ){
+                    if( !@$item->product_commission ){
                         $items[] = $item;
                     }
                 }
@@ -622,7 +622,7 @@
             if( @$budget->export ){
                 $items = [];
                 foreach( $budget->items as $item ){
-                    if( !@$item->product_aliquot ){
+                    if( !@$item->product_commission ){
                         $items[] = $item;
                     }
                 }

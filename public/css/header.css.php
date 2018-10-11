@@ -7,7 +7,7 @@ header
     right: 0;
     width: 100%;
     height: 90px;
-    z-index: 1002;
+    z-index: 1010;
     display: table;
     position: fixed;
     background-color: #fff;
@@ -21,7 +21,7 @@ header .home
     width: 60px;
     height: 90px;
     position: absolute;
-    background-color: #0b4aa4;
+    background-color: rgba(0,0,0,.5);
 }
 
 header .home a
@@ -33,7 +33,6 @@ header .home a
     font-size: 28px;
     padding: 30px 12px;
     transition: all ease 0.3s;
-    border-left: 4px solid <?php echo $colors->hex->palette["blue-dark"]; ?>;
 }
 
 header .home a img
@@ -68,6 +67,11 @@ header .title:before
 }
 
 <?php foreach( $colors->hex->pages as $page => $color ){ ?>
+header.<?php echo $page; ?>
+{
+    background-color: <?php echo $color; ?>;
+}
+
 header .title-<?php echo $page; ?>
 {
     background-color: <?php echo $color; ?>;
@@ -110,6 +114,7 @@ header .cover
     height: 60px;
     margin-left: 10px;
     border-radius: 50%;
+    border: 2px solid #fff;
     background-size: cover;
     background-position: center;
     background-image: url('../images/empty-image.png');
@@ -117,12 +122,13 @@ header .cover
 
 header .user .info
 {
+    color: #fff;
     margin: 10px;
 }
 
 header .user .info span
 {
-    color: gray;
+    color: #d5d5d5;
     display: block;
 }
 

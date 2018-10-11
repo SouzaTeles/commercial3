@@ -1,15 +1,17 @@
-<header class="bg-white box-shadow">
+<header class="box-shadow {if empty($data->$route->parent)}{$data->$route->key}{else}{$data->$route->parent}{/if}">
     <div class="home">
         <a href="{$URI_PUBLIC}">
             <img src="{$config->uri->uri_public}images/commercial-c.png" />
         </a>
     </div>
-    <div class="title title-{if empty($data->$route->parent)}{$data->$route->key}{else}{$data->$route->parent}{/if}">
+    <div class="title">
         <i class="fa fa-fw {$data->$route->icon}"></i> {$data->$route->title}<div class="arrow"></div>
     </div>
-    <div class="logo">
-        <img src="{$config->uri->uri_public}images/commercial-wide.png" />
-    </div>
+    {if $route == "home"}
+        <div class="logo">
+            <img src="{$config->uri->uri_public}images/commercial-wide-2.png" />
+        </div>
+    {/if}
     <div class="user dropdown pull-right">
         <button data-action="chat" class="btn btn-empty-green">
             <i class="fa fa-comment-o"></i>

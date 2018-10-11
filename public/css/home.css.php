@@ -1,9 +1,16 @@
 <?php include "data.css.php"; ?>
 
+.intranet
+{
+    width: 1200px;
+    margin: 0 auto;
+}
+
 #slide
 {
     width: 100%;
-    height: 276px;
+    height: 376px;
+    margin-top: 20px;
     background-size: contain;
     background-color: #9d9d9d;
     background-position: center;
@@ -14,7 +21,7 @@
 
 #slide .image
 {
-    height: 270px;
+    height: 370px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -69,26 +76,25 @@
 {
     width: 100%;
     height: 300px;
+    padding: 20px;
     margin-top: 20px;
     text-align: center;
     position: relative;
-    padding: 56px 20px 20px;
     background-size: contain;
     background-color: #efefef;
     background-repeat: no-repeat;
-    background-position: center top;
+    background-position: center -46px;
+    background-image: url('../images/birthdays.jpg');
     border-bottom: 6px solid <?php echo $colors->hex->palette["green"]; ?>;
     border-bottom: 6px solid <?php echo $colors->hex->palette["green"]; ?>;
-    background-image: url('https://wwwcdn.wthr.com/sites/wthr.com/files/styles/article_image/public/Balloon970.jpg?itok=mxndp96r');
 }
 
 #birthdays .image
 {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    margin-bottom: 10px;
+    margin: 0 auto 10px;
     background-size: cover;
     background-color: #efefef;
     background-position: center;
@@ -97,7 +103,7 @@
 
 #birthdays .carousel-inner
 {
-    height: 214px;
+    height: 254px;
 }
 
 #birthdays .carousel-inner .name
@@ -115,18 +121,10 @@
     line-height: 16px;
 }
 
-@media(min-width:1300px)
+@media(max-width:1024px)
 {
-    #birthdays
+    .intranet
     {
-        background-position: center -26px;
-    }
-}
-
-@media(min-width:1600px)
-{
-    #birthdays
-    {
-        background-position: center -76px;
+        width: 960px;
     }
 }

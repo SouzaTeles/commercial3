@@ -5,6 +5,7 @@ $(document).ready(function(){
         Budget.get(budget_id);
     } else {
         Company.get();
+        Term.getList();
     }
     global.mask();
     global.unLoader();
@@ -251,6 +252,7 @@ Budget = {
                 buttons: [{
                     icon: 'fa-check',
                     title: 'Confirmar',
+                    id: 'button-before-save-confirm',
                     action: function(){
                         success();
                     }
@@ -427,6 +429,7 @@ Budget = {
         Payment.total();
     },
     edit: function(){
+        console.log('editando :)');
         global.post({
             url: global.uri.uri_public_api + 'budget.php?action=edit',
             data: Budget.budget,
@@ -538,6 +541,7 @@ Budget = {
             Budget.budget.instance_id = Budget.instance();
             Budget.budget.address_uf_id = Address.delivery.uf_id;
             Company.get();
+            Term.getList();
         });
     },
     goTo: function(index){
@@ -999,13 +1003,11 @@ Seller = {
                 }],
                 shown: function(){
                     $('#modal_seller_code').focus();
-                    setTimeout(function(){
-                        ModalSeller.success = function(seller){
-                            Seller.seller = seller;
-                            Budget.budget.seller_id = seller.seller_id;
-                            if( !!success ) success();
-                        }
-                    },500);
+                    ModalSeller.success = function(seller){
+                        Seller.seller = seller;
+                        Budget.budget.seller_id = seller.seller_id;
+                        if( !!success ) success();
+                    }
                 }
             })
         });
@@ -1563,6 +1565,8 @@ Item = {
         };
     },
     quantity: function(budget_item_quantity){
+        Item.item.budget_item_value_discount = 0;
+        Item.item.budget_item_aliquot_discount = 0;
         Item.item.budget_item_quantity = budget_item_quantity;
         Item.item.budget_item_value = Item.item.budget_item_quantity * Item.item.budget_item_value_unitary;
         Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
@@ -2283,6 +2287,7 @@ Address = {
 
 Term = {
     term: {},
+    terms: [],
     modal: null,
     typeahead: {
         items: 10,
@@ -2292,12 +2297,20 @@ Term = {
         min: 2
     },
     data2form: function(){
+        $('#term_id').selectpicker('val',Term.term.term_id);
         $('#term_code').val(Term.term.term_code).attr('data-value',Term.term.term_code);
-        $('#term_description').val(Term.term.term_description).attr('data-value',Term.term.term_description);
     },
     events: function(){
         $('#term_code, #term_name').on('focus',function(){
             Budget.section = 3;
+        });
+        $('#term_id').on('changed.bs.select', function (e, clickedIndex) {
+            Term.init();
+            Term.data2form();
+            Term.get({
+                term_id: Term.terms[clickedIndex-1].term_id,
+                term_code: null
+            });
         });
         $('#term_code').keypress(function (e) {
             var keycode = e.keyCode || e.which;
@@ -2318,8 +2331,8 @@ Term = {
                                 icon: 'fa-check',
                                 title: 'Sim',
                                 action: function(){
-                                    Term.init();
-                                    Term.data2form();
+                                    //Term.init();
+                                    //Term.data2form();
                                     Term.get({
                                         term_id: null,
                                         term_code: $('#term_code').val()
@@ -2334,61 +2347,6 @@ Term = {
                         });
                     }
                 }
-            }
-        });
-        $('#button-budget-term-search').click(function () {
-            if ($('#term_code').val().length) {
-                if( global.posts < 1 && ( !Term.term.term_id || parseInt(Term.term.term_code) != parseInt($(this).val()) )){
-                    if( Budget.budget.payments.length ){
-                        global.modal({
-                            icon: 'fa-question-circle-o',
-                            title: 'Confirmação',
-                            html: '<p>Ao editar o prazo as parcelas serão removidas. Deseja continuar?</p>',
-                            buttons: [{
-                                icon: 'fa-times',
-                                title: 'Não',
-                                class: 'pull-left'
-                            },{
-                                icon: 'fa-check',
-                                title: 'Sim',
-                                action: function(){
-                                    Term.get({
-                                        term_id: null,
-                                        term_code: $('#term_code').val()
-                                    });
-                                }
-                            }]
-                        });
-                    } else {
-                        Term.get({
-                            term_id: null,
-                            term_code: $('#term_code').val()
-                        });
-                    }
-                }
-            }
-        });
-        $('#term_description').on('keyup',function(){
-            if( $(this).val().length >= Term.typeahead.min && $(this).val() != Term.typeahead.last ){
-                clearTimeout(Term.typeahead.timer);
-                Term.typeahead.last = $(this).val();
-                Term.typeahead.timer = setTimeout(function(){
-                    global.autocomplete({
-                        items: 'all',
-                        selector: '#term_description',
-                        data: {
-                            limit: Term.typeahead.items,
-                            term_description: $('#term_description').val()
-                        },
-                        url: global.uri.uri_public_api + 'term.php?action=typeahead',
-                        callBack: function(item){
-                            Term.get({
-                                term_id: item.item_id,
-                                term_code: null
-                            });
-                        }
-                    });
-                },Term.typeahead.delay);
             }
         });
         $('#button-budget-term-remove').click(function(){
@@ -2429,6 +2387,15 @@ Term = {
             Budget.budget.term_id = term.term_id;
         });
     },
+    getList: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'term.php?action=getList',
+            dataType: 'json'
+        }, function(data){
+            Term.terms = data;
+            Term.showList();
+        });
+    },
     getModality: function(){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-term-modalities',
@@ -2461,6 +2428,15 @@ Term = {
             modalities: []
         };
         Budget.budget.term_id = null;
+    },
+    showList: function(){
+        $.each( Term.terms, function(key,term){
+            $('#term_id').append($('<option>',{
+                'value': term.term_id,
+                'data-content': term.term_description
+            }));
+        });
+        $('#term_id').selectpicker('refresh');
     }
 };
 
