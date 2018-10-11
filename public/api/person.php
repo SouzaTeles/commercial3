@@ -120,6 +120,7 @@
         case "birthdays":
 
             $people = [];
+
             $data1 = Model::getList($dafel,(Object)[
                 "top" => 5,
                 "join" => 1,
@@ -141,6 +142,7 @@
                 ],
                 "order" => "FORMAT(PCM.DtNascimento,''MM-dd'') DESC"
             ]);
+
             $data2 = Model::getList($dafel,(Object)[
                 "top" => 6,
                 "join" => 1,
@@ -163,6 +165,8 @@
                 "order" => "FORMAT(PCM.DtNascimento,''MM-dd'')"
             ]);
 
+            $data2[0]->active = 1;
+
             $people = array_merge($data1,$data2);
 
             usort( $people, function( $a, $b ){
@@ -171,16 +175,19 @@
 
             $ret = [];
             foreach( $people as $person ){
+                $days = explode( "-", $person->DtNascimento );
+
                 $ret[] = (Object)[
                     "image" => getImage((Object)[
                         "image_id" => $person->IdPessoa,
                         "image_dir" => "person"
                     ]),
-                    "happy" => $person->DtNascimento == date("m-d"),
                     "person_id" => $person->IdPessoa,
                     "person_code" => $person->CdChamada,
                     "person_name" => $person->NmPessoa,
-                    "person_birthday" => $person->DtNascimento
+                    "person_birthday" => "{$days[1]}/{$days[0]}",
+                    "person_active" => @$person->active ? " active" : "",
+                    "days" => (int)str_replace("-","",$person->DtNascimento)-(int)date("md")
                 ];
             }
 

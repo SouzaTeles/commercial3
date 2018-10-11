@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
     Slide.getSlide();
+    BirthDays.getList();
     global.unLoader();
 
 });
@@ -59,6 +60,29 @@ BirthDays = {
         });
     },
     showList: function(){
-
+        var birthdays = $('#birthdays .carousel-inner');
+        $(birthdays).find('.card').remove();
+        $.each(BirthDays.people,function(key,person){
+            var text = '';
+            var color = 'txt-gray';
+            if( person.days < 0 ){
+                text = 'O seu aniversário já passou, mas ainda da tempo de enviar os parabéns!';
+            } else if( person.days > 0 ){
+                text = 'O seu aniversário está proximo, não esqueça de dar os parabéns!';
+            } else{
+                text = 'Hoje é o seu aniversário, aproveite para dar os parabéns!';
+            }
+            $(birthdays).append(
+                '<div class="card item' + person.person_active + '">' +
+                    '<div class="image box-shadow"' + ( person.image ? 'style="background-image:url(' + person.image + ')"' : '') + '></div>' +
+                    '<div class="name txt-blue">' + person.person_name + '</div>' +
+                    '<div class="date txt-red">' + person.person_birthday + '</div>' +
+                    '<div class="text">' +text + '</div>' +
+                '</div>'
+            );
+        });
+        $(birthdays).carousel({
+            interval: false
+        });
     }
 };
