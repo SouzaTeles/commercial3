@@ -1,6 +1,12 @@
-#modal-registration-product .dataTables_scrollHeadInner,
-#modal-registration-product .dataTables_scrollHeadInner .dataTable
+.modal-registration-product .dataTables_scrollHeadInner,
+.modal-registration-product .dataTables_scrollHeadInner .dataTable
 {
-    min-width: 100%;
 
+    min-width: 100%;
 }
+
+.modal-registration-product{
+    overflow-y: hidden;
+    top:70px;
+}
+

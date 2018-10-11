@@ -58,7 +58,7 @@ ProductImage = {
                 $('#product-image-cover .text').show();
             }
             $('#product-image-cover').css({
-                'background-image': !!Product.image ? 'url(' + Product.image + ')' : ''
+                "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
             });
         },
         up: function(image) {
@@ -137,7 +137,7 @@ Registration = {
     modification: false,
     //Define a aba das alterações que estão sendo feitas.
     type: 'P',
-
+    numChecked: 0,
     product: {},
     table: global.table({
         selector: '#table-products',
@@ -170,7 +170,7 @@ Registration = {
     //Função de remoção da imagem no preview e preparação antes de salvar
     imageRemove: function() {
         $('#product-image-cover').css({
-            "background-image": "none"
+            "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
         });
         $('#file-image-product').filestyle('clear');
         $('#button-image-product-remove').prop("disabled", true);
@@ -291,6 +291,10 @@ Registration = {
         $('#product-tab').click(function() {
             console.log("clicou...")
             Registration.type = 'P';
+            $('#product-image-cover').css({
+                "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
+            });
+            
         });
 
         $('#product-group-tab').click(function(event) {
@@ -306,7 +310,7 @@ Registration = {
                         action: function() {
                             Registration.type = 'G';
                             $('#product-image-cover').css({
-                                "background-image": "none"
+                                "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
                             });
                             $('#button-image-product-remove').prop("disabled", true);
                             $('#file-image-product').filestyle("disabled", true);
@@ -327,17 +331,16 @@ Registration = {
                 });
             } else {
                 Registration.type = 'G';
+                console.log("Antes...")
                 $('#product-image-cover').css({
-                    "background-image": "none"
+                    "background-image": "url(" + (global.uri.uri_public + "images/empty-image.png") + ")"
                 });
+                console.log("Depois...")
 
             }
         });
 
         $('#button-image-product-remove').prop("disabled", true);
-
-
-
 
         $('#button-image-product-remove').click(function() {
             Registration.imageRemove();
@@ -404,6 +407,51 @@ Registration = {
             }
         });
 
+        
+
+            $("#image-input-area").on("paste", function (ev) {
+              window.setTimeout(function (ev) {
+                console.log("Entrou na função.")
+                ImagePush.input = $("#image-input-area").children()[0].src;
+                ImagePush.s = ImagePush.input.split(',');
+                ImagePush.mime = ImagePush.s[0];
+                ImagePush.data = ImagePush.s[1];
+                console.log(ImagePush.mime);
+                console.log(ImagePush.data);
+                $('#product-image-cover').css({
+                    "background-image": "url(" + ImagePush.s + ")"
+                });
+                $("#image-input-area").empty();
+                $("#image-input-area").prop("contenteditable", false);
+                $('#button-image-product-remove').prop("disabled", false);
+                $('#file-image-product').filestyle("disabled", false);
+                console.log("Teste...")
+
+                var regex = /base64$/gm;
+                let m;
+
+                while ((m = regex.exec(Registration.imagem)) !== null) {
+                    // This is necessary to avoid infinite loops with zero-width matches
+                    if (m.index === regex.lastIndex) {
+                        regex.lastIndex++;
+                    }
+                    
+                    // The result can be accessed through the `m`-variable.
+                    m.forEach((match, groupIndex) => {
+                        console.log(`Found match, group ${groupIndex}: ${match}`);
+                    });
+                }
+
+                Registration.toDataUrl(ImagePush.mime, function(img64) {
+                    Registration.imagem = img64;
+                    console.log("IMG64 " + img64);
+                    console.log("Imagem na variavel" + Registration.imagem);
+                });
+              }, 300);
+            });
+
+
+
     },
 
     beforePost: function() {
@@ -434,6 +482,7 @@ Registration = {
                               class: 'modal-registration-product',
                               icon: 'fa-cubes',
                               title: 'Listagem de produtos',
+                              size: "big",
                               html: html,
                               buttons: [{
                                   icon: 'fa-times',
@@ -493,11 +542,12 @@ Registration = {
         $('#registration_product_name').val(Registration.product.product_name);
         $('#registration_product_code').val(Registration.product.product_code);
         $('#registration_product_EAN').prop("disabled", false);
+        $("#image-input-area").prop("contenteditable", true)
         $('#registration_product_EAN').val(Registration.product.product_EAN);
         $('#product-image-cover').css({
-            "background-image": "url(" + (Registration.product.product_image || "") + ")"
+            "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
         });
-        $('#file-image-product').filestyle("disabled", false);
+
 
         if (Registration.product.product_image) {
             $('#button-image-product-remove').prop("disabled", false);
@@ -574,7 +624,7 @@ Registration = {
 
             //Adiciona uma nova linha na lista de exibição
             Registration.table.row.add([
-                '<input data-id="' + product.product_id + '" type="checkbox" class="product-check" data-key="1">',
+                "<input data-id='" + product.product_id + "'id='" + product.product_id  + "' type='checkbox' class='product-check' data-key='1'>",
                 product.product_code,
                 product.product_name,
                 "♣"
@@ -582,20 +632,61 @@ Registration = {
         })
         Registration.table.draw();
 
+        $('.product-check').click(function(){
+            if($('#' + $(this).closest(".product-check").attr("data-id")).prop("checked")){
+                Registration.numChecked++;
+                console.log(Registration.numChecked);
+            } else {
+                Registration.numChecked--;
+                console.log(Registration.numChecked);
+            }
+
+            if(Registration.numChecked > 0)
+                $('#file-image-product').filestyle("disabled", false)
+            else{
+                $('#file-image-product').filestyle("disabled", true)
+                $("#product-check-master").prop("checked", false);
+            }
+        });
+
         $('#product-check-master').click(function() {
           console.log("click...");
           if( $('#product-check-master').is(":checked")){
             //Marca todos os checks
             $('.product-check').prop("checked", true);
+            //Variavel
+            Registration.numChecked = Registration.products.length;
+            console.log(Registration.productList);
+            console.log(Registration.numChecked);
+            
             //Habilita o botão de procurar
             $('#file-image-product').filestyle("disabled", false);
           }
           else {
             //Desmarca todos os checks
             $('.product-check').prop("checked", false)
+            //Variavel
+            Registration.numChecked = 0;
             //Desabilita o botão de procurar
             $('#file-image-product').filestyle("disabled", true);
           }
         });
+    },
+    toDataUrl: function (url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                callback(reader.result);
+            }
+            reader.readAsDataURL(xhr.response);
+        };
+        xhr.open('GET', url);
+        xhr.responseType = 'blob';
+        xhr.send();
     }
-}
+
+    
+},
+
+ImagePush = {}
