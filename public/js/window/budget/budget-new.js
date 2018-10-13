@@ -706,7 +706,7 @@ Budget = {
                 class: 'modal-saved',
                 size: 'small',
                 icon: 'fa-check',
-                title: budget.budget_title + ( !!budget.external_id ? ' exportado!' : ' salvo!' ),
+                title: budget.budget_title + ( budget.budget_status == 'L' ? ' exportado!' : ' salvo!' ),
                 html: html,
                 buttons: [{
                     icon: 'fa-check',
@@ -1220,9 +1220,9 @@ Item = {
                 product_name: Item.item.product_name,
                 product_max_discount: Item.item.product_discount,
                 item_quantity: Item.item.budget_item_quantity,
-                item_value_total: (Item.item.budget_item_quantity * Item.item.budget_item_value_total) - params.value,
-                item_value_discount: params.value,
-                item_aliquot_discount: params.aliquot
+                item_value_total: Item.item.budget_item_value - parseFloat(params.value),
+                item_value_discount: parseFloat(params.value),
+                item_aliquot_discount: parseFloat(params.aliquot)
             },
             dataType: 'html'
         },function(html){
@@ -1380,14 +1380,16 @@ Item = {
             if (keycode == '13') {
                 if( $(this).val().length ){
                     var budget_item_aliquot_discount = global.br2Float($(this).val());
+                    console.log(budget_item_aliquot_discount);
                     if( budget_item_aliquot_discount <= Item.item.product_discount ){
                         $(this).attr('data-value',budget_item_aliquot_discount);
                         Item.item.authorization_id = null;
                         Item.discountAliquot(budget_item_aliquot_discount);
                     } else {
+                        console.log(budget_item_aliquot_discount);
                         Item.discountAuthorization({
                             aliquot: budget_item_aliquot_discount,
-                            value: parseFloat(((budget_item_aliquot_discount / 100) * (Item.item.budget_item_quantity*Item.item.budget_item_value)).toFixed(2))
+                            value: parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2))
                         });
                     }
                 } else {
@@ -1410,7 +1412,7 @@ Item = {
                     } else {
                         Item.discountAuthorization({
                             aliquot: budget_item_aliquot_discount,
-                            value: parseFloat(((budget_item_aliquot_discount / 100) * (Item.item.budget_item_quantity*Item.item.budget_item_value)).toFixed(2))
+                            value: parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2))
                         });
                     }
                 } else {
@@ -2435,6 +2437,10 @@ Term = {
                 'value': term.term_id,
                 'data-content': term.term_description
             }));
+            if( Budget.budget.term_id == term.term_id ){
+                Term.term = term;
+                Term.data2form();
+            }
         });
         $('#term_id').selectpicker('refresh');
     }

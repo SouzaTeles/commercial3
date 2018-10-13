@@ -356,6 +356,7 @@
 
             $ret = (Object)[
                 "budget_id" => $budget_id,
+                "budget_status" => @$budget->export ? "L" : "O",
                 "budget_code" => substr("00000{$budget_id}", -6),
                 "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
                 "external_id" => $budget->external_id,
@@ -608,6 +609,7 @@
 
             $ret = (Object)[
                 "budget_id" => $budget_id,
+                "budget_status" => @$budget->export ? "L" : "O",
                 "budget_code" => substr("00000{$budget_id}", -6),
                 "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
                 "external_id" => $budget->external_id,

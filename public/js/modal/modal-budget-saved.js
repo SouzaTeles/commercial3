@@ -9,7 +9,7 @@ ModalSaved = {
     events: function(){
         var $body = $('#modal-budget-saved');
         $body.find('.budget-code').text('Cód: ' + ( budget.external_code || budget.budget_code ));
-        $body.find('.budget-message').text(budget.budget_title + ( budget.external_id ? ' exportado!' : ' salvo!' ));
+        $body.find('.budget-message').text(budget.budget_title + ( budget.budget_status == 'L' ? ' exportado!' : ' salvo!' ));
         $body.find('button').click(function(){
             ModalSaved.modal.modal('hide');
             if( !!window.opener ){
