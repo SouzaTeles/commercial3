@@ -929,7 +929,7 @@ Budget = {
             });
             return false;
         }
-        if( (!!Budget.budget.payments.length || Budget.budget.credit.value > 0) && Payment.payment_remaining != 0 ){
+        if( (!!Budget.budget.payments.length || Budget.budget.credit.value > 0) && parseFloat(Payment.payment_remaining.toFixed(2)) != 0 ){
             global.validateMessage('A soma das parcelas é diferente do valor total do pedido.');
             global.scrollTo({
                 delay: 500,
@@ -2679,6 +2679,7 @@ Payment = {
                     icon: 'fa-floppy-o',
                     title: 'Atualizar',
                     unclose: true,
+                    id: 'button-payment-edit',
                     action: function () {
                         $('#modal-payment').find('form button').click();
                     }

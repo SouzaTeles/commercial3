@@ -367,6 +367,7 @@
             if( @$budget->export ){
                 $items = [];
                 foreach( $budget->items as $item ){
+                    $item = (Object)$item;
                     if( !@$item->product_commission ){
                         $items[] = $item;
                     }
@@ -380,7 +381,7 @@
                         (Object)[
                             "email" => "alessandro@dafel.com.br",
                             "name" => "Alessandro Menezes"
-                        ],
+                        ]/*,
                         (Object)[
                             "email" => "andrecoelho@dafel.com.br",
                             "name" => "André Coelho"
@@ -388,7 +389,7 @@
                         (Object)[
                             "email" => "jaqueline@dafel.com.br",
                             "name" => "Jaqueline de Paula"
-                        ]
+                        ]*/
                     ];
 
                     email((Object)[
@@ -624,6 +625,7 @@
             if( @$budget->export ){
                 $items = [];
                 foreach( $budget->items as $item ){
+                    $item = (Object)$item;
                     if( !@$item->product_commission ){
                         $items[] = $item;
                     }
@@ -637,7 +639,7 @@
                         (Object)[
                             "email" => "alessandro@dafel.com.br",
                             "name" => "Alessandro Menezes"
-                        ],
+                        ]/*,
                         (Object)[
                             "email" => "andrecoelho@dafel.com.br",
                             "name" => "André Coelho"
@@ -645,7 +647,7 @@
                         (Object)[
                             "email" => "jaqueline@dafel.com.br",
                             "name" => "Jaqueline de Paula"
-                        ]
+                        ]*/
                     ];
 
                     email((Object)[
