@@ -411,11 +411,13 @@ Registration = {
 
             $("#image-input-area").on("paste", function (ev) {
               window.setTimeout(function (ev) {
+                var regex = /base64$/;
                 console.log("Entrou na função.")
                 ImagePush.input = $("#image-input-area").children()[0].src;
                 ImagePush.s = ImagePush.input.split(',');
                 ImagePush.mime = ImagePush.s[0];
                 ImagePush.data = ImagePush.s[1];
+                console.log("ImagePush Mime");
                 console.log(ImagePush.mime);
                 console.log(ImagePush.data);
                 $('#product-image-cover').css({
@@ -424,34 +426,27 @@ Registration = {
                 $("#image-input-area").empty();
                 $("#image-input-area").prop("contenteditable", false);
                 $('#button-image-product-remove').prop("disabled", false);
+
                 $('#file-image-product').filestyle("disabled", false);
-                console.log("Teste...")
+                //console.log()
 
-                var regex = /base64$/gm;
-                let m;
-
-                while ((m = regex.exec(Registration.imagem)) !== null) {
-                    // This is necessary to avoid infinite loops with zero-width matches
-                    if (m.index === regex.lastIndex) {
-                        regex.lastIndex++;
-                    }
-                    
-                    // The result can be accessed through the `m`-variable.
-                    m.forEach((match, groupIndex) => {
-                        console.log(`Found match, group ${groupIndex}: ${match}`);
+                if(!regex.exec(ImagePush.mime)){
+                    console.log("Não é base 64")
+                    Registration.toDataUrl(ImagePush.mime, function(img64) {
+                        Registration.imagem = img64;
+                        console.log("IMG64 " + img64);
+                        console.log("Imagem na variavel" + Registration.imagem);
+                        Registration.img_act = 'I';
                     });
+                } else {
+                    console.log("É base 64");
+                    console.log(ImagePush.data);
+                    Registration.imagem = (ImagePush.mime +',' + ImagePush.data);
+                    console.log(Registration.imagem);
+                    Registration.img_act = 'I';
                 }
-
-                Registration.toDataUrl(ImagePush.mime, function(img64) {
-                    Registration.imagem = img64;
-                    console.log("IMG64 " + img64);
-                    console.log("Imagem na variavel" + Registration.imagem);
-                });
-              }, 300);
+                }, 300);
             });
-
-
-
     },
 
     beforePost: function() {

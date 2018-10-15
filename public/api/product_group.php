@@ -361,11 +361,12 @@
                 switch(@$post->product_img_act){
                   case 'I':
                   if(@$post->product_image64){
-                    $path = PATH_FILES . "\product" . $post->product_id;
-                    // var_dump($path);
+                    $path = PATH_FILES . "\product\\" . $post->product_id;
                     if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
-                    if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
-                    if (file_exists("{$path}.png")) unlink("{$path}.png");
+                    if (file_exists("{$path}.jpeg"))  unlink("{$path}.jpeg");
+                    if (file_exists("{$path}.png"))
+                        unlink("{$path}.png");
+
                     base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
                     Json::get($headerStatus[200], (Object)[
                           "code" => 200,

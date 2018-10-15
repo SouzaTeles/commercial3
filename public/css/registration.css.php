@@ -46,7 +46,7 @@ body{
 #image-input-area{
   display:flex;
   z-index: 1;
-  width: 340px;
+  /*width: 340px;*/
   height: 272px;
   position: absolute;
 }
