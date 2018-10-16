@@ -90,7 +90,7 @@ footer
     left: 60px;
     height: 60px;
     padding: 20px;
-    z-index: 1001;
+    z-index: 1010;
     position: fixed;
     background-color: #fff;
     box-shadow: 0 4px 20px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);

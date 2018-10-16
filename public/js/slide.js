@@ -109,9 +109,10 @@ Slide = {
     },
     showList: function(){
         var slides = $('#slides');
+        $(slides).find('.image').remove();
         $.each(Slide.images,function(key,image){
             $(slides).append(
-                '<div class="col-xs-6 col-sm-4 col-md-3">' +
+                '<div class="col-xs-6 col-sm-4 col-lg-3">' +
                     '<div class="image box-shadow" data-key="' + key + '" style="background-image:url(' + image.image_small + ')">' +
                         '<button data-action="del" data-key="' + key + '" class="btn btn-empty-white" data-toggle="tooltip" data-title="Remover">' +
                             '<i class="fa fa-trash-o"></i>' +

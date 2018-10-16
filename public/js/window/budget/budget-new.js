@@ -5,6 +5,7 @@ $(document).ready(function(){
         Budget.get(budget_id);
     } else {
         Company.get();
+        Term.getList();
     }
     global.mask();
     global.unLoader();
@@ -251,6 +252,7 @@ Budget = {
                 buttons: [{
                     icon: 'fa-check',
                     title: 'Confirmar',
+                    id: 'button-before-save-confirm',
                     action: function(){
                         success();
                     }
@@ -427,6 +429,7 @@ Budget = {
         Payment.total();
     },
     edit: function(){
+        console.log('editando :)');
         global.post({
             url: global.uri.uri_public_api + 'budget.php?action=edit',
             data: Budget.budget,
@@ -538,6 +541,7 @@ Budget = {
             Budget.budget.instance_id = Budget.instance();
             Budget.budget.address_uf_id = Address.delivery.uf_id;
             Company.get();
+            Term.getList();
         });
     },
     goTo: function(index){
@@ -702,7 +706,7 @@ Budget = {
                 class: 'modal-saved',
                 size: 'small',
                 icon: 'fa-check',
-                title: budget.budget_title + ( !!budget.external_id ? ' exportado!' : ' salvo!' ),
+                title: budget.budget_title + ( budget.budget_status == 'L' ? ' exportado!' : ' salvo!' ),
                 html: html,
                 buttons: [{
                     icon: 'fa-check',
@@ -925,7 +929,7 @@ Budget = {
             });
             return false;
         }
-        if( (!!Budget.budget.payments.length || Budget.budget.credit.value > 0) && Payment.payment_remaining != 0 ){
+        if( (!!Budget.budget.payments.length || Budget.budget.credit.value > 0) && parseFloat(Payment.payment_remaining.toFixed(2)) != 0 ){
             global.validateMessage('A soma das parcelas é diferente do valor total do pedido.');
             global.scrollTo({
                 delay: 500,
@@ -999,13 +1003,11 @@ Seller = {
                 }],
                 shown: function(){
                     $('#modal_seller_code').focus();
-                    setTimeout(function(){
-                        ModalSeller.success = function(seller){
-                            Seller.seller = seller;
-                            Budget.budget.seller_id = seller.seller_id;
-                            if( !!success ) success();
-                        }
-                    },500);
+                    ModalSeller.success = function(seller){
+                        Seller.seller = seller;
+                        Budget.budget.seller_id = seller.seller_id;
+                        if( !!success ) success();
+                    }
                 }
             })
         });
@@ -1146,8 +1148,8 @@ Item = {
         $('#product_name').val(Item.item.product_name).attr('data-value',Item.item.product_name);
         $('#stock_value, #budget_item_quantity').unmask();
         if( Item.item.unit_type == 'F' ){
-            $('#product_stock').val(global.float2Br(Item.item.stock_value,3,3).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
-            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,3)).prop({
+            $('#product_stock').val(global.float2Br(Item.item.stock_value,1,4).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
+            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,1,4)).prop({
                 'readonly': !Item.item.product_id
             }).attr({
                 'data-value': Item.item.budget_item_quantity
@@ -1218,9 +1220,9 @@ Item = {
                 product_name: Item.item.product_name,
                 product_max_discount: Item.item.product_discount,
                 item_quantity: Item.item.budget_item_quantity,
-                item_value_total: (Item.item.budget_item_quantity * Item.item.budget_item_value_total) - params.value,
-                item_value_discount: params.value,
-                item_aliquot_discount: params.aliquot
+                item_value_total: Item.item.budget_item_value - parseFloat(params.value),
+                item_value_discount: parseFloat(params.value),
+                item_aliquot_discount: parseFloat(params.aliquot)
             },
             dataType: 'html'
         },function(html){
@@ -1383,9 +1385,10 @@ Item = {
                         Item.item.authorization_id = null;
                         Item.discountAliquot(budget_item_aliquot_discount);
                     } else {
+                        console.log(budget_item_aliquot_discount);
                         Item.discountAuthorization({
                             aliquot: budget_item_aliquot_discount,
-                            value: parseFloat(((budget_item_aliquot_discount / 100) * (Item.item.budget_item_quantity*Item.item.budget_item_value)).toFixed(2))
+                            value: parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2))
                         });
                     }
                 } else {
@@ -1408,7 +1411,7 @@ Item = {
                     } else {
                         Item.discountAuthorization({
                             aliquot: budget_item_aliquot_discount,
-                            value: parseFloat(((budget_item_aliquot_discount / 100) * (Item.item.budget_item_quantity*Item.item.budget_item_value)).toFixed(2))
+                            value: parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2))
                         });
                     }
                 } else {
@@ -1563,6 +1566,8 @@ Item = {
         };
     },
     quantity: function(budget_item_quantity){
+        Item.item.budget_item_value_discount = 0;
+        Item.item.budget_item_aliquot_discount = 0;
         Item.item.budget_item_quantity = budget_item_quantity;
         Item.item.budget_item_value = Item.item.budget_item_quantity * Item.item.budget_item_value_unitary;
         Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
@@ -2283,6 +2288,7 @@ Address = {
 
 Term = {
     term: {},
+    terms: [],
     modal: null,
     typeahead: {
         items: 10,
@@ -2292,12 +2298,20 @@ Term = {
         min: 2
     },
     data2form: function(){
+        $('#term_id').selectpicker('val',Term.term.term_id);
         $('#term_code').val(Term.term.term_code).attr('data-value',Term.term.term_code);
-        $('#term_description').val(Term.term.term_description).attr('data-value',Term.term.term_description);
     },
     events: function(){
         $('#term_code, #term_name').on('focus',function(){
             Budget.section = 3;
+        });
+        $('#term_id').on('changed.bs.select', function (e, clickedIndex) {
+            Term.init();
+            Term.data2form();
+            Term.get({
+                term_id: Term.terms[clickedIndex-1].term_id,
+                term_code: null
+            });
         });
         $('#term_code').keypress(function (e) {
             var keycode = e.keyCode || e.which;
@@ -2318,8 +2332,8 @@ Term = {
                                 icon: 'fa-check',
                                 title: 'Sim',
                                 action: function(){
-                                    Term.init();
-                                    Term.data2form();
+                                    //Term.init();
+                                    //Term.data2form();
                                     Term.get({
                                         term_id: null,
                                         term_code: $('#term_code').val()
@@ -2334,61 +2348,6 @@ Term = {
                         });
                     }
                 }
-            }
-        });
-        $('#button-budget-term-search').click(function () {
-            if ($('#term_code').val().length) {
-                if( global.posts < 1 && ( !Term.term.term_id || parseInt(Term.term.term_code) != parseInt($(this).val()) )){
-                    if( Budget.budget.payments.length ){
-                        global.modal({
-                            icon: 'fa-question-circle-o',
-                            title: 'Confirmação',
-                            html: '<p>Ao editar o prazo as parcelas serão removidas. Deseja continuar?</p>',
-                            buttons: [{
-                                icon: 'fa-times',
-                                title: 'Não',
-                                class: 'pull-left'
-                            },{
-                                icon: 'fa-check',
-                                title: 'Sim',
-                                action: function(){
-                                    Term.get({
-                                        term_id: null,
-                                        term_code: $('#term_code').val()
-                                    });
-                                }
-                            }]
-                        });
-                    } else {
-                        Term.get({
-                            term_id: null,
-                            term_code: $('#term_code').val()
-                        });
-                    }
-                }
-            }
-        });
-        $('#term_description').on('keyup',function(){
-            if( $(this).val().length >= Term.typeahead.min && $(this).val() != Term.typeahead.last ){
-                clearTimeout(Term.typeahead.timer);
-                Term.typeahead.last = $(this).val();
-                Term.typeahead.timer = setTimeout(function(){
-                    global.autocomplete({
-                        items: 'all',
-                        selector: '#term_description',
-                        data: {
-                            limit: Term.typeahead.items,
-                            term_description: $('#term_description').val()
-                        },
-                        url: global.uri.uri_public_api + 'term.php?action=typeahead',
-                        callBack: function(item){
-                            Term.get({
-                                term_id: item.item_id,
-                                term_code: null
-                            });
-                        }
-                    });
-                },Term.typeahead.delay);
             }
         });
         $('#button-budget-term-remove').click(function(){
@@ -2429,6 +2388,15 @@ Term = {
             Budget.budget.term_id = term.term_id;
         });
     },
+    getList: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'term.php?action=getList',
+            dataType: 'json'
+        }, function(data){
+            Term.terms = data;
+            Term.showList();
+        });
+    },
     getModality: function(){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-term-modalities',
@@ -2461,6 +2429,19 @@ Term = {
             modalities: []
         };
         Budget.budget.term_id = null;
+    },
+    showList: function(){
+        $.each( Term.terms, function(key,term){
+            $('#term_id').append($('<option>',{
+                'value': term.term_id,
+                'data-content': term.term_description
+            }));
+            if( Budget.budget.term_id == term.term_id ){
+                Term.term = term;
+                Term.data2form();
+            }
+        });
+        $('#term_id').selectpicker('refresh');
     }
 };
 
@@ -2571,15 +2552,16 @@ Payment = {
                 }],
                 shown: function(){
                     ModalCredit.success = function(credits){
+                        Payment.payment_value -= Budget.budget.credit.value;
                         Budget.budget.credit.value = 0;
                         Budget.budget.credit.payable = [];
                         Budget.budget.budget_credit = 'N';
                         $.each(credits,function(key,credit){
                             if( Budget.budget.credit.value < ( Budget.budget.budget_value_total - Payment.payment_value ) ) {
-                                if( Budget.budget.credit.value + credit.payable_value > ( Budget.budget.budget_value_total - Payment.payment_value )) {
-                                    credit.payable_value = Budget.budget.budget_value_total - Payment.payment_value;
+                                if( (Budget.budget.credit.value + credit.payable_value) > ( Budget.budget.budget_value_total - Payment.payment_value )) {
+                                    credit.payable_value = Budget.budget.budget_value_total - Payment.payment_value - Budget.budget.credit.value;
                                 }
-                                Budget.budget.credit.value += credit.payable_value;
+                                Budget.budget.credit.value += parseFloat(credit.payable_value);
                                 Budget.budget.credit.payable.push(credit);
                                 Budget.budget.budget_credit = 'Y';
                             }
@@ -2648,6 +2630,8 @@ Payment = {
                     reason: 2,
                     message: 'O valor da compra ultrapassa o limite de crédito do cliente.'
                 });
+            } else {
+                Budget.submit();
             }
         } else {
             Budget.submit();
@@ -2697,6 +2681,7 @@ Payment = {
                     icon: 'fa-floppy-o',
                     title: 'Atualizar',
                     unclose: true,
+                    id: 'button-payment-edit',
                     action: function () {
                         $('#modal-payment').find('form button').click();
                     }
@@ -2899,7 +2884,8 @@ Payment = {
                             bank_id: ModalPayment.payment.bank_id,
                             agency_id: ModalPayment.payment.agency_id,
                             agency_code: ModalPayment.payment.agency_code,
-                            check_number: ModalPayment.payment.check_number
+                            check_number: ModalPayment.payment.check_number,
+                            nature_id: ModalPayment.payment.nature_id
                         });
                         Payment.sort();
                         Payment.total();
@@ -2955,7 +2941,6 @@ Payment = {
                 '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="beforeRemoveCredit" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
             ]).node();
             $(row).attr('data-key',-1);
-            $('#payment-credit-value').text('R$ '+global.float2Br(Budget.budget.credit.value));
         }
         $.each( Budget.budget.payments, function(key, payment){
             var row = Payment.table.row.add([
@@ -2967,9 +2952,6 @@ Payment = {
                 '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="del" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
             ]).node();
             $(row).attr('data-key',key);
-            if( payment.budget_payment_credit == 'Y' ){
-                $('#payment-credit-value').text('R$ '+global.float2Br(payment.budget_payment_value));
-            }
         });
         $('#button-budget-payment-remove').prop('disabled',!Budget.budget.payments.length);
         $('#button-budget-payment-recalculate').prop('disabled',!Budget.budget.payments.length);
@@ -3009,6 +2991,7 @@ Payment = {
         });
         $('#resume-discount').text(global.float2Br(aliquot_discount) + '% / R$ ' + global.float2Br(value_discount));
         $('#resume-items').text(Budget.budget.items.length + ' Ite' + (Budget.budget.items.length == 1 ? 'm' : 'ns'));
+        $('#payment-credit-value').text('R$ '+global.float2Br(Budget.budget.credit.value));
     },
     getModalities: function(success){
         global.post({

@@ -20,7 +20,7 @@ ModalTermModalities = {
     get: function(key){
         var modality = ModalTermModalities.options[key];
         if( !modality.modality_installment ){
-            global.validateMessage('A forma de pagamento <b>' + modality.modality_code + ' - ' + modality.modality_description + '</b> não possui convênio cadastrado para a empresa selecionada!<br/>Contacte o setor financeiro.')
+            global.validateMessage('A forma de pagamento <b>' + modality.modality_code + ' - ' + modality.modality_description + '</b> não possui convênio cadastrado para a empresa selecionada!<br/>Contate o setor financeiro.')
             return;
         }
         var start = 1;
@@ -44,7 +44,7 @@ ModalTermModalities = {
                 budget_payment_value: budget_payment_value,
                 budget_payment_installment: (modality.modality_type == 'A' ? Term.term.term_installment : 1),
                 budget_payment_credit: 'N',
-                budget_payment_entry: 'Y',
+                budget_payment_entry: modality.modality_entry,
                 budget_payment_deadline: global.dateAddDays(global.today(),modality.modality_delay)
             });
             start = 2;
@@ -71,7 +71,7 @@ ModalTermModalities = {
                 budget_payment_value: budget_payment_value,
                 budget_payment_installment: (modality.modality_type == 'A' ? Term.term.term_installment : 1),
                 budget_payment_credit: 'N',
-                budget_payment_entry: ( modality.term_modality_type == 'E' ? 'Y' : 'N' ),
+                budget_payment_entry: modality.modality_entry,
                 budget_payment_deadline: deadline
             });
         }

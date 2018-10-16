@@ -85,7 +85,7 @@
                     "group" => "FP.IdFormaPagamento,FP.IdNaturezaLancamento,FP.CdChamada,FP.TpFormaPagamento,FP.DsFormaPagamento,PFP.TpRegistro"
                 ]);
                 foreach( $modalities as $modality ){
-                    $modality->modality_entry = ( $modality->modality_type == "D" ? "Y" : "N" );
+                    $modality->modality_entry = ( $modality->term_modality_type == "E" ? "Y" : "N" );
                     $modality->modality_delay = ( $modality->modality_type == "A" ? 30 : 1 );
                     $modality->modality_installment = @(int)$modality->modality_installment ? (int)$modality->modality_installment : ( $modality->modality_type != "A" ? 1 : 0 );
                     $modality->image = getImage((Object)[

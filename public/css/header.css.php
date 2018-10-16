@@ -7,7 +7,7 @@ header
     right: 0;
     width: 100%;
     height: 90px;
-    z-index: 1002;
+    z-index: 1010;
     display: table;
     position: fixed;
     background-color: #fff;
@@ -21,7 +21,7 @@ header .home
     width: 60px;
     height: 90px;
     position: absolute;
-    background-color: #0b4aa4;
+    background-color: rgba(0,0,0,.5);
 }
 
 header .home a
@@ -33,7 +33,6 @@ header .home a
     font-size: 28px;
     padding: 30px 12px;
     transition: all ease 0.3s;
-    border-left: 4px solid <?php echo $colors->hex->palette["blue-dark"]; ?>;
 }
 
 header .home a img
@@ -68,6 +67,11 @@ header .title:before
 }
 
 <?php foreach( $colors->hex->pages as $page => $color ){ ?>
+header.<?php echo $page; ?>
+{
+    background-color: <?php echo $color; ?>;
+}
+
 header .title-<?php echo $page; ?>
 {
     background-color: <?php echo $color; ?>;
@@ -77,6 +81,17 @@ header .title-<?php echo $page; ?>:before
 {
     border-left: 30px solid <?php echo $color ?>;
     border-top: 30px solid <?php echo $color ?>;
+}
+
+.button-header-<?php echo $page; ?>
+{
+    transition: .3s all ease;
+    color: <?php echo $color; ?> !important;
+}
+
+.button-header-<?php echo $page; ?>:hover
+{
+    color: <?php echo brightness($color,-20); ?>;
 }
 <?php } ?>
 
@@ -110,20 +125,55 @@ header .cover
     height: 60px;
     margin-left: 10px;
     border-radius: 50%;
+    border: 2px solid #fff;
     background-size: cover;
     background-position: center;
     background-image: url('../images/empty-image.png');
 }
 
-header .user .info
+header .user
 {
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+
+header .user .user-user
+{
+    float: right;
+    padding: 13px;
+    margin-left: 14px;
+    background-color: rgba(0,0,0,.5);
+}
+
+header .user .user-user .info
+{
+    color: #fff;
     margin: 10px;
 }
 
-header .user .info span
+header .user .user-user .info span
 {
-    color: gray;
+    color: #d5d5d5;
     display: block;
+}
+
+header .user .user-user .dropdown-menu
+{
+    right: 2px;
+    width: 246px;
+}
+
+header .user .user-user .dropdown-menu li a
+{
+    padding: 10px 20px;
+}
+
+header .user .user-user .cover,
+header .user .user-user .info,
+header .user .user-user button
+{
+    float: left;
 }
 
 header .user button
@@ -132,28 +182,11 @@ header .user button
     padding: 10px 10px 8px;
 }
 
-header .user .dropdown-menu
-{
-    width: 200px;
-}
-
-header .user .dropdown-menu li a
-{
-    padding: 10px 20px;
-}
-
-header .user .cover,
-header .user .info,
-header .user button
-{
-    float: left;
-}
-
 header .user button[data-action="chat"],
 header .user button[data-action="alerts"]
 {
     font-size: 18px;
-    margin: 12px 4px;
-    background: #efefef;
+    margin: 26px 4px;
+    background: #fff;
     border-radius: 50% !important;
 }

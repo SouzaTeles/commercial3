@@ -211,7 +211,8 @@
 	"ticket": {
 		"key": "ticket",
 		"icon": "fa-phone-square",
-		"title": "Chamados"
+		"title": "Chamados",
+		"parent": "general"
 	},
 	"user": {
 		"key": "user",

@@ -356,6 +356,7 @@
 
             $ret = (Object)[
                 "budget_id" => $budget_id,
+                "budget_status" => @$budget->export ? "L" : "O",
                 "budget_code" => substr("00000{$budget_id}", -6),
                 "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
                 "external_id" => $budget->external_id,
@@ -366,7 +367,8 @@
             if( @$budget->export ){
                 $items = [];
                 foreach( $budget->items as $item ){
-                    if( !@$item->product_aliquot ){
+                    $item = (Object)$item;
+                    if( !@$item->product_commission ){
                         $items[] = $item;
                     }
                 }
@@ -379,7 +381,7 @@
                         (Object)[
                             "email" => "alessandro@dafel.com.br",
                             "name" => "Alessandro Menezes"
-                        ],
+                        ]/*,
                         (Object)[
                             "email" => "andrecoelho@dafel.com.br",
                             "name" => "André Coelho"
@@ -387,7 +389,7 @@
                         (Object)[
                             "email" => "jaqueline@dafel.com.br",
                             "name" => "Jaqueline de Paula"
-                        ]
+                        ]*/
                     ];
 
                     email((Object)[
@@ -608,6 +610,7 @@
 
             $ret = (Object)[
                 "budget_id" => $budget_id,
+                "budget_status" => @$budget->export ? "L" : "O",
                 "budget_code" => substr("00000{$budget_id}", -6),
                 "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
                 "external_id" => $budget->external_id,
@@ -622,7 +625,8 @@
             if( @$budget->export ){
                 $items = [];
                 foreach( $budget->items as $item ){
-                    if( !@$item->product_aliquot ){
+                    $item = (Object)$item;
+                    if( !@$item->product_commission ){
                         $items[] = $item;
                     }
                 }
@@ -635,7 +639,7 @@
                         (Object)[
                             "email" => "alessandro@dafel.com.br",
                             "name" => "Alessandro Menezes"
-                        ],
+                        ]/*,
                         (Object)[
                             "email" => "andrecoelho@dafel.com.br",
                             "name" => "André Coelho"
@@ -643,7 +647,7 @@
                         (Object)[
                             "email" => "jaqueline@dafel.com.br",
                             "name" => "Jaqueline de Paula"
-                        ]
+                        ]*/
                     ];
 
                     email((Object)[
@@ -840,10 +844,11 @@
                         "BudgetPaymentCredit BPC"
                     ],
                     "fields" => [
+                        "IdPedidoDeVenda=B.external_id",
+                        "IdPedidoDeVendaPagamento=BP.external_id",
+                        "IdAPagar=BPC.payable_id",
+                        "VlTitulo=BPC.payable_value",
                         "BP.budget_payment_id",
-                        "BP.external_id",
-                        "BPC.payable_id",
-                        "BPC.payable_value"
                     ],
                     "filters" => [
                         [ "B.budget_id = BP.budget_id" ],
@@ -854,15 +859,18 @@
                 ]);
 
                 $payable = [];
-                $IdEntidadeOrigem = NULL;
+                $IdPedidoDeVenda = NULL;
+                $IdPedidoDeVendaPagamento = NULL;
                 $budget_payment_id = NULL;
+
                 foreach( $credits as $credit ){
-                    $payable[] = $credit->payable_id;
-                    $IdEntidadeOrigem = $credit->external_id;
+                    $payable[] = $credit->IdAPagar;
+                    $IdPedidoDeVenda = $credit->IdPedidoDeVenda;
+                    $IdPedidoDeVendaPagamento = $credit->IdPedidoDeVendaPagamento;
                     $budget_payment_id = $credit->budget_payment_id;
                 }
 
-                if( !@$IdEntidadeOrigem || !@$budget_payment_id ){
+                if( !sizeof($payable) || !@$IdPedidoDeVenda || !@$IdPedidoDeVendaPagamento || !@$budget_payment_id ){
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "Não foi possível recuperar o orçamento. Contate o setor de TI."
@@ -873,7 +881,7 @@
                     "tables" => [ "APagarBaixa" ],
                     "fields" => [ "IdAPagarBaixa", "IdLoteAPagar" ],
                     "filters" => [
-                        [ "IdEntidadeOrigem", "s", "=", $IdEntidadeOrigem ],
+                        [ "IdEntidadeOrigem", "s", "=", $IdPedidoDeVendaPagamento ],
                         [ "IdAPagar", "s", "in", $payable ]
                     ]
                 ]);
@@ -901,7 +909,7 @@
                 Model::delete($dafel,(Object)[
                     "table" => "APagarBaixa",
                     "filters" => [
-                        [ "IdEntidadeOrigem", "s", "=", $IdEntidadeOrigem ],
+                        [ "IdEntidadeOrigem", "s", "=", $IdPedidoDeVendaPagamento ],
                         [ "IdAPagarBaixa", "s", "in", $payableDrop ]
                     ],
                     "top" => sizeof($payableDrop)
@@ -925,6 +933,14 @@
                 Model::delete($commercial,(Object)[
                     "table" => "BudgetPaymentCredit",
                     "filters" => [["budget_payment_id", "i", "=", $budget_payment_id]]
+                ]);
+
+                Model::delete($dafel,(Object)[
+                    "table" => "PedidoDeVendaPagamento",
+                    "filters" => [
+                        ["IdPedidoDeVenda", "s", "=", $IdPedidoDeVenda],
+                        ["IdPedidoDeVendaPagamento", "s", "=", $IdPedidoDeVendaPagamento]
+                    ]
                 ]);
             }
 
