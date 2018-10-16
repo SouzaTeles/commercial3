@@ -43,13 +43,20 @@ table#table-budgets tr td:first-child i.fa-mobile
 table#table-budgets tr td:nth-child(2),
 table#table-budgets tr td:nth-child(5)
 {
+
     text-align: left;
     padding-left: 20px;
+}
+
+table#table-budgets .client label
+{
+    float: left;
 }
 
 table#table-budgets .client,
 table#table-budgets .seller
 {
+    float: left;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -82,4 +89,40 @@ footer button.selected
 .dropdown-budget ul
 {
     position: absolute;
+}
+
+@media(max-width:1300px) {
+    table#table-budgets thead th:nth-child(5){
+        width: 342px;
+    }
+}
+
+@media(max-width:1250px) {
+    table#table-budgets thead th:nth-child(5){
+        width: 300px;
+    }
+    table#table-budgets .client{
+        width: 240px;
+    }
+}
+
+@media(max-width:1150px) {
+    table#table-budgets thead th:nth-child(5){
+        width: 280px;
+    }
+    table#table-budgets .client{
+        width: 160px;
+    }
+}
+
+@media(max-width:1080px) {
+    table#table-budgets thead th:nth-child(5){
+        width: 240px;
+    }
+    table#table-budgets .client{
+        width: 140px;
+    }
+    table#table-budgets .seller{
+        width: 140px;
+    }
 }

@@ -13,24 +13,26 @@
         </div>
     {/if}
     <div class="user dropdown pull-right">
-        <button data-action="chat" class="btn btn-empty-green">
-            <i class="fa fa-comment-o"></i>
+        <button data-action="chat" class="btn button-header-{if empty($data->$route->parent)}{$data->$route->key}{else}{$data->$route->parent}{/if}">
+            <i class="fa fa-comment"></i>
         </button>
-        <button data-action="alerts" class="btn btn-empty-red-light">
-            <i class="fa fa-bell-o"></i>
+        <button data-action="alerts" class="btn button-header-{if empty($data->$route->parent)}{$data->$route->key}{else}{$data->$route->parent}{/if}">
+            <i class="fa fa-bell"></i>
         </button>
-        <div class="cover"{if !empty($login->image)} style="background-image:url({$login->image})"{/if}></div>
-        <div class="info">
-            {$login->user_name}
-            <span>{$login->user_profile->user_profile_name}</span>
+        <div class="user-user">
+            <div class="cover"{if !empty($login->image)} style="background-image:url({$login->image})"{/if}></div>
+            <div class="info">
+                {$login->user_name}
+                <span>{$login->user_profile->user_profile_name}</span>
+            </div>
+            <button class="btn btn-empty-white dropdown-toggle" type="button" data-toggle="dropdown">
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="#change-pass"><i class="fa fa-fw fa-lock txt-orange"></i> Alterar Senha</a></li>
+                <li><a href="#logout"><i class="fa fa-fw fa-sign-out txt-red-light"></i> Efetuar Logout</a></li>
+            </ul>
         </div>
-        <button class="btn btn-empty dropdown-toggle" type="button" data-toggle="dropdown">
-            <i class="fa fa-caret-down text-blue"></i>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a href="#change-pass"><i class="fa fa-fw fa-lock txt-orange"></i> Alterar Senha</a></li>
-            <li><a href="#logout"><i class="fa fa-fw fa-sign-out txt-red-light"></i> Efetuar Logout</a></li>
-        </ul>
     </div>
 </header>
 {include file="{$PATH_TEMPLATES}includes/menu.html"}
