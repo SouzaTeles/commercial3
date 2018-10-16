@@ -82,6 +82,17 @@ header .title-<?php echo $page; ?>:before
     border-left: 30px solid <?php echo $color ?>;
     border-top: 30px solid <?php echo $color ?>;
 }
+
+.button-header-<?php echo $page; ?>
+{
+    transition: .3s all ease;
+    color: <?php echo $color; ?> !important;
+}
+
+.button-header-<?php echo $page; ?>:hover
+{
+    color: <?php echo brightness($color,-20); ?>;
+}
 <?php } ?>
 
 header .title i
@@ -120,16 +131,48 @@ header .cover
     background-image: url('../images/empty-image.png');
 }
 
-header .user .info
+header .user
+{
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+
+header .user .user-user
+{
+    float: right;
+    padding: 13px;
+    margin-left: 14px;
+    background-color: rgba(0,0,0,.5);
+}
+
+header .user .user-user .info
 {
     color: #fff;
     margin: 10px;
 }
 
-header .user .info span
+header .user .user-user .info span
 {
     color: #d5d5d5;
     display: block;
+}
+
+header .user .user-user .dropdown-menu
+{
+    width: 200px;
+}
+
+header .user .user-user .dropdown-menu li a
+{
+    padding: 10px 20px;
+}
+
+header .user .user-user .cover,
+header .user .user-user .info,
+header .user .user-user button
+{
+    float: left;
 }
 
 header .user button
@@ -138,28 +181,11 @@ header .user button
     padding: 10px 10px 8px;
 }
 
-header .user .dropdown-menu
-{
-    width: 200px;
-}
-
-header .user .dropdown-menu li a
-{
-    padding: 10px 20px;
-}
-
-header .user .cover,
-header .user .info,
-header .user button
-{
-    float: left;
-}
-
 header .user button[data-action="chat"],
 header .user button[data-action="alerts"]
 {
     font-size: 18px;
-    margin: 12px 4px;
-    background: #efefef;
+    margin: 26px 4px;
+    background: #fff;
     border-radius: 50% !important;
 }
