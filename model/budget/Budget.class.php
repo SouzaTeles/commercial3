@@ -915,13 +915,14 @@
                         "base36encode" => 1
                     ])
                 ];
+                $paymentAliquot = number_format(((100 * $budget->credit->value) / $budget->budget_value_total), 6, '.', '');
                 Model::insert($dafel,(Object)[
                     "table" => "PedidoDeVendaPagamento",
                     "fields" => [
                         [ "IdPedidoDeVendaPagamento", "s", $orderPayment->IdPedidoDeVendaPagamento ],
                         [ "IdPedidoDeVenda", "s", $budget->external_id ],
                         [ "IdFormaPagamento", "s", $config->credit->modality_id ],
-                        [ "AlParcela", "d", 100 ],
+                        [ "AlParcela", "d", $paymentAliquot ],
                         [ "IdNaturezaLancamento", "s", $config->credit->entry_id ],
                         [ "VlTitulo", "d", $budget->credit->value],
                         [ "StEntrada", "s", "N" ],
@@ -1368,13 +1369,14 @@
                         "base36encode" => 1
                     ])
                 ];
+                $paymentAliquot = number_format(((100 * $budget->credit->value) / $budget->budget_value_total), 6, '.', '');
                 Model::insert($dafel,(Object)[
                     "table" => "PedidoDeVendaPagamento",
                     "fields" => [
                         [ "IdPedidoDeVendaPagamento", "s", $orderPayment->IdPedidoDeVendaPagamento ],
                         [ "IdPedidoDeVenda", "s", $order->IdPedidoDeVenda ],
                         [ "IdFormaPagamento", "s", $config->credit->modality_id ],
-                        [ "AlParcela", "d", 100 ],
+                        [ "AlParcela", "d", $paymentAliquot ],
                         [ "IdNaturezaLancamento", "s", $config->credit->entry_id ],
                         [ "VlTitulo", "d", $budget->credit->value],
                         [ "StEntrada", "s", "N" ],

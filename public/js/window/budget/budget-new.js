@@ -2630,6 +2630,8 @@ Payment = {
                     reason: 2,
                     message: 'O valor da compra ultrapassa o limite de crédito do cliente.'
                 });
+            } else {
+                Budget.submit();
             }
         } else {
             Budget.submit();

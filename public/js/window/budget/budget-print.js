@@ -10,9 +10,6 @@ Print = {
     company: null,
     budget_id: global.url.searchParams.get('budget_id'),
     events: function(){
-        $(document).ready(function(){
-            window.print();
-        });
         $('button').click(function(){
             window.print();
         });
@@ -172,6 +169,7 @@ Print = {
 
         setTimeout(function(){
             Print.events();
-        },1000);
+            window.print();
+        },3000);
     }
 };

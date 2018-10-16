@@ -844,10 +844,11 @@
                         "BudgetPaymentCredit BPC"
                     ],
                     "fields" => [
+                        "IdPedidoDeVenda=B.external_id",
+                        "IdPedidoDeVendaPagamento=BP.external_id",
+                        "IdAPagar=BPC.payable_id",
+                        "VlTitulo=BPC.payable_value",
                         "BP.budget_payment_id",
-                        "BP.external_id",
-                        "BPC.payable_id",
-                        "BPC.payable_value"
                     ],
                     "filters" => [
                         [ "B.budget_id = BP.budget_id" ],
@@ -858,15 +859,18 @@
                 ]);
 
                 $payable = [];
-                $IdEntidadeOrigem = NULL;
+                $IdPedidoDeVenda = NULL;
+                $IdPedidoDeVendaPagamento = NULL;
                 $budget_payment_id = NULL;
+
                 foreach( $credits as $credit ){
-                    $payable[] = $credit->payable_id;
-                    $IdEntidadeOrigem = $credit->external_id;
+                    $payable[] = $credit->IdAPagar;
+                    $IdPedidoDeVenda = $credit->IdPedidoDeVenda;
+                    $IdPedidoDeVendaPagamento = $credit->IdPedidoDeVendaPagamento;
                     $budget_payment_id = $credit->budget_payment_id;
                 }
 
-                if( !@$IdEntidadeOrigem || !@$budget_payment_id ){
+                if( !sizeof($payable) || !@$IdPedidoDeVenda || !@$IdPedidoDeVendaPagamento || !@$budget_payment_id ){
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "Não foi possível recuperar o orçamento. Contate o setor de TI."
@@ -877,7 +881,7 @@
                     "tables" => [ "APagarBaixa" ],
                     "fields" => [ "IdAPagarBaixa", "IdLoteAPagar" ],
                     "filters" => [
-                        [ "IdEntidadeOrigem", "s", "=", $IdEntidadeOrigem ],
+                        [ "IdEntidadeOrigem", "s", "=", $IdPedidoDeVendaPagamento ],
                         [ "IdAPagar", "s", "in", $payable ]
                     ]
                 ]);
@@ -905,7 +909,7 @@
                 Model::delete($dafel,(Object)[
                     "table" => "APagarBaixa",
                     "filters" => [
-                        [ "IdEntidadeOrigem", "s", "=", $IdEntidadeOrigem ],
+                        [ "IdEntidadeOrigem", "s", "=", $IdPedidoDeVendaPagamento ],
                         [ "IdAPagarBaixa", "s", "in", $payableDrop ]
                     ],
                     "top" => sizeof($payableDrop)
@@ -929,6 +933,14 @@
                 Model::delete($commercial,(Object)[
                     "table" => "BudgetPaymentCredit",
                     "filters" => [["budget_payment_id", "i", "=", $budget_payment_id]]
+                ]);
+
+                Model::delete($dafel,(Object)[
+                    "table" => "PedidoDeVendaPagamento",
+                    "filters" => [
+                        ["IdPedidoDeVenda", "s", "=", $IdPedidoDeVenda],
+                        ["IdPedidoDeVendaPagamento", "s", "=", $IdPedidoDeVendaPagamento]
+                    ]
                 ]);
             }
 
