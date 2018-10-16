@@ -1148,8 +1148,8 @@ Item = {
         $('#product_name').val(Item.item.product_name).attr('data-value',Item.item.product_name);
         $('#stock_value, #budget_item_quantity').unmask();
         if( Item.item.unit_type == 'F' ){
-            $('#product_stock').val(global.float2Br(Item.item.stock_value,3,3).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
-            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,3)).prop({
+            $('#product_stock').val(global.float2Br(Item.item.stock_value,1,4).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
+            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,1,4)).prop({
                 'readonly': !Item.item.product_id
             }).attr({
                 'data-value': Item.item.budget_item_quantity
@@ -1380,7 +1380,6 @@ Item = {
             if (keycode == '13') {
                 if( $(this).val().length ){
                     var budget_item_aliquot_discount = global.br2Float($(this).val());
-                    console.log(budget_item_aliquot_discount);
                     if( budget_item_aliquot_discount <= Item.item.product_discount ){
                         $(this).attr('data-value',budget_item_aliquot_discount);
                         Item.item.authorization_id = null;
@@ -2553,15 +2552,16 @@ Payment = {
                 }],
                 shown: function(){
                     ModalCredit.success = function(credits){
+                        Payment.payment_value -= Budget.budget.credit.value;
                         Budget.budget.credit.value = 0;
                         Budget.budget.credit.payable = [];
                         Budget.budget.budget_credit = 'N';
                         $.each(credits,function(key,credit){
                             if( Budget.budget.credit.value < ( Budget.budget.budget_value_total - Payment.payment_value ) ) {
-                                if( Budget.budget.credit.value + credit.payable_value > ( Budget.budget.budget_value_total - Payment.payment_value )) {
-                                    credit.payable_value = Budget.budget.budget_value_total - Payment.payment_value;
+                                if( (Budget.budget.credit.value + credit.payable_value) > ( Budget.budget.budget_value_total - Payment.payment_value )) {
+                                    credit.payable_value = Budget.budget.budget_value_total - Payment.payment_value - Budget.budget.credit.value;
                                 }
-                                Budget.budget.credit.value += credit.payable_value;
+                                Budget.budget.credit.value += parseFloat(credit.payable_value);
                                 Budget.budget.credit.payable.push(credit);
                                 Budget.budget.budget_credit = 'Y';
                             }
@@ -2941,7 +2941,6 @@ Payment = {
                 '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="beforeRemoveCredit" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
             ]).node();
             $(row).attr('data-key',-1);
-            $('#payment-credit-value').text('R$ '+global.float2Br(Budget.budget.credit.value));
         }
         $.each( Budget.budget.payments, function(key, payment){
             var row = Payment.table.row.add([
@@ -2953,9 +2952,6 @@ Payment = {
                 '<button data-toggle="tooltip" data-title="Remover Parcela" data-action="del" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red"></i></button>'
             ]).node();
             $(row).attr('data-key',key);
-            if( payment.budget_payment_credit == 'Y' ){
-                $('#payment-credit-value').text('R$ '+global.float2Br(payment.budget_payment_value));
-            }
         });
         $('#button-budget-payment-remove').prop('disabled',!Budget.budget.payments.length);
         $('#button-budget-payment-recalculate').prop('disabled',!Budget.budget.payments.length);
@@ -2995,6 +2991,7 @@ Payment = {
         });
         $('#resume-discount').text(global.float2Br(aliquot_discount) + '% / R$ ' + global.float2Br(value_discount));
         $('#resume-items').text(Budget.budget.items.length + ' Ite' + (Budget.budget.items.length == 1 ? 'm' : 'ns'));
+        $('#payment-credit-value').text('R$ '+global.float2Br(Budget.budget.credit.value));
     },
     getModalities: function(success){
         global.post({

@@ -5,17 +5,17 @@ $(document).ready(function(){
 
 ModalProductSearchSelected = {
     table: global.table({
-        selector: '#modal-table-products-selected',
+        noOrder: 1,
         scrollY: 186,
         scrollCollapse: 1,
-        noControls: [2,5],
-        order: [[1,'asc']]
+        noControls: [0,1,2,3,4,5],
+        selector: '#modal-table-products-selected'
     }),
     events: function(){
         ModalProductSearchSelected.table.on('draw',function(){
             $('#modal-table-products-selected').find('input').on('keyup',function(e){
                 var key = $(this).attr('data-key');
-                var qt = $(this).val().length ? parseInt($(this).val()) : 1;
+                var qt = $(this).val().length ? parseFloat(global.br2Float($(this).val())) : 1;
                 var value = qt * ModalProductSearch.selected[key].budget_item_value_unitary;
                 ModalProductSearch.selected[key].budget_item_quantity = qt;
                 ModalProductSearch.selected[key].budget_item_value = value;
@@ -26,12 +26,12 @@ ModalProductSearchSelected = {
                     $('#modal-product-search-selected').modal('hide');
                 }
             });
-            $('#modal-table-products-selected').find('input').mask('999999');
             $('#modal-table-products-selected').find('button').click(function(){
                 ModalProductSearch.selected.splice($(this).attr('data-key'),1);
                 ModalProductSearchSelected.showList();
                 ModalProductSearch.selected();
             });
+            global.mask();
         });
     },
     showList: function(){
@@ -40,7 +40,7 @@ ModalProductSearchSelected = {
             var row = ModalProductSearchSelected.table.row.add([
                 item.product_code,
                 item.product_name,
-                '<input data-key="' + key + '" data-value="' + item.budget_item_quantity + '" class="text-center" type="text" data-to-mask="integer" value="' + item.budget_item_quantity + '"/>',
+                '<input data-key="' + key + '" data-value="' + item.budget_item_quantity + '" class="text-center" type="text" data-to-mask="' + (item.unit_type == 'F' ? 'decimal4' : 'integer') + '" value="' + global.float2Br(item.budget_item_quantity,1,4) + '"/>',
                 'R$ ' + global.float2Br(item.budget_item_value_unitary),
                 'R$ ' + global.float2Br(item.budget_item_value_total),
                 '<button data-key="' + key + '" class="btn btn-empty"><i class="fa fa-trash-o txt-red-light"></i></button>'

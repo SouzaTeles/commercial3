@@ -160,7 +160,8 @@ header .user .user-user .info span
 
 header .user .user-user .dropdown-menu
 {
-    width: 200px;
+    right: 2px;
+    width: 246px;
 }
 
 header .user .user-user .dropdown-menu li a
