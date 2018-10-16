@@ -2884,7 +2884,8 @@ Payment = {
                             bank_id: ModalPayment.payment.bank_id,
                             agency_id: ModalPayment.payment.agency_id,
                             agency_code: ModalPayment.payment.agency_code,
-                            check_number: ModalPayment.payment.check_number
+                            check_number: ModalPayment.payment.check_number,
+                            nature_id: ModalPayment.payment.nature_id
                         });
                         Payment.sort();
                         Payment.total();

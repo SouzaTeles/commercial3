@@ -152,7 +152,8 @@ ModalPayment = {
             payment_entry: $('#modal_payment_entry').prop('checked') ? 'Y' : 'N',
             payment_value: global.br2Float($('#modal_payment_value').val()),
             payment_installment: parseInt($('#modal_payment_installment').val()),
-            payment_deadline: global.date2Us($('#modal_payment_deadline').val())
+            payment_deadline: global.date2Us($('#modal_payment_deadline').val()),
+            nature_id: ModalPayment.payment.nature_id
         };
     },
     installments: function(installment){
