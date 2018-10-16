@@ -174,6 +174,10 @@ Registration = {
         });
         $('#file-image-product').filestyle('clear');
         $('#button-image-product-remove').prop("disabled", true);
+        $('#image-input-area').prop("contenteditable", true);
+        $('#image-input-area').css({
+            "border": "2px #cccccc dashed"
+        });
         Product.product_image = null;
         Registration.img_act = 'R';
     },
@@ -409,44 +413,11 @@ Registration = {
 
         
 
-            $("#image-input-area").on("paste", function (ev) {
-              window.setTimeout(function (ev) {
-                var regex = /base64$/;
-                console.log("Entrou na função.")
-                ImagePush.input = $("#image-input-area").children()[0].src;
-                ImagePush.s = ImagePush.input.split(',');
-                ImagePush.mime = ImagePush.s[0];
-                ImagePush.data = ImagePush.s[1];
-                console.log("ImagePush Mime");
-                console.log(ImagePush.mime);
-                console.log(ImagePush.data);
-                $('#product-image-cover').css({
-                    "background-image": "url(" + ImagePush.s + ")"
-                });
-                $("#image-input-area").empty();
-                $("#image-input-area").prop("contenteditable", false);
-                $('#button-image-product-remove').prop("disabled", false);
-
-                $('#file-image-product').filestyle("disabled", false);
-                //console.log()
-
-                if(!regex.exec(ImagePush.mime)){
-                    console.log("Não é base 64")
-                    Registration.toDataUrl(ImagePush.mime, function(img64) {
-                        Registration.imagem = img64;
-                        console.log("IMG64 " + img64);
-                        console.log("Imagem na variavel" + Registration.imagem);
-                        Registration.img_act = 'I';
-                    });
-                } else {
-                    console.log("É base 64");
-                    console.log(ImagePush.data);
-                    Registration.imagem = (ImagePush.mime +',' + ImagePush.data);
-                    console.log(Registration.imagem);
-                    Registration.img_act = 'I';
-                }
-                }, 300);
-            });
+        $("#image-input-area").on("paste drop", function (ev) {
+            window.setTimeout(function (ev) {
+            Registration.pasteImage();
+            }, 300);
+        });
     },
 
     beforePost: function() {
@@ -460,7 +431,6 @@ Registration = {
                     },
                     dataType: "json"
                 }, function(data) {
-                    // console.log(data);
                     Product = data;
                     Registration.product = data;
                     console.log(Registration.product);
@@ -539,6 +509,10 @@ Registration = {
         $('#registration_product_EAN').prop("disabled", false);
         $("#image-input-area").prop("contenteditable", true)
         $('#registration_product_EAN').val(Registration.product.product_EAN);
+        if(!Registration.product.product_image)
+            $("#image-input-area").css("border", "2px #cccccc dashed");
+        else
+            $("#image-input-area").css("border", "none");
         $('#product-image-cover').css({
             "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
         });
@@ -667,6 +641,7 @@ Registration = {
           }
         });
     },
+    
     toDataUrl: function (url, callback) {
         var xhr = new XMLHttpRequest();
         xhr.onload = function() {
@@ -679,6 +654,44 @@ Registration = {
         xhr.open('GET', url);
         xhr.responseType = 'blob';
         xhr.send();
+    },
+
+    pasteImage: function(){
+        var regex = /base64$/;
+        // console.log("Entrou na função.")
+        ImagePush.input = $("#image-input-area").children()[0].src;
+        ImagePush.s = ImagePush.input.split(',');
+        ImagePush.mime = ImagePush.s[0];
+        ImagePush.data = ImagePush.s[1];
+        // console.log("ImagePush Mime");
+        // console.log(ImagePush.mime);
+        // console.log(ImagePush.data);
+        $('#product-image-cover').css({
+            "background-image": "url(" + ImagePush.s + ")"
+        });
+        $('#image-input-area').css("border","none");
+        $("#image-input-area").empty();
+        $("#image-input-area").prop("contenteditable", false);
+        $('#button-image-product-remove').prop("disabled", false);
+
+        $('#file-image-product').filestyle("disabled", false);
+        //console.log()
+
+        if(!regex.exec(ImagePush.mime)){
+            // console.log("Não é base 64")
+            Registration.toDataUrl(ImagePush.mime, function(img64) {
+                Registration.imagem = img64;
+                // console.log("IMG64 " + img64);
+                // console.log("Imagem na variavel" + Registration.imagem);
+                Registration.img_act = 'I';
+            });
+        } else {
+            // console.log("É base 64");
+            // console.log(ImagePush.data);
+            Registration.imagem = (ImagePush.mime +',' + ImagePush.data);
+            // console.log(Registration.imagem);
+            Registration.img_act = 'I';
+        }
     }
 
     

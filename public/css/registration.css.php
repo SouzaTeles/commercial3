@@ -49,6 +49,8 @@ body{
   /*width: 340px;*/
   height: 272px;
   position: absolute;
+  color: transparent;
+
 }
 
 
