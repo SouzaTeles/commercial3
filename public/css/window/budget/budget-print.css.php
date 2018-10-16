@@ -1,9 +1,14 @@
 <?php include "../../data.css.php"; ?>
 
+html, body
+{
+    height: 100%;
+}
+
 body
 {
     font-size: 12px;
-    background-color: #fff;
+    background-color: #ddd;
     font-family: sans-serif;
 }
 
@@ -30,7 +35,7 @@ th, td
 
 .container
 {
-    padding: 20px;
+    padding: 20px !important;
 }
 
 .table-border
@@ -61,6 +66,7 @@ th, td
     padding: 20px;
     margin: 0 auto;
     max-width: 780px;
+    background-color: #fff;
 }
 
 .print-order .products table tr td,
@@ -105,7 +111,12 @@ th, td
 
 .company
 {
-    font-size: 14px;
+    font-size: 12px;
+}
+
+.company #company-name
+{
+    font-size: 16px;
 }
 
 #external-code,
@@ -121,7 +132,8 @@ th, td
 
 #client-info td
 {
-    font-size: 16px;
+    font-size: 14px;
+    text-transform: uppercase;
 }
 
 .print-order .products
