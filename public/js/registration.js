@@ -172,7 +172,7 @@ Registration = {
         $('#product-image-cover').css({
             "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
         });
-        $('#file-image-product').filestyle('clear');
+        $('#file-image-product').filestyle("disabled", false)
         $('#button-image-product-remove').prop("disabled", true);
         $('#image-input-area').prop("contenteditable", true);
         $('#image-input-area').css({
@@ -218,21 +218,8 @@ Registration = {
         $('#registration_product_group_code').on('keyup', function() {
             var key = event.keyCode || event.wich;
             if (key == 13) {
-                global.post({
-                    url: global.uri.uri_public_api + 'product_group.php?action=get',
-                    data: {
-                        type: 'G',
-                        product_group_code: $("#registration_product_group_code").val(),
-                    },
-                    dataType: "json"
-                }, function(ret) {
-                    if (ret) {
-                        $('#registration_product_group').val(ret[0].group_info.product_group_name);
-                        $('#registration_product_group_code').val(ret[0].group_info.product_group_code);
-                        Registration.products = ret[0].product_info;
-                        Registration.showList();
-                    }
-                });
+                console.log($('#registration_product_group_code').val());
+                Registration.beforePost($('#registration_product_group_code').val());
             }
         });
 
@@ -251,8 +238,10 @@ Registration = {
                         },
                         url: global.uri.uri_public_api + 'product_group.php?action=typeahead',
                         callBack: function(item) {
+                            console.log(item);
                             $('#registration_product_group').val(item.item_name);
                             $('#registration_product_group_code').val(item.item_code);
+                            Registration.beforePost(item.item_code);
                         }
                     });
                 }, Item.typeahead.delay);
@@ -420,7 +409,7 @@ Registration = {
         });
     },
 
-    beforePost: function() {
+    beforePost: function(item) {
         switch (Registration.type) {
             case 'P':
                 global.post({
@@ -494,6 +483,21 @@ Registration = {
                 });
                 break;
             case 'G':
+                global.post({
+                    url: global.uri.uri_public_api + 'product_group.php?action=get',
+                    data: {
+                        type: 'G',
+                        product_group_code: item,
+                    },
+                    dataType: "json"
+                }, function(ret) {
+                    if (ret) {
+                        $('#registration_product_group').val(ret[0].group_info.product_group_name);
+                        $('#registration_product_group_code').val(ret[0].group_info.product_group_code);
+                        Registration.products = ret[0].product_info;
+                        Registration.showList();
+                    }
+                });
 
                 break;
             default:
@@ -522,6 +526,13 @@ Registration = {
             $('#button-image-product-remove').prop("disabled", false);
         } else {
             $('#button-image-product-remove').prop("disabled", true);
+        }
+
+        if (Registration.product.product_classification){
+            $('#registration_product_classification').val(Registration.product.product_classification)
+        }
+        else {
+            $('#registration_product_classification').val(" ");
         }
     },
 
@@ -596,7 +607,8 @@ Registration = {
                 "<input data-id='" + product.product_id + "'id='" + product.product_id  + "' type='checkbox' class='product-check' data-key='1'>",
                 product.product_code,
                 product.product_name,
-                "♣"
+                //stonescrobles
+                '<div class="product-cover"' + ( product.product_image ? 'style="background-image:url(' + product.product_image+ ')"' : '' ) + '></div>',
             ])
         })
         Registration.table.draw();
@@ -609,12 +621,16 @@ Registration = {
                 Registration.numChecked--;
                 console.log(Registration.numChecked);
             }
-
-            if(Registration.numChecked > 0)
+            console.log("Ta chegando no pre-if...");
+            if(Registration.numChecked > 0){
                 $('#file-image-product').filestyle("disabled", false)
+                $('#image-input-area').css("border","2px #cccccc dashed");
+
+            }
             else{
                 $('#file-image-product').filestyle("disabled", true)
                 $("#product-check-master").prop("checked", false);
+                $('#image-input-area').css("border","none");
             }
         });
 
@@ -630,6 +646,9 @@ Registration = {
             
             //Habilita o botão de procurar
             $('#file-image-product').filestyle("disabled", false);
+
+            //Habilita a borda do input area
+            $('#image-input-area').css("border","2px #cccccc dashed");
           }
           else {
             //Desmarca todos os checks
@@ -638,6 +657,8 @@ Registration = {
             Registration.numChecked = 0;
             //Desabilita o botão de procurar
             $('#file-image-product').filestyle("disabled", true);
+            //Desabilita a borda do input area
+            $('#image-input-area').css("border","none");
           }
         });
     },

@@ -120,6 +120,7 @@
                     "product_code" => $product->CdChamada,
                     "product_name" => $product->NmProduto,
                     "product_EAN" => $EanCode,
+                    "product_classification" => $product->CdClassificacao,
                     "product_image" => $productImage
                 ]);
               break;
@@ -203,22 +204,27 @@
                         // var_dump($productList);
                         $ret = [];
                         $ret2=[];
-                        // foreach($productList as $product){
-                        //     $ret[] = (Object)[
-                        //       "product_id" => $product->IdProduto,
-                        //       "product_code" => $product->CdChamada,
-                        //       "product_name" => $product->NmProduto
-                        //
-                        //     ];
-                        // }
+                        foreach($productList as $product){
+                            $image = getImage((Object)[
+                                "image_dir" => "product",
+                                "image_id"=> $product->product_id
+                            ]);
+                            $ret[] = (Object)[
+                              "product_id" => $product->product_id,
+                              "product_code" => $product->product_code,
+                              "product_name" => $product->product_name,
+                              "product_image" => $image
+                            ];
+                            // var_dump($ret);
+                        }
                         $ret2[] = (object)[
                           "group_info" => (object)[
                             "product_group_code" =>$group->CdChamada,
                             "product_group_name" =>$group->NmGrupoProduto
                           ],
-                          "product_info" =>$productList
+                          "product_info" =>$ret
                         ];
-
+                        // var_dump($ret2);
                         Json::get($httpStatus[200], $ret2);
                   }
 
