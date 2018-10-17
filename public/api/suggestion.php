@@ -41,6 +41,29 @@
                 ]
             ]);
 
+            $to = [
+                (Object)[
+                    "email" => "alessandro@dafel.com.br",
+                    "name" => "Alessandro Menezes"
+                ],
+                (Object)[
+                    "email" => "adriano@dafel.com.br",
+                    "name" => "Adriano Machado"
+                ]
+            ];
+
+            $path = PATH_FILES . "email/" . date("Y/F/d");
+            if (!is_dir($path)) {
+                mkdir($path, 0755, true);
+            }
+
+            email((Object)[
+                "recipient" => $to,
+                "origin" => "suggestion",
+                "subject" => "Caixa de sugestão",
+                "parent_id" => $suggestion_id
+            ]);
+
             Json::get($headerStatus[200]);
 
         break;

@@ -106,15 +106,22 @@ Suggestion = {
         $.each( global.login.companies, function(key,company){
             $('#form-suggestion select').append($('<option>',{
                 'value': company.company_id,
+                'text': company.company_short_name,
                 'data-content': '<i class="fa fa-stop" style="color:' + company.company_color + ';"></i> ' + ('0'+company.company_id).slice(-2) + ' - ' + company.company_short_name
             }));
         });
         $('#form-suggestion select').selectpicker('refresh');
     },
     submit: function(){
+        var form = $('#form-suggestion');
         global.post({
             url: global.uri.uri_public_api + 'suggestion.php?action=insert',
-            data: $('#form-suggestion').serialize(),
+            data: {
+                person_name: $(form).find('[name="person_name"]').val(),
+                company_id: $(form).find('[name="company_id"]').val(),
+                company_name: $(form).find('[name="company_id"] option:selected').text(),
+                suggestion_message: $(form).find('[name="suggestion_message"]').val()
+            },
             dataType: 'json'
         },function(){
             global.modal({
