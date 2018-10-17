@@ -256,7 +256,10 @@ Budget = {
                     action: function(){
                         success();
                     }
-                }]
+                }],
+                shown: function(){
+                    $('#button-before-save-confirm').focus();
+                }
             });
         });
     },
