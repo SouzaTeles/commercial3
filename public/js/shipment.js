@@ -115,7 +115,7 @@ Shipment = {
                 document.shipment_name,
                 document.shipment_date,
                 //'<div class="person-cover"' + ( document.driver_image? 'style="background-image:url(' + document.driver_image+ ')"' : '' ) + '></div><label>' + document.driver_image + '</label><div class="seller">' + <!--( budget.seller.short_name || budget.seller.name )--> + '</div>',
-                '<div class="person-cover"' + ( document.driver_image? 'style="background-image:url(' + document.driver_image+ ')"' : '' ) + '></div><label>' + '</label><div class="seller">' + <!--( budget.seller.short_name || budget.seller.name )-->  '</div>',
+                '<div class="person-cover"' + ( document.driver_image? 'style="background-image:url(' + document.driver_image+ ')"' : '' ) + '></div><label>' + '</label><div class="seller">' + <!--( budget.seller.short_name || budget.seller.name )--!>  '</div>',
                 document.shipment_driver,
                 '',
                 ''
