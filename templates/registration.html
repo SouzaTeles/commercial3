@@ -27,12 +27,19 @@
             </div>
          </div>
          <!-- Codigo de barras -->
-         <div class="col-xs-12 col-sm-12">
+         <div class="col-xs-6 col-sm-6">
             <div class="form-group">
                <label for="registration_product_EAN">Codigo de Barras</label>
                <input type="text" class="form-control" id="registration_product_EAN" placeholder="Ex: 7897095012642" disabled="true">
             </div>
          </div>
+         <!-- Classificação -->
+         <div class="col-xs-6 col-sm-6">
+          <div class="form-group">
+            <label for="registration_product_classification">Classificação</label>
+            <input type="text" class="form-control" id="registration_product_classification" placeholder="Ex: Médio Branco" disabled="true">
+          </div>
+        </div>
       </div>
     </div>
     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="product-group-tab">
@@ -73,8 +80,8 @@
   <div class="col-xs-12 col-sm-6">
        <div class="form-group form-group-file">
           <!-- <label for="file-image-product">Foto</label> -->
-          <div id="image-input-area" contenteditable="false"></div>
           <div id="product-image-cover" class="image-cover image-place">
+            <div id="image-input-area" contenteditable="false" class="col-xs-12 col-sm-12"></div>
              <!-- <span class="text">Sem imagem</span> -->
              <input data-disabled="true" type="file" id="file-image-product" accept=".jpg, .jpeg, .png|images/*" class="filestyle" data-buttonText="Procurar" data-buttonName="btn-block btn-green" data-iconName="fa fa-file-image-o" data-input="false">
              <button disabled type="button" id="button-image-product-remove" class="btn btn-red"><i class="fa fa-times"></i> Remover</button>

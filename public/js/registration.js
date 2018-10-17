@@ -172,8 +172,12 @@ Registration = {
         $('#product-image-cover').css({
             "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
         });
-        $('#file-image-product').filestyle('clear');
+        $('#file-image-product').filestyle("disabled", false)
         $('#button-image-product-remove').prop("disabled", true);
+        $('#image-input-area').prop("contenteditable", true);
+        $('#image-input-area').css({
+            "border": "2px #cccccc dashed"
+        });
         Product.product_image = null;
         Registration.img_act = 'R';
     },
@@ -214,21 +218,8 @@ Registration = {
         $('#registration_product_group_code').on('keyup', function() {
             var key = event.keyCode || event.wich;
             if (key == 13) {
-                global.post({
-                    url: global.uri.uri_public_api + 'product_group.php?action=get',
-                    data: {
-                        type: 'G',
-                        product_group_code: $("#registration_product_group_code").val(),
-                    },
-                    dataType: "json"
-                }, function(ret) {
-                    if (ret) {
-                        $('#registration_product_group').val(ret[0].group_info.product_group_name);
-                        $('#registration_product_group_code').val(ret[0].group_info.product_group_code);
-                        Registration.products = ret[0].product_info;
-                        Registration.showList();
-                    }
-                });
+                console.log($('#registration_product_group_code').val());
+                Registration.beforePost($('#registration_product_group_code').val());
             }
         });
 
@@ -247,8 +238,10 @@ Registration = {
                         },
                         url: global.uri.uri_public_api + 'product_group.php?action=typeahead',
                         callBack: function(item) {
+                            console.log(item);
                             $('#registration_product_group').val(item.item_name);
                             $('#registration_product_group_code').val(item.item_code);
+                            Registration.beforePost(item.item_code);
                         }
                     });
                 }, Item.typeahead.delay);
@@ -409,52 +402,14 @@ Registration = {
 
         
 
-            $("#image-input-area").on("paste", function (ev) {
-              window.setTimeout(function (ev) {
-                console.log("Entrou na função.")
-                ImagePush.input = $("#image-input-area").children()[0].src;
-                ImagePush.s = ImagePush.input.split(',');
-                ImagePush.mime = ImagePush.s[0];
-                ImagePush.data = ImagePush.s[1];
-                console.log(ImagePush.mime);
-                console.log(ImagePush.data);
-                $('#product-image-cover').css({
-                    "background-image": "url(" + ImagePush.s + ")"
-                });
-                $("#image-input-area").empty();
-                $("#image-input-area").prop("contenteditable", false);
-                $('#button-image-product-remove').prop("disabled", false);
-                $('#file-image-product').filestyle("disabled", false);
-                console.log("Teste...")
-
-                var regex = /base64$/gm;
-                let m;
-
-                while ((m = regex.exec(Registration.imagem)) !== null) {
-                    // This is necessary to avoid infinite loops with zero-width matches
-                    if (m.index === regex.lastIndex) {
-                        regex.lastIndex++;
-                    }
-                    
-                    // The result can be accessed through the `m`-variable.
-                    m.forEach((match, groupIndex) => {
-                        console.log(`Found match, group ${groupIndex}: ${match}`);
-                    });
-                }
-
-                Registration.toDataUrl(ImagePush.mime, function(img64) {
-                    Registration.imagem = img64;
-                    console.log("IMG64 " + img64);
-                    console.log("Imagem na variavel" + Registration.imagem);
-                });
-              }, 300);
-            });
-
-
-
+        $("#image-input-area").on("paste drop", function (ev) {
+            window.setTimeout(function (ev) {
+            Registration.pasteImage();
+            }, 300);
+        });
     },
 
-    beforePost: function() {
+    beforePost: function(item) {
         switch (Registration.type) {
             case 'P':
                 global.post({
@@ -465,7 +420,6 @@ Registration = {
                     },
                     dataType: "json"
                 }, function(data) {
-                    // console.log(data);
                     Product = data;
                     Registration.product = data;
                     console.log(Registration.product);
@@ -529,6 +483,21 @@ Registration = {
                 });
                 break;
             case 'G':
+                global.post({
+                    url: global.uri.uri_public_api + 'product_group.php?action=get',
+                    data: {
+                        type: 'G',
+                        product_group_code: item,
+                    },
+                    dataType: "json"
+                }, function(ret) {
+                    if (ret) {
+                        $('#registration_product_group').val(ret[0].group_info.product_group_name);
+                        $('#registration_product_group_code').val(ret[0].group_info.product_group_code);
+                        Registration.products = ret[0].product_info;
+                        Registration.showList();
+                    }
+                });
 
                 break;
             default:
@@ -544,6 +513,10 @@ Registration = {
         $('#registration_product_EAN').prop("disabled", false);
         $("#image-input-area").prop("contenteditable", true)
         $('#registration_product_EAN').val(Registration.product.product_EAN);
+        if(!Registration.product.product_image)
+            $("#image-input-area").css("border", "2px #cccccc dashed");
+        else
+            $("#image-input-area").css("border", "none");
         $('#product-image-cover').css({
             "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
         });
@@ -553,6 +526,13 @@ Registration = {
             $('#button-image-product-remove').prop("disabled", false);
         } else {
             $('#button-image-product-remove').prop("disabled", true);
+        }
+
+        if (Registration.product.product_classification){
+            $('#registration_product_classification').val(Registration.product.product_classification)
+        }
+        else {
+            $('#registration_product_classification').val(" ");
         }
     },
 
@@ -627,7 +607,8 @@ Registration = {
                 "<input data-id='" + product.product_id + "'id='" + product.product_id  + "' type='checkbox' class='product-check' data-key='1'>",
                 product.product_code,
                 product.product_name,
-                "♣"
+                //stonescrobles
+                '<div class="product-cover"' + ( product.product_image ? 'style="background-image:url(' + product.product_image+ ')"' : '' ) + '></div>',
             ])
         })
         Registration.table.draw();
@@ -640,12 +621,16 @@ Registration = {
                 Registration.numChecked--;
                 console.log(Registration.numChecked);
             }
-
-            if(Registration.numChecked > 0)
+            console.log("Ta chegando no pre-if...");
+            if(Registration.numChecked > 0){
                 $('#file-image-product').filestyle("disabled", false)
+                $('#image-input-area').css("border","2px #cccccc dashed");
+
+            }
             else{
                 $('#file-image-product').filestyle("disabled", true)
                 $("#product-check-master").prop("checked", false);
+                $('#image-input-area').css("border","none");
             }
         });
 
@@ -661,6 +646,9 @@ Registration = {
             
             //Habilita o botão de procurar
             $('#file-image-product').filestyle("disabled", false);
+
+            //Habilita a borda do input area
+            $('#image-input-area').css("border","2px #cccccc dashed");
           }
           else {
             //Desmarca todos os checks
@@ -669,9 +657,12 @@ Registration = {
             Registration.numChecked = 0;
             //Desabilita o botão de procurar
             $('#file-image-product').filestyle("disabled", true);
+            //Desabilita a borda do input area
+            $('#image-input-area').css("border","none");
           }
         });
     },
+    
     toDataUrl: function (url, callback) {
         var xhr = new XMLHttpRequest();
         xhr.onload = function() {
@@ -684,6 +675,44 @@ Registration = {
         xhr.open('GET', url);
         xhr.responseType = 'blob';
         xhr.send();
+    },
+
+    pasteImage: function(){
+        var regex = /base64$/;
+        // console.log("Entrou na função.")
+        ImagePush.input = $("#image-input-area").children()[0].src;
+        ImagePush.s = ImagePush.input.split(',');
+        ImagePush.mime = ImagePush.s[0];
+        ImagePush.data = ImagePush.s[1];
+        // console.log("ImagePush Mime");
+        // console.log(ImagePush.mime);
+        // console.log(ImagePush.data);
+        $('#product-image-cover').css({
+            "background-image": "url(" + ImagePush.s + ")"
+        });
+        $('#image-input-area').css("border","none");
+        $("#image-input-area").empty();
+        $("#image-input-area").prop("contenteditable", false);
+        $('#button-image-product-remove').prop("disabled", false);
+
+        $('#file-image-product').filestyle("disabled", false);
+        //console.log()
+
+        if(!regex.exec(ImagePush.mime)){
+            // console.log("Não é base 64")
+            Registration.toDataUrl(ImagePush.mime, function(img64) {
+                Registration.imagem = img64;
+                // console.log("IMG64 " + img64);
+                // console.log("Imagem na variavel" + Registration.imagem);
+                Registration.img_act = 'I';
+            });
+        } else {
+            // console.log("É base 64");
+            // console.log(ImagePush.data);
+            Registration.imagem = (ImagePush.mime +',' + ImagePush.data);
+            // console.log(Registration.imagem);
+            Registration.img_act = 'I';
+        }
     }
 
     
