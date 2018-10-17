@@ -220,7 +220,7 @@
                     ["budget_status", "s", @$budget->export ? "L" : "O" ],
                     ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
                     ["budget_update", "s", $date],
-                    ["budget_cost", "d", $budget->budget_cost]
+                    ["budget_cost", "d", @$budget->budget_cost ? $budget->budget_cost : 0]
                 ],
                 "filters" => [[ "budget_id", "i", "=", $budget_id ]]
             ]);
@@ -239,7 +239,7 @@
                     ["budget_item_value_total", "d", $item->budget_item_value_total],
                     ["budget_item_value_icms", "d", @$item->budget_item_value_icms ? $item->budget_item_value_icms : "0"],
                     ["budget_item_value_st", "d", @$item->budget_item_value_st ? $item->budget_item_value_st : "0"],
-                    ["budget_item_cost", "d", $item->budget_item_cost]
+                    ["budget_item_cost", "d", @$item->budget_item_cost ? $item->budget_item_cost : 0 ]
                 ];
                 if( @$item->budget_item_id ) {
                     $items[] = $item->budget_item_id;
@@ -524,7 +524,7 @@
                     ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
                     ["budget_date", "s", $date],
                     ["clone_id", "i", @$budget->clone_id ? $budget->clone_id : NULL ],
-                    ["budget_cost", "d", $budget->budget_cost ]
+                    ["budget_cost", "d", @$budget->budget_cost ? $budget->budget_cost : 0 ]
                 ]
             ]);
 
@@ -546,7 +546,7 @@
                         ["budget_item_value_icms", "d", @$item->budget_item_value_icms ? $item->budget_item_value_icms : "0"],
                         ["budget_item_value_st", "d", @$item->budget_item_value_st ? $item->budget_item_value_st : "0"],
                         ["budget_item_date", "s", $date],
-                        ["budget_item_cost", "d", $item->budget_item_cost]
+                        ["budget_item_cost", "d", @$item->budget_item_cost ? $item->budget_item_cost : 0 ]
                     ]
                 ]);
             }
