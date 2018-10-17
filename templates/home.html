@@ -31,7 +31,37 @@
                 <span class="glyphicon glyphicon-chevron-right"></span>
             </a>
         </div>
-        <div class="box-shadow bg-purple" style="width:100%;height:400px;margin-top:30px;"></div>
+        <div class="suggestion box-shadow">
+            <div class="panel panel-items">
+                <div class="panel-heading ph-blue"><i class="fa fa-envelope-o"></i> Caixa de sugestão</div>
+                <div class="panel-body">
+                    <form id="form-suggestion" class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <input class="form-control" name="person_name" placeholder="Nome" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Empresa</label>
+                                <select data-size="10" class="selectpicker show-tick" name="company_id" title="-- Selecione a Empresa --" required></select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="suggestion_message">Mensagem</label>
+                                <textarea rows="6" class="form-control" id="suggestion_message" name="suggestion_message" placeholder="Mensagem" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <button class="btn btn-blue btn-block">
+                                <i class="fa fa-send"></i> Enviar
+                            </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <footer>

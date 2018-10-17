@@ -2,10 +2,10 @@
 
 	error_reporting(E_ALL);
     ini_set('memory_limit', '-1');
-    $lifetime=1800;
+    //$lifetime=1800;
     session_name("COMMERCIAL3");
     session_start();
-    setcookie(session_name(),session_id(),time()+$lifetime);
+    //setcookie(session_name(),session_id(),time()+$lifetime);
 	date_default_timezone_set("America/Sao_Paulo");
 
     include "config.php";

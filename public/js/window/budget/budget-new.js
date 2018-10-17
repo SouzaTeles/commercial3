@@ -1148,8 +1148,8 @@ Item = {
         $('#product_name').val(Item.item.product_name).attr('data-value',Item.item.product_name);
         $('#stock_value, #budget_item_quantity').unmask();
         if( Item.item.unit_type == 'F' ){
-            $('#product_stock').val(global.float2Br(Item.item.stock_value,1,4).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
-            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,1,4)).prop({
+            $('#product_stock').val(global.float2Br(Item.item.stock_value,0,4).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
+            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,4)).prop({
                 'readonly': !Item.item.product_id
             }).attr({
                 'data-value': Item.item.budget_item_quantity
@@ -1262,7 +1262,6 @@ Item = {
     discountAliquot: function(budget_item_aliquot_discount){
         Item.item.budget_item_aliquot_discount = parseFloat(budget_item_aliquot_discount);
         Item.item.budget_item_value_discount = parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2));
-        //Item.item.budget_item_aliquot_discount = (Item.item.budget_item_value_discount / (Item.item.budget_item_value ? Item.item.budget_item_value : 1)) * 100;
         Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
         $('#button-budget-item-add').focus().select();
         Item.data2form();
@@ -1380,7 +1379,7 @@ Item = {
             if (keycode == '13') {
                 if( $(this).val().length ){
                     var budget_item_aliquot_discount = global.br2Float($(this).val());
-                    if( budget_item_aliquot_discount <= Item.item.product_discount ){
+                    if( budget_item_aliquot_discount <= Item.item.product_discount || budget_item_aliquot_discount == Item.item.budget_item_aliquot_discount ){
                         $(this).attr('data-value',budget_item_aliquot_discount);
                         Item.item.authorization_id = null;
                         Item.discountAliquot(budget_item_aliquot_discount);
@@ -1404,7 +1403,7 @@ Item = {
                 if( $(this).val().length ){
                     var budget_item_value_discount = global.br2Float($(this).val());
                     var budget_item_aliquot_discount = parseFloat(((budget_item_value_discount/(Item.item.budget_item_quantity*Item.item.budget_item_value_unitary))*100).toFixed(4));
-                    if( budget_item_aliquot_discount <= Item.item.product_discount ){
+                    if( budget_item_aliquot_discount <= Item.item.product_discount || budget_item_aliquot_discount == Item.item.budget_item_aliquot_discount ){
                         $(this).attr('data-value',budget_item_value_discount);
                         Item.item.authorization_id = null;
                         Item.discountAliquot(budget_item_aliquot_discount);
@@ -1566,10 +1565,9 @@ Item = {
         };
     },
     quantity: function(budget_item_quantity){
-        Item.item.budget_item_value_discount = 0;
-        Item.item.budget_item_aliquot_discount = 0;
         Item.item.budget_item_quantity = budget_item_quantity;
         Item.item.budget_item_value = Item.item.budget_item_quantity * Item.item.budget_item_value_unitary;
+        Item.item.budget_item_value_discount = parseFloat(((Item.item.budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2));
         Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
         $('#budget_item_aliquot_discount').focus().select();
         Item.data2form();

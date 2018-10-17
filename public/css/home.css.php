@@ -121,6 +121,11 @@
     line-height: 16px;
 }
 
+.suggestion
+{
+    margin-top: 30px;
+}
+
 @media(max-width:1024px)
 {
     .intranet
