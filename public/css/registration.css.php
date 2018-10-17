@@ -19,12 +19,23 @@ body{
   background-repeat: no-repeat;
 }
 
+.product-cover
+{
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background-size: cover;
+    background-image: var(--imagepath);
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);
+}
+
 #product-group-registation{
   border-bottom: black;
 }
 
 #product-image-cover{
-  background-image: var(--imagepath)
+  background-image: var(--imagepath);
 }
 
 .overlay{
