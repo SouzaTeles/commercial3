@@ -75,6 +75,12 @@ th, td
     text-align: center;
 }
 
+.print-order .products table tr td:nth-child(1),
+.print-order .products table tr th:nth-child(1)
+{
+    text-align: left;
+}
+
 .print-order .products table tr td,
 .print-order .products table tr th,
 .address-values-payments table tr th,

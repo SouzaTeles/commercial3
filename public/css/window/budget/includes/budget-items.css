@@ -24,10 +24,17 @@
     margin: 2px 4px;
 }
 
+.panel-items .items
+{
+    float: left;
+    font-size: 18px;
+    padding: 10px 0 0;
+}
+
 .panel-items .total
 {
+    float: right;
     font-size: 18px;
-    text-align: right;
     padding: 10px 0 0;
 }
 

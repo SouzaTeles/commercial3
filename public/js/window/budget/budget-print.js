@@ -110,7 +110,7 @@ Print = {
                     '<td>' + item.product_code + ' - ' + item.product_name + '</td>' +
                     '<td>' + item.unit_code + '</td>' +
                     '<td>' + item.budget_item_quantity + '</td>' +
-                    '<td>R$' + global.float2Br(item.budget_item_value) + '</td>' +
+                    '<td>R$' + global.float2Br(item.budget_item_value_unitary) + '</td>' +
                     '<td>' + global.float2Br(item.budget_item_aliquot_discount) + '%</td>' +
                     '<td>R$' + global.float2Br(item.budget_item_value_discount) + '</td>' +
                     ( Print.company.company_st == 'Y' ? '<td>R$' + global.float2Br(item.budget_item_value_st) + '</td>' : '' ) +
