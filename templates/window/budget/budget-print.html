@@ -24,7 +24,7 @@
                         </b>
                     {/if}
                     <br/>
-                    <b id="budget-date">Data: {$budget->budget_date}</b><br/>
+                    <b id="budget-date">Data: {$budget->budget_date|date_format:'%d/%m/%Y'}</b><br/>
                     <b id="budget-code">Orçamento n°: {$budget->budget_code}</b><br/>
                     <b id="seller-name">Vendedor: {if !empty($budget->seller->seller_short_name)}{$budget->seller->seller_short_name}{else}{$budget->seller->seller_name}{/if}</b>
                 </td>
@@ -67,7 +67,7 @@
                 <th width="4%">Qtd</th>
                 <th width="8%">Valor</th>
                 <th width="7%" colspan="2">Desconto</th>
-                <th width="7%">Subs. Trib.</th>
+                {if $company->company_st == 'Y'}<th width="7%">Subs. Trib.</th>{/if}
                 <th width="7%">Líquido</th>
                 <th width="8%">Total</th>
             </thead>
@@ -80,7 +80,7 @@
                         <td>R${$item->budget_item_value_unitary|number_format:'2':',':'.'}</td>
                         <td>{$item->budget_item_aliquot_discount|number_format:'2':',':'.'}%</td>
                         <td>R${$item->budget_item_value_discount|number_format:'2':',':'.'}</td>
-                        <td>R${$item->budget_item_value_st|number_format:'2':',':'.'}</td>
+                        {if $company->company_st == 'Y'}<td>R${$item->budget_item_value_st|number_format:'2':',':'.'}</td>{/if}
                         <td>R${($item->budget_item_value_total/$item->budget_item_quantity)|number_format:'2':',':'.'}</td>
                         <td>R${$item->budget_item_value_total|number_format:'2':',':'.'}</td>
                     </tr>
@@ -127,18 +127,22 @@
                                 <td>Desconto Total</td>
                                 <td id="budget-value-discount" class="text-center">R${$budget->budget_value_discount|number_format:'2':',':'.'}</td>
                             </tr>
-                            <tr>
-                                <td>Subs. Trib.</td>
-                                <td id="budget-value-st" class="text-center">R${$budget->budget_value_st|number_format:'2':',':'.'}</td>
-                            </tr>
+                            {if $company->company_st == 'Y'}
+                                <tr>
+                                    <td>Subs. Trib.</td>
+                                    <td id="budget-value-st" class="text-center">R${$budget->budget_value_st|number_format:'2':',':'.'}</td>
+                                </tr>
+                            {/if}
                             <tr>
                                 <td>Valor Total</td>
                                 <td id="budget-value-total" class="text-center">R${$budget->budget_value_total|number_format:'2':',':'.'}</td>
                             </tr>
-                            <tr>
-                                <td>Valor Total com ST</td>
-                                <td id="budget-value-total-st" class="text-center">R${$budget->budget_value_total+$budget->budget_value_st|number_format:'2':',':'.'}</td>
-                            </tr>
+                            {if $company->company_st == 'Y'}
+                                <tr>
+                                    <td>Valor Total com ST</td>
+                                    <td id="budget-value-total-st" class="text-center">R${($budget->budget_value_total+$budget->budget_value_st)|number_format:'2':',':'.'}</td>
+                                </tr>
+                            {/if}
                         </tbody>
                     </table>
                 </td>
