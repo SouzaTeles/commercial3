@@ -22,6 +22,7 @@
         public $budget_value_addition;
         public $budget_value_icms;
         public $budget_value_st;
+        public $budget_cost;
         public $budget_value_total;
         public $budget_note;
         public $budget_note_document;
@@ -58,6 +59,7 @@
             $this->budget_value_addition = (float)$data->budget_value_addition;
             $this->budget_value_icms = (float)$data->budget_value_icms;
             $this->budget_value_st = (float)$data->budget_value_st;
+            $this->budget_cost = (float)$data->budget_cost;
             $this->budget_value_total = (float)$data->budget_value_total;
             $this->budget_note = @$data->budget_note ? $data->budget_note : NULL;
             $this->budget_note_document = @$data->budget_note_document ? $data->budget_note_document : NULL;
@@ -108,7 +110,7 @@
                         "BI.product_id",
                         "BI.price_id",
                         "BI.external_id",
-                        "BI.budget_item_quantity",
+                        "budget_item_quantity=CAST(BI.budget_item_quantity AS FLOAT)",
                         "budget_item_value=CAST(BI.budget_item_value AS FLOAT)",
                         "budget_item_value_discount=CAST(BI.budget_item_value_discount AS FLOAT)",
                         "budget_item_value_total=CAST(BI.budget_item_value_total AS FLOAT)",
@@ -116,6 +118,7 @@
                         "budget_item_value_icms=CAST(BI.budget_item_value_icms AS FLOAT)",
                         "budget_item_value_st=CAST(BI.budget_item_value_st AS FLOAT)",
                         "budget_item_aliquot_discount=CAST(BI.budget_item_aliquot_discount AS FLOAT)",
+                        "budget_item_cost=CAST(BI.budget_item_cost AS FLOAT)",
                         "ncm_id=P.IdClassificacaoFiscal",
                         "icms_id=P.IdCalculoICMS",
                         "product_code=CP.CdChamada",
@@ -148,6 +151,7 @@
                         $item->budget_item_value_unitary = (float)$item->budget_item_value_unitary;
                         $item->budget_item_value_discount = (float)$item->budget_item_value_discount;
                         $item->budget_item_aliquot_discount = (float)$item->budget_item_aliquot_discount;
+                        $item->budget_item_cost = (float)$item->budget_item_cost;
                         $item->product_cfop_extra = @$item->product_cfop_extra ? $item->product_cfop_extra : NULL;
                         if( @$gets["get_product_stock"] || @$_POST["get_product_stock"] ){
                             $item->stock_value = 0;

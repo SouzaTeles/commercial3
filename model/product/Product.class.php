@@ -27,6 +27,7 @@
             $this->product_weight_gross = (float)$data->product_weight_gross;
             $this->product_cfop = @$data->product_cfop ? $data->product_cfop : NULL;
             $this->product_cfop_extra = @$data->product_cfop_extra ? $data->product_cfop_extra : NULL;
+            $this->product_cost = @$data->product_cost ? (float)$data->product_cost : NULL;
 
             GLOBAL $dafel, $login, $post;
 
@@ -125,6 +126,33 @@
                 }
 
                 $this->prices = $prices;
+            }
+
+            if( @$gets["get_product_cost"] || @$_POST["get_product_cost"] )
+            {
+                $this->cost = (Object)[
+                    "cost_value" => 0,
+                    "cost_date" => NULL
+                ];
+
+                $cost = Model::get($dafel,(Object)[
+                    "top" => 1,
+                    "tables" => [ "HistoricoCusto" ],
+                    "fields" => [
+                        "VlCusto",
+                        "DtReferencia=CONVERT(VARCHAR(10),DtReferencia,126)"
+                    ],
+                    "filters" => [
+                        [ "IdProduto", "s", "=", $data->product_id ],
+                        [ "CdEmpresa", "i", "=", $post->company_id ]
+                    ],
+                    "order" => "DtReferencia DESC"
+                ]);
+
+                if( @$cost ){
+                    $this->cost->cost_value = (float)number_format($cost->VlCusto,2,".","");
+                    $this->cost->cost_date = $cost->DtReferencia;
+                }
             }
         }
     }

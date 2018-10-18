@@ -51,6 +51,7 @@
                     "budget_value_icms=CAST(budget_value_icms AS FLOAT)",
                     "budget_value_st=CAST(budget_value_st AS FLOAT)",
                     "budget_value_total=CAST(budget_value_total AS FLOAT)",
+                    "budget_cost=CAST(budget_cost AS FLOAT)",
                     "budget_note",
                     "budget_note_document",
                     "budget_credit",
@@ -218,7 +219,8 @@
                     ["budget_delivery", "s", $budget->budget_delivery],
                     ["budget_status", "s", @$budget->export ? "L" : "O" ],
                     ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
-                    ["budget_update", "s", $date]
+                    ["budget_update", "s", $date],
+                    ["budget_cost", "d", @$budget->budget_cost ? $budget->budget_cost : 0]
                 ],
                 "filters" => [[ "budget_id", "i", "=", $budget_id ]]
             ]);
@@ -237,6 +239,7 @@
                     ["budget_item_value_total", "d", $item->budget_item_value_total],
                     ["budget_item_value_icms", "d", @$item->budget_item_value_icms ? $item->budget_item_value_icms : "0"],
                     ["budget_item_value_st", "d", @$item->budget_item_value_st ? $item->budget_item_value_st : "0"],
+                    ["budget_item_cost", "d", @$item->budget_item_cost ? $item->budget_item_cost : 0 ]
                 ];
                 if( @$item->budget_item_id ) {
                     $items[] = $item->budget_item_id;
@@ -520,7 +523,8 @@
                     ["budget_trash", "s", "N"],
                     ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
                     ["budget_date", "s", $date],
-                    ["clone_id", "i", @$budget->clone_id ? $budget->clone_id : NULL ]
+                    ["clone_id", "i", @$budget->clone_id ? $budget->clone_id : NULL ],
+                    ["budget_cost", "d", @$budget->budget_cost ? $budget->budget_cost : 0 ]
                 ]
             ]);
 
@@ -541,7 +545,8 @@
                         ["budget_item_value_total", "d", $item->budget_item_value_total],
                         ["budget_item_value_icms", "d", @$item->budget_item_value_icms ? $item->budget_item_value_icms : "0"],
                         ["budget_item_value_st", "d", @$item->budget_item_value_st ? $item->budget_item_value_st : "0"],
-                        ["budget_item_date", "s", $date]
+                        ["budget_item_date", "s", $date],
+                        ["budget_item_cost", "d", @$item->budget_item_cost ? $item->budget_item_cost : 0 ]
                     ]
                 ]);
             }
@@ -615,7 +620,8 @@
                 "budget_title" => ( @$budget->external_id ? ( $budget->external_type == "D" ? "Dav" : "Pedido" ) : "Orçamento" ),
                 "external_id" => $budget->external_id,
                 "external_type" => $budget->external_type,
-                "external_code" => $budget->external_code
+                "external_code" => $budget->external_code,
+                "post" => $post
             ];
 
             postLog((Object)[

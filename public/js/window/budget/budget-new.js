@@ -256,7 +256,10 @@ Budget = {
                     action: function(){
                         success();
                     }
-                }]
+                }],
+                shown: function(){
+                    $('#button-before-save-confirm').focus();
+                }
             });
         });
     },
@@ -582,6 +585,7 @@ Budget = {
                 budget_value_addition: 0,
                 budget_value_icms: 0,
                 budget_value_st: 0,
+                budget_cost: 0,
                 budget_value_total: 0,
                 budget_note: '',
                 budget_note_document: '',
@@ -1033,6 +1037,7 @@ Item = {
         Budget.budget.budget_value += Item.item.budget_item_value;
         Budget.budget.budget_value_total += Item.item.budget_item_value_total;
         Budget.budget.budget_value_discount += Item.item.budget_item_value_discount;
+        Budget.budget.budget_cost += Item.item.budget_item_quantity * Item.item.budget_item_cost;
         Budget.budget.budget_aliquot_discount = parseFloat((Budget.budget.budget_value_discount/Budget.budget.budget_value*100).toFixed(2));
         Budget.budget.budget_value = parseFloat(Budget.budget.budget_value.toFixed(2));
         Budget.budget.budget_value_total = parseFloat(Budget.budget.budget_value_total.toFixed(2));
@@ -1148,8 +1153,8 @@ Item = {
         $('#product_name').val(Item.item.product_name).attr('data-value',Item.item.product_name);
         $('#stock_value, #budget_item_quantity').unmask();
         if( Item.item.unit_type == 'F' ){
-            $('#product_stock').val(global.float2Br(Item.item.stock_value,1,4).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
-            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,1,4)).prop({
+            $('#product_stock').val(global.float2Br(Item.item.stock_value,0,4).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
+            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,4)).prop({
                 'readonly': !Item.item.product_id
             }).attr({
                 'data-value': Item.item.budget_item_quantity
@@ -1204,6 +1209,7 @@ Item = {
                     Budget.budget.budget_value -= item.budget_item_value;
                     Budget.budget.budget_value_total -= item.budget_item_value_total;
                     Budget.budget.budget_value_discount -= item.budget_item_value_discount;
+                    Budget.budget.budget_cost -= item.budget_item_quantity*item.budget_item_cost;
                     Budget.budget.items.splice(key,1);
                     Item.showList();
                     Item.total();
@@ -1262,7 +1268,6 @@ Item = {
     discountAliquot: function(budget_item_aliquot_discount){
         Item.item.budget_item_aliquot_discount = parseFloat(budget_item_aliquot_discount);
         Item.item.budget_item_value_discount = parseFloat(((budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2));
-        //Item.item.budget_item_aliquot_discount = (Item.item.budget_item_value_discount / (Item.item.budget_item_value ? Item.item.budget_item_value : 1)) * 100;
         Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
         $('#button-budget-item-add').focus().select();
         Item.data2form();
@@ -1272,6 +1277,7 @@ Item = {
         Budget.budget.budget_value -= item.budget_item_value;
         Budget.budget.budget_value_total -= item.budget_item_value_total;
         Budget.budget.budget_value_discount -= item.budget_item_value_discount;
+        Budget.budget.budget_cost -= item.budget_item_quantity*item.budget_item_cost;
         Budget.budget.items.splice(key,1);
         Item.item = item;
         Item.data2form();
@@ -1380,7 +1386,7 @@ Item = {
             if (keycode == '13') {
                 if( $(this).val().length ){
                     var budget_item_aliquot_discount = global.br2Float($(this).val());
-                    if( budget_item_aliquot_discount <= Item.item.product_discount ){
+                    if( budget_item_aliquot_discount <= Item.item.product_discount || budget_item_aliquot_discount == Item.item.budget_item_aliquot_discount ){
                         $(this).attr('data-value',budget_item_aliquot_discount);
                         Item.item.authorization_id = null;
                         Item.discountAliquot(budget_item_aliquot_discount);
@@ -1404,7 +1410,7 @@ Item = {
                 if( $(this).val().length ){
                     var budget_item_value_discount = global.br2Float($(this).val());
                     var budget_item_aliquot_discount = parseFloat(((budget_item_value_discount/(Item.item.budget_item_quantity*Item.item.budget_item_value_unitary))*100).toFixed(4));
-                    if( budget_item_aliquot_discount <= Item.item.product_discount ){
+                    if( budget_item_aliquot_discount <= Item.item.product_discount || budget_item_aliquot_discount == Item.item.budget_item_aliquot_discount ){
                         $(this).attr('data-value',budget_item_value_discount);
                         Item.item.authorization_id = null;
                         Item.discountAliquot(budget_item_aliquot_discount);
@@ -1476,6 +1482,7 @@ Item = {
             url: global.uri.uri_public_api + 'product.php?action=get',
             data: {
                 get_unit: 1,
+                get_product_cost: 1,
                 get_product_stock: 1,
                 get_product_prices: 1,
                 company_id: Company.company.company_id,
@@ -1512,6 +1519,7 @@ Item = {
                 budget_item_value_unitary: product.prices[0].price_value,
                 budget_item_aliquot_discount: 0,
                 budget_item_value_discount: 0,
+                budget_item_cost: product.cost ? product.cost.cost_value : 0,
                 budget_item_value_total: product.prices[0].price_value,
                 stock_value: product.stock ? product.stock.stock_value : 0,
                 stock_date: product.stock ? product.stock.stock_date : null,
@@ -1561,15 +1569,15 @@ Item = {
             budget_item_value_unitary: 0,
             budget_item_aliquot_discount: 0,
             budget_item_value_discount: 0,
+            budget_item_cost: 0,
             budget_item_value_total: 0,
             prices: []
         };
     },
     quantity: function(budget_item_quantity){
-        Item.item.budget_item_value_discount = 0;
-        Item.item.budget_item_aliquot_discount = 0;
         Item.item.budget_item_quantity = budget_item_quantity;
         Item.item.budget_item_value = Item.item.budget_item_quantity * Item.item.budget_item_value_unitary;
+        Item.item.budget_item_value_discount = parseFloat(((Item.item.budget_item_aliquot_discount / 100) * Item.item.budget_item_value).toFixed(2));
         Item.item.budget_item_value_total = Item.item.budget_item_value - Item.item.budget_item_value_discount;
         $('#budget_item_aliquot_discount').focus().select();
         Item.data2form();
@@ -1600,6 +1608,7 @@ Item = {
                             Budget.budget.items.push(item);
                             Budget.budget.budget_value += item.budget_item_value;
                             Budget.budget.budget_value_total += item.budget_item_value_total;
+                            Budget.budget.budget_cost += item.budget_item_quantity * item.budget_item_cost;
                         });
                         Item.init();
                         Item.total();
@@ -1648,6 +1657,7 @@ Item = {
         $('.panel-tools button[data-action="discount"]').prop('disabled',!Budget.budget.items.length);
     },
     total: function(){
+        $('.panel-items .items').html('Itens: <b>' + Budget.budget.items.length + '</b>');
         $('.panel-items .total').html('Valor Total: <b>R$' + global.float2Br(Budget.budget.budget_value_total) + '</b>');
         Payment.total();
     }
@@ -1679,7 +1689,9 @@ Person = {
         Address.delivery = Person.person.address ? Person.person.address[0] : null;
         Budget.budget.address_code = Address.delivery ? Address.delivery.address_code : null;
         Budget.budget.address_uf_id = Address.delivery ? Address.delivery.uf_id : null;
-        Budget.budget.budget_note_document = Budget.budget.budget_note_document.split('\n\nObs de Entrega: ')[0];
+        if( !!Budget.budget.budget_note_document ){
+            Budget.budget.budget_note_document = Budget.budget.budget_note_document.split('\n\nObs de Entrega: ')[0];
+        }
         if( !!Person.person.address[0] && !!Person.person.address[0].address_note ){
             Budget.budget.budget_note_document +=  '\n\nObs de Entrega: ' + Person.person.address[0].address_note;
         }

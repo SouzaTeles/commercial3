@@ -50,6 +50,7 @@ ModalProductSearch = {
             url: global.uri.uri_public_api + 'product.php?action=get',
             data: {
                 get_unit: 1,
+                get_product_cost: 1,
                 get_product_stock: 1,
                 get_product_prices: 1,
                 product_id: product.product_id,
@@ -77,6 +78,7 @@ ModalProductSearch = {
                 budget_item_value_unitary: product.prices[0].price_value,
                 budget_item_aliquot_discount: 0,
                 budget_item_value_discount: 0,
+                budget_item_cost: product.cost ? product.cost.cost_value : 0,
                 budget_item_value_total: product.prices[0].price_value,
                 stock_value: product.stock ? product.stock.stock_value : 0,
                 stock_date: product.stock ? product.stock.stock_date : null,
