@@ -74,7 +74,7 @@
             <tbody>
                 {foreach from=$budget->items item=item}
                     <tr>
-                        <td>{$item->product_name}</td>
+                        <td>{$item->product_code} - {$item->product_name}</td>
                         <td>{$item->unit_code}</td>
                         <td>{$item->budget_item_quantity}</td>
                         <td>R${$item->budget_item_value_unitary|number_format:'2':',':'.'}</td>
