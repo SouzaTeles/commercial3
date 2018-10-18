@@ -20,7 +20,7 @@
                 <td class="budget-info text-right">
                     {if $budget->budget_status != 'O'}
                         <b id="external-code">
-                            {if $budget->external_type == "D"}DAV{else}Pedido{/if}
+                            {if $budget->external_type == "D"}DAV{else}Pedido{/if}: {$budget->external_code}
                         </b>
                     {/if}
                     <br/>
