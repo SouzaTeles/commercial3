@@ -1,3 +1,8 @@
+.ekko-lightbox .modal-dialog .modal-content .modal-header
+{
+    top: -68px
+}
+
 .panel-items .cover-big
 {
     width: 100%;
