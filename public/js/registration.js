@@ -145,9 +145,9 @@ Registration = {
         //searching: 1,
         scrollY: $(window).innerHeight() - 372,
         scrollCollapse: 1,
-        noControls: [0, 3],
+        noControls: [0, 2],
         order: [
-            [2, 'asc']
+            [1, 'desc']
         ]
     }),
     imagem: {},
@@ -271,15 +271,13 @@ Registration = {
         });
         //Verificação antes de upar a imagem
         $('#file-image-product').change(function() {
-            Registration.type == 'P' ?  Registration.modification = true : Registration.modGroup = true;
+            Registration.modification = true;
             Registration.img_act = 'I';
             Registration.imagePreview();
         });
-        //Alternar para Aba de produto
-        $('#product-tab').click(function(event) {
+
+        $('#product-tab').click(function() {
             if(Registration.modGroup){
-                event.preventDefault();
-                event.stopPropagation();
                 global.modal({
                     icon: 'fa-warning',
                     title: 'Atenção',
@@ -292,21 +290,15 @@ Registration = {
                             $('#product-image-cover').css({
                                 "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
                             });
-                            Registration.modGroup = false;
                             (Registration.product.product_image) ? Registration.disableImage() : Registration.enableImage();
-                            $('#product-tab').click();
-                            if($('#registration_product_code').val()){
-                                Registration.beforePost();
-                            }
-                            
                             window.close();
                         }
                     }, {
                         icon: 'fa-times',
                         title: 'Não',
                         action: function() {
-                            // Registration.imagem = null;
-                            // $('#product-group-tab').click();
+                            Registration.modGroup = false;
+                            $('#product-group-tab').click();
                             window.close();
                         }
                     }, ],
@@ -314,13 +306,6 @@ Registration = {
                         window.close();
                     }
                 });
-            }
-            else {
-                Registration.type = 'P';
-                if($('#registration_product_code').val()){
-                    Registration.beforePost();
-                }
-                
             }
             // console.log("clicou...")
             // Registration.type = 'P';
@@ -330,11 +315,10 @@ Registration = {
             // (Registration.product.product_image) ? Registration.disableImage() : Registration.enableImage();
             
         });
-        //Alternar para aba de grupo
+
         $('#product-group-tab').click(function(event) {
+            event.preventDefault();
             if (Registration.modification) {
-                event.preventDefault();
-                event.stopPropagation();
                 global.modal({
                     icon: 'fa-warning',
                     title: 'Atenção',
@@ -344,18 +328,18 @@ Registration = {
                         title: 'Sim',
                         action: function() {
                             Registration.type = 'G';
-                            Registration.modification = false;
                             $('#product-image-cover').css({
                                 "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
                             });
                             Registration.disableImageGroup();
-                            $('#product-group-tab').click();
                             window.close();
                         }
                     }, {
                         icon: 'fa-times',
                         title: 'Não',
                         action: function() {
+                            Registration.modification = false;
+                            $('#product-tab').click();
                             window.close();
                         }
                     }, ],
@@ -365,10 +349,13 @@ Registration = {
                 });
             } else {
                 Registration.type = 'G';
+                console.log("Antes...")
                 $('#product-image-cover').css({
                     "background-image": "url(" + (global.uri.uri_public + "images/empty-image.png") + ")"
                 });
                 Registration.disableImageGroup();
+                console.log("Depois...")
+
             }
         });
 
@@ -432,7 +419,6 @@ Registration = {
                     $('.product-check').each(function(key, item){
                       Registration.list.push($(this).closest(".product-check").attr("data-id"));
                     });
-                    Registration.modGroup = false;
                     ProductImage.up(Registration.imagem);
                     break;
                 default:
@@ -512,7 +498,7 @@ Registration = {
                                 icon: 'fa-check',
                                 title: 'Ok',
                                 action: function() {
-                                    window.close();
+                                    window.close();.
                                 }
                             }]
                         });
@@ -548,14 +534,12 @@ Registration = {
         $('#registration_product_name').val(Registration.product.product_name);
         $('#registration_product_code').val(Registration.product.product_code);
         $('#registration_product_EAN').prop("disabled", false);
-        $("#image-input-area").prop("contenteditable", true);
+        $("#image-input-area").prop("contenteditable", true)
         $('#registration_product_EAN').val(Registration.product.product_EAN);
         if(!Registration.product.product_image)
             Registration.enableImage();
-        else{
-            Registration.disableImage();
-        }
-            // $("#image-input-area").css("border", "none");
+        else
+            $("#image-input-area").css("border", "none");
         $('#product-image-cover').css({
             "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
         });

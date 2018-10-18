@@ -50,6 +50,9 @@ body{
   margin-top: 8px;
 }
 
+#home{
+  margin-top: 8px;
+}
 #table-products_wrapper{
     border-bottom: 1px solid rgb(221, 221, 221);
 }

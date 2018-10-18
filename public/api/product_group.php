@@ -390,7 +390,7 @@
                 }
 
 
-                 //echo "[LOG]Entrou no IF/n";
+                 //echo "[LOG]Entrou .no IF/n";
                 if(@$post->product_EAN){
                   // echo "entrou";
                   $eanTemp = Model::get($dafel,(Object)[
