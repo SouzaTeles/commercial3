@@ -179,6 +179,9 @@ Registration = {
     },
 
     events: function() {
+        $('#registration_product_EAN').mask('99999999999999');
+        
+        $('#registration_product_group_code').mask('999999');
         //Campo: Codigo do Produto
         $('#registration_product_code').on('keyup', function() {
             var key = event.keyCode || event.wich;
@@ -278,6 +281,7 @@ Registration = {
 
         $('#product-tab').click(function(event) {
             if(Registration.modGroup){
+                console.log("Registration.modGroup");
                 event.preventDefault();
                 event.stopPropagation();
                 global.modal({
@@ -288,24 +292,14 @@ Registration = {
                         icon: 'fa-check',
                         title: 'Sim',
                         action: function() {
-                            Registration.type = 'P';
-                            $('#product-image-cover').css({
-                                "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
-                            });
                             Registration.modGroup = false;
-                            (Registration.product.product_image) ? Registration.disableImage() : Registration.enableImage();
                             $('#product-tab').trigger("click");
-                            if($('#registration_product_code').val()){
-                                Registration.beforePost();
-                            }
                             window.close();
                         }
                     }, {
                         icon: 'fa-times',
                         title: 'Não',
                         action: function() {
-                            // Registration.modGroup = false;
-                            //$('#product-group-tab').click();
                             window.close();
                         }
                     }, ],
@@ -314,15 +308,17 @@ Registration = {
                     }
                 });
             } else {
+                console.log("Else");
                 Registration.type = 'P';
-                $('#product-image-cover').css({
-                    "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
-                });
                 Registration.modGroup = false;
-                (Registration.product.product_image) ? Registration.disableImage() : Registration.enableImage();
-                $('#product-tab').trigger("click");
+                // (Registration.product.product_image) ? Registration.disableImage() : Registration.enableImage();
+                // $('#product-tab').trigger("click");
                 if($('#registration_product_code').val()){
+                    console.log("beforePost");
                     Registration.beforePost();
+                } else {
+                    console.log("DisableImageGroup");
+                    Registration.disableImageGroup();
                 }
                 window.close();
             }
@@ -347,7 +343,7 @@ Registration = {
                         icon: 'fa-check',
                         title: 'Sim',
                         action: function() {
-                            Registration.type = 'G';
+                            // Registration.type = 'G';
                             Registration.modification = false;
                             $('#product-image-cover').css({
                                 "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
@@ -371,11 +367,10 @@ Registration = {
                 });
             } else {
                 Registration.type = 'G';
-                Registration.modification = false;
+                // Registration.modification = false;
                 $('#product-image-cover').css({
                     "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
                 });
-                $('#product-group-tab').trigger("click");
                 Registration.disableImageGroup();
                 window.close();
 
@@ -471,6 +466,7 @@ Registration = {
                     Product = data;
                     // Registration.product = null;
                     Registration.product = data;
+                    Registration.modification = false;
                     console.log(Registration.product);
                     Registration.showInfo();
                     if (data.length) {
@@ -540,6 +536,7 @@ Registration = {
                     dataType: "json"
                 }, function(ret) {
                     if (ret) {
+                        Registration.modGroup = false;
                         $('#registration_product_group').val(ret[0].group_info.product_group_name);
                         $('#registration_product_group_code').val(ret[0].group_info.product_group_code);
                         Registration.products = ret[0].product_info;
