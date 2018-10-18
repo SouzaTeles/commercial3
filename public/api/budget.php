@@ -158,20 +158,22 @@
                 }
             }
 
+            $operation = Model::get($dafel,(Object)[
+                "tables" => [ "Operacao (NoLock)" ],
+                "fields" => [
+                    "StAtualizaFinanceiro",
+                    "CDSituacaoTributariaCOFINS",
+                    "CDSituacaoTributariaPIS",
+                    "IdCFOPIntraUF",
+                    "IdCFOPEntreUF",
+                    "StCalculaICMS",
+                    "StCalculaSubstTributariaICMS"
+                ],
+                "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
+            ]);
+            Budget::taxes();
+
             if( @$budget->export ){
-                $operation = Model::get($dafel,(Object)[
-                    "tables" => [ "Operacao (NoLock)" ],
-                    "fields" => [
-                        "StAtualizaFinanceiro",
-                        "CDSituacaoTributariaCOFINS",
-                        "CDSituacaoTributariaPIS",
-                        "IdCFOPIntraUF",
-                        "IdCFOPEntreUF",
-                        "StCalculaICMS",
-                        "StCalculaSubstTributariaICMS"
-                    ],
-                    "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
-                ]);
                 $seller = Model::get($dafel,(Object)[
                     "tables" => [ "Representante (NoLock)" ],
                     "fields" => [
@@ -182,7 +184,6 @@
                     ],
                     "filters" => [[ "IdPessoaRepresentante", "s", "=", $budget->seller_id ]]
                 ]);
-                Budget::taxes();
                 Budget::export();
             }
 
@@ -457,20 +458,22 @@
                 }
             }
 
+            $operation = Model::get($dafel,(Object)[
+                "tables" => [ "Operacao (NoLock)" ],
+                "fields" => [
+                    "StAtualizaFinanceiro",
+                    "CDSituacaoTributariaCOFINS",
+                    "CDSituacaoTributariaPIS",
+                    "IdCFOPIntraUF",
+                    "IdCFOPEntreUF",
+                    "StCalculaICMS",
+                    "StCalculaSubstTributariaICMS"
+                ],
+                "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
+            ]);
+            Budget::taxes();
+
             if( @$budget->export ){
-                $operation = Model::get($dafel,(Object)[
-                    "tables" => [ "Operacao (NoLock)" ],
-                    "fields" => [
-                        "StAtualizaFinanceiro",
-                        "CDSituacaoTributariaCOFINS",
-                        "CDSituacaoTributariaPIS",
-                        "IdCFOPIntraUF",
-                        "IdCFOPEntreUF",
-                        "StCalculaICMS",
-                        "StCalculaSubstTributariaICMS"
-                    ],
-                    "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
-                ]);
                 $seller = Model::get($dafel,(Object)[
                     "tables" => [ "Representante (NoLock)" ],
                     "fields" => [
@@ -481,7 +484,6 @@
                     ],
                     "filters" => [[ "IdPessoaRepresentante", "s", "=", $budget->seller_id ]]
                 ]);
-                Budget::taxes();
                 Budget::export();
             }
 
