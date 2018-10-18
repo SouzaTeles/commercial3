@@ -22,6 +22,12 @@
     display: none;
 }
 
+table#table-budgets tr.idne1 td:nth-child(1){ border-left:4px solid red; }
+table#table-budgets tr.idne2 td:nth-child(1){ border-left:4px solid orange; }
+table#table-budgets tr.idne3 td:nth-child(1){ border-left:4px solid purple; }
+table#table-budgets tr.idne4 td:nth-child(1){ border-left:4px solid blue; }
+table#table-budgets tr.idne5 td:nth-child(1){ border-left:4px solid green; }
+
 table#table-budgets tr td img
 {
     max-width: 28px;

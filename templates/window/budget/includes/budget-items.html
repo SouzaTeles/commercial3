@@ -96,9 +96,15 @@
                 <tbody></tbody>
             </table>
         </div>
-        <div class="col-xs-12">
+        <div class="col-xs-12 footer-items">
             <div class="items">Itens: <b>0</b></div>
-            <div class="total">Valor Total: <b>R$0,00</b></div>
+            {if $login->access->budget->cost->value == 'Y'}
+                <div class="cost">Custo: <b>R$ 0,00</b></div>
+                <div class="margin">Margem: <b>0,00%</b></div>
+                <div class="profit">Lucro Bruto: <b>R$ 0,00</b></div>
+                <div class="profit2">Lucro Percentual: <b>0,00%</b></div>
+            {/if}
+            <div class="total">Valor Total: <b>R$ 0,00</b></div>
         </div>
     </div>
 </div>

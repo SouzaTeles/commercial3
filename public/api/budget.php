@@ -714,6 +714,7 @@
                     "seller_name=PR.NmPessoa",
                     "seller_short_name=PR.NmCurto",
                     "budget_value_st=CAST(B.budget_value_st AS FLOAT)",
+                    "budget_cost=CAST(B.budget_cost AS FLOAT)",
                     "budget_value_total=CAST(B.budget_value_total AS FLOAT)",
                     "B.budget_origin",
                     "B.budget_status",
@@ -727,7 +728,7 @@
                     ["B.budget_trash", "s", "=", "N"],
                     ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
                 ],
-                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_payment_icon,B.budget_date"
+                "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_cost,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_payment_icon,B.budget_date"
             ]);
 
             $ret = [];
@@ -745,6 +746,12 @@
 
                 }
                 $ret[] = (Object)[
+                    "cost" => (Object)[
+                        "value" => (float)$budget->budget_cost,
+                        "margin" => 0,
+                        "profit" => 0,
+                        "idne" => "idne0"
+                    ],
                     "budget" => (Object)[
                         "id" => (int)$budget->budget_id,
                         "value_st" => (float)$budget->budget_value_st,

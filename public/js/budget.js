@@ -469,6 +469,17 @@ Budget = {
                 var type = Budget.type[budget.budget.status == 'O' ? 'B' : budget.budget.type];
                 var status = Budget.status[budget.budget.status];
                 var delivery = Budget.delivery[budget.budget.delivery];
+
+                if( !!budget.cost.value ) {
+                    budget.cost.margin = parseFloat(((100 * budget.cost.value) / budget.budget.value_total).toFixed(2));
+                    budget.cost.profit = parseFloat(budget.cost.value ? (((budget.budget.value_total/budget.cost.value)*100)-100).toFixed(2) : 0);
+                    if (budget.cost.profit < 25) budget.cost.idne = 'idne1';
+                    else if (budget.cost.profit < 50) budget.cost.idne = 'idne2';
+                    else if (budget.cost.profit < 75) budget.cost.idne = 'idne3';
+                    else if (budget.cost.profit < 100) budget.cost.idne = 'idne4';
+                    else budget.cost.idne = 'idne5';
+                }
+
                 var row = Budget.table.row.add([
                     '<i data-toggle="tooltip" title="' + type.title + '" class="fa fa-' + status.icon + ' txt-' + type.color + '"></i><br/>' + budget.budget.code,
                     '<label>' + budget.seller.code + '</label><div class="seller">' + ( budget.seller.short_name || budget.seller.name ) + '</div>',
@@ -481,7 +492,7 @@ Budget = {
                     '<i data-toggle="tooltip" title="' + delivery.title + '" class="fa fa-' + delivery.icon + ' txt-' + delivery.color + '"></i>',
                     Budget.actions(budget)
                 ]).node();
-                $(row).on('dblclick', function () {
+                $(row).addClass(budget.cost.idne).on('dblclick', function () {
                     Budget.open(key, budget.budget.id);
                 });
             }

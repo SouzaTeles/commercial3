@@ -30,7 +30,13 @@ table button i
     margin-bottom: 4px;
 }
 
-.modal-product-info .info-top .default
+.modal-product-info .info-top .name i.idne1{ color: red; }
+.modal-product-info .info-top .name i.idne2{ color: orange; }
+.modal-product-info .info-top .name i.idne3{ color: purple; }
+.modal-product-info .info-top .name i.idne4{ color: blue; }
+.modal-product-info .info-top .name i.idne5{ color: green; }
+
+.modal-product-info .info-top .default span
 {
     color: gray;
 }
