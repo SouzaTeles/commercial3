@@ -215,7 +215,8 @@
                     "filters" => [
                         [ "PC.IdCategoria", "s", "=", $config->person->client_category_id ],
                         [ "P.IdPessoa", "s", "=", $data->client_id ]
-                    ]
+                    ],
+                    "gets" => $gets
                 ]);
             }
 

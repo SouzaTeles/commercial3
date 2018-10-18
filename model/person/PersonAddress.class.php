@@ -22,7 +22,7 @@
         public $address_lat;
         public $address_lng;
 
-        public function __construct($data, $params)
+        public function __construct($data, $gets)
         {
             $this->uf_id = @$data->IdUF ? $data->IdUF : NULL;
             $this->city_id = @$data->IdCidade ? $data->IdCidade : NULL;
@@ -46,7 +46,7 @@
 
             GLOBAL $dafel;
 
-            if( @$params["get_address_contact"] || @$_POST["get_address_contact"] )
+            if( @$gets["get_address_contact"] || @$_POST["get_address_contact"] )
             {
                 $this->contacts = Model::getList($dafel,(Object)[
                     "class" => "PersonAddressContact",

@@ -1,7 +1,8 @@
 $(document).ready(function(){
 
-    Print.getBudget();
+    //Print.getBudget();
     global.unLoader();
+    window.print();
 
 });
 
@@ -39,7 +40,8 @@ Print = {
         $.each(global.login.companies, function (key, company) {
             if (company.company_id == Print.budget.company_id) {
                 Print.company = company;
-                Print.showBudget();            }
+                Print.showBudget();
+            }
         });
         if( !Print.company ){
             global.modal({

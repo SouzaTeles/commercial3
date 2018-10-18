@@ -94,7 +94,8 @@
                         "VlLongitude=CAST(PE.VlLongitude AS FLOAT)"
                     ],
                     "filters" => [[ "PE.IdPessoa", "s", "=", $data->IdPessoa ]],
-                    "order" => "PE.StEnderecoPrincipal DESC, PE.CdEndereco"
+                    "order" => "PE.StEnderecoPrincipal DESC, PE.CdEndereco",
+                    "gets" => $gets
                 ]);
             }
 
