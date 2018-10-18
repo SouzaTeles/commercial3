@@ -10,8 +10,8 @@ ModalProductSearch = {
         selector: '#modal-table-products',
         scrollY: 320,
         scrollCollapse: 1,
-        noControls: [0,7],
-        order: [[3,'asc']]
+        noControls: [0,1,8],
+        order: [[4,'asc']]
     }),
     add: function(){
         if( ModalProductSearch.selected.length == 1 ){
@@ -61,6 +61,7 @@ ModalProductSearch = {
             ModalProductSearch.selected.push({
                 budget_item_id: null,
                 external_id: null,
+                image: product.image,
                 ncm_id: product.ncm_id,
                 icms_id: product.icms_id,
                 price_id: product.prices[0].price_id,
@@ -141,6 +142,7 @@ ModalProductSearch = {
         $.each( ModalProductSearch.products, function(key, product){
             var row = ModalProductSearch.table.row.add([
                 '<input data-id="' + product.product_id + '"' + ( product.product_active == 'N' ? 'disabled ' : '' ) + 'type="checkbox" data-key="' + key + '" />',
+                '<div class="product-search-cover"' + ( !!product.image ? (' style="background-image:url(' + product.image + ')"') : '' ) + '></div>',
                 product.product_code,
                 product.product_classification ? product.product_classification : '--',
                 product.product_name,

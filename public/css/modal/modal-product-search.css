@@ -31,6 +31,17 @@
     height: 20px;
 }
 
+.modal-product-search table tr td .product-search-cover
+{
+    width: 38px;
+    height: 38px;
+    margin: 0 auto;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('../../../../images/empty-image.png');
+}
+
 .modal-product-search .legend
 {
     width: 100%;

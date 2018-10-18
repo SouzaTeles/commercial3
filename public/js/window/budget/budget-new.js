@@ -1149,6 +1149,7 @@ Item = {
         return noStock;
     },
     data2form: function(){
+        $('#cover-product').css({'background-image':'url(' + (Item.item.image || 'images/empty-image.png') + ')'});
         $('#product_code').val(Item.item.product_code).attr('data-value',Item.item.product_code);
         $('#product_name').val(Item.item.product_name).attr('data-value',Item.item.product_name);
         $('#stock_value, #budget_item_quantity').unmask();
@@ -1173,7 +1174,9 @@ Item = {
             $('#price_id').append($('<option>',{
                 'value': price.price_id,
                 'selected': Item.item.price_id == price.price_id,
-                'text': price.price_code + ' ' + price.price_name + ' (R$ ' + global.float2Br(price.price_value) + ')'
+                'data-subtext': price.price_code + ' ' + price.price_name,
+                'text': 'R$ ' + global.float2Br(price.price_value)
+                //'text': price.price_code + ' ' + price.price_name + ' (R$ ' + global.float2Br(price.price_value) + ')'
             }));
         });
         $('#price_id').selectpicker('refresh');
@@ -1433,29 +1436,6 @@ Item = {
         $('#button-budget-item-remove').click(function(){
             Item.beforeRemove();
         });
-        Item.table.on('draw',function(){
-            var $table = $('#table-budget-items');
-            $table.find('button[data-action="info"]').click(function(){
-                var product = Budget.budget.items[$(this).attr('data-key')];
-                Item.info({
-                    image: product.image,
-                    product_id: product.product_id,
-                    product_code: product.product_code,
-                    product_name: product.product_name,
-                    unit_code: product.unit_code
-                });
-            });
-            $table.find('button[data-action="edit"]').click(function(){
-                Item.beforeEdit($(this).attr('data-key'));
-            });
-            $table.find('button[data-action="del"]').click(function(){
-                Item.del($(this).attr('data-key'));
-            });
-            $table.find('button').tooltip({
-                trigger : 'hover',
-                container: 'body'
-            })
-        });
     },
     get: function(data){
         var deny = false;
@@ -1502,6 +1482,7 @@ Item = {
             Item.item = {
                 budget_item_id: null,
                 external_id: null,
+                image: product.image,
                 ncm_id: product.ncm_id,
                 icms_id: product.icms_id,
                 price_id: product.prices[0].price_id,
@@ -1554,6 +1535,7 @@ Item = {
     },
     init: function(){
         Item.item = {
+            image: null,
             budget_item_id: null,
             external_id: null,
             price_id: null,
@@ -1635,7 +1617,7 @@ Item = {
         Item.table.clear();
         $.each( Budget.budget.items, function (key, item) {
             var row = Item.table.row.add([
-                '<div class="budget-product-cover" ' + ( !!item.image ? (' style="background-image:url(' + item.image + ')"></div>') : '' ) + '>',
+                '<div class="budget-product-cover"' + ( !!item.image ? (' data-action="lightbox" data-gallery="gallery" href="' + item.image + '" data-toggle="lightbox" data-title="' + (item.product_code + ' - ' + item.product_name) + '" data-footer="Léo" style="background-image:url(' + item.image + ')"') : '' ) + '></div>',
                 item.product_code + ' - ' + item.product_name,
                 ( item.unit_type == 'F' ? global.float2Br(item.budget_item_quantity,0,4) : item.budget_item_quantity ) + item.unit_code,
                 global.float2Br(item.budget_item_value_unitary),
@@ -1654,6 +1636,30 @@ Item = {
             });
         });
         Item.table.draw();
+        var $table = $('#table-budget-items');
+        $table.find('button[data-action="info"]').unbind('click').click(function(){
+            var product = Budget.budget.items[$(this).attr('data-key')];
+            Item.info({
+                image: product.image,
+                product_id: product.product_id,
+                product_code: product.product_code,
+                product_name: product.product_name,
+                unit_code: product.unit_code
+            });
+        });
+        $table.find('button[data-action="edit"]').unbind('click').click(function(){
+            Item.beforeEdit($(this).attr('data-key'));
+        });
+        $table.find('button[data-action="del"]').unbind('click').click(function(){
+            Item.del($(this).attr('data-key'));
+        });
+        $table.find('[data-action="lightbox"]').click(function(){
+            $(this).ekkoLightbox();
+        });
+        $table.find('button').tooltip({
+            trigger : 'hover',
+            container: 'body'
+        });
         $('.panel-tools button[data-action="discount"]').prop('disabled',!Budget.budget.items.length);
     },
     total: function(){

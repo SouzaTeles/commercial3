@@ -5,6 +5,17 @@
 @import "includes/budget-person.css";
 @import "includes/budget-payment.css";
 
+.dataTables_scrollHeadInner
+{
+    background-color: lightgray;
+}
+
+.dataTables_scrollBody,
+.dataTables_scrollBody tr td.dataTables_empty
+{
+    background-color: #eee;
+}
+
 .panel
 {
     margin-bottom: 20px;

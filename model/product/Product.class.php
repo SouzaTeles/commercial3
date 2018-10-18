@@ -29,6 +29,11 @@
             $this->product_cfop_extra = @$data->product_cfop_extra ? $data->product_cfop_extra : NULL;
             $this->product_cost = @$data->product_cost ? (float)$data->product_cost : NULL;
 
+            $this->image = getImage((Object)[
+                "image_id" => $data->product_id,
+                "image_dir" => "product"
+            ]);
+
             GLOBAL $dafel, $login, $post;
 
             if( @$gets["get_unit"] || @$_POST["get_unit"] )

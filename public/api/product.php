@@ -140,6 +140,10 @@
             $ret = [];
             foreach( $products as $product ){
                 $ret[] = (Object)[
+                    "image" => getImage((Object)[
+                        "image_id" => $product->IdProduto,
+                        "image_dir" => "product"
+                    ]),
                     "product_id" => $product->IdProduto,
                     "product_code" => $product->CdChamada,
                     "product_name" => $product->NmProduto,
@@ -358,7 +362,7 @@
                     "item_id" => $product->IdProduto,
                     "item_name" => $product->NmProduto,
                     "html" => (
-                        "<div class='type-ahead-cover'></div>" .
+                        //"<div class='type-ahead-cover'></div>" .
                         "<b>{$product->NmProduto}</b><br/>" .
                         "<span>Cód: {$product->CdChamada}</span>" .
                         "<span>Class: {$product->CdClassificacao}</span>" .

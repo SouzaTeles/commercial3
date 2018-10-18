@@ -136,6 +136,10 @@
                 ]);
                 if( sizeof($items) ){
                     foreach( $items as $item ){
+                        $item->image = getImage((Object)[
+                            "image_id" => $item->product_id,
+                            "image_dir" => "product"
+                        ]);
                         $item->budget_item_id = (int)$item->budget_item_id;
                         $item->product_discount = (float)$item->product_discount;
                         $item->budget_item_value = (float)$item->budget_item_value;

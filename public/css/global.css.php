@@ -28,6 +28,16 @@ ul::-webkit-scrollbar-thumb
     right: 0.5em;
 }
 
+.dataTables_scrollBody::-webkit-scrollbar
+{
+    width: 1.0em;
+}
+
+.dataTables_scrollBody::-webkit-scrollbar-thumb
+{
+    background-color: #3c3c3c;
+}
+
 .table-cover th:first-child,
 .table-cover td:first-child
 {

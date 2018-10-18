@@ -1,17 +1,35 @@
+.panel-items .cover-big
+{
+    width: 100%;
+    height: 116px;
+    border: 1px solid #ddd;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('../../../../images/empty-image.png');
+}
+
 .panel-items table tr td
 {
     font-size: 12px;
+    background-color: #fff;
+}
+
+.panel-items table tr td:nth-child(1):not(.dataTables_empty)
+{
+    padding: 0;
 }
 
 .panel-items table .budget-product-cover
 {
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 46px;
     margin: 0 auto;
-    border-radius: 50%;
-    background-size: cover;
+    cursor: pointer;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     background-image: url('../../../../images/empty-image.png');
-    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);
 }
 
 .panel-items table button
@@ -41,6 +59,6 @@
 .panel-items #button-budget-item-add,
 .panel-items #button-budget-item-remove
 {
-    width: 60px;
+    width: 47px;
     height: 34px;
 }
