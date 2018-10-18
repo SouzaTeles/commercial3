@@ -57,7 +57,8 @@ Ticket = {
         {'name': 'Impressora'},
         {'name': 'Informatica Hardware'},
         {'name': 'Telefonia'},
-        {'name': 'Outros'}
+        {'name': 'Outros'},
+        {'name': 'E-mail'}
     ],
     urgency: [
         {'name': 'Pouco Urgente', 'color': 'blue'},
