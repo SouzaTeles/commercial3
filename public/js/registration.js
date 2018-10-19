@@ -13,44 +13,16 @@ Item = {
     },
 Product = {},
 ProductImage = {
-        // del: function() {
-        //     global.modal({
-        //         icon: 'fa-question-circle-o',
-        //         title: 'Confirmação',
-        //         html: '<p>Deseja realmente remover a imagem do produto?</p>',
-        //         buttons: [{
-        //             icon: 'fa-times',
-        //             title: 'Não',
-        //             class: 'pull-left'
-        //         }, {
-        //             icon: 'fa-check',
-        //             title: 'Sim',
-        //             action: function() {
-        //                 global.post({
-        //                     url: global.uri.uri_public_api + 'image.php?action=del',
-        //                     data: {
-        //                         image_id: Product.product_id,
-        //                         image_dir: 'product'
-        //                     }
-        //                 }, function() {
-        //                     $('#button-image-product-remove').prop('disabled', true);
-        //                     Product.image = null;
-        //                     ProductImage.show();
-        //                 });
-        //             }
-        //         }]
+        // events: function() {
+        //     $('#file-image-product').change(function() {
+        //         Product.form2data();
+        //         ProductImage.up();
         //     });
+        //     // $('#button-image-product-remove').click(function() {
+        //     //     Product.form2data();
+        //     //     ProductImage.del();
+        //     // });
         // },
-        events: function() {
-            $('#file-image-product').change(function() {
-                Product.form2data();
-                ProductImage.up();
-            });
-            $('#button-image-product-remove').click(function() {
-                Product.form2data();
-                ProductImage.del();
-            });
-        },
         show: function() {
             if (!!Product.image) {
                 $('#product-image-cover .text').hide();
@@ -64,14 +36,14 @@ ProductImage = {
         up: function(image) {
             switch (Registration.type) {
                 case 'P':
-                    product_image64 = image;
+                    console.log(Product);
                     console.log("LOG 2");
                     global.post({
                         url: global.uri.uri_public_api + 'product_group.php?action=up',
                         data: {
                             product_id: Product.product_id,
                             product_EAN: Product.product_EAN,
-                            product_image64: product_image64,
+                            product_image64: image,
                             registration_type: Registration.type,
                             product_img_act: Registration.img_act
                         },
@@ -145,7 +117,7 @@ Registration = {
         //searching: 1,
         scrollY: $(window).innerHeight() - 372,
         scrollCollapse: 1,
-        noControls: [0, 2],
+        noControls: [0, 3],
         order: [
             [2, 'asc']
         ]
@@ -180,7 +152,7 @@ Registration = {
 
     events: function() {
         $('#registration_product_EAN').mask('99999999999999');
-        
+
         $('#registration_product_group_code').mask('999999');
         //Campo: Codigo do Produto
         $('#registration_product_code').on('keyup', function() {
@@ -266,6 +238,7 @@ Registration = {
                             console.log(item);
                             Product = item;
                             console.log(item);
+                            Registration.product = item;
                             Registration.showInfo();
                         }
                     });
@@ -311,13 +284,12 @@ Registration = {
                 console.log("Else");
                 Registration.type = 'P';
                 Registration.modGroup = false;
+                $('#registration_product_code').trigger("focus");
                 // (Registration.product.product_image) ? Registration.disableImage() : Registration.enableImage();
                 // $('#product-tab').trigger("click");
                 if($('#registration_product_code').val()){
-                    console.log("beforePost");
                     Registration.beforePost();
                 } else {
-                    console.log("DisableImageGroup");
                     Registration.disableImageGroup();
                 }
                 window.close();
@@ -368,6 +340,7 @@ Registration = {
             } else {
                 Registration.type = 'G';
                 // Registration.modification = false;
+                $('#registration_product_group_code').trigger("focus");
                 $('#product-image-cover').css({
                     "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
                 });
@@ -703,14 +676,17 @@ Registration = {
     
     //Função para converter o link de uma imagem para base64
     toDataUrl: function (url, callback) {
+        console.log("toDataUrl()");
         var xhr = new XMLHttpRequest();
         xhr.onload = function() {
+            console.log("onload");
             var reader = new FileReader();
             reader.onloadend = function() {
                 callback(reader.result);
             }
             reader.readAsDataURL(xhr.response);
         };
+        console.log("depois do onload");
         xhr.open('GET', url);
         xhr.responseType = 'blob';
         xhr.send();
@@ -772,16 +748,15 @@ Registration = {
         //console.log()
 
         if(!regex.exec(ImagePush.mime)){
-            // console.log("Não é base 64")
+            //Não é base 64
+            console.log("Link Externo")
             Registration.toDataUrl(ImagePush.mime, function(img64) {
+                console.log(img64);
                 Registration.imagem = img64;
-                // console.log("IMG64 " + img64);
-                // console.log("Imagem na variavel" + Registration.imagem);
                 Registration.img_act = 'I';
             });
         } else {
-            // console.log("É base 64");
-            // console.log(ImagePush.data);
+            // É Base 64
             Registration.imagem = (ImagePush.mime +',' + ImagePush.data);
             // console.log(Registration.imagem);
             Registration.img_act = 'I';

@@ -370,8 +370,8 @@
                     $path = PATH_FILES . "\product\\" . $post->product_id;
                     if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
                     if (file_exists("{$path}.jpeg"))  unlink("{$path}.jpeg");
-                    if (file_exists("{$path}.png"))
-                        unlink("{$path}.png");
+                    if (file_exists("{$path}.png")) unlink("{$path}.png");
+                    if (file_exists("{$path}.webp")) unlink("{$path}.webp");
 
                     base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
                     Json::get($headerStatus[200], (Object)[
@@ -386,6 +386,7 @@
                   if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
                   if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
                   if (file_exists("{$path}.png")) unlink("{$path}.png");
+                  if (file_exists("{$path}.webp")) unlink("{$path}.webp");
                   break;
                 }
 
@@ -477,6 +478,7 @@
                         if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
                         if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
                         if (file_exists("{$path}.png")) unlink("{$path}.png");
+                        if (file_exists("{$path}.webp")) unlink("{$path}.webp");
                         base64toFile(PATH_FILES . "\product",$product, $post->product_image64);
                       }
                     } catch(Exception $e) {
@@ -496,6 +498,7 @@
                   if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
                   if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
                   if (file_exists("{$path}.png")) unlink("{$path}.png");
+                  if (file_exists("{$path}.webp")) unlink("{$path}.webp");
                   break;
                 }
 
