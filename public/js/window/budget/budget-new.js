@@ -78,8 +78,6 @@ Company = {
                     Company.company = company;
                     Budget.init();
                     Company.show();
-                    // Item.table.draw();
-                    // Payment.table.draw();
                     if( !!global.url.searchParams.get('clone') ){
                         Budget.cloned();
                     } else {
@@ -184,8 +182,6 @@ Budget = {
     table: global.table({
         selector: '#table-budgets',
         searching: 1,
-        // scrollY: $(window).innerHeight()-372,
-        // scrollCollapse: 1,
         noControls: [0,7],
         order: [[2,'desc']]
     }),
@@ -265,8 +261,9 @@ Budget = {
     },
     billed: function(){
         $('input').prop('disabled',true);
-        $('.panel-items button').prop('disabled',true);
+        $('.panel-items button').not('[data-action="info"]').prop('disabled',true);
         $('.panel-person button').prop('disabled',true);
+        $('#file-image-person').filestyle('disabled',true);
         $('.panel-payment button').prop('disabled',true);
         global.modal({
             icon: 'fa-info-circle',
@@ -282,8 +279,9 @@ Budget = {
     },
     blocked: function(){
         $('input').prop('disabled',true);
-        $('.panel-items button').prop('disabled',true);
+        $('.panel-items button').not('[data-action="info"]').prop('disabled',true);
         $('.panel-person button').prop('disabled',true);
+        $('#file-image-person').filestyle('disabled',true);
         $('.panel-payment button').prop('disabled',true);
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-blocked',
@@ -1644,7 +1642,8 @@ Item = {
                 $(row).addClass('txt-red-light');
             }
             $(row).addClass(item.idne).on('dblclick',function(){
-                Item.beforeEdit(key);
+                if( Budget.budget.budget_status == 'O' )
+                    Item.beforeEdit(key);
             });
         });
         Item.table.draw();

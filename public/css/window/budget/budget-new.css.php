@@ -1,9 +1,9 @@
 <?php include "../../data.css.php"; ?>
 
-@import "includes/budget-tools.css";
-@import "includes/budget-items.css";
-@import "includes/budget-person.css";
-@import "includes/budget-payment.css";
+@import "includes/budget-tools.css?3.2.2.0";
+@import "includes/budget-items.css?3.2.2.0";
+@import "includes/budget-person.css?3.2.2.0";
+@import "includes/budget-payment.css?3.2.2.0";
 
 .dataTables_scrollHeadInner
 {
