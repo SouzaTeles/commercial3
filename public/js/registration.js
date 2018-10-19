@@ -62,7 +62,7 @@ ProductImage = {
                                 icon: 'fa-check',
                                 title: 'Ok',
                                 action: function() {
-                                    window.close();
+                                    // window.close();
                                 }
                             }]
                         });
@@ -91,7 +91,7 @@ ProductImage = {
                               icon: 'fa-check',
                               title: 'Ok',
                               action: function() {
-                                  window.close();
+                                //   window.close();
                               }
                           }]
                       });
@@ -157,7 +157,7 @@ Registration = {
         //Campo: Codigo do Produto
         $('#registration_product_code').on('keyup', function() {
             var key = event.keyCode || event.wich;
-            if (key == 13) {
+            if (key == 13 && $('#registration_product_code').val()) {
                 if (Registration.modification) {
                     global.modal({
                         icon: 'fa-warning',
@@ -167,18 +167,18 @@ Registration = {
                             icon: 'fa-check',
                             title: 'Sim',
                             action: function() {
-                                window.close();
+                                // window.close();
                                 Registration.beforePost();
                             }
                         }, {
                             icon: 'fa-times',
                             title: 'Não',
                             action: function() {
-                                window.close();
+                                // window.close();
                             }
                         }, ],
                         hidden: function() {
-                            window.close();
+                            // window.close();
                         }
                     });
                 } else {
@@ -189,7 +189,7 @@ Registration = {
         //Campo: Codigo do Grupo de Produto
         $('#registration_product_group_code').on('keyup', function() {
             var key = event.keyCode || event.wich;
-            if (key == 13) {
+            if (key == 13 && $('#registration_product_group_code').val()) {
                 Registration.beforePost($('#registration_product_group_code').val());
             }
         });
@@ -267,17 +267,17 @@ Registration = {
                         action: function() {
                             Registration.modGroup = false;
                             $('#product-tab').trigger("click");
-                            window.close();
+                            // window.close();
                         }
                     }, {
                         icon: 'fa-times',
                         title: 'Não',
                         action: function() {
-                            window.close();
+                            // window.close();
                         }
                     }, ],
                     hidden: function() {
-                        window.close();
+                        // window.close();
                     }
                 });
             } else {
@@ -292,7 +292,7 @@ Registration = {
                 } else {
                     Registration.disableImageGroup();
                 }
-                window.close();
+                // window.close();
             }
             // console.log("clicou...")
             // Registration.type = 'P';
@@ -322,7 +322,7 @@ Registration = {
                             });
                             $('#product-group-tab').trigger("click");
                             Registration.disableImageGroup();
-                            window.close();
+                            // window.close();
                         }
                     }, {
                         icon: 'fa-times',
@@ -330,11 +330,11 @@ Registration = {
                         action: function() {
                             // Registration.modification = false;
                             // $('#product-tab').click();
-                            window.close();
+                            // window.close();
                         }
                     }, ],
                     hidden: function() {
-                        window.close();
+                        // window.close();
                     }
                 });
             } else {
@@ -345,7 +345,7 @@ Registration = {
                     "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
                 });
                 Registration.disableImageGroup();
-                window.close();
+                // window.close();
 
             }
         });
@@ -373,11 +373,11 @@ Registration = {
                                 icon: 'fa-check',
                                 title: 'Ok',
                                 action: function() {
-                                    window.close();
+                                    // window.close();
                                 }
                             }],
                             hidden: function() {
-                                window.close();
+                                // window.close();
                             }
                         });
                     } else {
@@ -389,7 +389,7 @@ Registration = {
                                 icon: 'fa-times',
                                 title: 'Não',
                                 action: function() {
-                                    window.close();
+                                    // window.close();
                                 }
                             }, {
                                 icon: 'fa-check',
@@ -397,11 +397,11 @@ Registration = {
                                 action: function() {
                                     Product.product_EAN = $('#registration_product_EAN').val();
                                     ProductImage.up(Registration.imagem);
-                                    window.close();
+                                    // window.close();
                                 }
                             }],
                             hidden: function() {
-                                window.close();
+                                // window.close();
                             }
                         });
                     }
