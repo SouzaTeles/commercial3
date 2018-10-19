@@ -156,8 +156,15 @@ Commercial = {
                 Commercial.logout();
             }
         });
-        $('.menu li a[href="#"]').click(function(e){
-             e.preventDefault();
+        $('.menu li a').click(function(e){
+             if( $(this).prop('href') == '#' ){
+                 e.preventDefault();
+             } else {
+                 global.linkClicked = true;
+                 setTimeout(function(){
+                     global.linkClicked = false;
+                 },1000);
+             }
         });
         $('button[data-action="chat"]').click(function(){
             $('#chat').toggleClass('open');

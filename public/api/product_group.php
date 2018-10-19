@@ -471,13 +471,13 @@
                       foreach(@$post->product_list as $product){
                           //var_dump($product);
 
-                        $path = PATH_FILES . "\product" . $product;
+                        $path = PATH_FILES . "product/" . $product;
                         // var_dump($path);
                         // echo $path;
                         if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
                         if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
                         if (file_exists("{$path}.png")) unlink("{$path}.png");
-                        base64toFile(PATH_FILES . "\product",$product, $post->product_image64);
+                        base64toFile(PATH_FILES . "product/",$product, $post->product_image64);
                       }
                     } catch(Exception $e) {
                       Json::get($headerStatus[417], (Object)[
@@ -491,7 +491,7 @@
                   break;
 
                   case 'R':
-                  $path = PATH_FILES . "\product\\" . $post->product_id;
+                  $path = PATH_FILES . "product/" . $post->product_id;
                   // var_dump($path);
                   if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
                   if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");

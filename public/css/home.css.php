@@ -72,6 +72,89 @@
     background-color: <?php echo $colors->hex->palette["blue"]; ?>;
 }
 
+#blog
+{
+    margin: 30px 0;
+}
+
+#blog .title
+{
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+#blog .news .item
+{
+    height: 168px;
+    cursor: pointer;
+    margin: 0 0 20px;
+    background-color: #fff;
+}
+
+#blog .news .item .post-cover
+{
+    float: left;
+    width: 200px;
+    height: 168px;
+    background-size: cover;
+    background-color: #eee;
+    background-image: url('../images/empty-image.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#blog .news .item .post-data
+{
+    float: left;
+    width: 220px;
+    height: 168px;
+    position: relative;
+    padding: 50px 14px 34px;
+}
+
+#blog .news .item .post-data .post-category
+{
+    top: 0;
+    left: 0;
+    right: 0;
+    color: #fff;
+    padding: 8px 12px;
+    position: absolute;
+    text-transform: uppercase;
+    background-color: <?php echo $colors->hex->palette["green"]; ?>;
+}
+
+#blog .news .item .post-data .post-title
+{
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+#blog .news .item .post-data .post-date
+{
+    color: gray;
+    right: 12px;
+    bottom: 8px;
+    position: absolute;
+    font-size: 12px;
+    text-align: right;
+}
+
+#blog .news .loading .post-data .post-title
+{
+    width: 140px;
+    background-color: #eee;
+}
+
+#blog .news .loading .post-data .post-preview
+{
+    width: 192px;
+    height: 46px;
+    background-color: #eee;
+}
+
 #birthdays
 {
     width: 100%;

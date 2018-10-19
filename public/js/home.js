@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+    Blog.getList();
     Slide.getSlide();
     BirthDays.getList();
 
@@ -47,6 +48,41 @@ Slide = {
         $(slide).find('button').click(function(){
             global.window({
                 url: Slide.images[$(this).attr('data-key')].image_link
+            });
+        });
+    }
+};
+
+Blog = {
+    posts: [],
+    getList: function(){
+        global.post({
+            url: 'http://intranet.dafel.com.br/blog/commercial.php?action=getList&token=r0zUBn6o7tbggzZQXCusGT2DUPJ4wHF3',
+            noLoader: 1,
+            dataType: 'json'
+        }, function(data) {
+            Blog.posts = data;
+            Blog.showList();
+        });
+    },
+    showList: function(){
+        var blog = $('#blog');
+        $.each(Blog.posts, function(key,post){
+            var item = $(blog).find('.item').eq(key);
+            $(item).removeClass('loading');
+            $(item).find('.post-cover').css({
+                'background-image': 'url(' + (post.image || 'images/empty-image.png') + ')'
+            });
+            $(item).find('.post-category').text(post.category);
+            $(item).find('.post-title').text(post.post_title.substr(0,40) +(post.post_title.length > 40 ? '...' : ''));
+            $(item).find('.post-preview').text(post.post_content.substr(0,60) + '...');
+            $(item).find('.post-date').html(post.post_date_br + ' <i class="fa fa-clock-o"></i>');
+            $(item).click(function(){
+                global.window({
+                    url: global.uri.uri_public + 'window.php?module=blog&action=show&post_id=' + post.ID,
+                    width: 920,
+                    height: 620
+                });
             });
         });
     }
