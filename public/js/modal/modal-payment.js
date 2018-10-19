@@ -32,13 +32,13 @@ ModalPayment = {
             $bank.val(null).prop('required',false);
             $agency.val(null).prop('required',false);
             $agency2.val(null).prop('required',false);
-            $check.val(null).prop('required',false);
+            //$check.val(null).prop('required',false);
             $('#modal-payment .bank-section').hide();
         } else {
             $bank.val(null).prop('required',true);
             $agency.val(null);
             $agency2.val(null);
-            $check.val(null).prop('required',true);
+            //$check.val(null).prop('required',true);
             $('#modal-payment .bank-section').show();
         }
         if( !ModalPayment.payment.agency_code ){
@@ -91,8 +91,8 @@ ModalPayment = {
             ModalPayment.payment.nature_id = modality.nature_id;
             ModalPayment.payment.modality_type = modality.modality_type;
             ModalPayment.payment.modality_installment = modality.modality_installment;
-            $('#modal_payment_entry').bootstrapToggle(modality.modality_entry == 'Y' ? 'on' : 'off');
-            $('#modal_payment_entry').prop('disabled',modality.modality_type == 'D' || modality.modality_type == 'A');
+            //$('#modal_payment_entry').bootstrapToggle(modality.modality_entry == 'Y' ? 'on' : 'off');
+            //$('#modal_payment_entry').prop('disabled',modality.modality_type == 'D' || modality.modality_type == 'A');
             if( modality.modality_entry == 'N' ){
                 var deadline = global.dateAddDays(global.today(),modality.modality_delay);
                 $('#modal_payment_deadline').val(global.date2Br(deadline));

@@ -9,7 +9,7 @@
         {/if}
         {if $login->access->sale->access->value == 'Y'}
         <li>
-            <a href="#" class="sale">
+            <a href="{$URI_PUBLIC}index.php?route=budget" class="sale">
                 <i class="fa fa-usd"></i>Vendas
             </a>
             <div class="sub-menu">
@@ -37,8 +37,7 @@
         </li>
         {/if}
         {if $login->access->stock->access->value == 'Y'}
-        <li>
-
+            <li>
             <a href="#" class="stock">
                 <i class="fa fa-cubes"></i>Estoque
             </a>
@@ -69,7 +68,7 @@
             <div class="sub-menu">
                 {if $login->access->compass->access->value == 'Y'}
                 <a href="{$URI_PUBLIC}index.php?route=compass" class="report">
-                    <i class="fa fa-location-arrow"></i>Commercial
+                    <i class="fa fa-location-arrow"></i>Compass
                 </a>
                 {/if}
                 {if $login->access->cube->access->value == 'Y'}
