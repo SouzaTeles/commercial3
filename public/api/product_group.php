@@ -367,13 +367,13 @@
                 switch(@$post->product_img_act){
                   case 'I':
                   if(@$post->product_image64){
-                    $path = PATH_FILES . "\product\\" . $post->product_id;
+                    $path = PATH_FILES . "product/" . $post->product_id;
                     if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
                     if (file_exists("{$path}.jpeg"))  unlink("{$path}.jpeg");
                     if (file_exists("{$path}.png")) unlink("{$path}.png");
                     if (file_exists("{$path}.webp")) unlink("{$path}.webp");
 
-                    base64toFile(PATH_FILES . "\product", $post->product_id, $post->product_image64);
+                    base64toFile(PATH_FILES . "product/", $post->product_id, $post->product_image64);
                     Json::get($headerStatus[200], (Object)[
                           "code" => 200,
                           "message" => "Cadastro efetuado com sucesso."
@@ -381,7 +381,7 @@
                   }
                   break;
                   case 'R':
-                  $path = PATH_FILES . "\product\\" . $post->product_id;
+                  $path = PATH_FILES . "product/" . $post->product_id;
                   // var_dump($path);
                   if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
                   if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");

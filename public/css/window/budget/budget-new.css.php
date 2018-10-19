@@ -1,9 +1,9 @@
 <?php include "../../data.css.php"; ?>
 
-@import "includes/budget-tools.css";
-@import "includes/budget-items.css";
-@import "includes/budget-person.css";
-@import "includes/budget-payment.css";
+@import "includes/budget-tools.css?3.2.2.0";
+@import "includes/budget-items.css?3.2.2.0";
+@import "includes/budget-person.css?3.2.2.0";
+@import "includes/budget-payment.css?3.2.2.0";
 
 .dataTables_scrollHeadInner
 {
@@ -59,3 +59,17 @@ footer .info
 {
     margin-left: 60px;
 }
+
+footer .idne
+{
+    top: -5px;
+    right: -10px;
+    font-size: 70px;
+    position: absolute;
+}
+
+footer .idne i.idne1{ color: red; }
+footer .idne i.idne2{ color: orange; }
+footer .idne i.idne3{ color: purple; }
+footer .idne i.idne4{ color: blue; }
+footer .idne i.idne5{ color: green; }

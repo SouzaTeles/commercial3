@@ -78,8 +78,6 @@ Company = {
                     Company.company = company;
                     Budget.init();
                     Company.show();
-                    // Item.table.draw();
-                    // Payment.table.draw();
                     if( !!global.url.searchParams.get('clone') ){
                         Budget.cloned();
                     } else {
@@ -184,8 +182,6 @@ Budget = {
     table: global.table({
         selector: '#table-budgets',
         searching: 1,
-        // scrollY: $(window).innerHeight()-372,
-        // scrollCollapse: 1,
         noControls: [0,7],
         order: [[2,'desc']]
     }),
@@ -265,8 +261,9 @@ Budget = {
     },
     billed: function(){
         $('input').prop('disabled',true);
-        $('.panel-items button').prop('disabled',true);
+        $('.panel-items button').not('[data-action="info"]').prop('disabled',true);
         $('.panel-person button').prop('disabled',true);
+        $('#file-image-person').filestyle('disabled',true);
         $('.panel-payment button').prop('disabled',true);
         global.modal({
             icon: 'fa-info-circle',
@@ -282,8 +279,9 @@ Budget = {
     },
     blocked: function(){
         $('input').prop('disabled',true);
-        $('.panel-items button').prop('disabled',true);
+        $('.panel-items button').not('[data-action="info"]').prop('disabled',true);
         $('.panel-person button').prop('disabled',true);
+        $('#file-image-person').filestyle('disabled',true);
         $('.panel-payment button').prop('disabled',true);
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-blocked',
@@ -1616,8 +1614,20 @@ Item = {
     showList: function(){
         Item.table.clear();
         $.each( Budget.budget.items, function (key, item) {
+            item.margin = 0;
+            item.profit = 0;
+            item.idne = 'idne0';
+            if( !!item.budget_item_cost ) {
+                item.margin = parseFloat((100 * (item.budget_item_quantity * item.budget_item_cost) / item.budget_item_value_total).toFixed(2));
+                item.profit = parseFloat((((item.budget_item_value_total/(item.budget_item_quantity * item.budget_item_cost))*100)-100).toFixed(2));
+                if (item.profit < 25) item.idne = 'idne1';
+                else if (item.profit < 50) item.idne = 'idne2';
+                else if (item.profit < 75) item.idne = 'idne3';
+                else if (item.profit < 100) item.idne = 'idne4';
+                else item.idne = 'idne5';
+            }
             var row = Item.table.row.add([
-                '<div class="budget-product-cover"' + ( !!item.image ? (' data-action="lightbox" data-gallery="gallery" href="' + item.image + '" data-toggle="lightbox" data-title="' + (item.product_code + ' - ' + item.product_name) + '" data-footer="Léo" style="background-image:url(' + item.image + ')"') : '' ) + '></div>',
+                '<div class="budget-product-cover"' + ( !!item.image ? (' data-action="lightbox" data-gallery="gallery" href="' + item.image + '" data-toggle="lightbox" data-footer="' + (item.product_code + ' - ' + item.product_name) + '" data-footer="Léo" style="background-image:url(' + item.image + ')"') : '' ) + '></div>',
                 item.product_code + ' - ' + item.product_name,
                 ( item.unit_type == 'F' ? global.float2Br(item.budget_item_quantity,0,4) : item.budget_item_quantity ) + item.unit_code,
                 global.float2Br(item.budget_item_value_unitary),
@@ -1631,21 +1641,15 @@ Item = {
             if( item.budget_item_quantity > item.stock_value ){
                 $(row).addClass('txt-red-light');
             }
-            $(row).on('dblclick',function(){
-                Item.beforeEdit(key);
+            $(row).addClass(item.idne).on('dblclick',function(){
+                if( Budget.budget.budget_status == 'O' )
+                    Item.beforeEdit(key);
             });
         });
         Item.table.draw();
         var $table = $('#table-budget-items');
         $table.find('button[data-action="info"]').unbind('click').click(function(){
-            var product = Budget.budget.items[$(this).attr('data-key')];
-            Item.info({
-                image: product.image,
-                product_id: product.product_id,
-                product_code: product.product_code,
-                product_name: product.product_name,
-                unit_code: product.unit_code
-            });
+            Item.info(Budget.budget.items[$(this).attr('data-key')]);
         });
         $table.find('button[data-action="edit"]').unbind('click').click(function(){
             Item.beforeEdit($(this).attr('data-key'));
@@ -1664,7 +1668,24 @@ Item = {
     },
     total: function(){
         $('.panel-items .items').html('Itens: <b>' + Budget.budget.items.length + '</b>');
-        $('.panel-items .total').html('Valor Total: <b>R$' + global.float2Br(Budget.budget.budget_value_total) + '</b>');
+        $('.panel-items .cost').html('Custo: <b>R$ ' + global.float2Br(Budget.budget.budget_cost) + '</b>');
+        $('.panel-items .margin').html('Markup: <b>' + global.float2Br((Budget.budget.budget_cost/(Budget.budget.budget_value_total||1))*100) + '%</b>');
+        $('.panel-items .profit').html('Lucro Bruto: <b>R$ ' + global.float2Br(Budget.budget.budget_value_total-Budget.budget.budget_cost) + '</b>');
+        $('.panel-items .profit2').html('Margem: <b>' + global.float2Br(Budget.budget.budget_cost ? (((Budget.budget.budget_value_total/Budget.budget.budget_cost)*100)-100).toFixed(2) : 0) + '%</b>');
+        $('.panel-items .total').html('Valor Total: <b>R$ ' + global.float2Br(Budget.budget.budget_value_total) + '</b>');
+
+        Budget.budget.budget_cost_idne = 'idne0'
+        if( !!Budget.budget.budget_cost ) {
+            Budget.budget.budget_cost_margin = parseFloat(((100 * Budget.budget.budget_cost) / Budget.budget.budget_value_total).toFixed(2));
+            Budget.budget.budget_cost_profit = parseFloat(Budget.budget.budget_cost ? (((Budget.budget.budget_value_total/Budget.budget.budget_cost)*100)-100).toFixed(2) : 0);
+            if (Budget.budget.budget_cost_profit < 25) Budget.budget.budget_cost_idne = 'idne1';
+            else if (Budget.budget.budget_cost_profit < 50) Budget.budget.budget_cost_idne = 'idne2';
+            else if (Budget.budget.budget_cost_profit < 75) Budget.budget.budget_cost_idne = 'idne3';
+            else if (Budget.budget.budget_cost_profit < 100) Budget.budget.budget_cost_idne = 'idne4';
+            else Budget.budget.budget_cost_idne = 'idne5';
+        }
+        $('footer .idne').html('<i class="fa fa-stop ' + Budget.budget.budget_cost_idne + '"></i>');
+
         Payment.total();
     }
 };

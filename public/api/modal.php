@@ -20,6 +20,7 @@
         ]);
     }
 
+    $smarty->assign( "login", $login );
     foreach( get_defined_constants(true)["user"] as $constant => $value ){
         $smarty->assign( $constant, $value );
     }

@@ -97,7 +97,7 @@
             if( @$post->images ){
                 $post->images = (Object)$post->images;
 
-                $path = PATH_FILES . "email/" . date("Y/F/d");
+                $path = PATH_FILES . "email/" . date("Y/F/d/");
                 if (!is_dir($path)) {
                     mkdir($path, 0755, true);
                 }

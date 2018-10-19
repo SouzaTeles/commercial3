@@ -51,9 +51,14 @@ ModalProductInfo = {
         if( !!ModalProductInfo.product.image ){
             $modal.find('.image').css('background-image','url(' + ModalProductInfo.product.image + ')');
         }
-        $modal.find('.name').text(ModalProductInfo.product.product_name);
-        $modal.find('.code').html('Código<br/>' + ModalProductInfo.product.product_code);
-        $modal.find('.unit').html('Tipo<br/>' + ModalProductInfo.product.unit_code);
+        $modal.find('.name').html('<i class="fa fa-circle ' + ModalProductInfo.product.idne + '"></i> ' + ModalProductInfo.product.product_name);
+        $modal.find('.code').html('<span>Código</span><br/>' + ModalProductInfo.product.product_code);
+        $modal.find('.unit').html('<span>Unidade</span><br/>' + ModalProductInfo.product.unit_code);
+        $modal.find('.cost').html('<span>Custo</span><br/>R$ ' + global.float2Br(ModalProductInfo.product.budget_item_quantity*ModalProductInfo.product.budget_item_cost));
+        $modal.find('.margin').html('<span>Markup</span><br/>' + global.float2Br(ModalProductInfo.product.margin) + '%');
+        $modal.find('.profit').html('<span>Lucro Bruto</span><br/>R$ ' + global.float2Br(ModalProductInfo.product.budget_item_value_total-(ModalProductInfo.product.budget_item_quantity*ModalProductInfo.product.budget_item_cost)));
+        $modal.find('.profit2').html('<span>Margem</span><br/>' + global.float2Br(ModalProductInfo.product.profit) + '%');
+        $modal.find('.value').html('<span>Valor Total</span><br/>R$ ' + global.float2Br(ModalProductInfo.product.budget_item_value_total));
     },
     showInfo: function(){
         ModalProductInfo.table.clear();

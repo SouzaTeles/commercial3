@@ -3,8 +3,15 @@
     <div class="image"></div>
     <div class="name">--</div>
     <div class="default">
-        <div class="default-info code">Código<br/>--</div>
-        <div class="default-info unit">Unidade<br/>--</div>
+        <div class="default-info code"><span>Código</span>--</div>
+        <div class="default-info unit"><span>Unidade</span>--</div>
+        {if $login->access->budget->cost->value == 'Y'}
+            <div class="default-info cost"><span>Custo</span>--</div>
+            <div class="default-info margin"><span>Margem</span>--</div>
+            <div class="default-info profit"><span>Lucro Bruto</span>--</div>
+            <div class="default-info profit2"><span>Lucro Percentual</span>--</div>
+        {/if}
+        <div class="default-info value"><span>Valor Total</span>--</div>
     </div>
 </div>
 <table id="table-product-info" class="table-custom no-select">

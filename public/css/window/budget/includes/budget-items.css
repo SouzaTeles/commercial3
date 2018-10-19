@@ -20,6 +20,17 @@
     background-color: #fff;
 }
 
+.ekko-lightbox-nav-overlay a
+{
+    color: #333;
+}
+
+.panel-items table tr.idne1 td:nth-child(1){ border-left:4px solid red; }
+.panel-items table tr.idne2 td:nth-child(1){ border-left:4px solid orange; }
+.panel-items table tr.idne3 td:nth-child(1){ border-left:4px solid purple; }
+.panel-items table tr.idne4 td:nth-child(1){ border-left:4px solid blue; }
+.panel-items table tr.idne5 td:nth-child(1){ border-left:4px solid green; }
+
 .panel-items table tr td:nth-child(1):not(.dataTables_empty)
 {
     padding: 0;
@@ -30,11 +41,15 @@
     width: 60px;
     height: 46px;
     margin: 0 auto;
-    cursor: pointer;
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     background-image: url('../../../../images/empty-image.png');
+}
+
+.panel-items table .budget-product-cover[data-action="lightbox"]
+{
+    cursor: pointer;
 }
 
 .panel-items table button
@@ -47,18 +62,23 @@
     margin: 2px 4px;
 }
 
-.panel-items .items
+.panel-items .footer-items div
 {
     float: left;
-    font-size: 18px;
-    padding: 10px 0 0;
+    color: #666;
+    font-size: 16px;
+    padding: 10px 10px 0;
 }
 
-.panel-items .total
+.panel-items .footer-items .items
+{
+    padding: 10px 10px 0 0;
+}
+
+.panel-items .footer-items .total
 {
     float: right;
-    font-size: 18px;
-    padding: 10px 0 0;
+    padding: 10px 0 0 10px;
 }
 
 .panel-items #button-budget-item-add,

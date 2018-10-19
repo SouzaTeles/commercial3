@@ -73,6 +73,11 @@
 			"name": "Informações",
 			"value": "N",
 			"data_type": "bool"
+		},
+		"cost": {
+			"name": "Visualizar o Custo",
+			"value": "N",
+			"data_type": "bool"
 		}
 	},
 	"client": {
