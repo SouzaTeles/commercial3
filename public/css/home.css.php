@@ -72,9 +72,38 @@
     background-color: <?php echo $colors->hex->palette["blue"]; ?>;
 }
 
+#slide .author
+{
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+    position: absolute;
+    background: rgba(100,100,100,.7);
+}
+
+#slide .author .cover
+{
+    float: left;
+    width: 60px;
+    height: 60px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+}
+
+#slide .author .name
+{
+    color: #fff;
+    float: right;
+    font-size: 16px;
+    max-width: 120px;
+    margin: 8px 0 0 12px;
+}
+
 #blog
 {
-    margin: 30px 0;
+    margin-top: 30px;
 }
 
 #blog .title

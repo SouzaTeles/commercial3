@@ -1,35 +1,75 @@
 <link href="{$URI_PUBLIC}css/modal/modal-image.css?{$smarty.now}" rel="stylesheet" />
 <form name="modal-form-image">
-    <div class="col-xs-12 col-sm-4">
-        <div class="row">
-            <div class="col-xs-12">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
                 <div id="modal_image_preview" class="box-shadow"></div>
             </div>
         </div>
-    </div>
-    <div class="col-xs-12 col-sm-8">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label for="modal_image_link">Link</label>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-globe"></i></span>
-                        <input type="text" class="form-control" id="modal_image_link" name="modal_image_link" placeholder="http://www.meulink.com.br/">
-                    </div>
-                </div>
+        <div class="col-xs-12"><hr/></div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="modal_image_active">Ativo</label>
+                <input type="checkbox" class="form-control" id="modal_image_active" />
             </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label for="modal_image_name">Nome</label>
-                    <input placeholder="Nome" autocomplete="off" class="form-control" type="text" id="modal_image_name" name="modal_image_name" />
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="modal_image_start_date">Data Inicial</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input type="text" class="form-control" id="modal_image_start_date" data-to-mask="date"/>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-xs-12">
-        <div class="form-group">
-            <label for="modal_image_description">Descrição</label>
-            <textarea rows="6" class="form-control" id="modal_image_description" name="modal_image_description" placeholder="Descrição"></textarea>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="modal_image_end_date">Data Final</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input type="text" class="form-control" id="modal_image_end_date" data-to-mask="date"/>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <label for="modal_image_link">Link</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-globe"></i></span>
+                    <input type="text" class="form-control" id="modal_image_link" name="modal_image_link" placeholder="http://www.meulink.com.br/">
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <label for="modal_post_id">Noticia</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-wordpress"></i></span>
+                    <select data-size="8" data-live-search="true" class="selectpicker show-tick" id="modal_post_id" name="modal_post_id" title="-- Selecione a Notícia --"></select>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <label for="modal_image_name">Título</label>
+                <input placeholder="Nome" autocomplete="off" class="form-control" type="text" id="modal_image_name" name="modal_image_name" />
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <label for="modal_person_id">Autor</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <select data-size="8" data-live-search="true" class="selectpicker show-tick" id="modal_person_id" name="modal_person_id" title="-- Selecione o Autor --"></select>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="modal_image_description">Descrição</label>
+                <textarea rows="6" class="form-control" id="modal_image_description" name="modal_image_description" placeholder="Descrição"></textarea>
+            </div>
         </div>
     </div>
     <button class="hidden"></button>

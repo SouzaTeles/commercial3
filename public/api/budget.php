@@ -171,6 +171,9 @@
                 ],
                 "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
             ]);
+
+            $budget->budget_value_st = 0;
+            $budget->budget_value_icms = 0;
             Budget::taxes();
 
             if( @$budget->export ){
@@ -213,8 +216,8 @@
                     ["budget_value_icms", "d", $budget->budget_value_icms],
                     ["budget_value_st", "d", $budget->budget_value_st],
                     ["budget_value_total", "d", $budget->budget_value_total],
-                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
-                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
+                    ["budget_note", "s", @$budget->budget_note ? utf8_decode($budget->budget_note) : NULL],
+                    ["budget_note_document", "s", @$budget->budget_note_document ? utf8_decode($budget->budget_note_document) : NULL],
                     ["budget_payment_icon","s", $payment_icon],
                     ["budget_credit", "s", $budget->budget_credit],
                     ["budget_delivery", "s", $budget->budget_delivery],
@@ -515,8 +518,8 @@
                     ["budget_value_icms", "d", $budget->budget_value_icms],
                     ["budget_value_st", "d", $budget->budget_value_st],
                     ["budget_value_total", "d", $budget->budget_value_total],
-                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
-                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
+                    ["budget_note", "s", @$budget->budget_note ? utf8_decode($budget->budget_note) : NULL],
+                    ["budget_note_document", "s", @$budget->budget_note_document ? utf8_decode($budget->budget_note_document) : NULL],
                     ["budget_payment_icon","s",$payment_icon],
                     ["budget_credit", "s", $budget->budget_credit],
                     ["budget_delivery", "s", $budget->budget_delivery],

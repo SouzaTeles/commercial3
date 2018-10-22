@@ -210,6 +210,7 @@ User = {
     },
     form2data: function(){
         User.user.external_id = $('#external_id').val();
+        User.user.person_id = $('#person_id').val();
         User.user.user_active = $('#user_active').prop('checked') ? 'Y' : 'N';
         User.user.client_id = $('#user_client_id') ? $('#user_client_id').val() : null;
         User.user.user_name = $('#user_name').val();
