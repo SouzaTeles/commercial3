@@ -25,7 +25,7 @@ ModalTermModalities = {
         }
         var start = 1;
         var installment = modality.modality_type == 'A' ? 1 : Term.term.term_installment;
-        var budget_payment_value = parseInt((100*Budget.budget.budget_value_total)/installment)/100;
+        var budget_payment_value = parseInt((100*Budget.budget.budget_value_total-Budget.budget.credit.value)/installment)/100;
         Budget.budget.payments = [];
         if( !!modality.entry && !!modality.parcel ){
             Budget.budget.payments.push({
@@ -52,7 +52,7 @@ ModalTermModalities = {
         }
         for( var i=start; i<=installment; i++ ){
             if( i == Term.term.term_installment ){
-                budget_payment_value = parseFloat((budget_payment_value + parseFloat((Budget.budget.budget_value_total-(Term.term.term_installment*budget_payment_value)).toFixed(2))).toFixed(2));
+                budget_payment_value = parseFloat((budget_payment_value + parseFloat((Budget.budget.budget_value_total-Budget.budget.credit.value-(Term.term.term_installment*budget_payment_value)).toFixed(2))).toFixed(2));
             }
             var deadline = global.dateAddDays(global.today(), Term.term.term_delay + ( (i-1) * Term.term.term_interval ));
             Budget.budget.payments.push({
@@ -74,6 +74,10 @@ ModalTermModalities = {
                 budget_payment_entry: modality.modality_entry,
                 budget_payment_deadline: deadline
             });
+        }
+        if( Budget.budget.credit.value > 0 ){
+            Term.init();
+            Term.data2form();
         }
         Payment.total();
         Payment.showList();
