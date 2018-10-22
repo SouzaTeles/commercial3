@@ -18,7 +18,9 @@ Slide = {
             url: global.uri.uri_public_api + 'image.php?action=getList',
             data: {
                 image_active: 'Y',
-                image_section: 'slide'
+                image_section: 'slide',
+                image_start_date: 1,
+                image_end_date: 1
             },
             dataType: 'json'
         }, function(data) {

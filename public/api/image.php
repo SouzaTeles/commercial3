@@ -251,7 +251,15 @@
                 "filters" => [
                     [ "I.image_section", "s", "=", $post->image_section ],
                     [ "I.parent_id", "i", "=", @$post->parent_id ? $post->parent_id : NULL ],
-                    [ "I.image_active", "s", "=", @$post->image_active ? $post->image_active : NULL ]
+                    [ "I.image_active", "s", "=", @$post->image_active ? $post->image_active : NULL ],
+                    @$post->image_start_date ? [
+                        [ "I.image_start_date IS NULL" ],
+                        [ "I.image_start_date", "s", "<=", date("Y-m-d") ]
+                    ] : NULL,
+                    @$post->image_end_date ? [
+                        [ "I.image_end_date IS NULL" ],
+                        [ "I.image_end_date", "s", ">=", date("Y-m-d") ]
+                    ] : NULL,
                 ],
                 "order" => "I.image_order"
             ]);
