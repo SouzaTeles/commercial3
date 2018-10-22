@@ -805,7 +805,7 @@
                     ["AlDescontoItem", "d", $item->budget_item_aliquot_discount],
                     ["DtEntrega", "s", $budget->budget_delivery_date],
                     ["NrDiasEntrega", "s", countDays(date("Y-m-d"), $budget->budget_delivery_date)],
-                    [ "TpDescontoItem", "s", $item->budget_item_value_discount ? "V" : NULL ],
+                    ["TpDescontoItem", "s", $item->budget_item_value_discount ? "V" : NULL ],
                     ["IdPreco", "s", $item->price_id],
                     ["VlUnitarioTabelaPreco", "d", $item->budget_item_value_unitary],
                     ["StPedidoDeVendaItem", "s", $orderItemParams->status],

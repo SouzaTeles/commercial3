@@ -2740,6 +2740,7 @@ Payment = {
                 shown: function(){
                     ModalPayment.payment = {
                         image: Payment.payment.image,
+                        nature_id: Payment.payment.nature_id,
                         modality_id: Payment.payment.modality_id,
                         modality_type: Payment.payment.modality_type,
                         modality_description: Payment.payment.modality_description,
@@ -2763,6 +2764,7 @@ Payment = {
                             external_id: Payment.payment.external_id,
                             budget_payment_credit: 'N',
                             image: ModalPayment.payment.image,
+                            nature_id: ModalPayment.payment.nature_id,
                             modality_id: ModalPayment.payment.modality_id,
                             modality_type: ModalPayment.payment.modality_type,
                             modality_description: ModalPayment.payment.modality_description,
