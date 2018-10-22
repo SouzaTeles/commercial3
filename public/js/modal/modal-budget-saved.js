@@ -13,10 +13,17 @@ ModalSaved = {
         $body.find('button').click(function(){
             ModalSaved.modal.modal('hide');
             if( !!window.opener ){
-                window.opener.Budget.print({
-                    budget_id: budget.budget_id,
-                    action: $(this).attr('data-action')
-                });
+                try{
+                    window.opener.Budget.print({
+                        budget_id: budget.budget_id,
+                        action: $(this).attr('data-action')
+                    });
+                } catch(e){
+                    Budget.print({
+                        budget_id: budget.budget_id,
+                        action: $(this).attr('data-action')
+                    });
+                }
             } else {
                 window.location.reload();
             }

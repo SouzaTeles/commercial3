@@ -199,7 +199,11 @@ Budget = {
         }, function(data){
             Budget.saved(data);
             if( !!window.opener ){
-                window.opener.Budget.getList();
+                try{
+                    window.opener.Budget.getList();
+                } catch(e){
+                    console.log(e);
+                }
             }
         });
     },
@@ -664,6 +668,14 @@ Budget = {
                 }
             })
         });
+    },
+    print: function(params){
+        location.href = global.uri.uri_public + 'window.php?module=budget&action=' + params.action + '&budget_id=' + params.budget_id;
+        // global.window({
+        //     url: global.uri.uri_public + 'window.php?module=budget&action=' + params.action + '&budget_id=' + params.budget_id,
+        //     width: params.width || 860,
+        //     height: params.height || 620
+        // });
     },
     recover: function(){
         global.post({
