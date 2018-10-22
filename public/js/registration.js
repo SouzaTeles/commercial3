@@ -62,7 +62,6 @@ ProductImage = {
                                 icon: 'fa-check',
                                 title: 'Ok',
                                 action: function() {
-                                    // window.close();
                                 }
                             }]
                         });
@@ -91,7 +90,6 @@ ProductImage = {
                               icon: 'fa-check',
                               title: 'Ok',
                               action: function() {
-                                //   window.close();
                               }
                           }]
                       });
@@ -167,18 +165,15 @@ Registration = {
                             icon: 'fa-check',
                             title: 'Sim',
                             action: function() {
-                                // window.close();
                                 Registration.beforePost();
                             }
                         }, {
                             icon: 'fa-times',
                             title: 'Não',
                             action: function() {
-                                // window.close();
                             }
                         }, ],
                         hidden: function() {
-                            // window.close();
                         }
                     });
                 } else {
@@ -346,21 +341,16 @@ Registration = {
                 });
                 Registration.disableImageGroup();
                 // window.close();
-
             }
         });
-
         $('#button-image-product-remove').prop("disabled", true);
-
         $('#button-image-product-remove').click(function() {
             Registration.imageRemove();
         });
-
         $('#registration_product_EAN').blur(function() {
             if ($('#registration_product_EAN').val() != Product.product_EAN)
                 Registration.modification = true;
         });
-
         $('#save-product').click(function() {
             switch (Registration.type) {
                 case 'P':
@@ -416,15 +406,13 @@ Registration = {
                 default:
                     alert("Algo de errado não está certo.")
             }
-        });
-   
+        });  
         $("#image-input-area").on("paste drop", function (ev) {
             window.setTimeout(function (ev) {
             Registration.pasteImage();
             }, 300);
         });
     },
-
     beforePost: function(item) {
         switch (Registration.type) {
             case 'P':
@@ -470,8 +458,7 @@ Registration = {
                                     $('#modal-registration-product').modal("hide");
                                     console.log(product);
                                     Registration.product = product;
-                                    Registration.showInfo();
-                                    
+                                    Registration.showInfo();                           
                                 }
                               }
                           });
@@ -516,16 +503,12 @@ Registration = {
                         Registration.showList();
                     }
                 });
-
                 break;
             default:
-
         }
     },
-
     //Encaminha cada informação do retorno para o elemento correto na pagina
     showInfo: function() {
-
         $('#registration_product_name').val(Registration.product.product_name);
         $('#registration_product_code').val(Registration.product.product_code);
         $('#registration_product_EAN').prop("disabled", false);
@@ -555,7 +538,6 @@ Registration = {
             $('#registration_product_classification').val(" ");
         }
     },
-
     //Validação de codigo de barras
     eanValidate: function(EAN) {
         var soma = 0;
@@ -585,19 +567,10 @@ Registration = {
             case 13:
                 EAN = EAN.split("");
                 for (i = 0; i < EAN.length - 1; i++) {
-                    if (i % 2 == 1)
-                        EAN[i] = EAN[i] * 3;
-                    else
-                        EAN[i] = parseInt(EAN[i]);
+                    (i % 2 == 1) ? EAN[i] = EAN[i] * 3 : EAN[i] = parseInt(EAN[i]);
                     soma += EAN[i];
                 }
-                calc = soma / 10;
-                calc = Math.floor(calc);
-                calc += 1;
-                calc *= 10;
-                calc = calc - soma;
-                console.log(calc);
-                console.log(EAN[12]);
+                calc = ((Math.floor(soma / 10) + 1) * 10) - soma;
                 if ((calc == 10 ? 0 : calc) == EAN[12]) {
                     return true;
                 } else {
@@ -608,7 +581,6 @@ Registration = {
                 return false;
         }
     },
-
     //Monta a tabela e exibe as informações
     showList: function() {
         //Limpa a tabela
@@ -621,7 +593,6 @@ Registration = {
               product_id: product.product_id,
               update_status: 'N'
             };
-
             //Adiciona uma nova linha na lista de exibição
             Registration.table.row.add([
                 "<input data-id='" + product.product_id + "'id='" + product.product_id  + "' type='checkbox' class='product-check' data-key='1'>",
@@ -631,7 +602,6 @@ Registration = {
             ])
         })
         Registration.table.draw();
-
         $('.product-check').click(function(){
             if($('#' + $(this).closest(".product-check").attr("data-id")).prop("checked")){
                 Registration.numChecked++;
@@ -652,7 +622,6 @@ Registration = {
                 $('#image-input-area').css("border","none");
             }
         });
-
         $('#product-check-master').click(function() {
           console.log("click...");
           if( $('#product-check-master').is(":checked")){
@@ -673,7 +642,6 @@ Registration = {
           }
         });
     },
-    
     //Função para converter o link de uma imagem para base64
     toDataUrl: function (url, callback) {
         console.log("toDataUrl()");
@@ -691,7 +659,6 @@ Registration = {
         xhr.responseType = 'blob';
         xhr.send();
     },
-
     enableImage: function(){
         $('#file-image-product').filestyle("disabled", false);//Pode procurar
         $('#button-image-product-remove').prop("disabled", true);// Não Pode Remover
@@ -702,8 +669,6 @@ Registration = {
         $('#product-image-cover').css({
             "background-image": "url(" + (global.uri.uri_public + "images/empty-image.png") + ")"
         });
-
-        
     },
     disableImage: function(){
         $('#file-image-product').filestyle("disabled", true);//Não pode procurar
@@ -721,17 +686,8 @@ Registration = {
         $('#image-input-area').css("border","none"); // sem borda
     
     },
-    // imageChanges: {
-    //     imageSearch:  ($('#file-image-product').filestyle("disabled")) ? true : false,
-    //     imageRemove:   $('#button-image-product-remove').prop("disabled") ? true : false,
-    //     imagePaste: $('#image-input-area').prop("contenteditable") ? true : false,
-    //     imageContent: $('#product-image-cover').css("background-image")
-        
-    // },
-
     pasteImage: function(){
         var regex = /base64$/;
-        // console.log("Entrou na função.")
         ImagePush.input = $("#image-input-area").children()[0].src;
         ImagePush.s = ImagePush.input.split(',');
         ImagePush.mime = ImagePush.s[0];
@@ -745,7 +701,6 @@ Registration = {
         $('#button-image-product-remove').prop("disabled", false);
 
         $('#file-image-product').filestyle("disabled", false);
-        //console.log()
 
         if(!regex.exec(ImagePush.mime)){
             //Não é base 64
