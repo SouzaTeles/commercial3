@@ -1,3 +1,4 @@
+//Modal Cadastro de Produtos
 $(document).ready(function(){
     ModalRegistrationProduct.events();
     ModalRegistrationProduct.table.draw();

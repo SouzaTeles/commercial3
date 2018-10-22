@@ -1,3 +1,10 @@
+//Cadastro de Produtos
+/*
+ *
+ *
+ * 
+ *
+ */
 $(document).ready(function() {
     global.unLoader();
     Registration.events();
@@ -63,7 +70,10 @@ ProductImage = {
                                 title: 'Ok',
                                 action: function() {
                                 }
-                            }]
+                            }],
+                            shown: function(){
+                                $('#modal-1-button-1').focus();
+                            }
                         });
 
                     });
@@ -91,7 +101,11 @@ ProductImage = {
                               title: 'Ok',
                               action: function() {
                               }
-                          }]
+                          }],
+                          shown: function(){
+                            console.log($('#modal-1-button-1').length);
+                           // $('#modal-1-button-1').focus();
+                        }
                       });
                     });
                     break;
@@ -174,6 +188,9 @@ Registration = {
                             }
                         }, ],
                         hidden: function() {
+                        },
+                        shown: function() {
+                            $('#modal-1-button-1').trigger("focus");
                         }
                     });
                 } else {
@@ -458,7 +475,7 @@ Registration = {
                                     $('#modal-registration-product').modal("hide");
                                     console.log(product);
                                     Registration.product = product;
-                                    Registration.showInfo();                           
+                                    Registration.showInfo();                        
                                 }
                               }
                           });
