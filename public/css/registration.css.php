@@ -1,4 +1,5 @@
 <?php include "data.css.php"; ?>
+/* Cadastro de Produtos*/
 :root{
     --imagepath: url(../images/empty-image.png);
 }

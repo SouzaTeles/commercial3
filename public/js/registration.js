@@ -1,3 +1,10 @@
+//Cadastro de Produtos
+/*
+ *
+ *
+ * 
+ *
+ */
 $(document).ready(function() {
     global.unLoader();
     Registration.events();
@@ -13,44 +20,16 @@ Item = {
     },
 Product = {},
 ProductImage = {
-        // del: function() {
-        //     global.modal({
-        //         icon: 'fa-question-circle-o',
-        //         title: 'Confirmação',
-        //         html: '<p>Deseja realmente remover a imagem do produto?</p>',
-        //         buttons: [{
-        //             icon: 'fa-times',
-        //             title: 'Não',
-        //             class: 'pull-left'
-        //         }, {
-        //             icon: 'fa-check',
-        //             title: 'Sim',
-        //             action: function() {
-        //                 global.post({
-        //                     url: global.uri.uri_public_api + 'image.php?action=del',
-        //                     data: {
-        //                         image_id: Product.product_id,
-        //                         image_dir: 'product'
-        //                     }
-        //                 }, function() {
-        //                     $('#button-image-product-remove').prop('disabled', true);
-        //                     Product.image = null;
-        //                     ProductImage.show();
-        //                 });
-        //             }
-        //         }]
+        // events: function() {
+        //     $('#file-image-product').change(function() {
+        //         Product.form2data();
+        //         ProductImage.up();
         //     });
+        //     // $('#button-image-product-remove').click(function() {
+        //     //     Product.form2data();
+        //     //     ProductImage.del();
+        //     // });
         // },
-        events: function() {
-            $('#file-image-product').change(function() {
-                Product.form2data();
-                ProductImage.up();
-            });
-            $('#button-image-product-remove').click(function() {
-                Product.form2data();
-                ProductImage.del();
-            });
-        },
         show: function() {
             if (!!Product.image) {
                 $('#product-image-cover .text').hide();
@@ -64,14 +43,14 @@ ProductImage = {
         up: function(image) {
             switch (Registration.type) {
                 case 'P':
-                    product_image64 = image;
+                    console.log(Product);
                     console.log("LOG 2");
                     global.post({
                         url: global.uri.uri_public_api + 'product_group.php?action=up',
                         data: {
                             product_id: Product.product_id,
                             product_EAN: Product.product_EAN,
-                            product_image64: product_image64,
+                            product_image64: image,
                             registration_type: Registration.type,
                             product_img_act: Registration.img_act
                         },
@@ -90,9 +69,11 @@ ProductImage = {
                                 icon: 'fa-check',
                                 title: 'Ok',
                                 action: function() {
-                                    window.close();
                                 }
-                            }]
+                            }],
+                            shown: function(){
+                                $('#modal-1-button-1').focus();
+                            }
                         });
 
                     });
@@ -119,9 +100,12 @@ ProductImage = {
                               icon: 'fa-check',
                               title: 'Ok',
                               action: function() {
-                                  window.close();
                               }
-                          }]
+                          }],
+                          shown: function(){
+                            console.log($('#modal-1-button-1').length);
+                           // $('#modal-1-button-1').focus();
+                        }
                       });
                     });
                     break;
@@ -145,7 +129,7 @@ Registration = {
         //searching: 1,
         scrollY: $(window).innerHeight() - 372,
         scrollCollapse: 1,
-        noControls: [0, 2],
+        noControls: [0, 3],
         order: [
             [2, 'asc']
         ]
@@ -180,12 +164,12 @@ Registration = {
 
     events: function() {
         $('#registration_product_EAN').mask('99999999999999');
-        
+
         $('#registration_product_group_code').mask('999999');
         //Campo: Codigo do Produto
         $('#registration_product_code').on('keyup', function() {
             var key = event.keyCode || event.wich;
-            if (key == 13) {
+            if (key == 13 && $('#registration_product_code').val()) {
                 if (Registration.modification) {
                     global.modal({
                         icon: 'fa-warning',
@@ -195,18 +179,18 @@ Registration = {
                             icon: 'fa-check',
                             title: 'Sim',
                             action: function() {
-                                window.close();
                                 Registration.beforePost();
                             }
                         }, {
                             icon: 'fa-times',
                             title: 'Não',
                             action: function() {
-                                window.close();
                             }
                         }, ],
                         hidden: function() {
-                            window.close();
+                        },
+                        shown: function() {
+                            $('#modal-1-button-1').trigger("focus");
                         }
                     });
                 } else {
@@ -217,7 +201,7 @@ Registration = {
         //Campo: Codigo do Grupo de Produto
         $('#registration_product_group_code').on('keyup', function() {
             var key = event.keyCode || event.wich;
-            if (key == 13) {
+            if (key == 13 && $('#registration_product_group_code').val()) {
                 Registration.beforePost($('#registration_product_group_code').val());
             }
         });
@@ -266,6 +250,7 @@ Registration = {
                             console.log(item);
                             Product = item;
                             console.log(item);
+                            Registration.product = item;
                             Registration.showInfo();
                         }
                     });
@@ -294,33 +279,32 @@ Registration = {
                         action: function() {
                             Registration.modGroup = false;
                             $('#product-tab').trigger("click");
-                            window.close();
+                            // window.close();
                         }
                     }, {
                         icon: 'fa-times',
                         title: 'Não',
                         action: function() {
-                            window.close();
+                            // window.close();
                         }
                     }, ],
                     hidden: function() {
-                        window.close();
+                        // window.close();
                     }
                 });
             } else {
                 console.log("Else");
                 Registration.type = 'P';
                 Registration.modGroup = false;
+                $('#registration_product_code').trigger("focus");
                 // (Registration.product.product_image) ? Registration.disableImage() : Registration.enableImage();
                 // $('#product-tab').trigger("click");
                 if($('#registration_product_code').val()){
-                    console.log("beforePost");
                     Registration.beforePost();
                 } else {
-                    console.log("DisableImageGroup");
                     Registration.disableImageGroup();
                 }
-                window.close();
+                // window.close();
             }
             // console.log("clicou...")
             // Registration.type = 'P';
@@ -350,7 +334,7 @@ Registration = {
                             });
                             $('#product-group-tab').trigger("click");
                             Registration.disableImageGroup();
-                            window.close();
+                            // window.close();
                         }
                     }, {
                         icon: 'fa-times',
@@ -358,36 +342,32 @@ Registration = {
                         action: function() {
                             // Registration.modification = false;
                             // $('#product-tab').click();
-                            window.close();
+                            // window.close();
                         }
                     }, ],
                     hidden: function() {
-                        window.close();
+                        // window.close();
                     }
                 });
             } else {
                 Registration.type = 'G';
                 // Registration.modification = false;
+                $('#registration_product_group_code').trigger("focus");
                 $('#product-image-cover').css({
                     "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
                 });
                 Registration.disableImageGroup();
-                window.close();
-
+                // window.close();
             }
         });
-
         $('#button-image-product-remove').prop("disabled", true);
-
         $('#button-image-product-remove').click(function() {
             Registration.imageRemove();
         });
-
         $('#registration_product_EAN').blur(function() {
             if ($('#registration_product_EAN').val() != Product.product_EAN)
                 Registration.modification = true;
         });
-
         $('#save-product').click(function() {
             switch (Registration.type) {
                 case 'P':
@@ -400,11 +380,11 @@ Registration = {
                                 icon: 'fa-check',
                                 title: 'Ok',
                                 action: function() {
-                                    window.close();
+                                    // window.close();
                                 }
                             }],
                             hidden: function() {
-                                window.close();
+                                // window.close();
                             }
                         });
                     } else {
@@ -416,7 +396,7 @@ Registration = {
                                 icon: 'fa-times',
                                 title: 'Não',
                                 action: function() {
-                                    window.close();
+                                    // window.close();
                                 }
                             }, {
                                 icon: 'fa-check',
@@ -424,11 +404,11 @@ Registration = {
                                 action: function() {
                                     Product.product_EAN = $('#registration_product_EAN').val();
                                     ProductImage.up(Registration.imagem);
-                                    window.close();
+                                    // window.close();
                                 }
                             }],
                             hidden: function() {
-                                window.close();
+                                // window.close();
                             }
                         });
                     }
@@ -443,15 +423,13 @@ Registration = {
                 default:
                     alert("Algo de errado não está certo.")
             }
-        });
-   
+        });  
         $("#image-input-area").on("paste drop", function (ev) {
             window.setTimeout(function (ev) {
             Registration.pasteImage();
             }, 300);
         });
     },
-
     beforePost: function(item) {
         switch (Registration.type) {
             case 'P':
@@ -497,8 +475,7 @@ Registration = {
                                     $('#modal-registration-product').modal("hide");
                                     console.log(product);
                                     Registration.product = product;
-                                    Registration.showInfo();
-                                    
+                                    Registration.showInfo();                        
                                 }
                               }
                           });
@@ -543,16 +520,12 @@ Registration = {
                         Registration.showList();
                     }
                 });
-
                 break;
             default:
-
         }
     },
-
     //Encaminha cada informação do retorno para o elemento correto na pagina
     showInfo: function() {
-
         $('#registration_product_name').val(Registration.product.product_name);
         $('#registration_product_code').val(Registration.product.product_code);
         $('#registration_product_EAN').prop("disabled", false);
@@ -582,7 +555,6 @@ Registration = {
             $('#registration_product_classification').val(" ");
         }
     },
-
     //Validação de codigo de barras
     eanValidate: function(EAN) {
         var soma = 0;
@@ -612,19 +584,10 @@ Registration = {
             case 13:
                 EAN = EAN.split("");
                 for (i = 0; i < EAN.length - 1; i++) {
-                    if (i % 2 == 1)
-                        EAN[i] = EAN[i] * 3;
-                    else
-                        EAN[i] = parseInt(EAN[i]);
+                    (i % 2 == 1) ? EAN[i] = EAN[i] * 3 : EAN[i] = parseInt(EAN[i]);
                     soma += EAN[i];
                 }
-                calc = soma / 10;
-                calc = Math.floor(calc);
-                calc += 1;
-                calc *= 10;
-                calc = calc - soma;
-                console.log(calc);
-                console.log(EAN[12]);
+                calc = ((Math.floor(soma / 10) + 1) * 10) - soma;
                 if ((calc == 10 ? 0 : calc) == EAN[12]) {
                     return true;
                 } else {
@@ -635,7 +598,6 @@ Registration = {
                 return false;
         }
     },
-
     //Monta a tabela e exibe as informações
     showList: function() {
         //Limpa a tabela
@@ -648,7 +610,6 @@ Registration = {
               product_id: product.product_id,
               update_status: 'N'
             };
-
             //Adiciona uma nova linha na lista de exibição
             Registration.table.row.add([
                 "<input data-id='" + product.product_id + "'id='" + product.product_id  + "' type='checkbox' class='product-check' data-key='1'>",
@@ -658,7 +619,6 @@ Registration = {
             ])
         })
         Registration.table.draw();
-
         $('.product-check').click(function(){
             if($('#' + $(this).closest(".product-check").attr("data-id")).prop("checked")){
                 Registration.numChecked++;
@@ -679,7 +639,6 @@ Registration = {
                 $('#image-input-area').css("border","none");
             }
         });
-
         $('#product-check-master').click(function() {
           console.log("click...");
           if( $('#product-check-master').is(":checked")){
@@ -700,22 +659,23 @@ Registration = {
           }
         });
     },
-    
     //Função para converter o link de uma imagem para base64
     toDataUrl: function (url, callback) {
+        console.log("toDataUrl()");
         var xhr = new XMLHttpRequest();
         xhr.onload = function() {
+            console.log("onload");
             var reader = new FileReader();
             reader.onloadend = function() {
                 callback(reader.result);
             }
             reader.readAsDataURL(xhr.response);
         };
+        console.log("depois do onload");
         xhr.open('GET', url);
         xhr.responseType = 'blob';
         xhr.send();
     },
-
     enableImage: function(){
         $('#file-image-product').filestyle("disabled", false);//Pode procurar
         $('#button-image-product-remove').prop("disabled", true);// Não Pode Remover
@@ -726,8 +686,6 @@ Registration = {
         $('#product-image-cover').css({
             "background-image": "url(" + (global.uri.uri_public + "images/empty-image.png") + ")"
         });
-
-        
     },
     disableImage: function(){
         $('#file-image-product').filestyle("disabled", true);//Não pode procurar
@@ -745,17 +703,8 @@ Registration = {
         $('#image-input-area').css("border","none"); // sem borda
     
     },
-    // imageChanges: {
-    //     imageSearch:  ($('#file-image-product').filestyle("disabled")) ? true : false,
-    //     imageRemove:   $('#button-image-product-remove').prop("disabled") ? true : false,
-    //     imagePaste: $('#image-input-area').prop("contenteditable") ? true : false,
-    //     imageContent: $('#product-image-cover').css("background-image")
-        
-    // },
-
     pasteImage: function(){
         var regex = /base64$/;
-        // console.log("Entrou na função.")
         ImagePush.input = $("#image-input-area").children()[0].src;
         ImagePush.s = ImagePush.input.split(',');
         ImagePush.mime = ImagePush.s[0];
@@ -769,19 +718,17 @@ Registration = {
         $('#button-image-product-remove').prop("disabled", false);
 
         $('#file-image-product').filestyle("disabled", false);
-        //console.log()
 
         if(!regex.exec(ImagePush.mime)){
-            // console.log("Não é base 64")
+            //Não é base 64
+            console.log("Link Externo")
             Registration.toDataUrl(ImagePush.mime, function(img64) {
+                console.log(img64);
                 Registration.imagem = img64;
-                // console.log("IMG64 " + img64);
-                // console.log("Imagem na variavel" + Registration.imagem);
                 Registration.img_act = 'I';
             });
         } else {
-            // console.log("É base 64");
-            // console.log(ImagePush.data);
+            // É Base 64
             Registration.imagem = (ImagePush.mime +',' + ImagePush.data);
             // console.log(Registration.imagem);
             Registration.img_act = 'I';
