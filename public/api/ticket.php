@@ -85,7 +85,7 @@
                     [ "owner_id", "i", 98 ],
                     [ "urgency_id", "i", $post->data->urgency_id ],
                     [ "ticket_status", "s", "O" ],
-                    [ "ticket_note_text", "s", removeSpecialChar($post->data->message) ],
+                    [ "ticket_note_text", "s", utf8_decode($post->data->message) ],
                     [ "ticket_note_host_ip", "s", @$headers["HostIP"] && $headers["HostIP"] != "null" ? $headers["HostIP"] : NULL ],
                     [ "ticket_note_host_name", "s", @$headers["HostName"] ? $headers["HostName"] : NULL ],
                     [ "ticket_note_host_platform", "s", @$headers["Platform"] ? $headers["Platform"] : NULL ],

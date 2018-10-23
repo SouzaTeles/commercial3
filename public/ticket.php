@@ -76,7 +76,7 @@
             [ "owner_id", "i", 98 ],
             [ "urgency_id", "i", $post->data->urgency_id ],
             [ "ticket_status", "s", "O" ],
-            [ "ticket_note_text", "s", removeSpecialChar($post->data->message) ],
+            [ "ticket_note_text", "s", utf8_decode($post->data->message) ],
             [ "ticket_note_date", "s", date("Y-m-d H:i:s") ]
         ]
     ]);

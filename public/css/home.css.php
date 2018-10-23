@@ -34,6 +34,11 @@
     display: inline-block;
 }
 
+#slide .carousel-caption
+{
+    bottom: 68px;
+}
+
 #slide .carousel-caption p
 {
     font-size: 22px;
@@ -78,7 +83,6 @@
     bottom: 0;
     padding: 10px;
     position: absolute;
-    background: rgba(100,100,100,.7);
 }
 
 #slide .author .cover
@@ -99,6 +103,7 @@
     font-size: 16px;
     max-width: 120px;
     margin: 8px 0 0 12px;
+    text-shadow: 1px 1px 1px #333;
 }
 
 #blog
