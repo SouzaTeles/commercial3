@@ -20,26 +20,6 @@ Item = {
     },
 Product = {},
 ProductImage = {
-        // events: function() {
-        //     $('#file-image-product').change(function() {
-        //         Product.form2data();
-        //         ProductImage.up();
-        //     });
-        //     // $('#button-image-product-remove').click(function() {
-        //     //     Product.form2data();
-        //     //     ProductImage.del();
-        //     // });
-        // },
-        show: function() {
-            if (!!Product.image) {
-                $('#product-image-cover .text').hide();
-            } else {
-                $('#product-image-cover .text').show();
-            }
-            $('#product-image-cover').css({
-                "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
-            });
-        },
         up: function(image) {
             switch (Registration.type) {
                 case 'P':
@@ -169,6 +149,7 @@ Registration = {
         //Campo: Codigo do Produto
         $('#registration_product_code').on('keyup', function() {
             var key = event.keyCode || event.wich;
+            //console.log(key);
             if (key == 13 && $('#registration_product_code').val()) {
                 if (Registration.modification) {
                     global.modal({
@@ -196,6 +177,10 @@ Registration = {
                 } else {
                     Registration.beforePost();
                 }
+            }
+            else if (key == 113){
+                Registration.showModal();
+
             }
         });
         //Campo: Codigo do Grupo de Produto
@@ -247,9 +232,9 @@ Registration = {
                         },
                         url: global.uri.uri_public_api + 'product_group.php?action=typeahead',
                         callBack: function(item) {
-                            console.log(item);
+                            //console.log(item);
                             Product = item;
-                            console.log(item);
+                            //console.log(item);
                             Registration.product = item;
                             Registration.showInfo();
                         }
@@ -429,6 +414,7 @@ Registration = {
             Registration.pasteImage();
             }, 300);
         });
+    
     },
     beforePost: function(item) {
         switch (Registration.type) {
@@ -616,6 +602,7 @@ Registration = {
                 product.product_code,
                 product.product_name,
                 '<div class="product-cover"' + ( product.product_image ? 'style="background-image:url(' + product.product_image+ ')"' : '' ) + '></div>',
+                product.product_EAN ? product.product_EAN : '-',
             ])
         })
         Registration.table.draw();
@@ -734,6 +721,39 @@ Registration = {
             Registration.img_act = 'I';
     
         }
+    },
+    showModal: function(){
+        global.post({
+            url: global.uri.uri_public + 'api/modal.php?modal=modal-registration-product-search',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                id: 'modal-registration-product-search',
+                class: 'modal-registration-product-search',
+                icon: 'fa-cubes',
+                title: 'Listagem de produtos',
+                size: "big",
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    title: 'Cancelar',
+                    class: 'pull-left'
+                },{
+                    icon: 'fa-pencil',
+                    title: 'Atualizar',
+                    unclose: true,
+                    id: 'button-pass-change'
+                }],
+                shown: function(){
+                  ModalRegistrationProductSearch.success = function(product){
+                      $('#modal-registration-product-search').modal("hide");
+                      console.log(product);
+                      Registration.product = product;
+                      Registration.showInfo();                        
+                  }
+                }
+            });
+        });
     }
 
     

@@ -1,0 +1,54 @@
+<link href="{$URI_PUBLIC}css/modal/modal-registration-product-search.css?{$smarty.now}" rel="stylesheet" />
+<form>
+    <div class="row">
+        <div class="col-xs-12 col-sm-8">
+            <div class="form-group">
+                <label for="modal_product_name">Nome ou Classificação</label>
+                <input type="text" class="form-control" id="modal_product_name" placeholder="Nome ou Classificação">
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2" style="padding:0;">
+            <div class="form-group">
+                <label for="modal_product_active">&nbsp;&nbsp;</label>
+                <input checked type="checkbox" class="form-control" id="modal_product_active" />
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label>&nbsp;&nbsp;</label>
+                <button class="btn btn-blue btn-block">
+                    <i class="fa fa-search"></i> Pesquisar
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+<table id="modal-table-products" class="table-custom no-select">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Código</th>
+            <th>Class.</th>
+            <th>Nome</th>
+            <!-- <th>Preço</th> -->
+            <th>Unidade</th>
+            <!-- <th>Estoque</th> -->
+            <th></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<div class="legend">
+    <div class="item found">
+        <i class="fa fa-cubes"></i> Nenhum produto localizado
+    </div>
+    <button id="button-selected" class="btn btn-empty">Nenhum selecionado</button>
+    <div class="item pull-right txt-red-light">
+        <i class="fa fa-stop"></i> Sem estoque
+    </div>
+    <div class="item pull-right txt-gray">
+        <i class="fa fa-stop"></i> Inativo
+    </div>
+</div>
+<script src="{$URI_PUBLIC}js/modal/modal-product-search.js?{$smarty.now}"></script>

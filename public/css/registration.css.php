@@ -1,17 +1,18 @@
 <?php include "data.css.php"; ?>
 /* Cadastro de Produtos*/
 :root{
-    --imagepath: url(../images/empty-image.png);
+  --imagepath: url(../images/empty-image.png);
 }
 
 
-body{
+body {
   background-color: white;
+  overflow: hidden;
 }
-.container{
-    padding: 110px 0 60px;
+.container {
+  padding: 110px 0 60px;
 }
-.image-place{
+.image-place {
   height: 307px;
   margin-top: 40px;
   background-color: white;
@@ -20,6 +21,9 @@ body{
   background-repeat: no-repeat;
 }
 
+.overlay {
+  background-color: white;
+}
 .product-cover
 {
     width: 30px;
@@ -31,17 +35,14 @@ body{
     box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);
 }
 
-#product-group-registation{
+#product-group-registation {
   border-bottom: black;
 }
 
-#product-image-cover{
+#product-image-cover {
   background-image: var(--imagepath);
 }
 
-.overlay{
-  background-color: white;
-}
 
 #registration{
   margin-top: 20px;
