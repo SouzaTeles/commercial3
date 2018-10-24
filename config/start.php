@@ -23,6 +23,9 @@
     $post = (Object)$_POST;
     $headers = getallheaders();
 
+    Session::set();
+    $device = Session::device();
+
     if( Session::isUser() ){
         $login = Model::get($commercial,(Object)[
             "class" => "User",

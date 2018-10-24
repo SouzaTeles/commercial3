@@ -28,8 +28,8 @@
     define( "WIDTH_THUMB_MIN", 320 );
     define( "HEIGHT_THUMB_MIN", 240 );
     define( "QUALITY_THUMB", 80 );
-    
-    define( "PRODUCT_PER_PAGE", 12 );
+
+    define( "LITE", in_array( "lite.api", explode( "/", $_SERVER["PHP_SELF"] )) );
     
     $httpStatus = [
         200 => "Ok",
