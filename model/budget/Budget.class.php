@@ -1174,7 +1174,10 @@
                 "top" => 99,
                 "table" => "PedidoDeVendaPagamento",
                 "filters" => [
-                    [ "StCartaCredito", "s", "!=", "S" ],
+                    [
+                        [ "StCartaCredito IS NULL" ],
+                        [ "StCartaCredito", "s", "!=", "S" ]
+                    ],
                     [ "IdPedidoDeVenda", "s", "=", $budget->external_id ],
                     [ "IdPedidoDeVendaPagamento", "s", "not in", @$externalPayments ? $externalPayments : NULL ]
                 ]
