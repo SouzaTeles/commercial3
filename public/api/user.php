@@ -8,6 +8,60 @@
 
     switch( $get->action ){
 
+        case "access":
+
+            if( !@$post->user_user || !@$post->user_pass ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado"
+                ]);
+            }
+
+            $user = Model::get( $commercial, (Object)[
+                "tables" => [ "[User]" ],
+                "fields" => [
+                    "user_id",
+                    "user_name",
+                    "user_active"
+                ],
+                "filters" => [
+                    [ "user_user", "s", "=", $post->user_user ],
+                    [ "user_pass", "s", "=", md5($post->user_pass) ]
+                ]
+            ]);
+
+            if( !@$user ){
+                headerResponse((Object)[
+                    "code" => 404,
+                    "message" => "Login e/ou senha incorretos."
+                ]);
+            }
+
+            if( $user->user_active == "N" ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O usuário está inativo."
+                ]);
+            }
+
+            $access = Model::getList( $commercial, (Object)[
+                "tables" => [ "[UserAccess]" ],
+                "fields" => [
+                    "user_access_name",
+                    "user_access_value",
+                ],
+                "filters" => [[ "user_id", "s", "=", $user->user_id ]]
+            ]);
+
+            $ret = [];
+            foreach( $access as $key => $data ){
+                $ret[$data->user_access_name] = $data->user_access_value;
+            }
+
+            Json::get( $headerStatus[200], (Object)$ret );
+
+        break;
+
         case "get":
 
             if( !@$post->user_id ){
@@ -67,7 +121,7 @@
                     [ "external_id", "s", $post->external_id ],
                     [ "person_id", "s", $post->person_id ],
                     [ "user_profile_id", "i", $post->user_profile_id ],
-                    [ "user_name", "s", $post->user_name ],
+                    [ "user_name", "s", utf8_decode($post->user_name) ],
                     [ "user_email", "s", $post->user_email ],
                     [ "user_active", "s", $post->user_active ],
                     [ "user_update", "s", date("Y-m-d H:i:s") ]

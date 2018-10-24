@@ -15,11 +15,12 @@ Pdf = {
         $(document).ready(function(){
             Pdf.pdf();
         });
-        $('button').click(function(){
+        $('#button-pdf').click(function(){
             Pdf.pdf();
         });
         if( typeof(Electron) == 'object' ){
             ipcRenderer.on('wrote-pdf',(event, response) => {
+                console.log(response);
                 global.unLoader();
             });
         }
