@@ -26,5 +26,9 @@
 	"audit": {
 		"name": "Auditoria",
 		"value": "N"
+	},
+	"debug": {
+		"name": "Debug",
+		"value": "N"
 	}
 }

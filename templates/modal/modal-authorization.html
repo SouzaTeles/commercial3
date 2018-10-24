@@ -1,0 +1,25 @@
+<link href="{$URI_PUBLIC}css/modal/modal-authorization.css?{$smarty.now}" rel="stylesheet" />
+<form id="form-authorization">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="modal_user_user">Usuário</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" class="form-control" id="modal_user_user" name="modal_user_user" required>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="modal_user_pass">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                    <input type="password" class="form-control" id="modal_user_pass" name="modal_user_pass" required>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="hidden"></button>
+</form>
+<script src="{$URI_PUBLIC}js/modal/modal-authorization.js?{$smarty.now}"></script>

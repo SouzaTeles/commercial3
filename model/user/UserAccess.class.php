@@ -19,14 +19,14 @@
         {
             $user_access = json_decode( file_get_contents( PATH_DATA . "user.json" ));
 
-            foreach ($l_access as $access) {
+            foreach ($l_access as $access){
                 $name = "{$access->user_access_name}";
                 if (!@$user_access->$name){
                     echo "Chave do banco de dados não encontrada: {$name}";
                     var_dump($user_access);
                     die();
                 }
-                if (!@$user_access->$name) {
+                if (!@$user_access->$name){
                     $user_access->$name = new StdClass();
                 }
                 if( $access->user_access_data_type == "float" ){

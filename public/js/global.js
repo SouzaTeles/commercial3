@@ -2,6 +2,11 @@ $(document).ready(function(){
 
     Commercial.events();
     if( !!global.login ) Chat.getUsers();
+    global.listener.simple_combo("ctrl shift q", function () {
+        if(typeof(Electron) == 'object') {
+            Commercial.debug();
+        }
+    });
 
 });
 
@@ -225,6 +230,48 @@ Commercial = {
                     unclose: true,
                     id: 'button-pass-change'
                 }]
+            });
+        });
+    },
+    debug: function(){
+        if( global.loaders > 0 ){
+            global.loaders = 0;
+            $('#loader').fadeOut();
+        }
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-authorization',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                size: 'small',
+                icon: 'fa-lock',
+                id: 'modal-authorization',
+                class: 'modal-authorization',
+                title: 'Autorização',
+                html: html,
+                buttons: [{
+                    icon: 'fa-times',
+                    class: 'pull-left btn-red',
+                    title: 'Cancelar'
+                },{
+                    icon: 'fa-unlock',
+                    title: 'Autorizar',
+                    class: 'btn-green',
+                    unclose: true,
+                    action: function(){
+                        ModalAuthorization.authorize();
+                    }
+                }],
+                shown: function(){
+                    $('#modal_user_user').focus();
+                    ModalAuthorization.success = function(data){
+                        if(data.debug && data.debug == 'Y') {
+                            remote.BrowserWindow.getFocusedWindow().webContents.openDevTools();
+                        } else {
+                            global.validateMessage('O usuário não possui permissão para o debug.')
+                        }
+                    }
+                }
             });
         });
     }

@@ -142,6 +142,7 @@ User = {
         $('#mobile_unlock').bootstrapToggle(access.mobile_unlock == 'Y' ? 'on' : 'off');
         $('#budget_delivery').bootstrapToggle(access.budget_delivery == 'Y' ? 'on' : 'off');
         $('#audit').bootstrapToggle(access.audit == 'Y' ? 'on' : 'off');
+        $('#debug').bootstrapToggle(access.debug == 'Y' ? 'on' : 'off');
     },
     data2form: function(){
         $('#external_id').val(User.user.external_id).selectpicker('refresh');
@@ -226,7 +227,8 @@ User = {
             {'name': 'mobile_access', 'value': $('#mobile_access').prop('checked') ? 'Y' : 'N', 'type': 'bool' },
             {'name': 'mobile_unlock', 'value': $('#mobile_unlock').prop('checked') ? 'Y' : 'N', 'type': 'bool' },
             {'name': 'budget_delivery', 'value': $('#budget_delivery').prop('checked') ? 'Y' : 'N', 'type': 'bool' },
-            {'name': 'audit', 'value': $('#audit').prop('checked') ? 'Y' : 'N', 'type': 'bool' }
+            {'name': 'audit', 'value': $('#audit').prop('checked') ? 'Y' : 'N', 'type': 'bool' },
+            {'name': 'debug', 'value': $('#debug').prop('checked') ? 'Y' : 'N', 'type': 'bool' }
         ];
     },
     get: function(user_id){
