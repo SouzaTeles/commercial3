@@ -16,7 +16,12 @@ Slide = {
     getSlide: function(){
         global.post({
             url: global.uri.uri_public_api + 'image.php?action=getList',
-            data: { image_section: 'slide' },
+            data: {
+                image_active: 'Y',
+                image_section: 'slide',
+                image_start_date: 1,
+                image_end_date: 1
+            },
             dataType: 'json'
         }, function(data) {
             Slide.images = data;
@@ -34,20 +39,27 @@ Slide = {
                     '<div class="carousel-caption">' +
                         ( image.image_name ? '<h3>' + image.image_name + '</h3>' : '' ) +
                         ( image.image_description ? '<p>' + image.image_description + '</p>' : '' ) +
-                        ( image.image_link ?
+                        ( image.post_id || image.image_link ?
                             '<button data-key="' + key + '"class="btn btn-orange">' +
                                 '<i class="fa fa-plus"></i> Veja mais' +
                             '</button>' : ''
                         ) +
                     '</div>' +
+                    (image.person_id ? (
+                        '<div class="author">' +
+                            '<div class="cover" style="background-image:url(' + (image.person_image || 'images/empty-image.png') + ')"></div>' +
+                            '<div class="name">' + (image.person_short_name || image.person_name) + '</div>' +
+                        '</div>'
+                    ) : '') +
                 '</div>'
             );
             $(indicators).append('<li data-target="#slide" data-slide-to="' + key + '" class="' + ( !key ? ' active' : '' ) + '"></li>');
         });
         $(slide).carousel();
         $(slide).find('button').click(function(){
+            var image = Slide.images[$(this).attr('data-key')];
             global.window({
-                url: Slide.images[$(this).attr('data-key')].image_link
+                url: image.post_id ? (global.uri.uri_public + 'window.php?module=blog&action=show&post_id=' + image.post_id) : image.image_link
             });
         });
     }
@@ -57,7 +69,8 @@ Blog = {
     posts: [],
     getList: function(){
         global.post({
-            url: 'http://intranet.dafel.com.br/blog/commercial.php?action=getList&token=r0zUBn6o7tbggzZQXCusGT2DUPJ4wHF3',
+            url: global.uri.uri_public_api + 'blog.php?action=getList',
+            data: { limit: 4 },
             noLoader: 1,
             dataType: 'json'
         }, function(data) {

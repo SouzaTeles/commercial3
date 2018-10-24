@@ -24,6 +24,16 @@
             Json::get( $headerStatus[200], $post );
 
         break;
+
+        case "getList":
+
+            $url = "http://intranet.dafel.com.br/blog/commercial.php?action=getList&token=r0zUBn6o7tbggzZQXCusGT2DUPJ4wHF3" . (@$post->limit ? "&limit={$post->limit}" : "");
+            $post = file_get_contents($url);
+            $post = json_decode($post, TRUE);
+
+            Json::get( $headerStatus[200], $post );
+
+        break;
     }
 
 ?>

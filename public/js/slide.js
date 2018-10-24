@@ -1,11 +1,15 @@
 $(document).ready(function(){
     Slide.events();
     Slide.getList();
+    Slide.getPosts();
+    Slide.getPeople();
     global.unLoader();
 });
 
 Slide = {
+    posts: [],
     images: [],
+    people: [],
     add: function(){
         var data = new FormData();
         data.append('image_section', 'slide');
@@ -72,6 +76,7 @@ Slide = {
             dataType: 'html'
         },function(html){
             global.modal({
+                size: 'big',
                 id: 'modal-image',
                 icon: 'fa-picture-o',
                 class: 'modal-image',
@@ -107,9 +112,30 @@ Slide = {
             Slide.showList();
         });
     },
+    getPeople: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'person.php?action=getList',
+            data: {
+                limit: 500,
+                person_active: 'Y',
+                person_category_id: global.config.person.employ_category_id
+            },
+            dataType: 'json'
+        },function(data){
+            Slide.people = data;
+        });
+    },
+    getPosts: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'blog.php?action=getList',
+            dataType: 'json'
+        },function(data){
+            Slide.posts = data;
+        });
+    },
     showList: function(){
         var slides = $('#slides');
-        $(slides).find('.image').remove();
+        $(slides).find('.col-xs-6').remove();
         $.each(Slide.images,function(key,image){
             $(slides).append(
                 '<div class="col-xs-6 col-sm-4 col-lg-3">' +

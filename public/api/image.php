@@ -5,7 +5,7 @@
 
     Session::checkApi();
 
-    GLOBAL $commercial, $site, $login, $dimensions, $headerStatus, $get, $post;
+    GLOBAL $conn, $commercial, $site, $login, $dimensions, $headerStatus, $get, $post;
 
     if( !@$get->action ){
         headerResponse((Object)[
@@ -199,8 +199,13 @@
             Model::update( $commercial,(Object)[
                 "table" => "[Image]",
                 "fields" => [
+                    [ "image_active", "s", $post->image_active ],
+                    [ "post_id", "i", @$post->post_id ? $post->post_id : NULL ],
+                    [ "person_id", "s", @$post->person_id ? $post->person_id : NULL ],
+                    [ "image_start_date", "s", @$post->image_start_date ? $post->image_start_date : NULL ],
+                    [ "image_end_date", "s", @$post->image_end_date ? $post->image_end_date : NULL ],
                     [ "image_link", "s", @$post->image_link ? $post->image_link : NULL ],
-                    [ "image_name", "s", @$post->image_name ? $post->image_name : NULL ],
+                    [ "image_name", "s", @$post->image_name ? utf8_decode($post->image_name) : NULL ],
                     [ "image_description", "s", @$post->image_description ? utf8_decode($post->image_description) : NULL ],
                     [ "image_update", "s", date("Y-m-d H:i:s") ]
                 ],
@@ -221,21 +226,42 @@
             }
 
             $images = Model::getList( $commercial,(Object)[
-                "tables" => [ "[Image]" ],
+                "join" => 1,
+                "tables" => [
+                    "{$conn->commercial->table}.dbo.[Image] I (NOLOCK)",
+                    "LEFT JOIN {$conn->dafel->table}.dbo.Pessoa P (NOLOCK) ON(I.person_id = P.IdPessoa)",
+                ],
                 "fields" => [
-                    "image_id",
-                    "parent_id",
-                    "image_main",
-                    "image_name",
-                    "image_link",
-                    "image_section",
-                    "image_description",
+                    "I.image_id",
+                    "I.parent_id",
+                    "I.image_main",
+                    "I.image_name",
+                    "I.image_link",
+                    "I.image_section",
+                    "I.image_description",
+                    "I.post_id",
+                    "I.person_id",
+                    "image_start_date=CONVERT(VARCHAR(10),image_start_date,126)",
+                    "image_end_date=CONVERT(VARCHAR(10),image_end_date,126)",
+                    "I.image_active",
+                    "person_code=P.CdChamada",
+                    "person_name=P.NmPessoa",
+                    "person_short_name=P.NmCurto"
                 ],
                 "filters" => [
-                    [ "image_section", "s", "=", $post->image_section ],
-                    [ "parent_id", "i", "=", @$post->parent_id ? $post->parent_id : NULL ]
+                    [ "I.image_section", "s", "=", $post->image_section ],
+                    [ "I.parent_id", "i", "=", @$post->parent_id ? $post->parent_id : NULL ],
+                    [ "I.image_active", "s", "=", @$post->image_active ? $post->image_active : NULL ],
+                    @$post->image_start_date ? [
+                        [ "I.image_start_date IS NULL" ],
+                        [ "I.image_start_date", "s", "<=", date("Y-m-d") ]
+                    ] : NULL,
+                    @$post->image_end_date ? [
+                        [ "I.image_end_date IS NULL" ],
+                        [ "I.image_end_date", "s", ">=", date("Y-m-d") ]
+                    ] : NULL,
                 ],
-                "order" => "image_order"
+                "order" => "I.image_order"
             ]);
 
             $root = [];
@@ -244,6 +270,10 @@
                 $uri = URI_FILES . "{$image->image_section}/" . ( @$image->parent_id && !in_array($image->image_section,$root) ? "{$image->parent_id}/" : "" ). "{$image->image_id}_";
                 $image->image_large = "{$uri}large.jpg?{$rand}";
                 $image->image_small = "{$uri}small.jpg?{$rand}";
+                $image->person_image = getImage((Object)[
+                    "image_id" => $image->person_id,
+                    "image_dir" => "person"
+                ]);
             }
 
             Json::get( $headerStatus[200], $images );

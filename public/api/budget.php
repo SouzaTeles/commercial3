@@ -171,6 +171,9 @@
                 ],
                 "filters" => [[ "IdOperacao", "s", "=", $config->budget->operation_id ]]
             ]);
+
+            $budget->budget_value_st = 0;
+            $budget->budget_value_icms = 0;
             Budget::taxes();
 
             if( @$budget->export ){
@@ -210,18 +213,18 @@
                     ["budget_aliquot_discount", "d", $budget->budget_aliquot_discount],
                     ["budget_value_discount", "d", $budget->budget_value_discount],
                     ["budget_value_addition", "d", $budget->budget_value_addition],
-                    ["budget_value_icms", "d", $budget->budget_value_icms],
-                    ["budget_value_st", "d", $budget->budget_value_st],
+                    ["budget_value_icms", "d", $budget->budget_value_icms == "NaN" ? 0 : $budget->budget_value_icms],
+                    ["budget_value_st", "d", $budget->budget_value_st == "NaN" ? 0 : $budget->budget_value_st],
                     ["budget_value_total", "d", $budget->budget_value_total],
-                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
-                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
+                    ["budget_note", "s", @$budget->budget_note ? utf8_decode($budget->budget_note) : NULL],
+                    ["budget_note_document", "s", @$budget->budget_note_document ? utf8_decode($budget->budget_note_document) : NULL],
                     ["budget_payment_icon","s", $payment_icon],
                     ["budget_credit", "s", $budget->budget_credit],
                     ["budget_delivery", "s", $budget->budget_delivery],
                     ["budget_status", "s", @$budget->export ? "L" : "O" ],
                     ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
                     ["budget_update", "s", $date],
-                    ["budget_cost", "d", @$budget->budget_cost ? $budget->budget_cost : 0]
+                    ["budget_cost", "d", @$budget->budget_cost && $budget->budget_cost != "NaN" ? $budget->budget_cost : 0]
                 ],
                 "filters" => [[ "budget_id", "i", "=", $budget_id ]]
             ]);
@@ -512,11 +515,11 @@
                     ["budget_aliquot_discount", "d", $budget->budget_aliquot_discount],
                     ["budget_value_discount", "d", $budget->budget_value_discount],
                     ["budget_value_addition", "d", $budget->budget_value_addition],
-                    ["budget_value_icms", "d", $budget->budget_value_icms],
-                    ["budget_value_st", "d", $budget->budget_value_st],
+                    ["budget_value_icms", "d", $budget->budget_value_icms == "NaN" ? 0 : $budget->budget_value_icms],
+                    ["budget_value_st", "d", $budget->budget_value_st == "NaN" ? 0 : $budget->budget_value_st],
                     ["budget_value_total", "d", $budget->budget_value_total],
-                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
-                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
+                    ["budget_note", "s", @$budget->budget_note ? utf8_decode($budget->budget_note) : NULL],
+                    ["budget_note_document", "s", @$budget->budget_note_document ? utf8_decode($budget->budget_note_document) : NULL],
                     ["budget_payment_icon","s",$payment_icon],
                     ["budget_credit", "s", $budget->budget_credit],
                     ["budget_delivery", "s", $budget->budget_delivery],
@@ -526,7 +529,7 @@
                     ["budget_delivery_date", "s", @$budget->budget_delivery_date ? $budget->budget_delivery_date : NULL],
                     ["budget_date", "s", $date],
                     ["clone_id", "i", @$budget->clone_id ? $budget->clone_id : NULL ],
-                    ["budget_cost", "d", @$budget->budget_cost ? $budget->budget_cost : 0 ]
+                    ["budget_cost", "d", @$budget->budget_cost && $budget->budget_cost != "NaN" ? $budget->budget_cost : 0]
                 ]
             ]);
 

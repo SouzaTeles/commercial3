@@ -1222,6 +1222,8 @@ Item = {
                     Budget.budget.budget_value -= item.budget_item_value;
                     Budget.budget.budget_value_total -= item.budget_item_value_total;
                     Budget.budget.budget_value_discount -= item.budget_item_value_discount;
+                    Budget.budget.budget_value_st -= item.budget_item_value_st;
+                    Budget.budget.budget_value_icms -= item.budget_item_value_icms;
                     Budget.budget.budget_cost -= item.budget_item_quantity*item.budget_item_cost;
                     Budget.budget.items.splice(key,1);
                     Item.showList();
@@ -1291,6 +1293,8 @@ Item = {
         Budget.budget.budget_value_total -= item.budget_item_value_total;
         Budget.budget.budget_value_discount -= item.budget_item_value_discount;
         Budget.budget.budget_cost -= item.budget_item_quantity*item.budget_item_cost;
+        Budget.budget.budget_value_st -= item.budget_item_value_st;
+        Budget.budget.budget_value_icms -= item.budget_item_value_icms;
         Budget.budget.items.splice(key,1);
         Item.item = item;
         Item.data2form();
@@ -1510,6 +1514,8 @@ Item = {
                 budget_item_value_unitary: product.prices[0].price_value,
                 budget_item_aliquot_discount: 0,
                 budget_item_value_discount: 0,
+                budget_item_value_st: 0,
+                budget_item_value_icms: 0,
                 budget_item_cost: product.cost ? product.cost.cost_value : 0,
                 budget_item_value_total: product.prices[0].price_value,
                 stock_value: product.stock ? product.stock.stock_value : 0,
@@ -1562,6 +1568,8 @@ Item = {
             budget_item_aliquot_discount: 0,
             budget_item_value_discount: 0,
             budget_item_cost: 0,
+            budget_item_value_st: 0,
+            budget_item_value_icms: 0,
             budget_item_value_total: 0,
             prices: []
         };
@@ -3037,11 +3045,10 @@ Payment = {
         $('#resume-addition').text('R$ ' + global.float2Br(Budget.budget.budget_value_addition));
         $('#resume-total-liquid').text('R$ ' + global.float2Br(Budget.budget.budget_value_total));
         var value_discount = 0;
-        var aliquot_discount = 0;
         $.each(Budget.budget.items,function(key,item){
             value_discount += item.budget_item_value_discount;
-            aliquot_discount += item.budget_item_aliquot_discount;
         });
+        var aliquot_discount = Budget.budget.budget_value > 0 ? parseFloat(((value_discount/Budget.budget.budget_value) * 100).toFixed(2)) : 0;
         $('#resume-discount').text(global.float2Br(aliquot_discount) + '% / R$ ' + global.float2Br(value_discount));
         $('#resume-items').text(Budget.budget.items.length + ' Ite' + (Budget.budget.items.length == 1 ? 'm' : 'ns'));
         $('#payment-credit-value').text('R$ '+global.float2Br(Budget.budget.credit.value));
