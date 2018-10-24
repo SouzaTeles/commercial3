@@ -209,7 +209,7 @@
                     [ "owner_id", "i", $post->owner_id ],
                     [ "urgency_id", "i", $post->urgency_id ],
                     [ "ticket_status", "s", $post->ticket_status ],
-                    [ "ticket_note_text", "s", removeSpecialChar($post->note_text) ],
+                    [ "ticket_note_text", "s", utf8_decode($post->note_text) ],
                     [ "ticket_note_host_ip", "s", @$headers["HostIP"] && $headers["HostIP"] != "null" ? $headers["HostIP"] : NULL ],
                     [ "ticket_note_host_name", "s", @$headers["HostName"] ? $headers["HostName"] : NULL ],
                     [ "ticket_note_host_platform", "s", @$headers["Platform"] ? $headers["Platform"] : NULL ],
@@ -221,7 +221,7 @@
             if( @$post->images ){
                 $post->images = (Object)$post->images;
 
-                $path = PATH_FILES . "email/" . date("Y/F/d");
+                $path = PATH_FILES . "email/" . date("Y/F/d/");
                 if (!is_dir($path)) {
                     mkdir($path, 0755, true);
                 }
