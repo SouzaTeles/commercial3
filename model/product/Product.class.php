@@ -28,6 +28,7 @@
             $this->product_cfop = @$data->product_cfop ? $data->product_cfop : NULL;
             $this->product_cfop_extra = @$data->product_cfop_extra ? $data->product_cfop_extra : NULL;
             $this->product_cost = @$data->product_cost ? (float)$data->product_cost : NULL;
+            $this->product_classfication = @$data->product_classfication ? $data->product_classfication : NULL;
 
             $this->image = getImage((Object)[
                 "image_id" => $data->product_id,
@@ -154,7 +155,7 @@
                     "order" => "DtReferencia DESC"
                 ]);
 
-                if( @$cost ){
+                if( @$cost && @$cost->VlCusto ){
                     $this->cost->cost_value = (float)number_format($cost->VlCusto,2,".","");
                     $this->cost->cost_date = $cost->DtReferencia;
                 }
