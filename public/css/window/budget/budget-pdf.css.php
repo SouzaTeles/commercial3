@@ -175,7 +175,7 @@ th, td
     width: 50%;
 }
 
-button.btn
+#button-pdf
 {
     right: 20px;
     width: 56px;
