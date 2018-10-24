@@ -72,6 +72,7 @@ ProductImage = {
                         },
                         dataType: 'json'
                     }, function(data) {
+                        console.log(data);
                       global.modal({
                           icon: 'fa-warning',
                           title: 'Atenção',
@@ -87,6 +88,8 @@ ProductImage = {
                            // $('#modal-1-button-1').focus();
                         }
                       });
+
+                      data.code == 200 ? Registration.beforePost($('#registration_product_group_code').val()) : null;
                     });
                     break;
             }
@@ -400,7 +403,9 @@ Registration = {
                     break;
                 case 'G':
                     $('.product-check').each(function(key, item){
-                      Registration.list.push($(this).closest(".product-check").attr("data-id"));
+                      if($(this).closest(".product-check").prop("checked")){
+                          Registration.list.push($(this).closest(".product-check").attr("data-id"));
+                      }
                     });
                     Registration.modGroup = false;
                     ProductImage.up(Registration.imagem);
