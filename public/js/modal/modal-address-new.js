@@ -78,7 +78,7 @@ ModalAddressNew = {
         },function(){
             ModalAddressNew.address.city_name = ModalAddressNew.address.city_name.split(' - ')[0];
             Person.person.address[ModalAddressNew.address.key] = ModalAddressNew.address;
-            if( Address.delivery.address_code == ModalAddressNew.address.address_code ){
+            if( Address.delivery && Address.delivery.address_code == ModalAddressNew.address.address_code ){
                 Address.delivery = ModalAddressNew.address;
                 Address.showDelivery();
             }

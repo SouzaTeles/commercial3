@@ -102,9 +102,32 @@
 
                 $oldContacts = [];
                 $IdPessoaEndereco_Contato = NULL;
-                foreach( $dataContacts as $item ){
-                    $oldContacts[] = $item->IdTipoContato;
-                    $IdPessoaEndereco_Contato = $item->IdPessoaEndereco_Contato;
+
+                if( @$dataContacts ){
+                    foreach( $dataContacts as $item ){
+                        $oldContacts[] = $item->IdTipoContato;
+                        $IdPessoaEndereco_Contato = $item->IdPessoaEndereco_Contato;
+                    }
+                } else{
+                    $personAddress = (Object)[
+                        "IdPessoaEndereco_Contato" => Model::nextCode($dafel,(Object)[
+                            "table" => "PessoaEndereco_Contato",
+                            "field" => "IdPessoaEndereco_Contato",
+                            "increment" => "S",
+                            "base36encode" => 1
+                        ])
+                    ];
+                    $IdPessoaEndereco_Contato = $personAddress->IdPessoaEndereco_Contato;
+                    Model::insert($dafel,(Object)[
+                        "table" => "PessoaEndereco_Contato",
+                        "fields" => [
+                            [ "IdPessoaEndereco_Contato", "s", $IdPessoaEndereco_Contato ],
+                            [ "IdPessoa", "s", $person->IdPessoa ],
+                            [ "CdEndereco", "s", $post->address_code ],
+                            [ "DsContato", "s", substr($person->NmPessoa,0,50) ],
+                            [ "StContatoPrincipal", "s", "S" ]
+                        ]
+                    ]);
                 }
 
                 foreach( $post->contacts as $contact ){
@@ -153,7 +176,7 @@
                 "parent_id" => $person->IdPessoa
             ]);
 
-            Json::get( $headerStatus[200] );
+            Json::get($headerStatus[200]);
             
         break;
 
