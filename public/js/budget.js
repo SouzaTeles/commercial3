@@ -332,7 +332,7 @@ Budget = {
                 Budget[$(this).attr('data-action')]($(this).attr('data-key'),$(this).attr('data-id'));
             });
             $table.find('[data-toggle="tooltip"]').tooltip({container:'body'});
-            Budget.total();
+            //Budget.total();
         });
         global.mask();
     },
@@ -459,13 +459,16 @@ Budget = {
     },
     showList: function(){
         Budget.table.clear();
+        var count = 0, total = 0;
         $.each( Budget.budgets, function(key, budget){
             budget.status = budget.budget.status == 'O' ? 'B' : (budget.budget.type + (budget.budget.status == 'B' ? 'B' : ''));
             if(
                 (!Budget.filters.status.length || Budget.filters.status.indexOf(budget.status) != -1) &&
                 (!Budget.filters.delivery.length || Budget.filters.delivery.indexOf(budget.budget.delivery) != -1)
             ){
+                count ++;
                 budget.key = key;
+                total += Budget.budgets[key].budget.value_total;
                 var type = Budget.type[budget.budget.status == 'O' ? 'B' : budget.budget.type];
                 var status = Budget.status[budget.budget.status];
                 var delivery = Budget.delivery[budget.budget.delivery];
@@ -498,6 +501,9 @@ Budget = {
             }
         });
         Budget.table.draw();
+        $('footer div[data-label="budgets-count"]').html('<i class="fa fa-files-o"></i> ' + count);
+        $('footer div[data-label="budgets-total"]').html('<i class="fa fa-money"></i> R$ ' + global.float2Br(total));
+        $('footer div[data-label="budgets-average"]').html('<i class="fa fa-bar-chart"></i> R$ ' + global.float2Br(total/(count||1)));
     },
     total: function(){
         var count = 0, total = 0;
