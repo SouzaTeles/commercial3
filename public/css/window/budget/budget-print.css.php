@@ -192,7 +192,7 @@ th, td
     width: 50%;
 }
 
-button.btn
+#button-print
 {
     right: 20px;
     width: 56px;
