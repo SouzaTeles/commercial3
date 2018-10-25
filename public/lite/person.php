@@ -59,27 +59,29 @@
                 ]);
             }
 
-            $person->person_address = [];
-            foreach( $person->address as $address ){
-                $person->person_address[] = (Object)[
-                    "person_address_cep" => $address->address_cep,
-                    "person_address_code" => $address->address_code,
-                    "person_address_type" => $address->address_type,
-                    "person_address_public_place" => $address->address_public_place,
-                    "person_address_number" => $address->address_number,
-                    "uf" => (Object)[
-                        "uf_id" => $address->uf_id
-                    ],
-                    "city" => (Object)[
-                        "uf_id" => $address->uf_id,
-                        "city_name" => $address->city_name
-                    ],
-                    "district" => (Object)[
-                        "district_name" => $address->district_name
-                    ]
-                ];
+            if( @$person->address ) {
+                $person->person_address = [];
+                foreach ($person->address as $address) {
+                    $person->person_address[] = (Object)[
+                        "person_address_cep" => $address->address_cep,
+                        "person_address_code" => $address->address_code,
+                        "person_address_type" => $address->address_type,
+                        "person_address_public_place" => $address->address_public_place,
+                        "person_address_number" => $address->address_number,
+                        "uf" => (Object)[
+                            "uf_id" => $address->uf_id
+                        ],
+                        "city" => (Object)[
+                            "uf_id" => $address->uf_id,
+                            "city_name" => $address->city_name
+                        ],
+                        "district" => (Object)[
+                            "district_name" => $address->district_name
+                        ]
+                    ];
+                }
+                unset($person->address);
             }
-            unset($person->address);
 
             Json::get( $headerStatus[200], $person );
 
