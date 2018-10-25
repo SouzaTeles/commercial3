@@ -405,7 +405,7 @@
                     if (file_exists("{$path}.jpeg"))  unlink("{$path}.jpeg");
                     if (file_exists("{$path}.png")) unlink("{$path}.png");
                     if (file_exists("{$path}.webp")) unlink("{$path}.webp");
-                    echo $path;
+                    //echo $path;
 
                     base64toFile(PATH_FILES . "product/", $post->product_id, $post->product_image64);
                     Json::get($headerStatus[200], (Object)[

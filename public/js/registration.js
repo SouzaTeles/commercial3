@@ -24,12 +24,13 @@ ProductImage = {
             switch (Registration.type) {
                 case 'P':
                     console.log(Product);
+                    console.log(Registration.product);
                     console.log("LOG 2");
                     global.post({
                         url: global.uri.uri_public_api + 'product_group.php?action=up',
                         data: {
-                            product_id: Product.product_id,
-                            product_EAN: Product.product_EAN,
+                            product_id: Registration.product.product_id,
+                            product_EAN: Registration.product.product_EAN,
                             product_image64: image,
                             registration_type: Registration.type,
                             product_img_act: Registration.img_act
