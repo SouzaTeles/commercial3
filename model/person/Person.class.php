@@ -64,7 +64,7 @@
             if( @$gets["get_person_address"] || @$_POST["get_person_address"] )
             {
                 $this->address = Model::getList($dafel,(Object)[
-                    "top" => 1,
+                    "top" => LITE ? 99 : 1,
                     "join" => 1,
                     "class" => "PersonAddress",
                     "tables" => [

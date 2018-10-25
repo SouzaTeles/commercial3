@@ -49,7 +49,8 @@
                     "product_weight_net=ISNULL(P.VlPesoLiquido,0)",
                     "product_weight_gross=ISNULL(P.VlPesoBruto,0)",
                     "product_cfop=P.CdCFOP",
-                    "product_cfop_extra=P.CdCFOPEntreUF"
+                    "product_cfop_extra=P.CdCFOPEntreUF",
+                    "product_classification=P.CdClassificacao"
                 ],
                 "filters" => [
                     [ "PE.CdEmpresa", "i", "=", $post->company_id ],

@@ -1,8 +1,8 @@
 $(document).ready(function(){
 
     //Print.getBudget();
+    Print.events();
     global.unLoader();
-    window.print();
 
 });
 
@@ -11,8 +11,11 @@ Print = {
     company: null,
     budget_id: global.url.searchParams.get('budget_id'),
     events: function(){
-        $('button').click(function(){
-            window.print();
+        $('#button-print').click(function(){
+            var win = require('electron').remote.getCurrentWindow();
+            win.webContents.print({
+                printBackground: true
+            });
         });
     },
     getBudget: function(){
