@@ -6,7 +6,8 @@
     session_name("COMMERCIAL3");
     session_start();
     //setcookie(session_name(),session_id(),time()+$lifetime);
-	date_default_timezone_set("America/Sao_Paulo");
+	//date_default_timezone_set("America/Sao_Paulo");
+    date_default_timezone_set("America/Araguaina");
 
     include "config.php";
     include "func.php";
