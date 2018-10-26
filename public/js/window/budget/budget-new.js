@@ -1425,6 +1425,10 @@ Item = {
             if (keycode == '13'){
                 if( $(this).val().length ){
                     var budget_item_value_discount = global.br2Float($(this).val());
+                    if( budget_item_value_discount == Item.item.budget_item_value_discount ){
+                        $('#button-budget-item-add').focus();
+                        return;
+                    }
                     var budget_item_aliquot_discount = parseFloat(((budget_item_value_discount/(Item.item.budget_item_quantity*Item.item.budget_item_value_unitary))*100).toFixed(4));
                     if( budget_item_aliquot_discount <= Item.item.product_discount || budget_item_aliquot_discount == Item.item.budget_item_aliquot_discount ){
                         $(this).attr('data-value',budget_item_value_discount);
@@ -1692,8 +1696,7 @@ Item = {
         $('.panel-items .profit').html('Lucro Bruto: <b>R$ ' + global.float2Br(Budget.budget.budget_value_total-Budget.budget.budget_cost) + '</b>');
         $('.panel-items .profit2').html('Margem: <b>' + global.float2Br(Budget.budget.budget_cost ? (((Budget.budget.budget_value_total/Budget.budget.budget_cost)*100)-100).toFixed(2) : 0) + '%</b>');
         $('.panel-items .total').html('Valor Total: <b>R$ ' + global.float2Br(Budget.budget.budget_value_total) + '</b>');
-
-        Budget.budget.budget_cost_idne = 'idne0'
+        Budget.budget.budget_cost_idne = 'idne0';
         if( !!Budget.budget.budget_cost ) {
             Budget.budget.budget_cost_margin = parseFloat(((100 * Budget.budget.budget_cost) / Budget.budget.budget_value_total).toFixed(2));
             Budget.budget.budget_cost_profit = parseFloat(Budget.budget.budget_cost ? (((Budget.budget.budget_value_total/Budget.budget.budget_cost)*100)-100).toFixed(2) : 0);
@@ -1704,8 +1707,7 @@ Item = {
             else Budget.budget.budget_cost_idne = 'idne5';
         }
         $('footer .idne').html('<i class="fa fa-stop ' + Budget.budget.budget_cost_idne + '"></i>');
-
-        Payment.total();
+        Payment.recalculate();
     }
 };
 
