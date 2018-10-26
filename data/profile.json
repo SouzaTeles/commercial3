@@ -319,7 +319,7 @@
 		"name": "Cadastro",
 		"access": {
 			"name": "Visualiza",
-			"value": "S",
+			"value": "N",
 			"data_type": "bool"
 		}
 	},
