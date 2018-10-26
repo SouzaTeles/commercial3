@@ -574,8 +574,8 @@
                     [ "StDocumentoAuxVenda", "s", $davParams->status ],
                     [ "IdUsuario", "s", $login->external_id ],
                     [ "IdPrazo", "s", @$budget->term_id ? $budget->term_id  : NULL ],
-                    [ "AlDesconto", "d", number_format($budget->budget_aliquot_discount, 4, '.', '' ) ],
-                    [ "VlDesconto", "d", number_format($budget->budget_value_discount, 2, '.', '' ) ],
+                    [ "AlDesconto", "d", 0 ],
+                    [ "VlDesconto", "d", 0 ],
                     [ "AlAcrescimo", "d", number_format((($budget->budget_value_addition*100)/$budget->budget_value_total), 4, '.', '') ],
                     [ "VlAcrescimo", "d", number_format( $budget->budget_value_addition, 2, '.', '' ) ],
                     [ "VlDocumento", "d", number_format( $budget->budget_value, 2, '.', '' ) ],
@@ -708,8 +708,8 @@
                     ]);
                 }
 
-                $paymentAliquot = number_format(((100 * $payment->budget_payment_value) / $budget->budget_value), 6, '.', '');
-                
+                $paymentAliquot = number_format(((100 * $payment->budget_payment_value) / $budget->budget_value_total), 6, '.', '');
+
                 Model::insert($dafel,(Object)[
                     "table" => "DocumentoAuxVendaPagamento",
                     "fields" => [
@@ -720,7 +720,7 @@
                         [ "IdTipoBaixa", "s", @$nature->IdTipoBaixa ? $nature->IdTipoBaixa : NULL ],
                         [ "AlParcela", "d", $paymentAliquot ],
                         [ "IdNaturezaLancamento", "s", @$payment->nature_id ? $payment->nature_id : NULL ],
-                        [ "StEntrada", "s", @$payment->budget_payment_entry ],
+                        [ "StEntrada", "s", $payment->budget_payment_entry == "Y" ? "S" : "N" ],
                         [ "IdBanco", "s", @$payment->bank_id ? $payment->bank_id : NULL ],
                         [ "IdAgencia", "s", @$payment->agency_id ? $payment->agency_id : NULL ],
                         [ "NrAgencia", "s", @$payment->agency_code ? substr($payment->agency_code,0,10) : NULL ],
