@@ -162,7 +162,7 @@
             $image = Model::get( $commercial,(Object)[
                 "tables" => [ "[Image]" ],
                 "fields" => [ "image_id", "image_section" ],
-                "filters" => [[ "image_id", "i", "=", $post->image_id ]]
+                "filters" => [[ "image_id", "s", "=", $post->image_id ]]
             ]);
 
             if( @$image ){
