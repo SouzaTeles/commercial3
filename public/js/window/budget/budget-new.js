@@ -1414,6 +1414,7 @@ Item = {
                         });
                     }
                 } else {
+                    Item.discountAliquot(0);
                     $('#budget_item_value_discount').focus();
                 }
             }
@@ -1441,6 +1442,7 @@ Item = {
                         });
                     }
                 } else {
+                    Item.discountAliquot(0);
                     $('#button-budget-item-add').focus();
                 }
             }
