@@ -25,6 +25,7 @@
             }
 
             $date = date("Y-m-d H:i:s");
+            $post->message_text = strip_tags($post->message_text);
             $message_id = (int)Model::insert($commercial,(Object)[
                 "table" => "[Message]",
                 "fields" => [
@@ -32,7 +33,7 @@
                     ["from_id", "s", $login->user_id],
                     ["message_status", "s", "O"],
                     ["message_type", "s", $post->message_type],
-                    ["message_text", "s", $post->message_text],
+                    ["message_text", "s", utf8_decode($post->message_text)],
                     ["message_date", "s", $date],
                 ]
             ]);
@@ -62,9 +63,10 @@
                     "message_date=(SELECT TOP 1 M3.message_date FROM [Message] M3 WHERE ((M3.from_id={$login->user_id} AND M3.to_id=U.user_id) OR (M3.to_id={$login->user_id} AND M3.from_id=U.user_id)) ORDER BY M3.message_date DESC)",
                 ],
                 "filters" => [
-                    [ "U.user_id", "i", "!=", $login->user_id ]
+                    [ "U.user_id", "i", "!=", $login->user_id ],
+                    [ "U.user_active", "s", "=", "Y" ]
                 ],
-                "order" => "(SELECT TOP 1 M4.message_date FROM [Message] M4 WHERE ((M4.from_id={$login->user_id} AND M4.to_id=U.user_id) OR (M4.to_id={$login->user_id} AND M4.from_id=U.user_id)) ORDER BY M4.message_date DESC) DESC"
+                "order" => "(SELECT TOP 1 M4.message_date FROM [Message] M4 WHERE ((M4.from_id={$login->user_id} AND M4.to_id=U.user_id) OR (M4.to_id={$login->user_id} AND M4.from_id=U.user_id)) ORDER BY M4.message_date DESC) DESC, U.user_timestamp DESC"
             ]);
 
             foreach( $chat as $data ){
