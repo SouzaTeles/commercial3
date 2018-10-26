@@ -103,8 +103,8 @@
                 "fields" => [
                     [ "person_id", "s", $person->IdPessoa ],
                     [ "origin", "s", "budget-person-active" ],
-                    [ "last_credit_value", "d", $person->VlLimiteCredito ],
-                    [ "last_bill_date", "s", $document->DtUltimaCompra ],
+                    [ "last_credit_value", "d", @$person->VlLimiteCredito ? $person->VlLimiteCredito : NULL ],
+                    [ "last_bill_date", "s", @$document->DtUltimaCompra ? $document->DtUltimaCompra : NULL ],
                     [ "credit_log_date", "s", date("Y-m-d H:i:s") ],
                 ]
             ]);
