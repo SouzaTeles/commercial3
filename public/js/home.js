@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
-    Blog.getList();
     Slide.getSlide();
     BirthDays.getList();
+    Blog.getList();
 
     Suggestion.events();
     Suggestion.showCompanies();
@@ -70,6 +70,7 @@ Blog = {
     getList: function(){
         global.post({
             url: global.uri.uri_public_api + 'blog.php?action=getList',
+            unLoad: 1,
             data: { limit: 4 },
             noLoader: 1,
             dataType: 'json'
