@@ -1627,10 +1627,17 @@ Item = {
                     unclose: true,
                     action: function(){
                         $.each(ModalProductSearch.selected,function(key,item){
-                            Budget.budget.items.push(item);
-                            Budget.budget.budget_value += item.budget_item_value;
-                            Budget.budget.budget_value_total += item.budget_item_value_total;
-                            Budget.budget.budget_cost += item.budget_item_quantity * item.budget_item_cost;
+                            var allowed = true;
+                            $.each(Budget.budget.items,function(key,item2){
+                                if(item2.product_id == item.product_id) allowed = false;
+                            });
+                            if( allowed ) {
+                                item.budget_item_key = Budget.budget.items.length;
+                                Budget.budget.items.push(item);
+                                Budget.budget.budget_value += item.budget_item_value;
+                                Budget.budget.budget_value_total += item.budget_item_value_total;
+                                Budget.budget.budget_cost += item.budget_item_quantity * item.budget_item_cost;
+                            }
                         });
                         Item.init();
                         Item.total();

@@ -29,7 +29,7 @@ ModalProductSearchSelected = {
             $('#modal-table-products-selected').find('button').click(function(){
                 ModalProductSearch.selected.splice($(this).attr('data-key'),1);
                 ModalProductSearchSelected.showList();
-                ModalProductSearch.selected();
+                ModalProductSearch.select();
             });
             global.mask();
         });

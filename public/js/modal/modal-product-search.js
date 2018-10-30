@@ -1,9 +1,13 @@
 $(document).ready(function(){
+    $.each(Budget.budget.items,function(k,item){
+        ModalProductSearch.deny.push(item.product_id);
+    });
     ModalProductSearch.events();
     ModalProductSearch.table.draw();
 });
 
 ModalProductSearch = {
+    deny: [],
     products: [],
     selected: [],
     table: global.table({
@@ -20,6 +24,7 @@ ModalProductSearch = {
             $('#modal-product-search').modal('hide');
         } else {
             ModalProductSearch.showSelected();
+            ModalProductSearch.select();
         }
     },
     events: function(){
@@ -153,18 +158,42 @@ ModalProductSearch = {
             ]).node();
             if( product.product_active == 'Y' ){
                 $(row).on('dblclick',function(){
-                    ModalProductSearch.get(key,function(){
-                        ModalProductSearch.add();
-                    });
+                    if( $(this).find('input').prop('checked') ){
+                        var del = -1;
+                        var find = $(this).find('input').attr('data-id');
+                        $.each(ModalProductSearch.selected,function(k,item){
+                            if( item.product_id == find ) del = k;
+                        });
+                        ModalProductSearch.selected.splice(del,1);
+                        ModalProductSearch.select();
+                    } else {
+                        if(ModalProductSearch.deny.indexOf(ModalProductSearch.products[key].product_id) != -1){
+                            global.validateMessage('O produto já foi adicionado ao orçamento.');
+                        } else {
+                            ModalProductSearch.get(key, function(){
+                                ModalProductSearch.add();
+                            });
+                        }
+                    }
                 });
                 $(row).find('input').on('change',function(){
                     if( this.checked ) {
-                        ModalProductSearch.get(key, function () {
-                            ModalProductSearch.showSelected();
-                            ModalProductSearch.select();
-                        });
+                        if(ModalProductSearch.deny.indexOf(ModalProductSearch.products[key].product_id) != -1){
+                            this.checked = false;
+                            global.validateMessage('O produto já foi adicionado ao orçamento.');
+                        } else{
+                            ModalProductSearch.get(key, function(){
+                                ModalProductSearch.showSelected();
+                                ModalProductSearch.select();
+                            });
+                        }
                     } else {
-                        ModalProductSearch.selected.splice(1,key);
+                        var del = -1;
+                        var find = $(this).find('input').attr('data-id');
+                        $.each(ModalProductSearch.selected,function(k,item){
+                            if(item.product_id == find) del = k;
+                        });
+                        ModalProductSearch.selected.splice(del,1);
                         ModalProductSearch.select();
                     }
                 });

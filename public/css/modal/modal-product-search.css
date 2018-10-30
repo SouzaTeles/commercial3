@@ -39,7 +39,7 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url('../../../../images/empty-image.png');
+    background-image: url('../../images/empty-image.png');
 }
 
 .modal-product-search .legend
