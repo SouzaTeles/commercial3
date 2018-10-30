@@ -2,11 +2,13 @@
 
 	error_reporting(E_ALL);
     ini_set('memory_limit', '-1');
-    //$lifetime=1800;
+
     session_name("COMMERCIAL3");
     session_start();
-    //setcookie(session_name(),session_id(),time()+$lifetime);
-	//date_default_timezone_set("America/Sao_Paulo");
+
+    //setcookie(session_name(),session_id(),time()+3600);
+
+    //date_default_timezone_set("America/Sao_Paulo");
     date_default_timezone_set("America/Araguaina");
 
     include "config.php";
@@ -56,6 +58,7 @@
                 "get_user_profile_access" => 1
             ]
         ]);
+
         if( @$login ){
             $login->user_current_session = (Object)$_SESSION;
             $login->access = (Object)array_merge(
