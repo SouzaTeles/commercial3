@@ -170,6 +170,11 @@
                     <i class="fa fa-picture-o"></i>Slides
                 </a>
                 {/if}
+                {if $login->access->whatsapp->access->value == 'Y'}
+                <a href="#" data-action="whatsapp" class="general">
+                    <i class="fa fa-whatsapp"></i>WhatsApp Web
+                </a>
+                {/if}
             </div>
         </li>
         {/if}

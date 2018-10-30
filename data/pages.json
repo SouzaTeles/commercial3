@@ -219,5 +219,11 @@
 		"icon": "fa-user",
 		"title": "Usuários",
 		"parent": "config"
+	},
+	"whatsapp": {
+		"key": "whatsapp",
+		"icon": "fa-whatsapp",
+		"title": "Whatsapp Web",
+		"parent": "genereal"
 	}
 }

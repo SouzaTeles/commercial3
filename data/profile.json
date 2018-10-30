@@ -527,5 +527,13 @@
 			"value": "N",
 			"data_type": "bool"
 		}
+	},
+	"whatsapp": {
+		"name": "Whatsapp Web",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
 	}
 }

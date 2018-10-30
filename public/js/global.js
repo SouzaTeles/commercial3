@@ -162,14 +162,20 @@ Commercial = {
             }
         });
         $('.menu li a').click(function(e){
-             if( $(this).prop('href') == '#' ){
-                 e.preventDefault();
-             } else {
-                 global.linkClicked = true;
-                 setTimeout(function(){
-                     global.linkClicked = false;
-                 },1000);
-             }
+            if( $(this).attr('href') == '#' ){
+                e.preventDefault();
+                if( $(this).attr('data-action') == 'whatsapp' ) {
+                    global.window({
+                        width: 800,
+                        url: 'https://web.whatsapp.com/'
+                    });
+                }
+            } else{
+                global.linkClicked = true;
+                setTimeout(function(){
+                    global.linkClicked = false;
+                },1000);
+            }
         });
         $('button[data-action="chat"]').click(function(){
             $('#chat').toggleClass('open');
