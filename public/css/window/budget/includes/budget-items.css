@@ -24,6 +24,7 @@
 {
     right: auto;
     position: fixed;
+    margin-left: -142px;
 }
 
 .ekko-lightbox-nav-overlay a
