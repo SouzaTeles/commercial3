@@ -33,6 +33,11 @@ th, td
     vertical-align: middle;
 }
 
+td
+{
+    font-weight: 600;
+}
+
 .container
 {
     padding: 20px !important;
