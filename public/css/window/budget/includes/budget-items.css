@@ -20,6 +20,12 @@
     background-color: #fff;
 }
 
+.panel-items table tr td .dropdown-menu
+{
+    right: auto;
+    position: fixed;
+}
+
 .ekko-lightbox-nav-overlay a
 {
     color: #333;
@@ -54,12 +60,30 @@
 
 .panel-items table button
 {
-    font-size: 18px;
+    font-size: 14px;
 }
+
+.panel-items table button[data-action="up"],
+.panel-items table button[data-action="down"]
+{
+    right: 4px;
+    font-size: 12px;
+    position: absolute;
+}
+
+.panel-items table button[data-action="up"]
+{
+    top: 4px;
+}
+.panel-items table button[data-action="down"]
+{
+    bottom: 4px;
+}
+
 
 .panel-items table button[data-action="edit"]
 {
-    margin: 2px 4px;
+    margin: 2px;
 }
 
 .panel-items .footer-items div

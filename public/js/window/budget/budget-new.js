@@ -1037,11 +1037,27 @@ Item = {
     },
     table: global.table({
         selector: '#table-budget-items',
-        noControls: [0,7],
+        noControls: [0,8],
         order: [[1,'asc']],
         scrollY: 186,
         scrollCollapse: 1
     }),
+    actions: function(key){
+        return(
+            '<div class="dropdown dropdown-budget dropdown-actions">' +
+                '<button class="btn btn-empty" type="button" data-toggle="dropdown">' +
+                    '<i class="fa fa-ellipsis-v"></i>' +
+                '</button>' +
+                '<ul class="dropdown-menu pull-right">' +
+                    '<li><a data-action="info" data-key="' + key + '" class="dropdown-item" href="#"><i class="fa fa-info txt-orange"></i>Informações</a></li>' +
+                    '<li><a data-action="edit" data-key="' + key + '" class="dropdown-item" href="#"><i class="fa fa-pencil txt-blue"></i>Editar</a></li>' +
+                    '<li><a data-action="del" data-key="' + key + '" class="dropdown-item" href="#"><i class="fa fa-trash-o txt-red-light"></i>Remover</a></li>' +
+                    '<li><a data-action="up" data-key="' + key + '" class="dropdown-item" href="#"><i class="fa fa-chevron-up txt-gray"></i>Subir</a></li>' +
+                    '<li><a data-action="down" data-key="' + key + '" class="dropdown-item" href="#"><i class="fa fa-chevron-down txt-gray"></i>Descer</a></li>' +
+                '</ul>' +
+            '</div>'
+        );
+    },
     add: function(){
         Budget.budget.items.push(Item.item);
         Budget.budget.budget_value += Item.item.budget_item_value;
@@ -1576,7 +1592,8 @@ Item = {
             budget_item_value_st: 0,
             budget_item_value_icms: 0,
             budget_item_value_total: 0,
-            prices: []
+            prices: [],
+            budget_item_key: Budget.budget.items.length
         };
     },
     quantity: function(budget_item_quantity){
@@ -1642,7 +1659,8 @@ Item = {
             item.margin = 0;
             item.profit = 0;
             item.idne = 'idne0';
-            if( !!item.budget_item_cost ) {
+            item.budget_item_key = item.budget_item_key ? item.budget_item_key : key+1;
+            if( !!item.budget_item_cost ){
                 item.margin = parseFloat((100 * (item.budget_item_quantity * item.budget_item_cost) / item.budget_item_value_total).toFixed(2));
                 item.profit = parseFloat((((item.budget_item_value_total/(item.budget_item_quantity * item.budget_item_cost))*100)-100).toFixed(2));
                 if (item.profit < 25) item.idne = 'idne1';
@@ -1653,15 +1671,14 @@ Item = {
             }
             var row = Item.table.row.add([
                 '<div class="budget-product-cover"' + ( !!item.image ? (' data-action="lightbox" data-gallery="gallery" href="' + item.image + '" data-toggle="lightbox" data-footer="' + (item.product_code + ' - ' + item.product_name) + '" data-footer="Léo" style="background-image:url(' + item.image + ')"') : '' ) + '></div>',
+                item.budget_item_key,
                 item.product_code + ' - ' + item.product_name,
                 ( item.unit_type == 'F' ? global.float2Br(item.budget_item_quantity,0,4) : item.budget_item_quantity ) + item.unit_code,
                 global.float2Br(item.budget_item_value_unitary),
                 global.float2Br(item.budget_item_aliquot_discount,2,4),
                 global.float2Br(item.budget_item_value_discount),
                 global.float2Br(item.budget_item_value_total),
-                '<button data-toggle="tooltip" data-action="info" data-title="Informações do item" data-key="' + key + '" class="btn-empty"><i class="fa fa-info-circle txt-orange"></i></button>' +
-                '<button data-toggle="tooltip" data-action="edit" data-title="Editar item" data-key="' + key + '" class="btn-empty"><i class="fa fa-pencil txt-blue"></i></button>' +
-                '<button data-toggle="tooltip" data-action="del" data-title="Remover item" data-key="' + key + '" class="btn-empty"><i class="fa fa-trash-o txt-red-light"></i></button>'
+                Item.actions(key)
             ]).node();
             if( item.budget_item_quantity > item.stock_value ){
                 $(row).addClass('txt-red-light');
@@ -1673,21 +1690,64 @@ Item = {
         });
         Item.table.draw();
         var $table = $('#table-budget-items');
-        $table.find('button[data-action="info"]').unbind('click').click(function(){
+        $table.find('button[data-toggle="dropdown"]').click(function(){
+            var top = $(this)[0].getBoundingClientRect().top;
+            $(this).next().css({
+                'top': top + 18
+            });
+        });
+        $table.find('a[data-action="info"]').click(function(e){
+            e.preventDefault();
             Item.info(Budget.budget.items[$(this).attr('data-key')]);
         });
-        $table.find('button[data-action="edit"]').unbind('click').click(function(){
+        $table.find('a[data-action="edit"]').click(function(e){
+            e.preventDefault();
             Item.beforeEdit($(this).attr('data-key'));
         });
-        $table.find('button[data-action="del"]').unbind('click').click(function(){
+        $table.find('a[data-action="del"]').click(function(e){
+            e.preventDefault();
             Item.del($(this).attr('data-key'));
+        });
+        $table.find('a[data-action="up"]').click(function(e){
+            e.preventDefault();
+            var key2 = -1;
+            var key1 = parseInt($(this).attr('data-key'));
+            var target = Budget.budget.items[key1];
+            if( target.budget_item_key > 1 ){
+                $.each(Budget.budget.items,function(key,item){
+                     if( item.budget_item_key == target.budget_item_key-1 ){
+                         key2 = key;
+                     }
+                });
+                if( key2 > -1 ){
+                    var old = Budget.budget.items[key1].budget_item_key;
+                    Budget.budget.items[key1].budget_item_key = Budget.budget.items[key2].budget_item_key;
+                    Budget.budget.items[key2].budget_item_key = old;
+                    Item.showList();
+                }
+            }
+        });
+        $table.find('a[data-action="down"]').click(function(e){
+            e.preventDefault();
+            var key2 = -1;
+            var key1 = parseInt($(this).attr('data-key'));
+            var target = Budget.budget.items[key1];
+            if( target.budget_item_key < Budget.budget.items.length ){
+                $.each(Budget.budget.items,function(key,item){
+                    if( item.budget_item_key == target.budget_item_key+1 ){
+                        key2 = key;
+                    }
+                });
+                if( key2 > -1 ){
+                    var old = Budget.budget.items[key1].budget_item_key;
+                    Budget.budget.items[key1].budget_item_key = Budget.budget.items[key2].budget_item_key;
+                    Budget.budget.items[key2].budget_item_key = old;
+                    Item.showList();
+                }
+            }
         });
         $table.find('[data-action="lightbox"]').click(function(){
             $(this).ekkoLightbox();
-        });
-        $table.find('button').tooltip({
-            trigger : 'hover',
-            container: 'body'
         });
         $('.panel-tools button[data-action="discount"]').prop('disabled',!Budget.budget.items.length);
     },

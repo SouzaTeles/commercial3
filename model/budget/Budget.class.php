@@ -130,9 +130,11 @@
                         "product_cfop=P.CdCFOP",
                         "product_cfop_extra=P.CdCFOPEntreUF",
                         "unit_code=U.CdSigla",
-                        "unit_type=U.TpUnidade"
+                        "unit_type=U.TpUnidade",
+                        "BI.budget_item_key"
                     ],
-                    "filters" => [[ "BI.budget_id", "i", "=", $data->budget_id ]]
+                    "filters" => [[ "BI.budget_id", "i", "=", $data->budget_id ]],
+                    "order" => "BI.budget_item_key,BI.budget_item_id"
                 ]);
                 if( sizeof($items) ){
                     foreach( $items as $item ){
@@ -157,6 +159,7 @@
                         $item->budget_item_aliquot_discount = (float)$item->budget_item_aliquot_discount;
                         $item->budget_item_cost = (float)$item->budget_item_cost;
                         $item->product_cfop_extra = @$item->product_cfop_extra ? $item->product_cfop_extra : NULL;
+                        $item->budget_item_key = @$item->budget_item_key ? (int)$item->budget_item_key : 1;
                         if( @$gets["get_product_stock"] || @$_POST["get_product_stock"] ){
                             $item->stock_value = 0;
                             $item->stock_date = NULL;
