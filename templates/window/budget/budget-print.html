@@ -1,4 +1,3 @@
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <div class="print-order box-shadow">
     <div class="header">
         <table>
@@ -7,7 +6,7 @@
                     <img id="company-logo" src="{$company->image}" />
                 </td>
                 <td class="company">
-                    <b id="company-name">{$budget->company->company_short_name}</b><br/>
+                    <b id="company-name">{if !empty($budget->company->company_short_name)}{$budget->company->company_short_name}{else}{$budget->company->company_name}{/if}</b><br/>
                     <b id="company-address">
                         {$budget->company->address->address_type}
                         {$budget->company->address->address_public_place}<br/>
@@ -25,7 +24,7 @@
                     {/if}
                     <br/>
                     <b id="budget-date">Data: {$budget->budget_date|date_format:'%d/%m/%Y'}</b><br/>
-                    <b id="budget-code">Orçamento n°: {$budget->budget_code}</b><br/>
+                    <b id="budget-code">Orçamento: {$budget->budget_code}</b><br/>
                     <b id="seller-name">Vendedor: {if !empty($budget->seller->seller_short_name)}{$budget->seller->seller_short_name}{else}{$budget->seller->seller_name}{/if}</b>
                 </td>
             </tr>
