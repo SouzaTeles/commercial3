@@ -15,6 +15,14 @@ ModalBudgetDiscount = {
         });
     },
     discountAuthorization: function(){
+        if(ModalBudgetDiscount.aliquot_discount == 0){
+            $('#modal-budget-discount').modal('hide');
+            Budget.discountAliquot({
+                value_discount: ModalBudgetDiscount.value_discount,
+                aliquot_discount: ModalBudgetDiscount.aliquot_discount
+            });
+            return;
+        }
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-general-discount-authorization',
             data: { aliquot_discount: ModalBudgetDiscount.aliquot_discount },
