@@ -184,6 +184,10 @@
                          //       ["IdGrupoProduto", "s", "=", "{$group->IdGrupoProduto}"]
                          //   ]
                          // ]);
+                         /*
+                          *
+                          *
+
                          $productList = Model::getlist($dafel,(Object)[
                              "join" => 1,
                              "tables" => [
@@ -201,6 +205,33 @@
                                  ["cp.StCodigoPrincipal", "s", "=", "S"]
                              ]
                          ]);
+                         *
+                         * 
+                         * 
+                         */
+                        $productList = Model::getList($dafel, (Object)[
+                            "join" => 2,
+                            "tables" => [
+                              "Produto P",
+                              "inner join CodigoProduto CP (nolock) on (P.IdProduto = Cp.IdProduto AND CP.StCodigoPrincipal = 'S')",
+                              "LEFT JOIN CodigoProduto CP2 ON (CP2.IdProduto = p.IdProduto
+                              AND CP2.IdTipoCodigoProduto = '{$EAN}')"
+                            ],
+                            "fields" => [
+                              "product_code = CP.CdChamada",
+                              "product_name = P.NmProduto",
+                              "product_id = P.IdProduto",
+                              "product_classification = P.CdClassificacao",
+                              "product_EAN = MIN(CP2.cdchamada)"
+                            ],
+                            "filters" => [
+                                ["p.IdGrupoProduto", "s", "=", "{$group->IdGrupoProduto}"]
+                            ],
+                            "group" => "P.IdProduto,
+                                        P.NmProduto,
+                                        Cp.CdChamada,
+                                        P.CdClassificacao"
+                        ]);
                          // var_dump($productList);
                         // var_dump($productList);
                         $ret = [];
@@ -214,7 +245,8 @@
                               "product_id" => $product->product_id,
                               "product_code" => $product->product_code,
                               "product_name" => $product->product_name,
-                              "product_image" => $image
+                              "product_image" => $image,
+                              "product_EAN" =>$product->product_EAN
                             ];
                             // var_dump($ret);
                         }
@@ -373,6 +405,7 @@
                     if (file_exists("{$path}.jpeg"))  unlink("{$path}.jpeg");
                     if (file_exists("{$path}.png")) unlink("{$path}.png");
                     if (file_exists("{$path}.webp")) unlink("{$path}.webp");
+                    //echo $path;
 
                     base64toFile(PATH_FILES . "product/", $post->product_id, $post->product_image64);
                     Json::get($headerStatus[200], (Object)[
@@ -480,7 +513,7 @@
                         if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
                         if (file_exists("{$path}.png")) unlink("{$path}.png");
                         if (file_exists("{$path}.webp")) unlink("{$path}.webp");
-                        base64toFile(PATH_FILES . "\product",$product, $post->product_image64);
+                        base64toFile(PATH_FILES . "product",$product, $post->product_image64);
                       }
                     } catch(Exception $e) {
                       Json::get($headerStatus[417], (Object)[

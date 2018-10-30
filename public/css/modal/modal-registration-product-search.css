@@ -1,0 +1,80 @@
+.modal.modal-big.modal-product-search
+{
+    top: 88px;
+}
+
+.modal.modal-big.modal-product-search .modal-dialog
+{
+    width: 980px;
+}
+
+.modal.modal-big.modal-product-search .modal-body
+{
+    max-height: 522px;
+}
+
+
+.modal-product-search .dataTables_scrollHeadInner,
+.modal-product-search .dataTables_scrollHeadInner .dataTable
+{
+    min-width: 100%;
+}
+
+.modal-product-search .dataTables_scrollBody tr td.dataTables_empty
+{
+    height: 304px;
+}
+
+.modal-product-search table tr td input
+{
+    width: 20px;
+    height: 20px;
+}
+
+.modal-product-search table tr td .product-search-cover
+{
+    width: 38px;
+    height: 38px;
+    margin: 0 auto;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('../../../../images/empty-image.png');
+}
+
+.modal-product-search .legend
+{
+    width: 100%;
+    padding: 12px;
+    display: table;
+    border: 1px solid #ddd;
+}
+
+.modal-product-search .legend > div
+{
+    float: left;
+    margin-right: 10px;
+}
+
+.modal-product-search .legend button
+{
+    left: 0;
+    right: 0;
+    width: 138px;
+    margin: 0 auto;
+    position: absolute;
+}
+
+@media(max-height:700px) {
+    .modal.modal-big.modal-product-search
+    {
+        top: 20px;
+    }
+    .modal-product-search .dataTables_scrollBody
+    {
+        height: 222px;
+    }
+    .modal-product-search .dataTables_scrollBody tr td.dataTables_empty {
+        height: 172px;
+    }
+}
