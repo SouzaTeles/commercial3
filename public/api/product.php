@@ -50,7 +50,9 @@
                     "product_weight_gross=ISNULL(P.VlPesoBruto,0)",
                     "product_cfop=P.CdCFOP",
                     "product_cfop_extra=P.CdCFOPEntreUF",
-                    "product_classification=P.CdClassificacao"
+                    "product_classification=P.CdClassificacao",
+                    "parent_id=P.IdProdutoOrigem",
+                    "conversion=P.FtConversaoUnidade"
                 ],
                 "filters" => [
                     [ "PE.CdEmpresa", "i", "=", $post->company_id ],

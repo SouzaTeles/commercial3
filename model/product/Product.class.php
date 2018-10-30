@@ -149,7 +149,7 @@
                         "DtReferencia=CONVERT(VARCHAR(10),DtReferencia,126)"
                     ],
                     "filters" => [
-                        [ "IdProduto", "s", "=", $data->product_id ],
+                        [ "IdProduto", "s", "=", @$data->parent_id ? $data->parent_id : $data->product_id ],
                         [ "CdEmpresa", "i", "=", $post->company_id ]
                     ],
                     "order" => "DtReferencia DESC"
@@ -158,6 +158,9 @@
                 if( @$cost && @$cost->VlCusto ){
                     $this->cost->cost_value = (float)number_format($cost->VlCusto,2,".","");
                     $this->cost->cost_date = $cost->DtReferencia;
+                    if( @$data->parent_id && @$data->conversion ){
+                        $this->cost->cost_value = $this->cost->cost_value * 1/(float)$data->conversion;
+                    }
                 }
             }
         }
