@@ -20,7 +20,7 @@
             ]
         ]);
 
-        $pathLog =  PATH_LOG . "post/" . date("Y/F/d") . "/" . SCRIPT_NAME . "/" . ( @$get->action ? "{$get->action}/" : "" );
+        $pathLog =  PATH_LOG . "post/" . date("Y/F/d") . "/" . (@$params->script ? $params->script : SCRIPT_NAME) . "/" . ( @$get->action ? "{$get->action}/" : "" );
         if( !is_dir($pathLog) ) mkdir($pathLog, 0755, true);
         file_put_contents("{$pathLog}{$log_id}.json" , json_encode((Object)[
             "post" => $post,

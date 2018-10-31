@@ -852,7 +852,7 @@
             if( $order->StPedidoDeVenda == "T" ){
                 headerResponse((Object)[
                     "code" => 417,
-                    "message" => "Não será possivel editar o pedido, pois o mesmo está sendo faturado."
+                    "message" => "Não será possivel recuperar o pedido, pois o mesmo já foi faturado."
                 ]);
             }
 
@@ -972,7 +972,14 @@
 
             Model::update($commercial,(Object)[
                 "table" => "Budget",
-                "fields" => [[ "budget_status", "s", "O" ]],
+                "fields" => [
+                    [ "budget_status", "s", "O" ],
+                    [ "document_id", "i", NULL ],
+                    [ "document_type", "i", NULL ],
+                    [ "document_code", "i", NULL ],
+                    [ "document_canceled", "i", NULL ],
+                    [ "budget_update", "s", date("Y-m-d H:i:s") ],
+                ],
                 "filters" => [[ "budget_id", "s", "=", $budget->budget_id ]]
             ]);
 

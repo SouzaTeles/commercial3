@@ -149,54 +149,50 @@
 
         public static function Synchronize()
         {
-            GLOBAL $commercial, $dafel, $config, $post, $get;
+            GLOBAL $conn, $commercial, $dafel, $config, $post, $get;
 
             $data = Model::getList($dafel,(Object)[
-                "top" => 100,
-                "tables" => [ "Documento D" ],
+                "join" => 1,
+                "tables" => [
+                    "{$conn->dafel->table}.dbo.Documento D (NoLock)",
+                    "INNER JOIN {$conn->commercial->table}.dbo.Budget B (NoLock) ON(B.external_id = (SELECT PVI_DI.IdPedidodeVenda FROM {$conn->dafel->table}.dbo.PedidoDeVendaItem_DocumentoItem PVI_DI WHERE PVI_DI.IdDocumentoItem = (SELECT TOP 1 DI.IdDocumentoItem FROM {$conn->dafel->table}.dbo.DocumentoItem DI WHERE DI.IdDocumento = D.IdDocumento)))"
+                ],
                 "fields" => [
+                    "B.budget_id",
                     "D.IdDocumento",
                     "D.NrDocumento",
                     "D.CdEspecie",
                     "D.StDocumentoCancelado",
                     "D.IdEntidadeOrigem",
-                    "IdPedidoDeVenda=(SELECT PVI_DI.IdPedidodeVenda FROM PedidoDeVendaItem_DocumentoItem PVI_DI WHERE PVI_DI.IdDocumentoItem = (SELECT TOP 1 DI.IdDocumentoItem FROM DocumentoItem DI WHERE DI.IdDocumento = D.IdDocumento))"
                 ],
-                "filters" => [[ "D.IdDocumento", "s", ">", $config->budget->last_document ]],
-                "order" => "D.IdDocumento ASC"
+                "filters" => [
+                    [ "B.budget_status", "s", "=", "L" ],
+                    [ "D.StDocumentoCancelado", "s", "=", "N" ],
+                    [ "D.IdDocumento", "s", ">", $config->budget->last_document ]
+                ]
             ]);
 
             if( @$data ){
                 $IdDocumento = NULL;
                 foreach ($data as $item) {
-                    $IdPedidoDeVenda = @$item->IdPedidoDeVenda ? $item->IdPedidoDeVenda : $item->IdEntidadeOrigem;
-                    if( @$IdPedidoDeVenda ){
-                        $budget = Model::get($commercial,(Object)[
-                            "tables" => [ "Budget" ],
-                            "fields" => [ "budget_id" ],
-                            "filters" => [[ "external_id", "s", "=", $IdPedidoDeVenda ]]
-                        ]);
-                        if( @$budget ){
-                            Model::update($commercial, (Object)[
-                                "table" => "Budget",
-                                "fields" => [
-                                    ["document_id", "s", $item->IdDocumento],
-                                    ["document_type", "s", $item->CdEspecie],
-                                    ["document_code", "s", $item->NrDocumento],
-                                    ["document_canceled", "s", $item->StDocumentoCancelado == "S" ? "Y" : "N"],
-                                    ["budget_status", "s", "B"]
-                                ],
-                                "filters" => [["budget_id", "i", "=", $budget->budget_id]]
-                            ]);
-                            $post = $item;
-                            $get->action = "synchronize";
-                            postLog((Object)[
-                                "user_id" => 1,
-                                "script" => "budget",
-                                "parent_id" => $budget->budget_id
-                            ]);
-                        }
-                    }
+                    Model::update($commercial, (Object)[
+                        "table" => "Budget",
+                        "fields" => [
+                            ["document_id", "s", $item->IdDocumento],
+                            ["document_type", "s", $item->CdEspecie],
+                            ["document_code", "s", $item->NrDocumento],
+                            ["document_canceled", "s", $item->StDocumentoCancelado == "S" ? "Y" : "N"],
+                            ["budget_status", "s", "B"]
+                        ],
+                        "filters" => [["budget_id", "i", "=", $item->budget_id]]
+                    ]);
+                    $post = $item;
+                    $get->action = "synchronize";
+                    postLog((Object)[
+                        "user_id" => 1,
+                        "script" => "budget",
+                        "parent_id" => $item->budget_id
+                    ]);
                     $IdDocumento = $item->IdDocumento;
                 }
                 if( @$IdDocumento ){
@@ -207,6 +203,49 @@
                             [ "config_date", "s", date("Y-m-d H:i:s") ]
                         ],
                         "filters" => [[ "config_id", "i", "=", 25 ]]
+                    ]);
+                }
+            }
+
+            $date = date("Y-m-d", strtotime(date("Y-m-d", strtotime(date("Y-m-d"))) . " - 1 day"));
+            $data = Model::getList($dafel,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "{$conn->dafel->table}.dbo.Documento D (NoLock)",
+                    "INNER JOIN {$conn->commercial->table}.dbo.Budget B (NoLock) ON(B.external_id = (SELECT PVI_DI.IdPedidodeVenda FROM {$conn->dafel->table}.dbo.PedidoDeVendaItem_DocumentoItem PVI_DI WHERE PVI_DI.IdDocumentoItem = (SELECT TOP 1 DI.IdDocumentoItem FROM {$conn->dafel->table}.dbo.DocumentoItem DI WHERE DI.IdDocumento = D.IdDocumento)))"
+                ],
+                "fields" => [
+                    "B.budget_id",
+                    "D.IdDocumento",
+                    "D.NrDocumento",
+                    "D.CdEspecie",
+                    "D.StDocumentoCancelado",
+                    "D.DtSaida",
+                    "D.DtEmissao"
+                ],
+                "filters" => [
+                    [ "D.StDocumentoCancelado", "s", "=", "S" ],
+                    [ "D.DtEmissao", "s", ">=", $date ],
+                    [ "B.budget_status", "s", "=", "B" ]
+                ]
+            ]);
+
+            if( @$data ){
+                foreach( $data as $item ){
+                    Model::update($commercial, (Object)[
+                        "table" => "Budget",
+                        "fields" => [
+                            ["budget_status", "s", "C"],
+                            ["document_canceled", "s", "Y"]
+                        ],
+                        "filters" => [["budget_id", "i", "=", $item->budget_id]]
+                    ]);
+                    $post = $item;
+                    $get->action = "synchronize";
+                    postLog((Object)[
+                        "user_id" => 1,
+                        "script" => "budget",
+                        "parent_id" => $item->budget_id
                     ]);
                 }
             }

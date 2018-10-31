@@ -69,6 +69,10 @@ Budget = {
         'B': {
             icon: 'cloud-download',
             title: 'Faturado'
+        },
+        'C': {
+            icon: 'cloud-download',
+            title: 'Cancelado'
         }
     },
     delivery: {
@@ -332,7 +336,6 @@ Budget = {
                 Budget[$(this).attr('data-action')]($(this).attr('data-key'),$(this).attr('data-id'));
             });
             $table.find('[data-toggle="tooltip"]').tooltip({container:'body'});
-            //Budget.total();
         });
         global.mask();
     },
@@ -461,7 +464,7 @@ Budget = {
         Budget.table.clear();
         var count = 0, total = 0;
         $.each( Budget.budgets, function(key, budget){
-            budget.status = budget.budget.status == 'O' ? 'B' : (budget.budget.type + (budget.budget.status == 'B' ? 'B' : ''));
+            budget.status = (budget.budget.status == 'C' ? 'C' : (budget.budget.status == 'O' ? 'B' : (budget.budget.type + (budget.budget.status == 'B' ? 'B' : ''))));
             if(
                 (!Budget.filters.status.length || Budget.filters.status.indexOf(budget.status) != -1) &&
                 (!Budget.filters.delivery.length || Budget.filters.delivery.indexOf(budget.budget.delivery) != -1)
@@ -484,10 +487,10 @@ Budget = {
                 }
 
                 var row = Budget.table.row.add([
-                    '<i data-toggle="tooltip" title="' + type.title + '" class="fa fa-' + status.icon + ' txt-' + type.color + '"></i><br/>' + budget.budget.code,
+                    '<i data-toggle="tooltip" title="' + type.title + '" class="fa fa-' + status.icon + ' txt-' + (budget.status != 'C' ? type.color : 'gray') + '"></i><br/>' + budget.budget.code,
                     '<label>' + budget.seller.code + '</label><div class="seller">' + ( budget.seller.short_name || budget.seller.name ) + '</div>',
                     ( budget.budget.status != 'O' && budget.external.code ? budget.external.code : '--' ),
-                    ( budget.document.code || '--' ),
+                    ( budget.budget.status == 'B' || budget.budget.status == 'C' ? budget.document.code : '--' ),
                     '<div class="person-cover"' + ( budget.person.image ? 'style="background-image:url(' + budget.person.image + ')"' : '' ) + '></div><label>' + budget.person.code + '</label><div class="client">' + budget.person.name + '</div>',
                     '<span>' + budget.budget.value_total_order + '</span>R$ ' + global.float2Br(budget.budget.value_total),
                     '<span>' + budget.budget.date + '</span>' + budget.budget.date_formatted,

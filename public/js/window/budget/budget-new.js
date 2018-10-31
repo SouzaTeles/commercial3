@@ -86,7 +86,9 @@ Company = {
                             Budget.billed();
                         } else if( Budget.budget.budget_status == 'L' ){
                             Budget.blocked();
-                        } else {
+                        } else if( Budget.budget.budget_status == 'C' ){
+                            Budget.canceled();
+                        } else{
                             Company.afterGet();
                         }
                     }
@@ -289,6 +291,29 @@ Budget = {
         $('.panel-payment button').prop('disabled',true);
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-blocked',
+            dataType: 'html'
+        },function(html){
+            global.modal({
+                icon: 'fa-info-circle',
+                id: 'modal-budget-recover',
+                class: 'modal-budget-recover',
+                title: 'Aviso',
+                html: html,
+                buttons: [{
+                    icon: 'fa-check',
+                    title: 'Fechar'
+                }]
+            })
+        });
+    },
+    canceled: function(){
+        $('input').prop('disabled',true);
+        $('.panel-items button').not('[data-action="info"]').prop('disabled',true);
+        $('.panel-person button').prop('disabled',true);
+        $('#file-image-person').filestyle('disabled',true);
+        $('.panel-payment button').prop('disabled',true);
+        global.post({
+            url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-canceled',
             dataType: 'html'
         },function(html){
             global.modal({
@@ -796,7 +821,7 @@ Budget = {
         }).prop('disabled',!Budget.budget.budget_id);
         $panel.find('button[data-action="recover"]').click(function(){
             Budget.beforeRecover();
-        }).prop('disabled',Budget.budget.budget_status != 'L');
+        }).prop('disabled',Budget.budget.budget_status == 'O');
         $panel.find('button[data-action="save"]').click(function(){
             $('#button-budget-save').click();
         }).prop('disabled',Budget.budget.budget_status != 'O');
