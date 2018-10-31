@@ -2353,7 +2353,7 @@ Address = {
                         '<div class="address-header">' +
                             'Endereço ' + address.address_code +
                             '<label>selecionado</label>' +
-                            '<button ' + ( main ? 'disabled' : '' ) + ' class="btn btn-empty-gold pull-right" data-action="main" data-toggle="tooltip" title="Principal" data-key="' + key +'"><i class="fa fa-star' + ( main ? '' : '-o' ) + '"></i></button>' +
+                            // '<button ' + ( main ? 'disabled' : '' ) + ' class="btn btn-empty-gold pull-right" data-action="main" data-toggle="tooltip" title="Principal" data-key="' + key +'"><i class="fa fa-star' + ( main ? '' : '-o' ) + '"></i></button>' +
                             '<button class="btn btn-empty-red pull-right" data-action="map" data-toggle="tooltip" title="Ver no Mapa" data-key="' + key +'"><i class="fa fa-map-marker"></i></button>' +
                         '</div>' +
                         '<div class="address-body">' +
