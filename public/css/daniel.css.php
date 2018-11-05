@@ -75,6 +75,11 @@
     background-color: #333;
 }
 
+.daniel #target
+{
+    background-color: #333;
+}
+
 /* --- MODAL -- */
 
 .daniel .modal .modal-content
