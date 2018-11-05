@@ -108,7 +108,9 @@
         font-size: 18px;
     }
 
-    .menu .sub-menu-config {
+    .menu .sub-menu-general,
+    .menu .sub-menu-config
+    {
         top: auto;
         bottom: 100%;
     }

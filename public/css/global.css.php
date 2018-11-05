@@ -4,6 +4,7 @@
 
 html, body
 {
+    min-height: 100%;
     padding: 0 !important;
     background-color: #ddd;
     font-family: 'Oswald', sans-serif;

@@ -24,6 +24,7 @@
     $smarty->assign( "route", $route );
     $smarty->assign( "config", $config );
     $smarty->assign( "colors", $colors );
+    $smarty->assign( "theme", @$_SESSION["theme"] ? $_SESSION["theme"] : "" );
 
     foreach( get_defined_constants(true)["user"] as $constant => $value ){
         $smarty->assign( $constant, $value );

@@ -183,6 +183,7 @@ header .user button
 }
 
 header .user button[data-action="chat"],
+header .user button[data-action="theme"],
 header .user button[data-action="alerts"]
 {
     font-size: 18px;

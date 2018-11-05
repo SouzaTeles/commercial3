@@ -180,6 +180,14 @@ Commercial = {
         $('button[data-action="chat"]').click(function(){
             $('#chat').toggleClass('open');
         });
+        $('button[data-action="theme"]').click(function(){
+            $('html, body').toggleClass('daniel');
+            global.post({
+                url: global.uri.uri_public_api + 'user.php?action=theme',
+                unLoader: 1,
+                dataType: 'json'
+            },function(){})
+        });
         $('#button-ticket').click(function(){
             global.window({
                 width: 800,

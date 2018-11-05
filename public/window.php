@@ -18,6 +18,7 @@
     $smarty->assign( "action", $get->action );
     $smarty->assign( "pages", json_decode(file_get_contents(PATH_DATA."pages.json")) );
     $smarty->assign( "profile", json_decode(file_get_contents(PATH_DATA."profile.json")) );
+    $smarty->assign( "theme", @$_SESSION["theme"] ? $_SESSION["theme"] : "" );
 
     if( $get->module == "budget" && $get->action == "print" && @$get->budget_id ){
         $budget = Model::get($commercial, (Object)[

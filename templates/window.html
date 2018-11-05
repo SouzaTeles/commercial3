@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html class="{$theme}" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>Commercial</title>
         <link rel="SHORTCUT ICON" href="{$URI_PUBLIC}favicon.ico" type="image/x-icon">
@@ -32,9 +32,10 @@
         <link href="{$URI_PUBLIC}css/global.css.php" rel="stylesheet" />
         <link href="{$URI_PUBLIC}css/window.css.php" rel="stylesheet" />
         <link href="{$URI_PUBLIC}css/address.css" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/daniel.css" rel="stylesheet" />
         <link href="{$URI_PUBLIC}css/window/{$module}/{$module}-{$action}.css.php" rel="stylesheet" />
     </head>
-    <body>
+    <body class="{$theme}">
         <div class="overlay"></div>
         <div class="container">
             {include file="{$PATH_TEMPLATES}window/{$module}/{$module}-{$action}.html"}

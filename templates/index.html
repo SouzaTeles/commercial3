@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html class="{$theme}" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>{$config->system->system_name} - {$data->$route->title}</title>
         <link rel="SHORTCUT ICON" href="{$URI_PUBLIC}favicon.ico?{$config->system->system_version}" type="image/x-icon">
@@ -34,9 +34,10 @@
         <link href="{$URI_PUBLIC}css/header.css.php" rel="stylesheet" />
         <link href="{$URI_PUBLIC}css/menu.css.php" rel="stylesheet" />
         <link href="{$URI_PUBLIC}css/global.css.php" rel="stylesheet" />
+        <link href="{$URI_PUBLIC}css/daniel.css.php" rel="stylesheet" />
         <link href="{$URI_PUBLIC}css/{$route}.css.php" rel="stylesheet" />
     </head>
-    <body>
+    <body class="{$theme}">
         <div class="overlay"></div>
         <div class="container {$route}">
             {if $route != 'login'}

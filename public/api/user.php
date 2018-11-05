@@ -429,6 +429,18 @@
 
         break;
 
+        case "theme":
+
+            if( $_SESSION["theme"] != "daniel" ){
+                $_SESSION["theme"] = "daniel";
+            } else {
+                $_SESSION["theme"] = "";
+            }
+
+            Json::get($headerStatus[200]);
+
+        break;
+
 	}
 
 ?>

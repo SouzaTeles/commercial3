@@ -19,6 +19,9 @@
         <button data-action="alerts" class="btn button-header-{if empty($data->$route->parent)}{$data->$route->key}{else}{$data->$route->parent}{/if}">
             <i class="fa fa-bell"></i>
         </button>
+        <button data-action="theme" class="btn button-header-{if empty($data->$route->parent)}{$data->$route->key}{else}{$data->$route->parent}{/if}">
+            <i class="fa fa-paint-brush"></i>
+        </button>
         <div class="user-user">
             <div class="cover"{if !empty($login->image)} style="background-image:url({$login->image})"{/if}></div>
             <div class="info">
