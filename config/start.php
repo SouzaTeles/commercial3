@@ -8,8 +8,8 @@
 
     //setcookie(session_name(),session_id(),time()+3600);
 
-    //date_default_timezone_set("America/Sao_Paulo");
-    date_default_timezone_set("America/Araguaina");
+    date_default_timezone_set("America/Sao_Paulo");
+    //date_default_timezone_set("America/Araguaina");
 
     include "config.php";
     include "func.php";
