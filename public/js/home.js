@@ -120,17 +120,17 @@ BirthDays = {
             var text = '';
             var color = 'txt-gray';
             if( person.days < 0 ){
-                text = 'O seu aniversário já passou, mas ainda da tempo de enviar os parabéns!';
+                text = 'completou mais um ano de vida! Não deixe de parabeniza-lo(a) por esse dia tão especial!';
             } else if( person.days > 0 ){
-                text = 'O seu aniversário está proximo, não esqueça de dar os parabéns!';
+                text = 'vai completar mais um ano de vida em breve! Não deixe de parabeniza-lo(a) por esse dia tão especial!';
             } else{
-                text = 'Hoje é o seu aniversário, aproveite para dar os parabéns!';
+                text = 'completa hoje mais um ano de vida. Não deixe de parabeniza-lo(a) por esse dia tão especial!';
             }
             $(birthdays).append(
                 '<div class="card item' + person.person_active + '">' +
                     '<div class="image box-shadow"' + ( person.image ? 'style="background-image:url(' + person.image + ')"' : '') + '></div>' +
-                    '<div class="name txt-blue">' + person.person_name + '</div>' +
                     '<div class="date txt-red">' + person.person_birthday + '</div>' +
+                    '<div class="name txt-blue">' + person.person_name + '</div>' +
                     '<div class="text">' +text + '</div>' +
                 '</div>'
             );
