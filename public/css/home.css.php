@@ -243,6 +243,117 @@
     margin-top: 30px;
 }
 
+#target
+{
+    height: 250px;
+    padding: 20px;
+    margin: 20px 0;
+    background-color: #fff;
+}
+
+#target .person
+{
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+}
+
+#target .month
+{
+    font-size: 20px;
+}
+
+#target .month .info
+{
+    display: table;
+    font-size: 18px;
+    width: 100%;
+}
+
+#target .month .info label
+{
+    float: right;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.donut-chart
+{
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.donut-chart.chart2
+{
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    background: #666;
+}
+
+.donut-chart.chart2 .slice.one {
+    clip: rect(0 200px 100px 0);
+}
+
+.donut-chart .slice {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.donut-chart.chart2 .slice.two {
+    clip: rect(0 100px 200px 0);
+    -webkit-transform: rotate(327.6deg);
+    transform: rotate(327.6deg);
+    background: #48b2c1;
+}
+
+.donut-chart.chart2 .chart-center {
+    top: 25px;
+    left: 25px;
+    width: 150px;
+    height: 150px;
+    padding: 14px;
+    line-height: 34px;
+    background: #fff;
+}
+
+.donut-chart .chart-center {
+    position: absolute;
+    border-radius: 50%;
+}
+
+.donut-chart .chart-center span{
+    display: block;
+    text-align: center;
+}
+
+.donut-chart .chart-center span:nth-child(1){
+    color: gray;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+.donut-chart .chart-center span:nth-child(2) {
+    font-size: 36px;
+    color: #48b2c1;
+    margin: 8px 0;
+}
+
+.donut-chart .chart-center span:nth-child(3){
+    color: gray;
+    font-size: 16px;
+    line-height: 18px;
+}
+
 @media(max-width:1024px)
 {
     .intranet

@@ -10,7 +10,7 @@ User = {
     users: [],
     table: global.table({
         searching: 1,
-        noControls: [0,5],
+        noControls: [0,7],
         order: [[2, "asc"]],
         selector: '#table-users'
     }),
@@ -119,6 +119,8 @@ User = {
                 '<span>' + user.user_active + '</span><i title="' + ( user.user_active == 'Y' ? 'Ativo' : 'Inativo' ) + '" data-toggle="tooltip" class="fa fa-toggle-' + ( user.user_active == 'Y' ? 'on' : 'off' ) + '"></i>',
                 user.user_name,
                 user.user_profile_name,
+                global.float2Br(user.max_discount)+'%',
+                '<span>' + user.credit_authorization + '</span><i title="' + ( user.credit_authorization == 'Y' ? 'Sim' : 'Não' ) + '" data-toggle="tooltip" class="fa fa-toggle-' + ( user.credit_authorization == 'Y' ? 'on' : 'off' ) + '"></i>',
                 ( user.user_login ? '<span>' + user.user_login + '</span>' + user.user_login_br : '--' ),
                 User.actions(key,user.user_id)
             ]).node();

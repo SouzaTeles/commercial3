@@ -350,7 +350,9 @@
                 "join" => 1,
                 "tables" => [
                     "[User] u",
-                    "inner join [UserProfile] up on(u.user_profile_id = up.user_profile_id)"
+                    "inner join [UserProfile] up on(u.user_profile_id = up.user_profile_id)",
+                    "inner join [UserAccess] ac1 on(ac1.user_id = u.user_id and ac1.user_access_name = 'max_discount')",
+                    "inner join [UserAccess] ac2 on(ac2.user_id = u.user_id and ac2.user_access_name = 'credit_authorization')",
                 ],
                 "fields" => [
                     "u.user_id",
@@ -358,6 +360,8 @@
                     "u.user_active",
                     "u.user_name",
                     "up.user_profile_name",
+                    "max_discount=ac1.user_access_value",
+                    "credit_authorization=ac2.user_access_value",
                     "user_login=FORMAT(u.user_login,'yyyy-MM-dd HH:mm:ss')",
                     "user_login_br=u.user_login"
                 ],

@@ -107,7 +107,6 @@
         $year = $date[0];
         $month = $date[1];
 
-
         if( @$business_days_exception[$year][$month][$params->company_id] ){
             $days = $business_days_exception[$year][$month][$params->company_id]->count;
         } else {

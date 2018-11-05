@@ -19,6 +19,8 @@
 
     $dafel = new MSSQL($conn->dafel);
     $commercial = new MSSQL($conn->commercial);
+    $metas = new MySQL($conn->metas);
+    $compass = new MySQL($conn->compass);
 
     $smarty = new Smarty();
 

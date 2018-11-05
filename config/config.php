@@ -2,9 +2,11 @@
 
     define( "PATH_LIB", "C:/wamp/www/lib/" );
     define( "PATH_ROOT", "C:/wamp/www/commercial3/" );
-    
+    define( "PATH_METAS", "C:/wamp/www/gestor-online/" );
+
     include PATH_LIB . "config/func.php";
     include PATH_LIB . "config/config.php";
+    include PATH_METAS . "config/business_day.php";
     
     define( "PATH_LOG", PATH_ROOT . "log/" );
     define( "PATH_DATA", PATH_ROOT . "data/" );

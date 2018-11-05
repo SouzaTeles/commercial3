@@ -112,6 +112,73 @@
             </div>
         </div>
     </div>
+    <div class="col-xs-12">
+        <div id="target" class="box-shadow">
+            <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="person"{if !empty($login->image)} style="background-image:url({$login->image})"{/if}></div>
+                </div>
+                <!--<div class="col-xs-12 col-sm-3">-->
+                <!--<div class="month">-->
+                <!--<div class="info"><b>Novembro de {$smarty.now|date_format:'%Y'}</b></div>-->
+                <!--<div class="info">Dias úteis:<label class="label-warning">20</label></div>-->
+                <!--<div class="info">Meta:<label class="label-warning">R$ 120.000,00</label></div>-->
+                <!--<div class="info">Resultado:<label class="label-warning">R$ 3.588,30</label></div>-->
+                <!--<div class="info">Md Fixa:<label class="label-warning">R$ 6.315,99</label></div>-->
+                <!--<div class="info">Md Dinâmica:<label class="label-warning">R$ 6.467,28</label></div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <div class="col-xs-12 col-sm-3">
+                    <div id="month-donut" class="donut-chart chart2">
+                        <!-- -90deg = 0% 90deg = 50% -->
+                        <!-- se maior que 50 pintar de #48b2c1 caso contrário #48b2c1 -->
+                        <div class="slice one" style="transform:rotate(-90deg);background-color:#48b2c1;"></div>
+                        <!-- 0% até 50% -->
+                        <!-- 180deg = 51% 360deg = 100% -->
+                        <!-- 51% até 100% -->
+                        <div class="slice two" style="transform:rotate(0deg);background-color:#666;"></div>
+                        <div class="chart-center">
+                            <span id="month-value">Mensal<br/>R$ --</span>
+                            <span id="month-percent">--</span>
+                            <span id="month-result">R$ --<br/>Faturado</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div id="daily-donut" class="donut-chart chart2">
+                        <!-- 0% até 50% -->
+                        <!-- -90deg = 0% 90deg = 50% -->
+                        <div class="slice one" style="transform:rotate(-90deg);background-color:#48b2c1;"></div>
+                        <!-- 51% até 100% -->
+                        <!-- 180deg = 51% 360deg = 100% -->
+                        <!-- se maior que 50 pintar de #48b2c1 caso contrário #48b2c1 -->
+                        <div class="slice two" style="transform:rotate(0deg);background-color:#666;"></div>
+                        <div class="chart-center">
+                            <span id="daily-value">Diário<br/>R$ --</span>
+                            <span id="daily-percent">--</span>
+                            <span id="daily-result">R$ --<br/>Faturado</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div id="dynamic-donut" class="donut-chart chart2">
+                        <!-- 180deg = 51% 360deg = 100% -->
+                        <!-- se maior que 50 pintar de #48b2c1 caso contrário #48b2c1 -->
+                        <div class="slice one" style="transform:rotate(-90deg);background-color:#48b2c1;"></div>
+                        <!-- 0% até 50% -->
+                        <!-- -90deg = 0% 90deg = 50% -->
+                        <!-- 51% até 100% -->
+                        <div class="slice two" style="transform:rotate(0deg);background-color:#666;"></div>
+                        <div class="chart-center">
+                            <span id="dynamic-value">Dinâmico<br/>R$ --</span>
+                            <span id="dynamic-percent">--</span>
+                            <span id="dynamic-result">R$ --<br/>Faturado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <footer>
     <span class="pull-right">{$config->system->system_name} v{$config->system->system_version}</span>

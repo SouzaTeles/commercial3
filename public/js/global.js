@@ -1,7 +1,10 @@
 $(document).ready(function(){
 
     Commercial.events();
-    if( !!global.login ) Chat.getUsers();
+    if( !!global.login ){
+        Chat.getUsers();
+        Target.get();
+    }
     global.listener.simple_combo("ctrl shift q", function () {
         if(typeof(Electron) == 'object') {
             Commercial.debug();
@@ -10,13 +13,59 @@ $(document).ready(function(){
 
 });
 
+Target = {
+    data: {},
+    get: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'target.php?action=dashboard',
+            noLoader: 1,
+            dataType: 'json'
+        },function(data){
+            Target.data = data;
+            Target.show();
+        });
+    },
+    show: function(){
+        $('#month-value').html('Mensal<br/>R$ '+global.float2Br(Target.data.month_value));
+        $('#month-percent').html(global.float2Br(Target.data.month_percent)+'%');
+        $('#month-result').html('R$ '+global.float2Br(Target.data.month_result)+'<br/>Faturado');
+        $('#daily-value').html('Diário<br/>R$ '+global.float2Br(Target.data.daily_value));
+        $('#daily-percent').html(global.float2Br(Target.data.daily_percent)+'%');
+        $('#daily-result').html('R$ '+global.float2Br(Target.data.daily_result)+'<br/>Faturado');
+        $('#dynamic-value').html('Dinâmico<br/>R$ '+global.float2Br(Target.data.dynamic_value));
+        $('#dynamic-percent').html(global.float2Br(Target.data.dynamic_percent)+'%');
+        $('#dynamic-result').html('R$ '+global.float2Br(Target.data.daily_result)+'<br/>Faturado');
+        $('#month-donut').find('.one').css({
+            'transform': 'rotate(' + (Target.data.month_percent <= 50 ? (-90 + Target.data.month_percent * 1.8) : '90') + 'deg)',
+            'background-color': '#46c048'
+        })
+        $('#month-donut').find('.two').css({
+            'transform': 'rotate(' + (Target.data.month_percent >= 100 ? '0' : ( Target.data.month_percent > 50 ? (Target.data.month_percent * 1.8) : '0')) + 'deg)',
+            'background-color': (Target.data.month_percent > 50 ? '#46c048' : '#666')
+        });
+        $('#daily-donut').find('.one').css({
+            'transform': 'rotate(' + (Target.data.daily_percent <= 50 ? (-90 + Target.data.daily_percent * 1.8) : '90') + 'deg)',
+            'background-color': '#f57c00'
+        })
+        $('#daily-donut').find('.two').css({
+            'transform': 'rotate(' + (Target.data.daily_percent >= 100 ? '0' : ( Target.data.daily_percent > 50 ? (Target.data.daily_percent * 1.8) : '0')) + 'deg)',
+            'background-color': (Target.data.daily_percent > 50 ? '#f57c00' : '#666')
+        });
+        $('#dynamic-donut').find('.one').css({
+            'transform': 'rotate(' + (Target.data.dynamic_percent <= 50 ? (-90 + Target.data.dynamic_percent * 1.8) : '90') + 'deg)',
+            'background-color': '#7b1fa2'
+        });
+        $('#dynamic-donut').find('.two').css({
+            'transform': 'rotate(' + (Target.data.dynamic_percent >= 100 ? '0' : ( Target.data.dynamic_percent > 50 ? (Target.data.dynamic_percent * 1.8) : '0')) + 'deg)',
+            'background-color': (Target.data.dynamic_percent > 50 ? '#7b1fa2' : '#666')
+        });
+    }
+};
+
 Chat = {
     users: [],
     dialogs: [],
     events: function(){
-
-    },
-    getMessages: function(){
 
     },
     getUsers: function(){
