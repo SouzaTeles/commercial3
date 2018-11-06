@@ -3,6 +3,7 @@ $(document).ready(function() {
     Slide.getSlide();
     BirthDays.getList();
     Blog.getList();
+    Target.get();
 
     Suggestion.events();
     Suggestion.showCompanies();
@@ -10,6 +11,65 @@ $(document).ready(function() {
     global.unLoader();
 
 });
+
+Target = {
+    data: {},
+    get: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'target.php?action=dashboard',
+            noLoader: 1,
+            dataType: 'json'
+        },function(data){
+            Target.data = data;
+            Target.show();
+        });
+    },
+    show: function(){
+        var resumeBarDaily = $('#resume-bar-daily');
+        $(resumeBarDaily).find('.bar-result').css({
+            'width': Target.data.resume.daily_target_broken_percent + '%'
+        });
+        $(resumeBarDaily).find('.bar-info').html(Target.data.resume.daily_target_broken_value + '/' + Target.data.days);
+        var resumeBarConversion = $('#resume-bar-conversion');
+        $(resumeBarConversion).find('.bar-result').css({
+            'width': Target.data.resume.conversion + '%'
+        });
+        $(resumeBarConversion).find('.bar-info').html(global.float2Br(Target.data.resume.conversion) + '%');
+        var resumeBarExploitation = $('#resume-bar-exploitation');
+        $(resumeBarExploitation).find('.bar-result').css({
+            'width': Target.data.resume.exploitation + '%'
+        });
+        $(resumeBarExploitation).find('.bar-info').html(global.float2Br(Target.data.resume.exploitation) + '%');
+        var resumeBarDiscount = $('#resume-bar-discount');
+        $(resumeBarDiscount).find('.bar-result').css({
+            'width': Target.data.resume.discount_percent + '%'
+        });
+        $(resumeBarDiscount).find('.bar-info').html(global.float2Br(Target.data.resume.discount_average) + '%');
+        //////
+        $('#month-value').html('Mensal<br/>R$ '+global.float2Br(Target.data.month_value));
+        $('#month-percent').html(global.float2Br(Target.data.month_percent)+'%');
+        $('#month-result').html('R$ '+global.float2Br(Target.data.month_result)+'<br/>Faturado');
+        $('#daily-value').html('Diário<br/>R$ '+global.float2Br(Target.data.daily_value));
+        $('#daily-percent').html(global.float2Br(Target.data.daily_percent)+'%');
+        $('#daily-result').html('R$ '+global.float2Br(Target.data.daily_result)+'<br/>Faturado');
+        $('#month-donut').find('.one').css({
+            'transform': 'rotate(' + (Target.data.month_percent <= 50 ? (-90 + Target.data.month_percent * 1.8) : '90') + 'deg)',
+            'background-color': '#46c048'
+        })
+        $('#month-donut').find('.two').css({
+            'transform': 'rotate(' + (Target.data.month_percent >= 100 ? '0' : ( Target.data.month_percent > 50 ? (Target.data.month_percent * 1.8) : '0')) + 'deg)',
+            'background-color': (Target.data.month_percent > 50 ? '#46c048' : '#666')
+        });
+        $('#daily-donut').find('.one').css({
+            'transform': 'rotate(' + (Target.data.daily_percent <= 50 ? (-90 + Target.data.daily_percent * 1.8) : '90') + 'deg)',
+            'background-color': '#f57c00'
+        })
+        $('#daily-donut').find('.two').css({
+            'transform': 'rotate(' + (Target.data.daily_percent >= 100 ? '0' : ( Target.data.daily_percent > 50 ? (Target.data.daily_percent * 1.8) : '0')) + 'deg)',
+            'background-color': (Target.data.daily_percent > 50 ? '#f57c00' : '#666')
+        });
+    }
+};
 
 Slide = {
     images: [],

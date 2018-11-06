@@ -119,16 +119,38 @@
                 <div class="col-xs-12 col-sm-3">
                     <div class="person"{if !empty($login->image)} style="background-image:url({$login->image})"{/if}></div>
                 </div>
-                <!--<div class="col-xs-12 col-sm-3">-->
-                <!--<div class="month">-->
-                <!--<div class="info"><b>Novembro de {$smarty.now|date_format:'%Y'}</b></div>-->
-                <!--<div class="info">Dias úteis:<label class="label-warning">20</label></div>-->
-                <!--<div class="info">Meta:<label class="label-warning">R$ 120.000,00</label></div>-->
-                <!--<div class="info">Resultado:<label class="label-warning">R$ 3.588,30</label></div>-->
-                <!--<div class="info">Md Fixa:<label class="label-warning">R$ 6.315,99</label></div>-->
-                <!--<div class="info">Md Dinâmica:<label class="label-warning">R$ 6.467,28</label></div>-->
-                <!--</div>-->
-                <!--</div>-->
+                <div class="col-xs-12 col-sm-3">
+                    <div class="resume">
+                        <div class="info">
+                            Metas Diárias<br/>
+                            <div id="resume-bar-daily" class="bar">
+                                <div class="bar-info"></div>
+                                <div class="bar-result"></div>
+                            </div>
+                        </div>
+                        <div class="info">
+                            Taxa de Conversão<br/>
+                            <div id="resume-bar-conversion" class="bar">
+                                <div class="bar-info"></div>
+                                <div class="bar-result"></div>
+                            </div>
+                        </div>
+                        <div class="info">
+                            Metas x Desempenho<br/>
+                            <div id="resume-bar-exploitation" class="bar">
+                                <div class="bar-info"></div>
+                                <div class="bar-result"></div>
+                            </div>
+                        </div>
+                        <div class="info">
+                            Média de Desconto<br/>
+                            <div id="resume-bar-discount" class="bar">
+                                <div class="bar-info"></div>
+                                <div class="bar-result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-xs-12 col-sm-3">
                     <div id="month-donut" class="donut-chart chart2">
                         <!-- -90deg = 0% 90deg = 50% -->
@@ -161,22 +183,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-3">
-                    <div id="dynamic-donut" class="donut-chart chart2">
-                        <!-- 180deg = 51% 360deg = 100% -->
-                        <!-- se maior que 50 pintar de #48b2c1 caso contrário #48b2c1 -->
-                        <div class="slice one" style="transform:rotate(-90deg);background-color:#48b2c1;"></div>
-                        <!-- 0% até 50% -->
-                        <!-- -90deg = 0% 90deg = 50% -->
-                        <!-- 51% até 100% -->
-                        <div class="slice two" style="transform:rotate(0deg);background-color:#666;"></div>
-                        <div class="chart-center">
-                            <span id="dynamic-value">Dinâmico<br/>R$ --</span>
-                            <span id="dynamic-percent">--</span>
-                            <span id="dynamic-result">R$ --<br/>Faturado</span>
-                        </div>
-                    </div>
-                </div>
+                <!--<div class="col-xs-12 col-sm-3">-->
+                    <!--<div id="dynamic-donut" class="donut-chart chart2">-->
+                        <!--&lt;!&ndash; 180deg = 51% 360deg = 100% &ndash;&gt;-->
+                        <!--&lt;!&ndash; se maior que 50 pintar de #48b2c1 caso contrário #48b2c1 &ndash;&gt;-->
+                        <!--<div class="slice one" style="transform:rotate(-90deg);background-color:#48b2c1;"></div>-->
+                        <!--&lt;!&ndash; 0% até 50% &ndash;&gt;-->
+                        <!--&lt;!&ndash; -90deg = 0% 90deg = 50% &ndash;&gt;-->
+                        <!--&lt;!&ndash; 51% até 100% &ndash;&gt;-->
+                        <!--<div class="slice two" style="transform:rotate(0deg);background-color:#666;"></div>-->
+                        <!--<div class="chart-center">-->
+                            <!--<span id="dynamic-value">Dinâmico<br/>R$ &#45;&#45;</span>-->
+                            <!--<span id="dynamic-percent">&#45;&#45;</span>-->
+                            <!--<span id="dynamic-result">R$ &#45;&#45;<br/>Faturado</span>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
         </div>
     </div>

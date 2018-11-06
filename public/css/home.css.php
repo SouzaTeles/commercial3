@@ -284,25 +284,58 @@
     background-image: url('../images/empty-image.png');
 }
 
-#target .month
+#target .resume .info
 {
-    font-size: 20px;
-}
-
-#target .month .info
-{
-    display: table;
-    font-size: 18px;
     width: 100%;
+    display: table;
+    font-size: 15px;
+    margin-bottom: 6px;
 }
 
-#target .month .info label
+#target .resume .info .bar
 {
-    float: right;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: normal;
+    width: 100%;
+    height: 25px;
+    position: relative;
+    background-color: #666;
+}
+
+#target .resume .info .bar .bar-info
+{
+    position: absolute;
+    color: #fff;
+    font-size: 14px;
+    width: 100%;
+    padding: 3px 6px;
+    text-align: right;
+}
+
+#target .resume .info .bar .bar-result
+{
+    width: 0;
+    height: 25px;
+    max-width: 100%;
+    transition: all .9s ease;
+}
+
+#target .resume .info #resume-bar-daily .bar-result
+{
+    background-color: <?php echo $colors->hex->palette["blue-light"]; ?>;
+}
+
+#target .resume .info #resume-bar-conversion .bar-result
+{
+    background-color: <?php echo $colors->hex->palette["green"]; ?>;
+}
+
+#target .resume .info #resume-bar-exploitation .bar-result
+{
+    background-color: <?php echo $colors->hex->palette["orange"]; ?>;
+}
+
+#target .resume .info #resume-bar-discount .bar-result
+{
+    background-color: <?php echo $colors->hex->palette["purple"]; ?>;
 }
 
 .donut-chart
@@ -330,6 +363,7 @@
     left: 0;
     width: 100%;
     height: 100%;
+    transition: all .9s ease;
 }
 
 .donut-chart.chart2 .slice.two {
