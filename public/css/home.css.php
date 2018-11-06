@@ -129,7 +129,7 @@
 #blog .news .item .post-cover
 {
     float: left;
-    width: 200px;
+    width: 50%;
     height: 168px;
     background-size: cover;
     background-color: #eee;
@@ -140,8 +140,8 @@
 
 #blog .news .item .post-data
 {
+    width: 50%;
     float: left;
-    width: 220px;
     height: 168px;
     position: relative;
     padding: 50px 14px 34px;
@@ -184,7 +184,7 @@
 
 #blog .news .loading .post-data .post-preview
 {
-    width: 192px;
+    width: 140px;
     height: 46px;
     background-color: #eee;
 }
@@ -243,22 +243,45 @@
     margin-top: 30px;
 }
 
+.suggestion textarea
+{
+    height: 184px;
+}
+
 #target
 {
     height: 250px;
-    padding: 20px;
     margin: 20px 0;
     background-color: #fff;
+    padding: 20px 20px 20px 60px;
+}
+
+#target .target-title
+{
+    color: #fff;
+    position: absolute;
+    left: -88px;
+    font-size: 20px;
+    top: 123px;
+    padding: 8px;
+    text-align: center;
+    width: 250px;
+    transform: rotate(-90deg);
+    background-color: <?php echo $colors->hex->palette["green"]; ?>
 }
 
 #target .person
 {
+    left: -2px;
+    top: -20px;
     width: 200px;
-    height: 200px;
+    height: 250px;
     margin: 0 auto;
-    border-radius: 50%;
+    position: absolute;
+    background-color: #ddd;
     background-size: cover;
     background-position: center;
+    background-image: url('../images/empty-image.png');
 }
 
 #target .month

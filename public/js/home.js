@@ -89,7 +89,7 @@ Blog = {
             });
             $(item).find('.post-category').text(post.category);
             $(item).find('.post-title').text(post.post_title.substr(0,40) +(post.post_title.length > 40 ? '...' : ''));
-            $(item).find('.post-preview').text(post.post_content.substr(0,60) + '...');
+            $(item).find('.post-preview').text(post.post_content.substr(0,$(window).width() > 1024 ? 60 : 30) + '...');
             $(item).find('.post-date').html(post.post_date_br + ' <i class="fa fa-clock-o"></i>');
             $(item).click(function(){
                 global.window({

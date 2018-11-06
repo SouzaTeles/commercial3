@@ -99,7 +99,7 @@
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label for="suggestion_message">Mensagem</label>
-                                <textarea rows="6" class="form-control" id="suggestion_message" name="suggestion_message" placeholder="Mensagem" required></textarea>
+                                <textarea class="form-control" id="suggestion_message" name="suggestion_message" placeholder="Mensagem" required></textarea>
                             </div>
                         </div>
                         <div class="col-xs-12">
@@ -114,6 +114,7 @@
     </div>
     <div class="col-xs-12">
         <div id="target" class="box-shadow">
+            <div class="target-title">Acompanhamento de Metas</div>
             <div class="row">
                 <div class="col-xs-12 col-sm-3">
                     <div class="person"{if !empty($login->image)} style="background-image:url({$login->image})"{/if}></div>
