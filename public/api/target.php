@@ -45,7 +45,7 @@
             if( @$login->person_id ){
 
                 $budgets = Model::getList($commercial,(Object)[
-                    "tables" => [ "Commercial.dbo.Budget" ],
+                    "tables" => [ "Budget" ],
                     "fields" => [
                         "budget_status",
                         "budget_value=CAST(sum(budget_value_total+budget_value_st) AS FLOAT)"
@@ -75,8 +75,8 @@
                 $discounts = Model::get($commercial,(Object)[
                     "join" => 1,
                     "tables" => [
-                        "COMMERCIAL.dbo.Budget B (NoLock)",
-	                    "INNER JOIN COMMERCIAL.dbo.BudgetItem BI (NoLock) ON(BI.budget_id = B.budget_id)"
+                        "Budget B (NoLock)",
+	                    "INNER JOIN BudgetItem BI (NoLock) ON(BI.budget_id = B.budget_id)"
                     ],
                     "fields" => [
                         "count=COUNT(BI.budget_item_id)",
