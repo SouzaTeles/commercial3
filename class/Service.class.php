@@ -151,7 +151,7 @@
         {
             GLOBAL $conn, $commercial, $dafel, $config, $post, $get;
 
-            $data = Model::getList($dafel,(Object)[
+            $data1 = Model::getList($dafel,(Object)[
                 "join" => 1,
                 "tables" => [
                     "{$conn->dafel->table}.dbo.Documento D (NoLock)",
@@ -171,6 +171,29 @@
                     [ "D.IdDocumento", "s", ">", $config->budget->last_document ]
                 ]
             ]);
+
+            $data2 = Model::getList($dafel,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "{$conn->dafel->table}.dbo.Documento D (NoLock)",
+                    "INNER JOIN {$conn->commercial->table}.dbo.Budget B (NoLock) ON(B.external_id = D.IdEntidadeOrigem AND D.NmEntidadeOrigem = 'DocumentoAuxVenda')"
+                ],
+                "fields" => [
+                    "B.budget_id",
+                    "D.IdDocumento",
+                    "D.NrDocumento",
+                    "D.CdEspecie",
+                    "D.StDocumentoCancelado",
+                    "D.IdEntidadeOrigem",
+                ],
+                "filters" => [
+                    [ "B.budget_status", "s", "=", "L" ],
+                    [ "D.StDocumentoCancelado", "s", "=", "N" ],
+                    [ "D.IdDocumento", "s", ">", $config->budget->last_document ]
+                ]
+            ]);
+
+            $data = array_merge($data1,$data2);
 
             if( @$data ){
                 $IdDocumento = NULL;
@@ -208,7 +231,7 @@
             }
 
             $date = date("Y-m-d", strtotime(date("Y-m-d", strtotime(date("Y-m-d"))) . " - 1 day"));
-            $data = Model::getList($dafel,(Object)[
+            $data1 = Model::getList($dafel,(Object)[
                 "join" => 1,
                 "tables" => [
                     "{$conn->dafel->table}.dbo.Documento D (NoLock)",
@@ -229,6 +252,30 @@
                     [ "B.budget_status", "s", "=", "B" ]
                 ]
             ]);
+
+            $data2 = Model::getList($dafel,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "{$conn->dafel->table}.dbo.Documento D (NoLock)",
+                    "INNER JOIN {$conn->commercial->table}.dbo.Budget B (NoLock) ON(B.external_id = D.IdEntidadeOrigem AND D.NmEntidadeOrigem = 'DocumentoAuxVenda')"
+                ],
+                "fields" => [
+                    "B.budget_id",
+                    "D.IdDocumento",
+                    "D.NrDocumento",
+                    "D.CdEspecie",
+                    "D.StDocumentoCancelado",
+                    "D.DtSaida",
+                    "D.DtEmissao"
+                ],
+                "filters" => [
+                    [ "D.StDocumentoCancelado", "s", "=", "S" ],
+                    [ "D.DtEmissao", "s", ">=", $date ],
+                    [ "B.budget_status", "s", "=", "B" ]
+                ]
+            ]);
+
+            $data = array_merge($data1,$data2);
 
             if( @$data ){
                 foreach( $data as $item ){
