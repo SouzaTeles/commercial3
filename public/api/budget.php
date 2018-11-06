@@ -731,7 +731,10 @@
                     ["B.company_id", "i", "=", $post->company_id],
                     ["B.seller_id", "s", "=", @$post->seller_id ? $post->seller_id : NULL],
                     ["B.budget_trash", "s", "=", "N"],
-                    ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
+                    [
+                        ["B.budget_update", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]],
+                        ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
+                    ]
                 ],
                 "group" => "B.budget_id,B.external_id,B.external_type,B.external_code,B.document_id,B.document_type,B.document_code,B.document_canceled,B.client_id,P.CdChamada,P.NmPessoa,B.seller_id,PR.CdChamada,PR.NmPessoa,PR.NmCurto,B.budget_value_st,B.budget_cost,B.budget_value_total,B.budget_origin,B.budget_status,B.budget_delivery,B.budget_payment_icon,B.budget_date"
             ]);
