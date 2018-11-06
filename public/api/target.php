@@ -163,7 +163,7 @@
                 $ret->dynamic_percent = 100*($ret->daily_result/(@$ret->dynamic_value ? $ret->dynamic_value : 1));
                 $ret->dynamic_percent = (float)number_format($ret->dynamic_percent,2,".","");
 
-                $target_value = ($ret->past*($ret->month_value/$ret->days));
+                $target_value = ($ret->past*($ret->month_value/(@$ret->days?$ret->days:1)));
                 $ret->resume->exploitation = @$ret->month_value ? 100*$ret->month_result/($target_value?$target_value:1) : 0;
                 $ret->resume->exploitation = (float)number_format($ret->resume->exploitation,2,".","");
 
