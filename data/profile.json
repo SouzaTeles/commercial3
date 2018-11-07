@@ -94,6 +94,11 @@
 			"name": "Visualiza",
 			"value": "N",
 			"data_type": "bool"
+		},
+		"discount": {
+			"name": "Relatório de Descontos",
+			"value": "N",
+			"data_type": "bool"
 		}
 	},
 	"crm": {

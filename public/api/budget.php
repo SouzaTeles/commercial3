@@ -686,6 +686,67 @@
 
         break;
 
+        case "getDiscounts":
+
+            if (!@$post->company_id || !@$post->start_date || !@$post->end_date) {
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $budgets = Model::getList($commercial,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "COMMERCIAL.dbo.Budget B(NoLock) ",
+                    "INNER JOIN COMMERCIAL.dbo.BudgetItem BI (NoLock) ON(BI.budget_id = B.budget_id)",
+                    "INNER JOIN  DAFEL.dbo.Pessoa P (NoLock) ON(P.IdPessoa = B.seller_id)",
+                    "INNER JOIN DAFEL.dbo.Pessoa PC (NoLock) ON(PC.IdPessoa = B.client_id)",
+                    "LEFT JOIN DAFEL.dbo.Documento D (NoLock) ON(D.IdDocumento = B.document_id)",
+                ],
+                "fields" => [
+                    "B.budget_id",
+                    "B.company_id",
+                    "B.budget_status",
+                    "B.external_code",
+                    "B.external_type",
+                    "person_name=PC.NmPessoa",
+                    "document_code=D.NrDocumento",
+                    "seller_id=P.IdPessoa",
+                    "seller_name=P.NmPessoa",
+                    "budget_date=FORMAT(B.budget_date,'yyyy-MM-dd HH:mm:ss')",
+                    "budget_date_br=FORMAT(B.budget_date,'dd/MM/yyyy HH:mm:ss')",
+                    "budget_value=CAST(ISNULL(SUM(BI.budget_item_value),0) AS FLOAT)",
+                    "budget_value_discount=CAST(ISNULL(SUM(BI.budget_item_value_discount),0) AS FLOAT)"
+                ],
+                "filters" => [
+                    ["B.budget_trash", "s", "=", "N"],
+                    ["B.seller_id", "s", "in", @$post->seller_id ? $post->seller_id : NULL ],
+                    ["B.company_id", "s", "=", @$post->company_id ? $post->company_id : NULL ],
+                    ["B.budget_value_discount", "d", ">", $post->only_discount == "Y" ? "0" : NULL ],
+                    ["B.budget_status", "s", "=", $post->only_billed == "Y" ? "B" : NULL ],
+                    [
+                        ["B.budget_update", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]],
+                        ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
+                    ]
+                ],
+                "group" => "B.budget_id, B.company_id, B.budget_status, B.external_code, B.external_type, PC.NmPessoa, D.NrDocumento, P.IdPessoa, P.NmPessoa, B.budget_date"
+            ]);
+
+            foreach( $budgets as $budget ){
+                $budget->budget_value = (float)$budget->budget_value;
+                $budget->budget_value_discount = (float)$budget->budget_value_discount;
+                $budget->budget_type = @$budget->external_type ? $budget->external_type : "B";
+                $budget->budget_value_percent = (float)number_format(100*($budget->budget_value_discount/$budget->budget_value),2,".","");
+                $budget->budget_value_order = substr("0000000000" . number_format((float)$budget->budget_value,2,"",""),-10);
+                $budget->budget_value_discount_order = substr("0000000000" . number_format((float)$budget->budget_value_discount,2,"",""),-10);
+                $budget->budget_value_percent_order = substr("0000000000" . number_format((float)$budget->budget_value_percent,2,"",""),-10);
+            }
+
+            Json::get( $headerStatus[200], $budgets );
+
+        break;
+
         case "getList":
 
             if (!@$post->company_id || !@$post->start_date || !@$post->end_date) {

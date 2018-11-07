@@ -1,206 +1,201 @@
 <div class="menu">
     <ul>
         {if $login->access->agenda->access->value == 'Y'}
-        <li>
-            <a href="{$URI_PUBLIC}index.php?route=agenda" class="agenda">
-                <i class="fa fa-calendar"></i>Agenda
-            </a>
-        </li>
+            <li>
+                <a href="{$URI_PUBLIC}index.php?route=agenda" class="agenda">
+                    <i class="fa fa-calendar"></i>Agenda
+                </a>
+            </li>
         {/if}
         {if $login->access->sale->access->value == 'Y'}
-        <li>
-            <a href="{$URI_PUBLIC}index.php?route=budget" class="sale">
-                <i class="fa fa-usd"></i>Vendas
-            </a>
-            <div class="sub-menu">
-                {if $login->access->budget->access->value == 'Y'}
+            <li>
                 <a href="{$URI_PUBLIC}index.php?route=budget" class="sale">
-                    <i class="fa fa-file-text-o"></i>Orçamentos
+                    <i class="fa fa-usd"></i>Vendas
                 </a>
-                {/if}
-                {if $login->access->target->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=target" class="sale">
-                    <i class="fa fa-bullseye"></i>Metas
-                </a>
-                {/if}
-                {if $login->access->devolution->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=devolution" class="sale">
-                    <i class="fa fa-reply-all"></i>Devoluções
-                </a>
-                {/if}
-                {if $login->access->package->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=package" class="sale">
-                    <i class="fa fa-cube"></i>Encomendas
-                </a>
-                {/if}
-            </div>
-        </li>
+                <div class="sub-menu">
+                    {if $login->access->budget->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=budget" class="sale">
+                            <i class="fa fa-file-text-o"></i>Orçamentos
+                        </a>
+                    {/if}
+                    {if $login->access->target->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=target" class="sale">
+                            <i class="fa fa-bullseye"></i>Metas
+                        </a>
+                    {/if}
+                    {if $login->access->devolution->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=devolution" class="sale">
+                            <i class="fa fa-reply-all"></i>Devoluções
+                        </a>
+                    {/if}
+                    {if $login->access->package->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=package" class="sale">
+                            <i class="fa fa-cube"></i>Encomendas
+                        </a>
+                    {/if}
+                </div>
+            </li>
         {/if}
         {if $login->access->stock->access->value == 'Y'}
             <li>
-            <a href="#" class="stock">
-                <i class="fa fa-cubes"></i>Estoque
-            </a>
-            <div class="sub-menu">
-                {if $login->access->inventory->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=inventory" class="stock">
-                    <i class="fa fa-file-text-o"></i>Inventário
+                <a href="#" class="stock">
+                    <i class="fa fa-cubes"></i>Estoque
                 </a>
-                {/if}
-                {if $login->access->sge->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=sge" class="stock">
-                    <i class="fa fa-lightbulb-o"></i>Assistente SGE
-                </a>
-                {/if}
-                {if $login->access->registration->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=registration" class="stock">
-                    <i class="fa fa-plus-square-o"></i>Cadastro
-                </a>
-                {/if}
-            </div>
-        </li>
+                <div class="sub-menu">
+                    {if $login->access->inventory->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=inventory" class="stock">
+                            <i class="fa fa-file-text-o"></i>Inventário
+                        </a>
+                    {/if}
+                    {if $login->access->sge->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=sge" class="stock">
+                            <i class="fa fa-lightbulb-o"></i>Assistente SGE
+                        </a>
+                    {/if}
+                    {if $login->access->registration->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=registration" class="stock">
+                            <i class="fa fa-plus-square-o"></i>Cadastro
+                        </a>
+                    {/if}
+                </div>
+            </li>
         {/if}
-        {if $login->access->reports->access->value == 'Y'}
-        <li>
-            <a href="#" class="report">
-                <i class="fa fa-bar-chart"></i>Relatórios
-            </a>
-            <div class="sub-menu">
-                {if $login->access->compass->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=compass" class="report">
+        {if $login->access->compass->access->value == 'Y'}
+            <li>
+                <a href="#" class="compass">
                     <i class="fa fa-location-arrow"></i>Compass
                 </a>
-                {/if}
-                {if $login->access->cube->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=cube" class="report">
-                    <i class="fa fa-cube"></i>Cube Report
-                </a>
-                {/if}
-            </div>
-        </li>
+                <div class="sub-menu">
+                    {if $login->access->compass->discount->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=discount" class="compass">
+                            <i class="fa fa-usd"></i>Relatório de Descontos
+                        </a>
+                    {/if}
+                </div>
+            </li>
         {/if}
         {if $login->access->logistics->access->value == 'Y'}
-        <li>
-            <a href="#" class="logistics">
-                <i class="fa fa-truck"></i>Logística
-            </a>
-            <div class="sub-menu">
-                {if $login->access->shipment->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=shipment" class="logistics">
-                    <i class="fa fa-map-o"></i>Mapa de Carregamento
+            <li>
+                <a href="#" class="logistics">
+                    <i class="fa fa-truck"></i>Logística
                 </a>
-                {/if}
-                {if $login->access->management->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=management" class="logistics">
-                    <i class="fa fa-magic"></i>Gestão
-                </a>
-                {/if}
-            </div>
-        </li>
+                <div class="sub-menu">
+                    {if $login->access->shipment->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=shipment" class="logistics">
+                            <i class="fa fa-map-o"></i>Mapa de Carregamento
+                        </a>
+                    {/if}
+                    {if $login->access->management->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=management" class="logistics">
+                            <i class="fa fa-magic"></i>Gestão
+                        </a>
+                    {/if}
+                </div>
+            </li>
         {/if}
         {if $login->access->rh->access->value == 'Y'}
-        <li>
-            <a href="#" class="rh">
-                <i class="fa fa-users"></i>RH
-            </a>
-            <div class="sub-menu">
-                <a href="{$URI_PUBLIC}index.php?route=person" class="rh">
-                    <i class="fa fa-user-plus"></i>Pessoas
+            <li>
+                <a href="#" class="rh">
+                    <i class="fa fa-users"></i>RH
                 </a>
-                <a href="{$URI_PUBLIC}index.php?route=highlights" class="rh">
-                    <i class="fa fa-star"></i>Melhores do Mês
-                </a>
-                <a href="{$URI_PUBLIC}index.php?route=pay" class="rh">
-                    <i class="fa fa-money"></i>Folha de Pagamento
-                </a>
-            </div>
-        </li>
+                <div class="sub-menu">
+                    <a href="{$URI_PUBLIC}index.php?route=person" class="rh">
+                        <i class="fa fa-user-plus"></i>Pessoas
+                    </a>
+                    <a href="{$URI_PUBLIC}index.php?route=highlights" class="rh">
+                        <i class="fa fa-star"></i>Melhores do Mês
+                    </a>
+                    <a href="{$URI_PUBLIC}index.php?route=pay" class="rh">
+                        <i class="fa fa-money"></i>Folha de Pagamento
+                    </a>
+                </div>
+            </li>
         {/if}
         {if $login->access->production->access->value == 'Y'}
-        <li>
-            <a href="#" class="production">
-                <i class="fa fa-dropbox"></i>Produção
-            </a>
-            <div class="sub-menu">
-                {if $login->access->sisprod->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=sisprod" class="production">
-                    <i class="fa fa-cogs"></i>Sisprod
+            <li>
+                <a href="#" class="production">
+                    <i class="fa fa-dropbox"></i>Produção
                 </a>
-                {/if}
-                {if $login->access->glass->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=glass" class="production">
-                    <i class="fa fa-object-ungroup"></i>Vidro
-                </a>
-                {/if}
-            </div>
-        </li>
+                <div class="sub-menu">
+                    {if $login->access->sisprod->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=sisprod" class="production">
+                            <i class="fa fa-cogs"></i>Sisprod
+                        </a>
+                    {/if}
+                    {if $login->access->glass->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=glass" class="production">
+                            <i class="fa fa-object-ungroup"></i>Vidro
+                        </a>
+                    {/if}
+                </div>
+            </li>
         {/if}
         {if $login->access->crm->access->value == 'Y'}
-        <li>
-            <a href="#" class="crm">
-                <i class="fa fa-address-card-o"></i>CRM
-            </a>
-            <div class="sub-menu sub-menu-crm">
-                {if $login->access->client->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=client" class="crm">
-                    <i class="fa fa-users"></i>Cliente
+            <li>
+                <a href="#" class="crm">
+                    <i class="fa fa-address-card-o"></i>CRM
                 </a>
-                {/if}
-                {if $login->access->followup->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=followup" class="crm">
-                    <i class="fa fa-phone-square"></i>Follow Up
-                </a>
-                {/if}
-            </div>
-        </li>
+                <div class="sub-menu sub-menu-crm">
+                    {if $login->access->client->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=client" class="crm">
+                            <i class="fa fa-users"></i>Cliente
+                        </a>
+                    {/if}
+                    {if $login->access->followup->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=followup" class="crm">
+                            <i class="fa fa-phone-square"></i>Follow Up
+                        </a>
+                    {/if}
+                </div>
+            </li>
         {/if}
         {if $login->access->general->access->value == 'Y'}
-        <li>
-            <a href="#" class="general">
-                <i class="fa fa-bars"></i>Geral
-            </a>
-            <div class="sub-menu sub-menu-general">
-                {if $login->access->ticket->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=ticket" class="general">
-                    <i class="fa fa-phone-square"></i>Chamados
+            <li>
+                <a href="#" class="general">
+                    <i class="fa fa-bars"></i>Geral
                 </a>
-                {/if}
-                {if $login->access->slide->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=slide" class="general">
-                    <i class="fa fa-picture-o"></i>Slides
-                </a>
-                {/if}
-                {if $login->access->whatsapp->access->value == 'Y'}
-                <a href="#" data-action="whatsapp" class="general">
-                    <i class="fa fa-whatsapp"></i>WhatsApp Web
-                </a>
-                {/if}
-            </div>
-        </li>
+                <div class="sub-menu sub-menu-general">
+                    {if $login->access->ticket->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=ticket" class="general">
+                            <i class="fa fa-phone-square"></i>Chamados
+                        </a>
+                    {/if}
+                    {if $login->access->slide->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=slide" class="general">
+                            <i class="fa fa-picture-o"></i>Slides
+                        </a>
+                    {/if}
+                    {if $login->access->whatsapp->access->value == 'Y'}
+                        <a href="#" data-action="whatsapp" class="general">
+                            <i class="fa fa-whatsapp"></i>WhatsApp Web
+                        </a>
+                    {/if}
+                </div>
+            </li>
         {/if}
         {if $login->access->config->access->value == 'Y'}
-        <li>
-            <a href="#" class="config">
-                <i class="fa fa-gear"></i>Configurações
-            </a>
-            <div class="sub-menu sub-menu-config">
-                {if $login->access->user->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=user" class="config">
-                    <i class="fa fa-user"></i>Usuários
+            <li>
+                <a href="#" class="config">
+                    <i class="fa fa-gear"></i>Configurações
                 </a>
-                {/if}
-                {if $login->access->profile->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=profile" class="config">
-                    <i class="fa fa-user-circle-o"></i>Perfil de Usuário
-                </a>
-                {/if}
-                {if $login->access->company->access->value == 'Y'}
-                <a href="{$URI_PUBLIC}index.php?route=company" class="config">
-                    <i class="fa fa-building"></i>Empresas
-                </a>
-                {/if}
-            </div>
-        </li>
+                <div class="sub-menu sub-menu-config">
+                    {if $login->access->user->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=user" class="config">
+                            <i class="fa fa-user"></i>Usuários
+                        </a>
+                    {/if}
+                    {if $login->access->profile->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=profile" class="config">
+                            <i class="fa fa-user-circle-o"></i>Perfil de Usuário
+                        </a>
+                    {/if}
+                    {if $login->access->company->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=company" class="config">
+                            <i class="fa fa-building"></i>Empresas
+                        </a>
+                    {/if}
+                </div>
+            </li>
         {/if}
     </ul>
     <button id="button-ticket" class="btn btn-green-light"{if $login->access->ticket->add->value == 'N'} disabled{/if}>

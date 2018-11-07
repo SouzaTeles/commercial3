@@ -261,7 +261,7 @@
 
             $user = Model::get($commercial,(Object)[
                 "tables" => [ "[User]" ],
-                "fields" => [ "user_user, user_email" ],
+                "fields" => [ "user_user", "user_email" ],
                 "filters" => [[ "user_user", "s", "=", $post->user_user ]]
             ]);
 

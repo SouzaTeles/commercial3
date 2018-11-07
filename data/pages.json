@@ -30,8 +30,13 @@
 	"compass": {
 		"key": "compass",
 		"icon": "fa-location-arrow",
-		"title": "Commercial",
-		"parent": "report"
+		"title": "Compass"
+	},
+	"discount": {
+		"key": "discount",
+		"icon": "fa-percent",
+		"title": "Relatório de Descontos",
+		"parent": "compass"
 	},
 	"config": {
 		"key": "config",

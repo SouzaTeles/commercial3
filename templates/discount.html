@@ -1,0 +1,93 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="filter">
+            <form id="form-filter">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="company_id">Empresa</label>
+                            <select class="selectpicker show-tick" id="company_id" title="-- Selecione a Empresa --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="seller_id">Representantes</label>
+                            <select data-actions-box="true" data-selected-text-format="count > 1" multiple data-size="8" data-live-search="true" class="selectpicker show-tick" id="seller_id" name="seller_id[]" title="-- Selecione os Representantes --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="start_date">Data Inicial</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="start_date" data-to-mask="date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="end_date">Data Final</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="end_date" data-to-mask="date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="only_billed">Somente Faturado</label>
+                            <input checked type="checkbox" class="form-control" id="only_billed" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="only_discount">Somente com Desconto</label>
+                            <input checked type="checkbox" class="form-control" id="only_discount" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="budget_search">Pesquisa Rápida</label>
+                            <input type="text" class="form-control" id="budget_search" placeholder="Pesquisar"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label>&nbsp;&nbsp;</label>
+                            <button type="submit" class="btn btn-block btn-blue">
+                                <i class="fa fa-refresh"></i> Atualizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <table id="table-budgets" class="table-custom no-select">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Empresa</th>
+                    <th>Pedido</th>
+                    <th>Documento</th>
+                    <th>Representante</th>
+                    <th>Cliente</th>
+                    <th>Valor</th>
+                    <th>Desconto</th>
+                    <th>Aliquota</th>
+                    <th>Data</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="chart"></div>
+    </div>
+</div>
+<footer>
+    <button data-toggle="tooltip" data-title="Exibir gráfico" id="button-chart" class="btn btn-empty-green"><i class="fa fa-bar-chart"></i></button>
+    <button data-toggle="tooltip" data-title="Baixar planilha" id="button-excel" class="btn btn-empty-green"><i class="fa fa-file-excel-o"></i></button>
+    <div data-label="budgets-count" data-toggle="tooltip" data-title="Pedidos" ><i class="fa fa-files-o"></i> 0</div>
+    <div data-label="budgets-value" data-toggle="tooltip" data-title="Valor Total" ><i class="fa fa-usd"></i> 0</div>
+    <div data-label="budgets-value-discount" data-toggle="tooltip" data-title="Valor Total de Desconto" ><i class="fa fa-usd"></i> 0</div>
+    <span class="pull-right">{$config->system->system_name} v{$config->system->system_version}</span>
+</footer>
