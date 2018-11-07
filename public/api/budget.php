@@ -701,8 +701,7 @@
                     "COMMERCIAL.dbo.Budget B(NoLock) ",
                     "INNER JOIN COMMERCIAL.dbo.BudgetItem BI (NoLock) ON(BI.budget_id = B.budget_id)",
                     "INNER JOIN  DAFEL.dbo.Pessoa P (NoLock) ON(P.IdPessoa = B.seller_id)",
-                    "INNER JOIN DAFEL.dbo.Pessoa PC (NoLock) ON(PC.IdPessoa = B.client_id)",
-                    "LEFT JOIN DAFEL.dbo.Documento D (NoLock) ON(D.IdDocumento = B.document_id)",
+                    "INNER JOIN DAFEL.dbo.Pessoa PC (NoLock) ON(PC.IdPessoa = B.client_id)"
                 ],
                 "fields" => [
                     "B.budget_id",
@@ -710,8 +709,8 @@
                     "B.budget_status",
                     "B.external_code",
                     "B.external_type",
+                    "B.document_code",
                     "person_name=PC.NmPessoa",
-                    "document_code=D.NrDocumento",
                     "seller_id=P.IdPessoa",
                     "seller_name=P.NmPessoa",
                     "budget_date=FORMAT(B.budget_date,'yyyy-MM-dd HH:mm:ss')",
@@ -730,7 +729,7 @@
                         ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
                     ]
                 ],
-                "group" => "B.budget_id, B.company_id, B.budget_status, B.external_code, B.external_type, PC.NmPessoa, D.NrDocumento, P.IdPessoa, P.NmPessoa, B.budget_date"
+                "group" => "B.budget_id, B.company_id, B.budget_status, B.external_code, B.external_type, B.document_code, PC.NmPessoa, P.IdPessoa, P.NmPessoa, B.budget_date"
             ]);
 
             foreach( $budgets as $budget ){
@@ -742,6 +741,29 @@
                 $budget->budget_value_discount_order = substr("0000000000" . number_format((float)$budget->budget_value_discount,2,"",""),-10);
                 $budget->budget_value_percent_order = substr("0000000000" . number_format((float)$budget->budget_value_percent,2,"",""),-10);
             }
+
+            Json::get( $headerStatus[200], $budgets );
+
+        break;
+
+        case "getPerHour":
+
+            $budgets = Model::getList($commercial,(Object)[
+                "join" => 1,
+                "tables" => [ "COMMERCIAL.dbo.Budget B(NoLock)" ],
+                "fields" => [
+                    "hour=FORMAT(budget_date,'HH')",
+                    "type=document_type",
+	                "count=COUNT(Budget_id)"
+                ],
+                "filters" => [
+                    ["B.seller_id", "s", "in", @$post->seller_id ? $post->seller_id : NULL ],
+                    ["B.company_id", "s", "=", @$post->company_id ? $post->company_id : NULL ],
+                    ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
+                ],
+                "group" => "format(budget_date,'HH'), document_type",
+                "order" => "format(budget_date,''HH'')"
+            ]);
 
             Json::get( $headerStatus[200], $budgets );
 

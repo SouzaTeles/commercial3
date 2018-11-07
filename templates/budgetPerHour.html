@@ -1,0 +1,65 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="filter">
+            <form id="form-filter">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="company_id">Empresa</label>
+                            <select class="selectpicker show-tick" id="company_id" title="-- Selecione a Empresa --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="seller_id">Representantes</label>
+                            <select data-actions-box="true" data-selected-text-format="count > 1" multiple data-size="8" data-live-search="true" class="selectpicker show-tick" id="seller_id" name="seller_id[]" title="-- Selecione os Representantes --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="start_date">Data Inicial</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="start_date" data-to-mask="date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="end_date">Data Final</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="end_date" data-to-mask="date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label>&nbsp;&nbsp;</label>
+                            <button type="submit" class="btn btn-block btn-blue">
+                                <i class="fa fa-refresh"></i> Atualizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12">
+            <div id="stacked-chart"></div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <div id="pie1-chart"></div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <div id="pie2-chart"></div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <div id="pie3-chart"></div>
+        </div>
+    </div>
+</div>
+<footer>
+    <button data-toggle="tooltip" data-title="Maximizar" class="btn btn-empty-red-dark"><i class="fa fa-window-maximize"></i></button>
+    <button data-toggle="tooltip" data-title="Maximizar" class="btn btn-empty-red-dark"><i class="fa fa-window-minimize"></i></button>
+    <span class="pull-right">{$config->system->system_name} v{$config->system->system_version}</span>
+</footer>

@@ -38,6 +38,12 @@
 		"title": "Relatório de Descontos",
 		"parent": "compass"
 	},
+	"budgetPerHour": {
+		"key": "budgetPerHour",
+		"icon": "fa-clock-o",
+		"title": "Pedidos x Hora",
+		"parent": "compass"
+	},
 	"config": {
 		"key": "config",
 		"icon": "fa-gear",

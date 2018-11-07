@@ -71,6 +71,11 @@
                             <i class="fa fa-usd"></i>Relatório de Descontos
                         </a>
                     {/if}
+                    {if $login->access->compass->budgetPerHour->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=budgetPerHour" class="compass">
+                            <i class="fa fa-clock-o"></i>Pedidos x Hora
+                        </a>
+                    {/if}
                 </div>
             </li>
         {/if}

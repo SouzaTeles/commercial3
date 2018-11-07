@@ -1226,6 +1226,34 @@
                 "delivery_type" => "E"
             ];
 
+            $mainAddress = Model::get($dafel,(Object)[
+                "top" => 1,
+                "tables" => [ "PessoaEndereco" ],
+                "fields" => [
+                    "CdEndereco",
+                    "StEnderecoCobranca"
+                ],
+                "filters" => [
+                    [ "StEnderecoPrincipal", "s", "=", "S" ],
+                    [ "IdPessoa", "s", "=", $budget->client_id ]
+                ]
+            ]);
+
+            $paymentAddress = NULL;
+            if( @$mainAddress && $mainAddress->StEnderecoCobranca == "S" ){
+                $paymentAddress = $mainAddress;
+            } else {
+                $paymentAddress = Model::get($dafel,(Object)[
+                    "top" => 1,
+                    "tables" => [ "PessoaEndereco" ],
+                    "fields" => [ "CdEndereco" ],
+                    "filters" => [
+                        [ "StEnderecoCobranca", "s", "=", "S" ],
+                        [ "IdPessoa", "s", "=", $budget->client_id ]
+                    ]
+                ]);
+            }
+
             Model::insert($dafel,(Object)[
                 "table" => "PedidoDeVenda",
                 "fields" => [
@@ -1239,8 +1267,8 @@
                     [ "DtEntrega", "s", $budget->budget_delivery_date ],
                     [ "StPedidoDeVenda", "s", $orderParams->status ],
                     [ "IdPessoaCliente", "s", $budget->client_id ],
-                    [ "CdEnderecoPrincipal", "s", $budget->address_code ],
-                    [ "CdEnderecoCobranca", "s",  $budget->address_code ],
+                    [ "CdEnderecoPrincipal", "s", @$mainAddress ? $mainAddress->CdEndereco : $budget->address_code ],
+                    [ "CdEnderecoCobranca", "s", @$paymentAddress ? $paymentAddress->CdEndereco : $budget->address_code ],
                     [ "CdEnderecoEntrega", "s", $budget->address_code ],
                     [ "IdOperacao", "s", $config->budget->operation_id ],
                     [ "IdOperacaoOE", "s", $config->budget->oe_operation_id ],

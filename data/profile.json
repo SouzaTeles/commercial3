@@ -89,7 +89,7 @@
 		}
 	},
 	"compass": {
-		"name": "Commercial",
+		"name": "Compass",
 		"access": {
 			"name": "Visualiza",
 			"value": "N",
@@ -97,6 +97,11 @@
 		},
 		"discount": {
 			"name": "Relatório de Descontos",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"budgetPerHour": {
+			"name": "Pedidos x Hora",
 			"value": "N",
 			"data_type": "bool"
 		}
