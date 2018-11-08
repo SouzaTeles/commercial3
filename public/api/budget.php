@@ -750,10 +750,13 @@
 
             $budgets = Model::getList($commercial,(Object)[
                 "join" => 1,
-                "tables" => [ "COMMERCIAL.dbo.Budget B(NoLock)" ],
+                "tables" => [
+                    "COMMERCIAL.dbo.Budget B(NoLock)",
+                    "LEFT JOIN DAFEL.dbo.Documento D(NoLock) ON(D.IdDocumento = B.document_id)"
+                ],
                 "fields" => [
                     "hour=FORMAT(budget_date,'HH')",
-                    "type=document_type",
+                    "type=D.CdEspecie",
 	                "count=COUNT(Budget_id)",
 	                "value=CAST(ISNULL(SUM(Budget_value_total),0) AS FLOAT)",
                 ],
@@ -762,7 +765,7 @@
                     ["B.company_id", "s", "=", @$post->company_id ? $post->company_id : NULL ],
                     ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
                 ],
-                "group" => "format(budget_date,'HH'), document_type",
+                "group" => "format(budget_date,'HH'), D.CdEspecie",
                 "order" => "format(budget_date,''HH'')"
             ]);
 
