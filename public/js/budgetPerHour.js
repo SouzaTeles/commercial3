@@ -4,12 +4,12 @@ $(document).ready(function(){
     BudgetPerHour.showCompanies();
     BudgetPerHour.getList();
     global.mask();
-    global.toggle();
     global.tooltip();
     global.unLoader();
 });
 
 BudgetPerHour = {
+    field: 'count',
     pie1: [],
     pie2: [],
     pie3: [],
@@ -85,39 +85,40 @@ BudgetPerHour = {
             }
 
             if( parseInt(item.hour) <= 11 ){
-                BudgetPerHour.pie1[0].y += parseInt(item.count);
+                BudgetPerHour.pie1[0].y += parseFloat(item[BudgetPerHour.field]);
             } else if( parseInt(item.hour) <= 14 ){
-                BudgetPerHour.pie1[1].y += parseInt(item.count);
+                BudgetPerHour.pie1[1].y += parseFloat(item[BudgetPerHour.field]);
             } else {
-                BudgetPerHour.pie1[2].y += parseInt(item.count);
+                BudgetPerHour.pie1[2].y += parseFloat(item[BudgetPerHour.field]);
             }
 
             switch( item.type ){
                 case 'ECF':
                 case 'NCF-e':
                 case 'NFCe':
-                    BudgetPerHour.pie2[0].y += parseInt(item.count);
-                    BudgetPerHour.pie3[0].y += parseInt(item.count);
-                    BudgetPerHour.stacked.series[0].data[BudgetPerHour.stacked.categories.indexOf(item.hour)] = parseInt(item.count);
+                    BudgetPerHour.pie2[0].y += parseFloat(item[BudgetPerHour.field]);
+                    BudgetPerHour.pie3[0].y += parseFloat(item[BudgetPerHour.field]);
+                    BudgetPerHour.stacked.series[0].data[BudgetPerHour.stacked.categories.indexOf(item.hour)] = parseFloat(item[BudgetPerHour.field]);
                 break;
                 case 'NF':
                 case 'NFE':
                 case 'NFF':
-                    BudgetPerHour.pie2[1].y += parseInt(item.count);
-                    BudgetPerHour.pie3[0].y += parseInt(item.count);
-                    BudgetPerHour.stacked.series[1].data[BudgetPerHour.stacked.categories.indexOf(item.hour)] = parseInt(item.count);
+                    BudgetPerHour.pie2[1].y += parseFloat(item[BudgetPerHour.field]);
+                    BudgetPerHour.pie3[0].y += parseFloat(item[BudgetPerHour.field]);
+                    BudgetPerHour.stacked.series[1].data[BudgetPerHour.stacked.categories.indexOf(item.hour)] = parseFloat(item[BudgetPerHour.field]);
                 break;
                 case 'OE':
-                    BudgetPerHour.pie2[2].y += parseInt(item.count);
-                    BudgetPerHour.pie3[0].y += parseInt(item.count);
-                    BudgetPerHour.stacked.series[2].data[BudgetPerHour.stacked.categories.indexOf(item.hour)] = parseInt(item.count);
+                    BudgetPerHour.pie2[2].y += parseFloat(item[BudgetPerHour.field]);
+                    BudgetPerHour.pie3[0].y += parseFloat(item[BudgetPerHour.field]);
+                    BudgetPerHour.stacked.series[2].data[BudgetPerHour.stacked.categories.indexOf(item.hour)] = parseFloat(item[BudgetPerHour.field]);
                 break;
                 default:
-                    BudgetPerHour.pie3[1].y += parseInt(item.count);
-                    BudgetPerHour.stacked.series[3].data[BudgetPerHour.stacked.categories.indexOf(item.hour)] = parseInt(item.count);
+                    BudgetPerHour.pie3[1].y += parseFloat(item[BudgetPerHour.field]);
+                    BudgetPerHour.stacked.series[3].data[BudgetPerHour.stacked.categories.indexOf(item.hour)] = parseFloat(item[BudgetPerHour.field]);
                 break;
             }
         });
+
         BudgetPerHour.showStacked();
         BudgetPerHour.showPie1();
         BudgetPerHour.showPie2();
@@ -153,6 +154,16 @@ BudgetPerHour = {
         });
         $('#button-excel').click(function(){
             BudgetPerHour.table.button('0-0').trigger();
+        });
+        $('#show_value').bootstrapToggle({
+            width: '140px',
+            on: '<i class="fa fa-files-o"></i> Quantidade',
+            off: '<i class="fa fa-usd"></i> Valor',
+            onstyle: 'blue',
+            offstyle: 'blue'
+        }).on('change',function(){
+            BudgetPerHour.field = this.checked ? 'count' : 'value';
+            BudgetPerHour.showChart();
         });
     },
     getList: function(){

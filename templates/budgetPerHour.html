@@ -59,7 +59,10 @@
     </div>
 </div>
 <footer>
-    <button data-toggle="tooltip" data-title="Maximizar" class="btn btn-empty-red-dark"><i class="fa fa-window-maximize"></i></button>
-    <button data-toggle="tooltip" data-title="Maximizar" class="btn btn-empty-red-dark"><i class="fa fa-window-minimize"></i></button>
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <input checked type="checkbox" class="form-control" id="show_value" />
+        </div>
+    </div>
     <span class="pull-right">{$config->system->system_name} v{$config->system->system_version}</span>
 </footer>

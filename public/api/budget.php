@@ -754,7 +754,8 @@
                 "fields" => [
                     "hour=FORMAT(budget_date,'HH')",
                     "type=document_type",
-	                "count=COUNT(Budget_id)"
+	                "count=COUNT(Budget_id)",
+	                "value=CAST(ISNULL(SUM(Budget_value_total),0) AS FLOAT)",
                 ],
                 "filters" => [
                     ["B.seller_id", "s", "in", @$post->seller_id ? $post->seller_id : NULL ],
