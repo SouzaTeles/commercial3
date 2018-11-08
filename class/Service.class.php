@@ -167,6 +167,7 @@
                 ],
                 "filters" => [
                     [ "B.budget_status", "s", "=", "L" ],
+                    [ "B.external_type", "s", "=", "P" ],
                     [ "D.StDocumentoCancelado", "s", "=", "N" ],
                     [ "D.IdDocumento", "s", ">", $config->budget->last_document ]
                 ]
@@ -188,6 +189,7 @@
                 ],
                 "filters" => [
                     [ "B.budget_status", "s", "=", "L" ],
+                    [ "B.external_type", "s", "=", "D" ],
                     [ "D.StDocumentoCancelado", "s", "=", "N" ],
                     [ "D.IdDocumento", "s", ">", $config->budget->last_document ]
                 ]
@@ -249,7 +251,8 @@
                 "filters" => [
                     [ "D.StDocumentoCancelado", "s", "=", "S" ],
                     [ "D.DtEmissao", "s", ">=", $date ],
-                    [ "B.budget_status", "s", "=", "B" ]
+                    [ "B.budget_status", "s", "=", "B" ],
+                    [ "B.external_type", "s", "=", "P" ]
                 ]
             ]);
 
@@ -271,7 +274,8 @@
                 "filters" => [
                     [ "D.StDocumentoCancelado", "s", "=", "S" ],
                     [ "D.DtEmissao", "s", ">=", $date ],
-                    [ "B.budget_status", "s", "=", "B" ]
+                    [ "B.budget_status", "s", "=", "B" ],
+                    [ "B.external_type", "s", "=", "D" ]
                 ]
             ]);
 
