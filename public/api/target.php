@@ -17,6 +17,8 @@
 
         case "dashboard":
 
+            $reference = new DateTime(@$post->target_date ? $post->target_date : date("Y-m-d"));
+
             $ret = (Object)[
                 "days" => 0,
                 "past" => 0,
@@ -54,7 +56,8 @@
                         [ "seller_id", "s", "=", $login->person_id ],
                         [ "budget_trash", "s", "=", "N" ],
                         [ "budget_status", "s", "!=", "C" ],
-                        [ "budget_date", "s", "between", [date("Y-m-01")." 00:00:00",date("Y-m-d")." 23:59:59"] ]
+                        [ "budget_date", "s", "between", [$reference->format("Y-m-01 00:00:00"),$reference->format("Y-m-d 23:59:59")] ]
+//                        [ "budget_date", "s", "between", [date("Y-m-01")." 00:00:00",date("Y-m-d")." 23:59:59"] ]
                     ],
                     "group" => "budget_status"
                 ]);
@@ -84,7 +87,8 @@
                     ],
                     "filters" => [
                         [ "B.seller_id", "s", "=", $login->person_id ],
-                        [ "B.budget_date", "s", "between", [date("Y-m-01")." 00:00:00",date("Y-m-d")." 23:59:59"] ]
+                        [ "B.budget_date", "s", "between", [$reference->format("Y-m-01 00:00:00"),$reference->format("Y-m-d 23:59:59")] ]
+//                        [ "B.budget_date", "s", "between", [date("Y-m-01")." 00:00:00",date("Y-m-d")." 23:59:59"] ]
                     ]
                 ]);
 
@@ -107,7 +111,8 @@
                     ],
                     "filters" => [
                         [ "s.idERP", "s", "=", $login->person_id ],
-                        [ "t.target_date_start", "s", "=", date("Y-m-01") ]
+                        [ "t.target_date_start", "s", "=", $reference->format("Y-m-01") ]
+//                        [ "t.target_date_start", "s", "=", date("Y-m-01") ]
                     ]
                 ]);
 
@@ -115,7 +120,8 @@
                     $ret->month_value = (float)$data->target_val;
                     $calendar = calendar((Object)[
                         "company_id" => (int)$data->business_code,
-                        "reference" => date("Y-m-d")
+                        "reference" => $reference->format("Y-m-d")
+//                        "reference" => date("Y-m-d")
                     ]);
                     if( @$calendar ){
                         $ret->days = $calendar->days;
@@ -134,7 +140,8 @@
                         [ "s.company_id = c.company_id" ],
                         [ "b.billing_section", "s", "=", "seller" ],
                         [ "b.parent_id", "s", "=", $login->person_id ],
-                        [ "b.billing_reference", "s", "between", [date("Y-m-01"),date("Y-m-d")] ]
+                        [ "b.billing_reference", "s", "between", [$reference->format("Y-m-01"),$reference->format("Y-m-d")] ]
+//                        [ "b.billing_reference", "s", "between", [date("Y-m-01"),date("Y-m-d")] ]
                     ],
                     "group" => "b.billing_reference"
                 ]);
@@ -142,9 +149,12 @@
                 foreach( $data as $day ){
                     $day->billing_value = (float)$day->billing_value;
                     $ret->month_result += $day->billing_value;
-                    if( $day->billing_reference == date("Y-m-d") ){
+                    if( $day->billing_reference == $reference->format("Y-m-d") ){
                         $ret->daily_result = (float)$day->billing_value;
                     }
+//                    if( $day->billing_reference == date("Y-m-d") ){
+//                        $ret->daily_result = (float)$day->billing_value;
+//                    }
                 }
 
                 $ret->daily_value = ($ret->month_value/(@$ret->days ? $ret->days : 1));

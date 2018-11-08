@@ -116,6 +116,25 @@
         <div id="target" class="box-shadow">
             <div class="target-title">Acompanhamento de Metas</div>
             <div class="row">
+                <div class="col-xs-12 col-sm-3"></div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" class="form-control" id="target_date" data-to-mask="date"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <button id="button-target-refresh" class="btn btn-block btn-blue">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
                 <div class="col-xs-12 col-sm-3">
                     <div class="person"{if !empty($login->image)} style="background-image:url({$login->image})"{/if}></div>
                 </div>

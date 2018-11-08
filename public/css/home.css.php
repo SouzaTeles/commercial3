@@ -250,7 +250,7 @@
 
 #target
 {
-    height: 250px;
+    height: 290px;
     margin: 20px 0;
     background-color: #fff;
     padding: 20px 20px 20px 60px;
@@ -260,22 +260,27 @@
 {
     color: #fff;
     position: absolute;
-    left: -88px;
+    left: -108px;
     font-size: 20px;
-    top: 123px;
+    top: 143px;
     padding: 8px;
     text-align: center;
-    width: 250px;
+    width: 290px;
     transform: rotate(-90deg);
     background-color: <?php echo $colors->hex->palette["green"]; ?>
+}
+
+#target button
+{
+    height: 34px;
 }
 
 #target .person
 {
     left: -2px;
-    top: -20px;
-    width: 200px;
-    height: 250px;
+    top: -62px;
+    width: 220px;
+    height: 290px;
     margin: 0 auto;
     position: absolute;
     background-color: #ddd;

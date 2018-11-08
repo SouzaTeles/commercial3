@@ -4,19 +4,58 @@ $(document).ready(function() {
     BirthDays.getList();
     Blog.getList();
     Target.get();
+    Target.events();
 
     Suggestion.events();
     Suggestion.showCompanies();
 
+    global.mask();
     global.unLoader();
 
 });
 
 Target = {
     data: {},
+    events: function(){
+        $('#target_date').datepicker({
+            format: 'dd/mm/yyyy'
+        }).blur(function(){
+            if( $(this).val().length != 10 ){
+                $(this).val(global.date2Br(global.today()));
+            }
+        }).val(global.date2Br(global.today()));
+        $('#button-target-refresh').click(function(){
+            Target.init();
+            Target.get();
+        });
+    },
+    init: function(){
+        var resumeBarDaily = $('#resume-bar-daily');
+        $(resumeBarDaily).find('.bar-result').css({'width': 0});
+        $(resumeBarDaily).find('.bar-info').html('0/0');
+        var resumeBarConversion = $('#resume-bar-conversion');
+        $(resumeBarConversion).find('.bar-result').css({'width': 0});
+        $(resumeBarConversion).find('.bar-info').html('0%');
+        var resumeBarExploitation = $('#resume-bar-exploitation');
+        $(resumeBarExploitation).find('.bar-result').css({'width': 0});
+        $(resumeBarExploitation).find('.bar-info').html('0%');
+        var resumeBarDiscount = $('#resume-bar-discount');
+        $(resumeBarDiscount).find('.bar-result').css({'width': 0});
+        $('#month-value').html('Mensal<br/>R$ 0,00');
+        $('#month-percent').html('0%');
+        $('#month-result').html('R$ 0,00<br/>Faturado');
+        $('#daily-value').html('Diário<br/>R$ 0,00');
+        $('#daily-percent').html('0%');
+        $('#daily-result').html('R$ 0,00<br/>Faturado');
+        $('#month-donut').find('.one').css({'transform': 'rotate(-90deg)'});
+        $('#month-donut').find('.two').css({'transform': 'rotate(0deg)', 'background-color': '#666'});
+        $('#daily-donut').find('.one').css({'transform': 'rotate(-90deg)'});
+        $('#daily-donut').find('.two').css({'transform': 'rotate(0deg)', 'background-color': '#666'});
+    },
     get: function(){
         global.post({
             url: global.uri.uri_public_api + 'target.php?action=dashboard',
+            data: { target_date: global.date2Us($('#target_date').val()) },
             noLoader: 1,
             dataType: 'json'
         },function(data){
@@ -25,6 +64,10 @@ Target = {
         });
     },
     show: function(){
+        if( global.date2Us($('#target_date').val()) != global.today() && Target.data.month_value <= 0 ){
+            $('#target').hide();
+            return;
+        }
         var resumeBarDaily = $('#resume-bar-daily');
         $(resumeBarDaily).find('.bar-result').css({
             'width': Target.data.resume.daily_target_broken_percent + '%'
