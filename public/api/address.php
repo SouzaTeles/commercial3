@@ -322,8 +322,6 @@
 
         break;
 
-        break;
-
         case "getList":
 
             if( !@$post->person_id ){
