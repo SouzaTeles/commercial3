@@ -27,6 +27,10 @@
     $get = (Object)$_GET;
     $post = (Object)$_POST;
     $headers = getallheaders();
+    if( @$get->user_id && @$get->user_session ){
+        $_SESSION["user_id"] = $get->user_id;
+        $_SESSION["user_session_id"] = $get->user_session;
+    }
 
     Session::set();
     $device = Session::device();
