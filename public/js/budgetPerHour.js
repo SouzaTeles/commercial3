@@ -119,6 +119,15 @@ BudgetPerHour = {
             }
         });
 
+        BudgetPerHour.pie1[0].y = parseFloat(BudgetPerHour.pie1[0].y.toFixed(2));
+        BudgetPerHour.pie1[1].y = parseFloat(BudgetPerHour.pie1[1].y.toFixed(2));
+        BudgetPerHour.pie1[2].y = parseFloat(BudgetPerHour.pie1[2].y.toFixed(2));
+        BudgetPerHour.pie2[0].y = parseFloat(BudgetPerHour.pie2[0].y.toFixed(2));
+        BudgetPerHour.pie2[1].y = parseFloat(BudgetPerHour.pie2[1].y.toFixed(2));
+        BudgetPerHour.pie2[2].y = parseFloat(BudgetPerHour.pie2[2].y.toFixed(2));
+        BudgetPerHour.pie3[0].y = parseFloat(BudgetPerHour.pie3[0].y.toFixed(2));
+        BudgetPerHour.pie3[1].y = parseFloat(BudgetPerHour.pie3[1].y.toFixed(2));
+
         BudgetPerHour.showStacked();
         BudgetPerHour.showPie1();
         BudgetPerHour.showPie2();
