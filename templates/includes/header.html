@@ -1,6 +1,6 @@
 <header class="box-shadow {if empty($data->$route->parent)}{$data->$route->key}{else}{$data->$route->parent}{/if}">
     <div class="home">
-        <a href="{$URI_PUBLIC}">
+        <a href="{$URI_PUBLIC}?user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}">
             <img src="{$config->uri->uri_public}images/commercial-c.png" />
         </a>
     </div>

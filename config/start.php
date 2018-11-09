@@ -28,8 +28,22 @@
     $post = (Object)$_POST;
     $headers = getallheaders();
     if( @$get->user_id && @$get->user_session ){
-        $_SESSION["user_id"] = $get->user_id;
-        $_SESSION["user_session_id"] = $get->user_session;
+        $session = Model::get($commercial,(Object)[
+            "top" => 1,
+            "tables" => [ "UserSession" ],
+            "fields" => [ "user_id" ],
+            "filters" => [
+                [ "user_id", "i", "=", $get->user_id ],
+                [ "user_session_value", "s", "=", $get->user_session ],
+                [ "CONVERT(VARCHAR(10),user_session_date,126)", "s", "=", date("Y-m-d") ]
+            ]
+        ]);
+        if( @$session ){
+            $_SESSION["user_id"] = $get->user_id;
+            $_SESSION["user_session_id"] = $get->user_session;
+        } else {
+            Session::reset();
+        }
     }
 
     Session::set();
