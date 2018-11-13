@@ -95,6 +95,7 @@ footer button.selected
 .dropdown-budget ul
 {
     position: absolute;
+    z-index: 1011;
 }
 
 @media(max-width:1300px) {
