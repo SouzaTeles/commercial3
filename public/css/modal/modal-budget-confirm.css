@@ -1,0 +1,110 @@
+#modal-budget-confirm
+{
+    top: 0;
+}
+
+#modal-budget-confirm .modal-body
+{
+    max-height: 452px;
+}
+
+#modal-budget-confirm .image-cover
+{
+    height: 116px;
+    background-image: url('../../images/empty-image.png');
+}
+
+#modal-budget-confirm .warnings
+{
+    padding: 16px;
+    min-height: 116px;
+    line-height: 24px;
+    background-color: #ddd;
+}
+
+#modal-budget-confirm .warnings p
+{
+    font-size: 14px;
+}
+
+#modal-budget-confirm .modal-section
+{
+    height: 40px;
+    color: #fff;
+    font-size: 18px;
+    padding: 8px 15px;
+    margin-bottom: 10px;
+    background-color: #666;
+    text-transform: uppercase;
+}
+
+#modal-budget-confirm .modal-section-delivery
+{
+    /*text-align: right;*/
+    /*padding-right: 74px;*/
+}
+
+#modal-budget-confirm #address-selected
+{
+    height: 108px;
+    font-size: 1.15em;
+    margin-top: 10px;
+    position: relative;
+    background-color: #ddd;
+    padding: 12px 30px 10px 116px;
+}
+
+#modal-budget-confirm #address-selected .address-code
+{
+    top: 0;
+    left: 0;
+    color: #fff;
+    width: 100px;
+    height: 108px;
+    padding: 18px;
+    font-size: 52px;
+    position: absolute;
+    text-align: center;
+    background-color: #666;
+}
+
+#modal-budget-confirm #address-selected button
+{
+    top: 6px;
+    right: 6px;
+    font-size: 24px;
+    position: absolute;
+}
+
+#modal-budget-confirm textarea
+{
+    height: 160px;
+}
+
+#modal-budget-confirm .toggle
+{
+    right: 24px;
+    position: absolute;
+}
+
+#modal-budget-confirm .toggle, .toggle-on, .toggle-off
+{
+    min-width: 54px;
+    min-height: 24px;
+    border-radius: 20px !important;
+}
+
+#modal-budget-confirm .toggle .toggle-handle
+{
+    border-radius: 20px !important;
+}
+
+#modal-budget-confirm .toggle .btn-gray
+{
+    padding: 2px 2px 2px 12px;
+}
+
+#modal-budget-confirm .toggle .btn-orange
+{
+    padding: 2px 12px 2px 2px;
+}

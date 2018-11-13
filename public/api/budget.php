@@ -569,7 +569,7 @@
                     ["budget_note_document", "s", @$budget->budget_note_document ? utf8_decode($budget->budget_note_document) : NULL],
                     ["budget_payment_icon","s",$payment_icon],
                     ["budget_credit", "s", $budget->budget_credit],
-                    ["budget_delivery", "s", $budget->budget_delivery],
+                    ["budget_delivery", "s", @$budget->budget_delivery ? $budget->budget_delivery : "N"],
                     ["budget_status", "s", @$budget->export ? "L" : "O" ],
                     ["budget_origin", "s", $budget_origin],
                     ["budget_trash", "s", "N"],

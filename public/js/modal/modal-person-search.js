@@ -11,7 +11,7 @@ ModalPersonSearch = {
         person_contact: '',
         person_address: 'N',
         person_active: 'Y',
-        person_category_id: global.config.person.client_category_id
+        categories: []
     },
     table: global.table({
         selector: '#modal-table-people',
@@ -26,11 +26,11 @@ ModalPersonSearch = {
             url: global.uri.uri_public_api + 'person.php?action=active',
             data: {
                 person_id: ModalPersonSearch.person.person_id,
-                person_category_id: global.config.person.client_category_id
+                person_category_id: ModalPersonSearch.data.categories[0]
             },
             dataType: 'json'
         },function(){
-            ModalPersonSearch.success(ModalPersonSearch.person.person_id);
+            ModalPersonSearch.success(ModalPersonSearch.person);
         });
     },
     beforeActive: function(){
@@ -125,15 +125,10 @@ ModalPersonSearch = {
                 if( person.person_active == 'N' ){
                     ModalPersonSearch.beforeActive();
                 } else {
-                    ModalPersonSearch.success(ModalPersonSearch.person.person_id);
+                    ModalPersonSearch.success(ModalPersonSearch.person);
                 }
             });
         });
         ModalPersonSearch.table.draw();
-    },
-    success: function(person_id){
-        Person.get({person_id: person_id});
-        $('#modal-person-search').modal('hide');
-        Budget.goTo(2);
     }
 };

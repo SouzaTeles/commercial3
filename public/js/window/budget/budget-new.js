@@ -76,6 +76,7 @@ Company = {
             $.each(global.login.companies, function (key, company) {
                 if (company.company_id == company_id) {
                     Company.company = company;
+                    Company.company.delivery_days = parseInt(Company.company.delivery_days);
                     Budget.init();
                     Company.show();
                     if( !!global.url.searchParams.get('clone') ){
@@ -88,7 +89,7 @@ Company = {
                             Budget.blocked();
                         } else if( Budget.budget.budget_status == 'C' ){
                             Budget.canceled();
-                        } else{
+                        } else {
                             Company.afterGet();
                         }
                     }
@@ -242,21 +243,33 @@ Budget = {
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-budget-confirm',
             data: {
-                type: Budget.budget.export ? ( Budget.budget.export == 'dav' ? 'Dav' : 'Pedido' ) : 'orçamento',
-                stock: Item.check()
+                stock: Item.check(),
+                budget_type: Budget.budget.export,
+                budget_delivery: Budget.budget.budget_delivery,
+                budget_title: Budget.budget.export ? ( Budget.budget.export == 'dav' ? 'Dav' : 'Pedido' ) : 'Orçamento',
             },
             dataType: 'html'
         },function(html){
             global.modal({
-                icon: 'fa-question-circle',
-                title: 'Confirmação',
+                class: 'modal-big',
+                id: 'modal-budget-confirm',
+                icon: 'fa-shopping-cart',
+                title: 'Finalização do Pedido',
                 html: html,
                 buttons: [{
                     icon: 'fa-check',
                     title: 'Confirmar',
                     id: 'button-before-save-confirm',
+                    unclose: true,
                     action: function(){
-                        success();
+                        if( !Budget.budget.seller_id ){
+                            global.validateMessage('O Representante deverá ser informado.',function(){
+                                $('#modal_seller_code').focus().select();
+                            })
+                        } else {
+                            success();
+                            $('#modal-budget-confirm').modal('hide');
+                        }
                     }
                 }],
                 shown: function(){
@@ -491,9 +504,7 @@ Budget = {
                         });
                     }
                 }
-                Seller.search(function(){
-                    Payment.check();
-                });
+                Payment.check();
             }
         }).prop('disabled',Budget.budget.budget_status != 'O');
         $('#button-budget-save-dav').click(function(){
@@ -517,9 +528,7 @@ Budget = {
                         });
                     }
                 }
-                Seller.search(function(){
-                    Payment.check();
-                });
+                Payment.check();
             }
         }).prop('disabled',Budget.budget.budget_status != 'O');
         $('#button-budget-save-order').click(function(){
@@ -538,11 +547,19 @@ Budget = {
                         });
                     }
                 }
-                Seller.search(function(){
-                    Payment.check();
-                });
+                Payment.check();
             }
         }).prop('disabled',Budget.budget.budget_status != 'O');
+        $('button[data-action="budget-delivery"]').click(function(){
+            Budget.budget.budget_delivery = $(this).attr('data-value');
+            $('button[data-action="budget-delivery"]').removeClass('selected');
+            $(this).addClass('selected');
+            if( Budget.budget.budget_delivery == 'Y' ){
+                $(this).prev().find('.spin').css({'left':'38px'});
+            } else {
+                $(this).next().find('.spin').css({'left':'0'});
+            }
+        });
     },
     get: function(budget_id){
         global.post({
@@ -552,6 +569,7 @@ Budget = {
                 get_budget_items: 1,
                 get_product_stock: 1,
                 get_budget_person: 1,
+                get_person_address: 1,
                 get_person_credit: 1,
                 get_person_credit_limit: 1,
                 get_budget_address: 1,
@@ -598,6 +616,7 @@ Budget = {
             Budget.budget = {
                 budget_id: null,
                 company_id: Company.company.company_id,
+                seller_id: null,
                 person_id: null,
                 term_id: null,
                 address_code: null,
@@ -618,8 +637,8 @@ Budget = {
                 budget_note_document: '',
                 budget_credit: 'N',
                 budget_status: 'O',
-                budget_delivery: 'N',
-                budget_delivery_date: global.dateAddDays(global.today(),3),
+                budget_delivery: null,
+                budget_delivery_date: global.dateAddDays(global.today(),Company.company.delivery_days),
                 items: [],
                 payments: [],
                 credit: {
@@ -628,7 +647,7 @@ Budget = {
                 },
                 export: null,
                 authorization: [],
-                instance_id: Budget.instance(),
+                instance_id: Budget.instance()
             };
             Item.init();
             Person.init();
@@ -941,6 +960,15 @@ Budget = {
             return false;
         }
         if( !!Budget.budget.export ){
+            if( Budget.budget.export == 'order' && !Budget.budget.budget_delivery ){
+                global.validateMessage('Informe se o pedido será para entrega.');
+                global.scrollTo({
+                    delay: 500,
+                    addition: 200,
+                    selector: '.panel-person'
+                });
+                return false;
+            }
             if(!Budget.budget.payments.length && Budget.budget.credit.value == 0){
                 global.validateMessage('As informações de pagamentos deverão ser adicionadas.');
                 global.scrollTo({
@@ -1875,6 +1903,15 @@ Person = {
         $('#button-image-person-web-cam').prop('disabled',!Person.person.person_id);
         $('#button-budget-person-address').prop('disabled',!Person.person.person_id);
         $('#button-budget-payment-credit').prop('disabled',!Person.person.person_id);
+        if( !!budget_id ){
+            if( Budget.budget.budget_delivery == 'Y' ){
+                $('.spin').css({'left':'38px'});
+                $('button[data-action="budget-delivery"]').eq(1).addClass('selected');
+            } else {
+                $('.spin').css({'left':'0'});
+                $('button[data-action="budget-delivery"]').eq(0).addClass('selected');
+            }
+        }
         Person.showAttributes();
         PersonImage.show();
         if( Budget.budget.credit.value > 0){
@@ -2088,6 +2125,12 @@ Person = {
                 }],
                 shown: function(){
                     $('#modal_person_name').focus();
+                    ModalPersonSearch.data.categories.push(global.config.person.client_category_id);
+                    ModalPersonSearch.success = function(person){
+                        Person.get({person_id: person.person_id});
+                        $('#modal-person-search').modal('hide');
+                        Budget.goTo(2);
+                    }
                 },
                 hidden: function(){
                     $('#person_code').focus();
@@ -2213,7 +2256,7 @@ PersonImage = {
 Address = {
     address: {},
     delivery: null,
-    getAddress: true,
+    getAddress: false,
     contact: function(key){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-address-contact',
@@ -2345,7 +2388,7 @@ Address = {
         $panel.find('.address-card').parent().remove();
         $.each( Person.person.address, function(key,address){
             address.key = key;
-            var main = address.address_main == 'Y';
+            // var main = address.address_main == 'Y';
             var selected = Budget.budget && Budget.budget.address_code == address.address_code;
             $panel.append(
                 '<div class="col-xs-12 col-sm-4">' +
@@ -2381,25 +2424,16 @@ Address = {
             Address.showDelivery();
             Address.showList();
         });
-        $panel.find('button[data-action="map"]').click(function(e){
-            e.preventDefault();
-            e.stopPropagation();
+        $panel.find('button[data-action="map"]').click(function(){
             Address.map($(this).attr('data-key'));
-
         });
-        $panel.find('button[data-action="main"]').click(function(e){
-            e.preventDefault();
-            e.stopPropagation();
+        $panel.find('button[data-action="main"]').click(function(){
             Address.main($(this).attr('data-key'));
         });
-        $panel.find('button[data-action="contact"]').click(function(e){
-            e.preventDefault();
-            e.stopPropagation();
+        $panel.find('button[data-action="contact"]').click(function(){
             Address.contact($(this).attr('data-key'));
         });
-        $panel.find('button[data-action="edit"]').click(function(e){
-            e.preventDefault();
-            e.stopPropagation();
+        $panel.find('button[data-action="edit"]').click(function(){
             Address.new($(this).attr('data-key'));
         });
         $panel.find('[data-toggle="tooltip"]').tooltip();

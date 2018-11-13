@@ -98,6 +98,7 @@
                         "c.company_budget_message",
                         "c.company_st",
                         "c.company_credit",
+                        "c.delivery_days",
                         "uc.user_company_main"
                     ],
                     "filters" => [

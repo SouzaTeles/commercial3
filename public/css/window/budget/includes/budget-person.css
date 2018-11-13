@@ -71,15 +71,62 @@
     border-top: 1px solid #ddd;
 }
 
-.panel-person .panel-footer div
+.panel-person .panel-footer > div,
+.panel-person .panel-footer .budget-delivery > div,
+.panel-person .panel-footer .budget-delivery > button
 {
     float: left;
 }
 
+.panel-person .panel-footer .budget-delivery
+{
+    margin-right: 10px;
+}
+
+.panel-person .panel-footer .budget-delivery button
+{
+    padding: 2px 6px;
+    position: relative;
+    border-radius: 4px !important;
+}
+
+.panel-person .panel-footer .budget-delivery button i.fa-times,
+.panel-person .panel-footer .budget-delivery button i.fa-check
+{
+    top: 6px;
+    left: 18px;
+    font-size: 18px;
+    position: absolute;
+}
+
+.panel-person .panel-footer .budget-delivery button.selected
+{
+    background-color: lightgray;
+}
+
+.panel-person .panel-footer .budget-delivery .toggle-delivery
+{
+    width: 58px;
+    height: 20px;
+    margin: 10px 2px;
+    background: gray;
+    border-radius: 12px;
+}
+
+.panel-person .panel-footer .budget-delivery .toggle-delivery .spin
+{
+    left: 20px;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    border-radius: 50%;
+    background: lightgray;
+    transition: left .3s ease;
+}
+
 .panel-person .panel-footer i.fa-truck
 {
-    font-size: 36px;
-    margin: 2px 10px 0 0;
+    font-size: 30px;
 }
 
 .panel-person .panel-footer div span

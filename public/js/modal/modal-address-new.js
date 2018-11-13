@@ -58,6 +58,7 @@ ModalAddressNew = {
             Address.showList();
             setTimeout(function(){
                 global.modal({
+                    size: 'small',
                     icon: 'fa-info',
                     title: 'Informação',
                     html: '<p>Endereço cadastrado com sucesso.<br/>Código: ' + data.address_code + '</p>',
@@ -67,7 +68,10 @@ ModalAddressNew = {
                     }]
                 });
             },500);
-            $('#modal-address-new').modal('hide');            
+            if( !!ModalAddressNew.afterSave ){
+                ModalAddressNew.afterSave();
+            }
+            $('#modal-address-new').modal('hide');
         });
     },
     edit: function(){

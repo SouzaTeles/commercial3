@@ -1,7 +1,93 @@
-<p>Deseja salvar o {$smarty.post.type} atual?</p>
-{if $smarty.post.stock > 0}
-    <div class="modal-box bd-red-light">
-        <b class="txt-red-light">Atenção!</b>
-        <p>Este orçamento contém {$smarty.post.stock} produto{if $smarty.post.stock > 1}s{/if} em falta no estoque!</p>
+<link href="{$URI_PUBLIC}css/modal/modal-budget-confirm.css?{$smarty.now}" rel="stylesheet" />
+<div class="row">
+    <div class="col-xs-12">
+        <div class="modal-section">
+            <span class="pull-left"><i class="fa fa-id-badge"></i> Vendedor</span>
+            <span class="pull-right">Alertas <i class="fa fa-warning"></i></span>
+        </div>
     </div>
-{/if}
+    <div class="col-xs-12 col-sm-6">
+        <div class="row">
+            <div class="col-xs-12 col-sm-4" style="padding-right:0;">
+                <div id="modal-person-image" class="image-cover"></div>
+            </div>
+            <div class="col-xs-12 col-sm-8">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="modal_seller_code">Código</label>
+                            <div class="input-group">
+                                <input data-value="" type="text" class="form-control" id="modal_seller_code" placeholder="Código" data-to-mask="code"/>
+                                <span id="button-person-search" class="btn input-group-addon"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12">
+                        <div class="form-group">
+                            <label for="modal_seller_name">Nome</label>
+                            <input data-value="" type="text" class="form-control" id="modal_seller_name" placeholder="Nome"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="warnings">
+            {if $smarty.post.stock > 0}
+                <p>&bull; Este orçamento contém {$smarty.post.stock} produto{if $smarty.post.stock > 1}s{/if} em falta no estoque!</p>
+            {else}
+                <p>Nenhum alerta importante.</p>
+            {/if}
+        </div>
+    </div>
+    {if $smarty.post.budget_type == 'order' && $smarty.post.budget_delivery == 'Y'}
+        <div class="col-xs-12">
+            <div class="modal-section modal-section-delivery">
+                <i class="fa fa-truck"></i> Informações de Entrega
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="row">
+                <div class="col-xs-12 col-sm-7">
+                    <div class="form-group">
+                        <label for="modal_delivery_address">Endereço de Entrega</label>
+                        <div class="input-group">
+                            <select data-size="5" class="selectpicker show-tick" id="modal_delivery_address" name="modal_delivery_address" title="-- Selecione --"></select>
+                            <span id="button-modal-address-new" class="btn btn-green input-group-addon"><i class="fa fa-plus"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-5">
+                    <div class="form-group">
+                        <label for="modal_delivery_date">Data de Entrega</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" class="form-control" id="modal_delivery_date" data-to-mask="date"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div id="address-selected">
+                        <button id="button-modal-address-map" class="btn btn-empty-red">
+                            <i class="fa fa-map-marker"></i>
+                        </button>
+                        <div class="address-code">--</div>
+                        <div class="address-address">
+                            --<br/>
+                            --<br/>
+                            CEP: --
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group" style="margin-bottom:0;">
+                <label for="modal_note">Observações</label>
+                <textarea rows="6" class="form-control" id="modal_note" name="modal_note" placeholder="Observações"></textarea>
+            </div>
+        </div>
+    {/if}
+</div>
+<script src="{$URI_PUBLIC}js/modal/modal-budget-confirm.js?{$smarty.now}"></script>
