@@ -435,7 +435,7 @@
 
         case "theme":
 
-            if( $_SESSION["theme"] != "daniel" ){
+            if( @$_SESSION["theme"] && $_SESSION["theme"] != "daniel" ){
                 $_SESSION["theme"] = "daniel";
             } else {
                 $_SESSION["theme"] = "";
