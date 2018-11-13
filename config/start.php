@@ -27,7 +27,7 @@
     $get = (Object)$_GET;
     $post = (Object)$_POST;
     $headers = getallheaders();
-    if( @$get->user_id && @$get->user_session ){
+    if( !Session::isUser() && @$get->user_id && @$get->user_session ){
         $session = Model::get($commercial,(Object)[
             "top" => 1,
             "tables" => [ "UserSession" ],
@@ -41,8 +41,6 @@
         if( @$session ){
             $_SESSION["user_id"] = $get->user_id;
             $_SESSION["user_session_id"] = $get->user_session;
-        } else {
-            Session::reset();
         }
     }
 
