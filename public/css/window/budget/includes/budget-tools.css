@@ -5,6 +5,7 @@
     right: 0;
     z-index: 1010;
     position: fixed;
+    min-width: 986px;
     background-color: #fff;
 }
 
