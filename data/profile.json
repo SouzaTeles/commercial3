@@ -178,6 +178,14 @@
 			"data_type": "bool"
 		}
 	},
+	"noteEntry": {
+		"name": "Entrada de Nota",
+		"access": {
+			"name": "Visualiza",
+			"value": "Y",
+			"data_type": "bool"
+		}
+	},
 	"package": {
 		"name": "Encomendas",
 		"access": {

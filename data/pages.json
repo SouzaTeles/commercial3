@@ -120,6 +120,12 @@
 		"title": "Gestão",
 		"parent": "logistics"
 	},
+	"noteEntry": {
+		"key": "noteEntry",
+		"icon": "fa-file-o",
+		"title": "Entrada de Nota",
+		"parent": "stock"
+	},
 	"operation": {
 		"key": "operation",
 		"icon": "fa-list",
