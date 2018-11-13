@@ -2,6 +2,7 @@
 /data/conn.json
 /log
 /doc
+/public/carai.php
 /public/import.php
 /public/import2.php
 /public/files
