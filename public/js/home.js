@@ -64,7 +64,7 @@ Target = {
         });
     },
     show: function(){
-        if( global.date2Us($('#target_date').val()) != global.today() && Target.data.month_value <= 0 ){
+        if( Target.data.month_value <= 0 ){
             $('#target').hide();
             return;
         }
@@ -98,17 +98,17 @@ Target = {
         $('#month-donut').find('.one').css({
             'transform': 'rotate(' + (Target.data.month_percent <= 50 ? (-90 + Target.data.month_percent * 1.8) : '90') + 'deg)',
             'background-color': '#46c048'
-        })
+        });
         $('#month-donut').find('.two').css({
-            'transform': 'rotate(' + (Target.data.month_percent >= 100 ? '0' : ( Target.data.month_percent > 50 ? (180+Target.data.month_percent * 1.8) : '0')) + 'deg)',
+            'transform': 'rotate(' + (Target.data.month_percent >= 100 ? '0' : ( Target.data.month_percent > 50 ? (180+(Target.data.month_percent-50) * 1.8) : '0')) + 'deg)',
             'background-color': (Target.data.month_percent > 50 ? '#46c048' : '#666')
         });
         $('#daily-donut').find('.one').css({
             'transform': 'rotate(' + (Target.data.daily_percent <= 50 ? (-90 + Target.data.daily_percent * 1.8) : '90') + 'deg)',
             'background-color': '#f57c00'
-        })
+        });
         $('#daily-donut').find('.two').css({
-            'transform': 'rotate(' + (Target.data.daily_percent >= 100 ? '0' : ( Target.data.daily_percent > 50 ? (180+Target.data.daily_percent * 1.8) : '0')) + 'deg)',
+            'transform': 'rotate(' + (Target.data.daily_percent >= 100 ? '0' : ( Target.data.daily_percent > 50 ? (180+(Target.data.month_percent-50) * 1.8) : '0')) + 'deg)',
             'background-color': (Target.data.daily_percent > 50 ? '#f57c00' : '#666')
         });
     }
