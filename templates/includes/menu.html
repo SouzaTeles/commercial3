@@ -57,6 +57,11 @@
                             <i class="fa fa-plus-square-o"></i>Cadastro
                         </a>
                     {/if}
+                    {if $login->access->noteEntry->access->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=noteEntry&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="stock">
+                            <i class="fa fa-file-o"></i>Entrada de Nota
+                        </a>
+                    {/if}
                 </div>
             </li>
         {/if}
