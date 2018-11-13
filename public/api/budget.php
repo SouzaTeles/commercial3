@@ -17,6 +17,52 @@
 
     switch( $get->action ) {
 
+        case "del":
+
+            if (!@$post->budget_id ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $budget = Model::get($commercial, (Object)[
+                "tables" => [ "Budget" ],
+                "fields" => [ "budget_status" ],
+                "filters" => [
+                    [ "budget_trash", "s", "=", "N"],
+                    [ "budget_id", "i", "=", $post->budget_id ]
+                ]
+            ]);
+
+            if( !@$budget ){
+                headerResponse((Object)[
+                    "code" => 404,
+                    "message" => "Orçamento não encontrado."
+                ]);
+            }
+
+            if( $budget->budget_status != "O" ){
+                headerResponse((Object)[
+                    "code" => 404,
+                    "message" => "O Orçamento está exportado. Não será possível remove-lo."
+                ]);
+            }
+
+            Model::update($commercial, (Object)[
+                "table" => "Budget",
+                "fields" => [[ "budget_trash", "s", "Y" ]],
+                "filters" => [[ "budget_id", "i", "=", $post->budget_id ]]
+            ]);
+
+            postLog((Object)[
+                "parent_id" => $post->budget_id
+            ]);
+
+            Json::get($headerStatus[200]);
+
+        break;
+
         case "get":
 
             if (!@$post->budget_id ){
@@ -1131,9 +1177,10 @@
 
             Json::get($headerStatus[200], $delivery);
 
-            break;
+        break;
 
         case "creditAuthorization":
+        case "deliveryAuthorization":
         case "itemDiscountAuthorization":
         case "generalDiscountAuthorization":
 
@@ -1186,6 +1233,21 @@
                     headerResponse((Object)[
                         "code" => 417,
                         "message" => "O usuário não possui permissão para liberação de crédito."
+                    ]);
+                }
+            } else if( $get->action == "deliveryAuthorization" ){
+                $access = Model::get( $commercial, (Object)[
+                    "tables" => [ "[UserAccess]" ],
+                    "fields" => [ "budget_delivery=user_access_value" ],
+                    "filters" => [
+                        [ "user_id", "s", "=", $user->user_id ],
+                        [ "user_access_name", "s", "=", "budget_delivery" ]
+                    ]
+                ]);
+                if( !@$access || $access->budget_delivery == "N"){
+                    headerResponse((Object)[
+                        "code" => 417,
+                        "message" => "O usuário não possui permissão para alterar as informações de entrega."
                     ]);
                 }
             } else if( $get->action == "itemDiscountAuthorization" ){

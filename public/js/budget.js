@@ -128,7 +128,7 @@ Budget = {
                     // '<li><a data-action="info" disabled="' + ( true || global.login.access.budget.info.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-info txt-gray"></i>Informações</a></li>' +
                     '<li><a data-action="audit" disabled="' + ( global.login.access.budget.audit.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-shield txt-green"></i>Auditoria</a></li>' +
                     '<li class="divider"></li>' +
-                    '<li><a data-action="del" disabled="' + ( true || budget.budget.status != 'O' || global.login.access.budget.del.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-trash-o txt-red"></i>Apagar</a></li>' +
+                    '<li><a data-action="beforeDel" disabled="' + ( budget.budget.status != 'O' || global.login.access.budget.del.value == 'N' ) + '" data-key="' + budget.key + '" data-id="' + budget.budget.id + '" class="dropdown-item" href="#"><i class="fa fa-trash-o txt-red"></i>Apagar</a></li>' +
                 '</ul>' +
             '</div>'
         );
@@ -153,6 +153,25 @@ Budget = {
                     title: 'Fechar'
                 }]
             });
+        });
+    },
+    beforeDel: function(key,id){
+        global.modal({
+            size: 'small',
+            icon: 'fa-question-circle-o',
+            title: 'Confirmação',
+            html: '<p>Deseja realmente remover o orçamento?</p>',
+            buttons: [{
+                icon: 'fa-times',
+                title: 'Não',
+                class: 'pull-left'
+            },{
+                icon: 'fa-check',
+                title: 'Sim',
+                action: function(){
+                    Budget.del(id)
+                }
+            }]
         });
     },
     beforeDelivery: function(key){
@@ -209,6 +228,14 @@ Budget = {
                     });
                 }
             }]
+        });
+    },
+    del: function(id){
+        global.post({
+            url: global.uri.uri_public_api + 'budget.php?action=del',
+            data: { budget_id: id }
+        },function(){
+            Budget.getList();
         });
     },
     events: function(){
