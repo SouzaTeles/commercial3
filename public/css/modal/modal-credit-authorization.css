@@ -45,3 +45,11 @@
 {
     margin-top: 10px;
 }
+
+@media(max-height:700px)
+{
+    .modal-credit-authorization
+    {
+        top: 20px;
+    }
+}
