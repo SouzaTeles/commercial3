@@ -371,7 +371,7 @@
             if( !@$post->address_cep ){
                 headerResponse((Object)[
                     "code" => 417,
-                    "message" => "Parâmetro GET não localizado."
+                    "message" => "O endereço não possui CEP para a geolocalização."
                 ]);
             }
 
