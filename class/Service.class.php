@@ -168,9 +168,11 @@
                 "filters" => [
                     [ "B.budget_status", "s", "=", "L" ],
                     [ "B.external_type", "s", "=", "P" ],
+                    [ "D.DtEmissao", "s", "=", date("Y-m-d") ],
                     [ "D.StDocumentoCancelado", "s", "=", "N" ],
-                    [ "D.IdDocumento", "s", ">", $config->budget->last_document ]
-                ]
+                    //[ "D.IdDocumento", "s", ">", $config->budget->last_document ]
+                ],
+                "order" => "D.IdDocumento ASC"
             ]);
 
             $data2 = Model::getList($dafel,(Object)[
@@ -190,9 +192,11 @@
                 "filters" => [
                     [ "B.budget_status", "s", "=", "L" ],
                     [ "B.external_type", "s", "=", "D" ],
+                    [ "D.DtEmissao", "s", "=", date("Y-m-d") ],
                     [ "D.StDocumentoCancelado", "s", "=", "N" ],
-                    [ "D.IdDocumento", "s", ">", $config->budget->last_document ]
-                ]
+                    //[ "D.IdDocumento", "s", ">", $config->budget->last_document ]
+                ],
+                "order" => "D.IdDocumento ASC"
             ]);
 
             $data = array_merge($data1,$data2);

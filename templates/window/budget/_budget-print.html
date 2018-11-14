@@ -1,0 +1,197 @@
+<div class="print-order box-shadow">
+    <div class="header">
+        <table>
+            <tr>
+                <td class="logo">
+                    <img id="company-logo" src="{$company->image}" />
+                </td>
+                <td class="company">
+                    <b id="company-name">{if !empty($budget->company->company_short_name)}{$budget->company->company_short_name}{else}{$budget->company->company_name}{/if}</b><br/>
+                    <b id="company-address">
+                        {$budget->company->address->address_type}
+                        {$budget->company->address->address_public_place}<br/>
+                        {$budget->company->address->district_name}
+                        {$budget->company->address->city_name}
+                        {$budget->company->address->uf_id}
+                    </b><br/>
+                    <b id="company-phone">{$budget->company->company_phone}</b>
+                </td>
+                <td class="budget-info text-right">
+                    {if $budget->budget_status != 'O'}
+                        <b id="external-code">
+                            {if $budget->external_type == "D"}DAV{else}Pedido{/if}: {$budget->external_code}
+                        </b>
+                    {/if}
+                    <br/>
+                    <b id="budget-date">Data: {$budget->budget_date|date_format:'%d/%m/%Y'}</b><br/>
+                    <b id="budget-code">Orçamento: {$budget->budget_code}</b><br/>
+                    <b id="seller-name">Vendedor: {if !empty($budget->seller->seller_short_name)}{$budget->seller->seller_short_name}{else}{$budget->seller->seller_name}{/if}</b>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="budget-message">{$company->company_budget_message}</div>
+    {if $budget->client_id != $company->company_consumer_id}
+        <div id="client-info">
+            <table>
+                <tbody>
+                <tr>
+                    <td colspan="2">
+                        <b id="client-name">Cliente: {$budget->person->person_code} - {$budget->person->person_name}</b>
+                    </td>
+                    <td class="text-right">
+                        <b id="client-contact">Contato: {if !empty($budget->person->address[0]) && !empty($budget->person->address[0]->contacts)}{$budget->person->address[0]->contacts[0]->address_contact_value}{else}--{/if}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <b id="client-address">
+                            {$budget->person->address[0]->address_type}
+                            {$budget->person->address[0]->address_public_place}<br/>
+                            {$budget->person->address[0]->district_name}
+                            {$budget->person->address[0]->city_name}
+                            {$budget->person->address[0]->uf_id}
+                        </b>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    {/if}
+    <div class="products">
+        <table id="table-products" class="table-border">
+            <thead>
+                <th width="auto" class="te">Produto</th>
+                <th width="4%">Und</th>
+                <th width="4%">Qtd</th>
+                <th width="8%">Valor</th>
+                <th width="7%" colspan="2">Desconto</th>
+                {if $company->company_st == 'Y'}<th width="7%">Subs. Trib.</th>{/if}
+                <th width="7%">Líquido</th>
+                <th width="8%">Total</th>
+            </thead>
+            <tbody>
+                {foreach from=$budget->items item=item}
+                    <tr>
+                        <td>{$item->product_code} - {$item->product_name}</td>
+                        <td>{$item->unit_code}</td>
+                        <td>{$item->budget_item_quantity}</td>
+                        <td>R${$item->budget_item_value_unitary|number_format:'2':',':'.'}</td>
+                        <td>{$item->budget_item_aliquot_discount|number_format:'2':',':'.'}%</td>
+                        <td>R${$item->budget_item_value_discount|number_format:'2':',':'.'}</td>
+                        {if $company->company_st == 'Y'}<td>R${$item->budget_item_value_st|number_format:'2':',':'.'}</td>{/if}
+                        <td>R${($item->budget_item_value_total/$item->budget_item_quantity)|number_format:'2':',':'.'}</td>
+                        <td>R${$item->budget_item_value_total|number_format:'2':',':'.'}</td>
+                    </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+    <div class="address-values-payments">
+        <table>
+            <tr>
+                <td class="address">
+                    <table class="table-border">
+                        <thead>
+                            <th class="text-center">Endereço de Entrega</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="budget-address">
+                                    Endereço:
+                                    {$budget->address->address_type}
+                                    {$budget->address->address_public_place}
+                                    {$budget->address->address_number}
+                                    {$budget->address->district_name}
+                                    {$budget->address->city_name}
+                                    {$budget->address->uf_id}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="values">
+                    <table id="table-budget-values" class="table-border">
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="2">Valores</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Valor Bruto</td>
+                                <td id="budget-value" class="text-center">R${$budget->budget_value|number_format:'2':',':'.'}</td>
+                            </tr>
+                            <tr>
+                                <td>Desconto Total</td>
+                                <td id="budget-value-discount" class="text-center">R${$budget->budget_value_discount|number_format:'2':',':'.'}</td>
+                            </tr>
+                            {if $company->company_st == 'Y'}
+                                <tr>
+                                    <td>Subs. Trib.</td>
+                                    <td id="budget-value-st" class="text-center">R${$budget->budget_value_st|number_format:'2':',':'.'}</td>
+                                </tr>
+                            {/if}
+                            <tr>
+                                <td>Valor Total</td>
+                                <td id="budget-value-total" class="text-center">R${$budget->budget_value_total|number_format:'2':',':'.'}</td>
+                            </tr>
+                            {if $company->company_st == 'Y'}
+                                <tr>
+                                    <td>Valor Total com ST</td>
+                                    <td id="budget-value-total-st" class="text-center">R${($budget->budget_value_total+$budget->budget_value_st)|number_format:'2':',':'.'}</td>
+                                </tr>
+                            {/if}
+                        </tbody>
+                    </table>
+                </td>
+                <td class="payments">
+                    <table id="table-payments" class="table-border">
+                        <thead>
+                            <tr>
+                                <th id="payment-title" class="text-center" colspan="4">Pagamento{if !empty($budget->term)} {$budget->term->term_description}{/if}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$budget->payments item=payment}
+                                <tr>
+                                    <td class="text-center">{$payment->budget_payment_installment}x</td>
+                                    <td>{$payment->modality_description}</td>
+                                    <td class="text-center">R${$payment->budget_payment_value|number_format:'2':',':'.'}</td>
+                                    <td class="text-center">{$payment->budget_payment_deadline|date_format:'%d/%m/%Y'}</td>
+                                </tr>
+                            {foreachelse}
+                                <tr><td colspan="4" class="text-center">Nenhum pagamento informado</td></tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="note">
+        <table class="table-border">
+            <tr>
+                <th>Observações do Pedido</th>
+                <th>Observações da Nota</th>
+            </tr>
+            <tr>
+                <td id="budget-note">{if !empty($budget->budget_note)}{$budget->budget_note}{else}--{/if}</td>
+                <td id="budget-note-document">{if !empty($budget->budget_note_document)}{$budget->budget_note_document}{else}--{/if}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="seller">
+        <table>
+            <tr>
+                <td class="text-right">
+                    Impresso em: {$smarty.now|date_format:"%d/%m/%Y %H:%M:%S"}<br/>
+                    {$config->system->system_name} v{$config->system->system_version}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<button id="button-print" class="btn btn-orange box-shadow" type="button">
+    <i class="fa fa-print"></i>
+</button>
