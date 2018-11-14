@@ -38,6 +38,18 @@ td
     font-weight: 600;
 }
 
+.bar-code
+{
+    text-align: right;
+    vertical-align: bottom;
+}
+
+.bar-code svg
+{
+    width: 136px;
+    height: 70px;
+}
+
 .container
 {
     padding: 20px !important;

@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
-    //Print.getBudget();
     Print.events();
+    Print.getBudget();
     global.unLoader();
 
 });
@@ -85,6 +85,10 @@ Print = {
         $('#budget-date').text('Data: ' + global.date2Br(Print.budget.budget_date.substring(0,10)));
         $('#budget-code').text('Orçamento n°: ' + Print.budget.budget_code);
         $('#seller-name').html('Vendedor: ' + (Print.budget.seller.seller_short_name ? Print.budget.seller.seller_short_name : Print.budget.seller.seller_name));
+
+        JsBarcode('#barcode', ('0000000000000' + Print.budget.budget_code).slice(-13),{
+            displayValue: false
+        });
 
         $('#budget-message').text(Print.company.company_budget_message);
 
@@ -171,10 +175,5 @@ Print = {
 
         $('#budget-note').html(Print.budget.budget_note||'--');
         $('#budget-note-document').html(Print.budget.budget_note_document||'--');
-
-        setTimeout(function(){
-            Print.events();
-            window.print();
-        },3000);
     }
 };
