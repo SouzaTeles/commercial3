@@ -120,6 +120,7 @@
                             "price_date=CONVERT(VARCHAR(10),HP.DtReferencia,126)"
                         ],
                         "filters" => [
+                            [ "HP.VlPreco IS NOT NULL" ],
                             [ "HP.IdPreco = P.IdPreco" ],
                             [ "HP.IdProduto", "s", "=", $data->product_id ],
                             [ "HP.IdPreco", "s", "=", $price->price_id ],

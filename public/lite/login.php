@@ -125,6 +125,13 @@
         Session::saveSessionUser( $login );
     }
 
+    if( !@$login->person ){
+        headerResponse((Object)[
+            "code" => 404,
+            "message" => "O Usuário não possui uma pessoa vinculada."
+        ]);
+    }
+
     $login->user_mail = $login->user_email;
     $login->user_seller_id = $login->person_id;
     $login->user_unlock_device = @$login->access ? $login->access->mobile_unlock : $login->user_access->mobile_unlock;

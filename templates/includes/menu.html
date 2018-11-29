@@ -95,6 +95,11 @@
                             <i class="fa fa-map-o"></i>Mapa de Carregamento
                         </a>
                     {/if}
+                    {if $login->access->budgetLogistics->access->value == 'Y'}
+                    <a href="{$URI_PUBLIC}index.php?route=budgetLogistics&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="logistics">
+                        <i class="fa fa-file-text-o"></i>Orçamentos
+                    </a>
+                    {/if}
                     {if $login->access->management->access->value == 'Y'}
                         <a href="{$URI_PUBLIC}index.php?route=management&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="logistics">
                             <i class="fa fa-magic"></i>Gestão

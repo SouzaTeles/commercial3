@@ -22,42 +22,39 @@
                             <!-- Campo Empresa -->
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group">
-                                    <label for="shipment_company_id">Empresa</label>
-                                    <select class="selectpicker show-tick" id="shipment_company_id" title="-- Selecione a Empresa --"></select>
+                                    <label for="company_id">Empresa</label>
+                                    <select class="selectpicker show-tick" id="company_id" title="-- Selecione a Empresa --"></select>
                                 </div>
                             </div>
                             <!-- Campo Motorista -->
                             <div class="col-xs-12 col-sm-4">
                                 <div class="form-group">
-                                    <label for="shipment_driver_name">Motorista</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="shipment_driver_name" placeholder="Motorista"/>
-                                        <span id="button-shipment-seller-remove" class="input-group-addon"><i class="fa fa-trash-o"></i></span>
-                                    </div>
+                                    <label for="modal_driver_id">Motorista</label>
+                                    <select class="selectpicker show-tick" id="modal_driver_id" name="modal_driver_id" title="-- Selecione o Motorista --"></select>
                                 </div>
                             </div>
                             <!-- Data Inicial -->
                             <div class="col-xs-12 col-sm-2">
                                 <div class="form-group">
-                                    <label for="shipment_start_date">Data Inicial</label>
+                                    <label for="start_date">Data Inicial</label>
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input data-to-mask="date" type="text" class="form-control" id="shipment_start_date"/>
+                                        <input data-to-mask="date" type="text" class="form-control" id="start_date"/>
                                     </div>
                                 </div>
                             </div>
                             <!-- Data Final -->
                             <div class="col-xs-12 col-sm-2">
                                 <div class="form-group">
-                                    <label for="shipment_end_date">Data Final</label>
+                                    <label for="end_date">Data Final</label>
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input data-to-mask="date" type="text" class="form-control" id="shipment_end_date"/>
+                                        <input data-to-mask="date" type="text" class="form-control" id="end_date"/>
                                     </div>
                                 </div>
                             </div>
                             <!-- Pesquisa Rapida -->
-                            <div class="col-xs-12 col-sm-2">
+                            <div class="col-xs-12 col-sm-4">
                                 <div class="form-group">
                                     <label for="shipment_search">Pesquisa Rápida</label>
                                     <div class="input-group">
@@ -80,30 +77,26 @@
                                     <i class="fa fa-plus"></i> Novo Mapa
                                 </button>
                             </div>
-                            <!-- Logo -->
-                            <!--div class="col-xs-12 col-sm-2">
-                                <div class="logo-logistics">
-                                    <img src="{$config->uri->uri_public}images/compass.png" />
-                                </div>
-                            </div-->
                         </div>
                     </form>
                 </div>
-                <table id="table-shipment-docs" class="table table-custom table-actions">
+                <table id="table-shipments" class="table table-custom no-select">
                     <thead>
-                    <tr>
-                        <th><!--Status--></th>
-                        <th>Código</th>
-                        <th>Rota</th>
-                        <th>Data</th>
-                        <th>Motorista</th>
-                        <th>Data</th>
-                        <th><!--Opções--></th>
-                    </tr>
+                        <tr>
+                            <th><!--Status--></th>
+                            <th>Código</th>
+                            <th>Motorista</th>
+                            <th>Data de Entrega</th>
+                            <th>Peso</th>
+                            <th>Distância</th>
+                            <th>Duração</th>
+                            <th><!--Opções--></th>
+                        </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
         </div>
+        <footer></footer>
     </div>
 </div>

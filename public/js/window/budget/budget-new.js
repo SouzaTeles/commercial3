@@ -1234,7 +1234,7 @@ Item = {
         $('#stock_value, #budget_item_quantity').unmask();
         if( Item.item.unit_type == 'F' ){
             $('#product_stock').val(global.float2Br(Item.item.stock_value,0,4).replace(',0000','').replace(',000','').replace(',00','').replace(',0',''));
-            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,4)).prop({
+            $('#budget_item_quantity').val(global.float2Br(Item.item.budget_item_quantity,0,4).replace('.','')).prop({
                 'readonly': !Item.item.product_id
             }).attr({
                 'data-value': Item.item.budget_item_quantity

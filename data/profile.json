@@ -80,6 +80,14 @@
 			"data_type": "bool"
 		}
 	},
+	"budgetLogistics": {
+		"name": "Orçamentos para Entrega",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
 	"client": {
 		"name": "Cliente",
 		"access": {
@@ -274,7 +282,37 @@
 		},
 		"add": {
 			"name": "Novo Mapa",
-			"value": "Y",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"open": {
+			"name": "Visualizar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar Mapa",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"del": {
+			"name": "Excluir Mapa",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"audit": {
+			"name": "Auditoria",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"print": {
+			"name": "Imprimir Mapa",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"map": {
+			"name": "Ver no Mapa",
+			"value": "N",
 			"data_type": "bool"
 		}
 	},

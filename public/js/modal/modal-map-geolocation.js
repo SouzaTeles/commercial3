@@ -48,7 +48,9 @@ ModalMapGeolocation = {
             }
         });
         setTimeout(function(){
-            new google.maps.event.trigger(map, "resize");
+            google.maps.event.trigger(map.markers[0], 'click');
+            google.maps.event.trigger(map.map, 'resize');
+            map.map.setCenter(point);
         },1000);
         global.unLoader();
     }

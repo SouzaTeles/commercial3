@@ -364,6 +364,31 @@
 
         break;
 
+        case "getInternalList":
+
+            $data = Model::getList($commercial,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "Person P",
+                    "INNER JOIN PersonCategory PC ON(PC.person_id = P.person_id)",
+                    "INNER JOIN PersonFunction PF ON(PF.person_id = P.person_id)"
+                ],
+                "fields" => [
+                    "P.person_id",
+                    "P.external_id",
+                    "P.external_code",
+                    "P.person_name"
+                ],
+                "filters" => [
+                    [ "PC.category_id", "s", "in", $post->categories ],
+                    [ "PF.function_id", "s", "in", $post->functions ]
+                ]
+            ]);
+
+            Json::get( $headerStatus[200], $data );
+
+        break;
+
         case "insert":
 
             if( !@$post->person_name ) headerResponse((Object)[ "code" => 417, "message" => "Nome da Pessoa não informado." ]);

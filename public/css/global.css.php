@@ -76,7 +76,6 @@ body > .container
     width: 100%;
     height: 100%;
     display: table;
-    min-width: 986px;
     position: relative;
     padding: 90px 0 60px;
     border-left: 60px solid #333;

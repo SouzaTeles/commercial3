@@ -1,0 +1,58 @@
+<link href="{$URI_PUBLIC}css/modal/modal-new-shipment.css?{$smarty.now}" rel="stylesheet" />
+<form>
+    <div class="row">
+        <div class="col-xs-12 col-sm-10">
+            <div class="form-group">
+                <label for="modal_shipment_description">Descrição</label>
+                <input type="text" class="form-control" id="modal_shipment_description" placeholder="Descrição">
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="modal_shipment_reference">Data de Liberação</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input type="text" class="form-control" id="modal_shipment_reference" data-to-mask="date"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <label for="modal_vehicle_id">Veículo</label>
+                <select class="selectpicker show-tick" id="modal_vehicle_id" name="modal_vehicle_id" title="-- Selecione o Veículo --"></select>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <label for="modal_driver_id">Motorista</label>
+                <select class="selectpicker show-tick" id="modal_driver_id" name="modal_driver_id" title="-- Selecione o Motorista --"></select>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <label for="modal_routes">Rotas</label>
+                <select multiple class="selectpicker show-tick" id="modal_routes" name="modal_routes[]" title="-- Rotas --"></select>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <label for="modal_helpers">Ajudantes</label>
+                <select multiple class="selectpicker show-tick" id="modal_helpers" name="modal_helpers[]" title="-- Ajudantes --"></select>
+            </div>
+        </div>
+    </div>
+</form>
+<table id="modal-table-budgets" class="table-custom no-select">
+    <thead>
+        <tr>
+            <th>Documento</th>
+            <th>Cliente</th>
+            <th>Bairro</th>
+            <th>Peso</th>
+            <th>Distância</th>
+            <th>Duração</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<script src="{$URI_PUBLIC}js/modal/modal-new-shipment.js?{$smarty.now}"></script>

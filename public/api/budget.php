@@ -732,6 +732,101 @@
 
         break;
 
+        case "getMaps":
+
+            if( !@$post->company_id || !@$post->start_date || !@$post->end_date ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $budgets = Model::getList($commercial, (Object)[
+                "join" => 1,
+                "tables" => [
+                    "{$conn->commercial->table}.dbo.Budget B (NoLock)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.Pessoa P (NoLock) ON(P.IdPessoa = B.client_id)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.PessoaEndereco PE (NoLock) ON(PE.IdPessoa = P.IdPessoa AND PE.CdEndereco = B.address_code)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.Bairro BA (NoLock) ON(BA.IdBairro = PE.IdBairro)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.Cidade C (NoLock) ON(C.IdCidade = PE.IdCidade)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.Pessoa PR (NoLock) ON(PR.IdPessoa = B.seller_id)",
+                    "LEFT JOIN {$conn->dafel->table}.dbo.Documento D (NoLock) ON(D.IdDocumento = B.document_id)",
+                    "LEFT JOIN {$conn->dafel->table}.dbo.DocumentoItem DI (NoLock) ON(DI.IdDocumento = D.IdDocumento)",
+                    "LEFT JOIN {$conn->dafel->table}.dbo.DocumentoItemValores DIV (NoLock) ON(DIV.IdDocumentoItem = DI.IdDocumentoItem)",
+                    "LEFT JOIN {$conn->dafel->table}.dbo.MapaCarregamento MC (NoLock) ON(MC.IdMapaCarregamento = D.IdMapaCarregamento)"
+                ],
+                "fields" => [
+                    "B.budget_id",
+                    "B.client_id",
+                    "B.seller_id",
+                    "B.document_id",
+                    "map_id=MC.IdMapaCarregamento",
+                    "B.budget_status",
+                    "B.external_code",
+                    "person_code=P.CdChamada",
+                    "person_name=P.NmPessoa",
+                    "seller_code=PR.CdChamada",
+                    "seller_name=PR.NmPessoa",
+                    "B.document_code",
+                    "B.document_type",
+                    "B.document_canceled",
+                    "map_code=MC.CdChamada",
+                    "B.budget_delivery",
+                    "city_name=C.NmCidade",
+                    "uf_id=C.IdUF",
+                    "district_name=BA.NmBairro",
+                    "address_cep=PE.CdCEP",
+                    "address_public_place=PE.NmLogradouro",
+                    "address_number=PE.NrLogradouro",
+                    "net_weight=sum(DIV.VlPesoLiquido)",
+                    "gross_weight=sum(DIV.VlPesoBruto)"
+                ],
+                "filters" => [
+                    [ "B.company_id", "i", "=", $post->company_id ],
+                    [ "B.external_type", "s", "=", "P" ],
+                    [ "B.budget_status", "s", "=", "B" ],
+                    [
+                        ["B.budget_update", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]],
+                        ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
+                    ]
+                ],
+                "group" => implode(",",[
+                    "B.budget_id",
+                    "B.client_id",
+                    "B.seller_id",
+                    "B.document_id",
+                    "MC.IdMapaCarregamento",
+                    "B.budget_status",
+                    "B.external_code",
+                    "P.CdChamada",
+                    "P.NmPessoa",
+                    "PR.CdChamada",
+                    "PR.NmPessoa",
+                    "B.document_code",
+                    "B.document_type",
+                    "B.document_canceled",
+                    "MC.CdChamada",
+                    "B.budget_delivery",
+                    "C.NmCidade",
+                    "C.IdUF",
+                    "BA.NmBairro",
+                    "PE.CdCEP",
+                    "PE.NmLogradouro",
+                    "PE.NrLogradouro"
+                ])
+            ]);
+
+            foreach ($budgets as $budget) {
+                $budget->net_weight = (float)$budget->net_weight;
+                $budget->gross_weight = (float)$budget->gross_weight;
+                $budget->net_weight_order = substr("0000000000" . number_format($budget->net_weight,2,"",""),-10);
+                $budget->gross_weight_order = substr("0000000000" . number_format($budget->gross_weight,2,"",""),-10);
+            }
+
+            Json::get($headerStatus[200], $budgets);
+
+        break;
+
         case "getDiscounts":
 
             if (!@$post->company_id || !@$post->start_date || !@$post->end_date) {

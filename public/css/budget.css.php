@@ -1,10 +1,5 @@
 <?php include "data.css.php"; ?>
 
-.nav-pages
-{
-    display: none;
-}
-
 .logo-commercial
 {
     margin: 12px 0;

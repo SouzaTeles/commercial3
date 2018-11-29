@@ -91,6 +91,7 @@
                     "tables" => [ "UserCompany uc", "Company c" ],
                     "fields" => [
                         "c.company_id",
+                        "c.parent_id",
                         "c.company_name",
                         "c.company_color",
                         "c.company_short_name",
@@ -99,7 +100,9 @@
                         "c.company_st",
                         "c.company_credit",
                         "c.delivery_days",
-                        "uc.user_company_main"
+                        "c.company_latitude",
+                        "c.company_longitude",
+                        "uc.user_company_main",
                     ],
                     "filters" => [
                         [ "uc.company_id = c.company_id" ],
