@@ -1684,7 +1684,7 @@ Item = {
                             $.each(Budget.budget.items,function(key,item2){
                                 if(item2.product_id == item.product_id) allowed = false;
                             });
-                            if( allowed ) {
+                            if( allowed && item.budget_item_quantity > 0 ) {
                                 item.budget_item_key = Budget.budget.items.length;
                                 Budget.budget.items.push(item);
                                 Budget.budget.budget_value += item.budget_item_value;
