@@ -81,6 +81,11 @@
                             <i class="fa fa-clock-o"></i>Pedidos x Hora
                         </a>
                     {/if}
+                    {if $login->access->compass->dropAudit->value == 'Y'}
+                        <a href="{$URI_PUBLIC}index.php?route=dropAudit&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="compass">
+                            <i class="fa fa-cloud-download"></i>Auditoria das Baixas
+                        </a>
+                    {/if}
                 </div>
             </li>
         {/if}

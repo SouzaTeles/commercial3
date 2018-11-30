@@ -38,6 +38,12 @@
 		"title": "Relatório de Descontos",
 		"parent": "compass"
 	},
+	"dropAudit": {
+		"key": "dropAudit",
+		"icon": "fa-cloud-download",
+		"title": "Auditoria das Baixas",
+		"parent": "compass"
+	},
 	"budgetLogistics": {
 		"key": "budgetLogistics",
 		"icon": "fa-file-o",
@@ -205,7 +211,7 @@
 	"shipment": {
 		"key": "sale",
 		"icon": "fa-map-o",
-		"title": "Romaneios",
+		"title": "Mapa de Carregamento",
 		"parent": "logistics"
 	},
 	"sisprod": {

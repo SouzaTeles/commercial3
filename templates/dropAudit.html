@@ -1,0 +1,99 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="filter">
+            <form id="form-filter">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="form-group">
+                            <label for="companies">Empresa</label>
+                            <select data-selected-text-format="count > 1" multiple class="selectpicker show-tick" id="companies" name="companies[]" title="-- Selecione a Empresa --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="process_start_date">Data de Processamento Inicial</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="process_start_date" data-to-mask="date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="process_end_date">Data de Processamento Final</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="process_end_date" data-to-mask="date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="drop_start_date">Data de Baixa Inicial</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="drop_start_date" data-to-mask="date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="drop_end_date">Data de Baixa Final</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" class="form-control" id="drop_end_date" data-to-mask="date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="only_diff">Somente com diferença</label>
+                            <input checked type="checkbox" class="form-control" id="only_diff" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-8">
+                        <div class="form-group">
+                            <label for="drop_search">Pesquisa Rápida</label>
+                            <input type="text" class="form-control" id="drop_search" placeholder="Pesquisar"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label>&nbsp;&nbsp;</label>
+                            <button type="submit" class="btn btn-block btn-blue">
+                                <i class="fa fa-refresh"></i> Atualizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <table id="table-drops" class="table-custom no-select">
+            <thead>
+                <tr>
+                    <th>Empresa</th>
+                    <th>Número</th>
+                    <th>Vl. Título</th>
+                    <th>Vl. Baixa</th>
+                    <th>Bx. Total</th>
+                    <th>Diferença</th>
+                    <th>Dt. Registro</th>
+                    <th>Dt. Baixa</th>
+                    <th>Usuário</th>
+                    <th>Modalidade</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<footer>
+    <button data-toggle="tooltip" data-title="Baixar planilha" id="button-excel" class="btn btn-empty-green"><i class="fa fa-file-excel-o"></i></button>
+    <div data-label="title-count" data-toggle="tooltip" data-title="Baixas" ><i class="fa fa-files-o"></i> 0</div>
+    <div data-label="title-value" data-toggle="tooltip" data-title="Total dos Títulos" ><i class="fa fa-usd"></i> 0</div>
+    <!--<div data-label="title-drop-value" data-toggle="tooltip" data-title="Total das Baixas" ><i class="fa fa-usd"></i> 0</div>-->
+    <div data-label="title-drop-value-total" data-toggle="tooltip" data-title="Total das Baixas dos Títulos" ><i class="fa fa-usd"></i> 0</div>
+    <div data-label="title-diff" data-toggle="tooltip" data-title="Total das Diferenças" ><i class="fa fa-usd"></i> 0</div>
+    <span class="pull-right">{$config->system->system_name} v{$config->system->system_version}</span>
+</footer>

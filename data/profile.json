@@ -112,6 +112,11 @@
 			"name": "Pedidos x Hora",
 			"value": "N",
 			"data_type": "bool"
+		},
+		"dropAudit": {
+			"name": "Auditoria das Baixas",
+			"value": "N",
+			"data_type": "bool"
 		}
 	},
 	"crm": {
