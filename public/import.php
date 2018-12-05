@@ -33,7 +33,7 @@
                 [ "user_profile_id", "s", (int)$user->user_profile_id-1000 ],
                 [ "user_user", "s", $user->user_user ],
                 [ "user_pass", "s", $user->user_pass ],
-                [ "user_name", "s", utf8_decode($user->user_name) ],
+                [ "user_name", "s", $user->user_name ],
                 [ "user_email", "s", $user->user_mail ],
                 [ "user_active", "s", $user->user_active ],
                 [ "user_login", "s", @$user->user_login ? $user->user_login : NULL ],

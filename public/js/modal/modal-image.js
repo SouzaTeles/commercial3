@@ -63,6 +63,12 @@ ModalImage = {
                 $(this).val('');
             }
         }).val(global.date2Br(ModalImage.image.image_end_date));
+        $('#button-post-remove').click(function(){
+            $('#modal_post_id').selectpicker('val','default');
+        });
+        $('#button-person-remove').click(function(){
+            $('#modal_person_id').selectpicker('val','default');
+        });
     },
     showPeople: function(){
         $.each( Slide.people, function(key,person){

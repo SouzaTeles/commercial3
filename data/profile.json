@@ -96,6 +96,29 @@
 			"data_type": "bool"
 		}
 	},
+	"company": {
+		"name": "Empresas",
+		"access": {
+			"name": "Visualiza",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"add": {
+			"name": "Adicionar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"edit": {
+			"name": "Editar",
+			"value": "N",
+			"data_type": "bool"
+		},
+		"audit": {
+			"name": "Auditoria",
+			"value": "N",
+			"data_type": "bool"
+		}
+	},
 	"compass": {
 		"name": "Compass",
 		"access": {
@@ -444,29 +467,6 @@
 		},
 		"audit": {
 			"name": "Auditoria",
-			"value": "N",
-			"data_type": "bool"
-		}
-	},
-	"company": {
-		"name": "Empresas",
-		"access": {
-			"name": "Visualiza",
-			"value": "N",
-			"data_type": "bool"
-		},
-		"add": {
-			"name": "Adicionar",
-			"value": "N",
-			"data_type": "bool"
-		},
-		"edit": {
-			"name": "Editar",
-			"value": "N",
-			"data_type": "bool"
-		},
-		"del": {
-			"name": "Excluir",
 			"value": "N",
 			"data_type": "bool"
 		}

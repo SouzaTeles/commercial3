@@ -54,12 +54,12 @@ Profile = {
         });
     },
     edit: function(){
-        if( !!window.opener ) window.opener.Profile.getList();
         global.post({
             url: global.uri.uri_public_api + 'profile.php?action=edit',
             data: Profile.profile,
             dataType: 'json'
         }, function(data){
+            if( !!window.opener ) window.opener.Profile.getList();
             global.modal({
                 icon: 'fa-info',
                 title: 'Informação',

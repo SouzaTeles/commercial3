@@ -82,7 +82,7 @@ ModalBudgetConfirm = {
                 e.stopPropagation();
                 ModalBudgetConfirm.getSeller({
                     person_code: $(this).val(),
-                    person_category_id: global.config.person.seller_category_id
+                    category_id: global.config.person.seller_category_id
                 });
             }
         }).on('blur',function(){
@@ -101,7 +101,7 @@ ModalBudgetConfirm = {
                         data: {
                             limit: ModalBudgetConfirm.typeahead.items,
                             person_name: $('#modal_seller_name').val(),
-                            person_category_id: global.config.person.seller_category_id
+                            categories: [global.config.person.seller_category_id]
                         },
                         url: global.uri.uri_public_api + 'person.php?action=typeahead',
                         callBack: function(item){
@@ -134,7 +134,7 @@ ModalBudgetConfirm = {
         $('#modal_delivery_date').datepicker({
             format: 'dd/mm/yyyy',
             zIndex: 1091,
-            startDate: '12/11/2018'
+            startDate: global.date2Br(global.today())
         }).on('change',function(){
             ModalBudgetConfirm.dateSelected($(this).val());
         }).on('blur',function(){

@@ -2,34 +2,34 @@
     <ul>
         {if $login->access->agenda->access->value == 'Y'}
             <li>
-                <a href="{$URI_PUBLIC}index.php?route=agenda&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="agenda">
+                <a href="{$URI_PUBLIC}index.php?route=agenda&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="agenda">
                     <i class="fa fa-calendar"></i>Agenda
                 </a>
             </li>
         {/if}
         {if $login->access->sale->access->value == 'Y'}
             <li>
-                <a href="{$URI_PUBLIC}index.php?route=budget&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="sale">
+                <a href="{$URI_PUBLIC}index.php?route=budget&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="sale">
                     <i class="fa fa-usd"></i>Vendas
                 </a>
                 <div class="sub-menu">
                     {if $login->access->budget->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=budget&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="sale">
+                        <a href="{$URI_PUBLIC}index.php?route=budget&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="sale">
                             <i class="fa fa-file-text-o"></i>Orçamentos
                         </a>
                     {/if}
                     {if $login->access->target->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=target&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="sale">
+                        <a href="{$URI_PUBLIC}index.php?route=target&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="sale">
                             <i class="fa fa-bullseye"></i>Metas
                         </a>
                     {/if}
                     {if $login->access->devolution->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=devolution&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="sale">
+                        <a href="{$URI_PUBLIC}index.php?route=devolution&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="sale">
                             <i class="fa fa-reply-all"></i>Devoluções
                         </a>
                     {/if}
                     {if $login->access->package->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=package&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="sale">
+                        <a href="{$URI_PUBLIC}index.php?route=package&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="sale">
                             <i class="fa fa-cube"></i>Encomendas
                         </a>
                     {/if}
@@ -43,22 +43,22 @@
                 </a>
                 <div class="sub-menu">
                     {if $login->access->inventory->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=inventory&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="stock">
+                        <a href="{$URI_PUBLIC}index.php?route=inventory&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="stock">
                             <i class="fa fa-file-text-o"></i>Inventário
                         </a>
                     {/if}
                     {if $login->access->sge->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=sge&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="stock">
+                        <a href="{$URI_PUBLIC}index.php?route=sge&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="stock">
                             <i class="fa fa-lightbulb-o"></i>Assistente SGE
                         </a>
                     {/if}
                     {if $login->access->registration->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=registration&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="stock">
+                        <a href="{$URI_PUBLIC}index.php?route=registration&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="stock">
                             <i class="fa fa-plus-square-o"></i>Cadastro
                         </a>
                     {/if}
                     {if $login->access->noteEntry->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=noteEntry&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="stock">
+                        <a href="{$URI_PUBLIC}index.php?route=noteEntry&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="stock">
                             <i class="fa fa-file-o"></i>Entrada de Nota
                         </a>
                     {/if}
@@ -72,17 +72,17 @@
                 </a>
                 <div class="sub-menu">
                     {if $login->access->compass->discount->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=discount&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="compass">
+                        <a href="{$URI_PUBLIC}index.php?route=discount&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="compass">
                             <i class="fa fa-usd"></i>Relatório de Descontos
                         </a>
                     {/if}
                     {if $login->access->compass->budgetPerHour->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=budgetPerHour&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="compass">
+                        <a href="{$URI_PUBLIC}index.php?route=budgetPerHour&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="compass">
                             <i class="fa fa-clock-o"></i>Pedidos x Hora
                         </a>
                     {/if}
                     {if $login->access->compass->dropAudit->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=dropAudit&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="compass">
+                        <a href="{$URI_PUBLIC}index.php?route=dropAudit&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="compass">
                             <i class="fa fa-cloud-download"></i>Auditoria das Baixas
                         </a>
                     {/if}
@@ -96,17 +96,17 @@
                 </a>
                 <div class="sub-menu">
                     {if $login->access->shipment->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=shipment&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="logistics">
+                        <a href="{$URI_PUBLIC}index.php?route=shipment&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="logistics">
                             <i class="fa fa-map-o"></i>Mapa de Carregamento
                         </a>
                     {/if}
                     {if $login->access->budgetLogistics->access->value == 'Y'}
-                    <a href="{$URI_PUBLIC}index.php?route=budgetLogistics&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="logistics">
+                    <a href="{$URI_PUBLIC}index.php?route=budgetLogistics&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="logistics">
                         <i class="fa fa-file-text-o"></i>Orçamentos
                     </a>
                     {/if}
                     {if $login->access->management->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=management&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="logistics">
+                        <a href="{$URI_PUBLIC}index.php?route=management&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="logistics">
                             <i class="fa fa-magic"></i>Gestão
                         </a>
                     {/if}
@@ -119,13 +119,13 @@
                     <i class="fa fa-users"></i>RH
                 </a>
                 <div class="sub-menu">
-                    <a href="{$URI_PUBLIC}index.php?route=person&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="rh">
+                    <a href="{$URI_PUBLIC}index.php?route=person&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="rh">
                         <i class="fa fa-user-plus"></i>Pessoas
                     </a>
-                    <a href="{$URI_PUBLIC}index.php?route=highlights&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="rh">
+                    <a href="{$URI_PUBLIC}index.php?route=highlights&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="rh">
                         <i class="fa fa-star"></i>Melhores do Mês
                     </a>
-                    <a href="{$URI_PUBLIC}index.php?route=pay&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="rh">
+                    <a href="{$URI_PUBLIC}index.php?route=pay&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="rh">
                         <i class="fa fa-money"></i>Folha de Pagamento
                     </a>
                 </div>
@@ -138,12 +138,12 @@
                 </a>
                 <div class="sub-menu">
                     {if $login->access->sisprod->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=sisprod&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="production">
+                        <a href="{$URI_PUBLIC}index.php?route=sisprod&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="production">
                             <i class="fa fa-cogs"></i>Sisprod
                         </a>
                     {/if}
                     {if $login->access->glass->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=glass&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="production">
+                        <a href="{$URI_PUBLIC}index.php?route=glass&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="production">
                             <i class="fa fa-object-ungroup"></i>Vidro
                         </a>
                     {/if}
@@ -157,12 +157,12 @@
                 </a>
                 <div class="sub-menu sub-menu-crm">
                     {if $login->access->client->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=client&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="crm">
+                        <a href="{$URI_PUBLIC}index.php?route=client&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="crm">
                             <i class="fa fa-users"></i>Cliente
                         </a>
                     {/if}
                     {if $login->access->followup->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=followup&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="crm">
+                        <a href="{$URI_PUBLIC}index.php?route=followup&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="crm">
                             <i class="fa fa-phone-square"></i>Follow Up
                         </a>
                     {/if}
@@ -176,12 +176,12 @@
                 </a>
                 <div class="sub-menu sub-menu-general">
                     {if $login->access->ticket->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=ticket&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="general">
+                        <a href="{$URI_PUBLIC}index.php?route=ticket&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="general">
                             <i class="fa fa-phone-square"></i>Chamados
                         </a>
                     {/if}
                     {if $login->access->slide->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=slide&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="general">
+                        <a href="{$URI_PUBLIC}index.php?route=slide&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="general">
                             <i class="fa fa-picture-o"></i>Slides
                         </a>
                     {/if}
@@ -200,17 +200,17 @@
                 </a>
                 <div class="sub-menu sub-menu-config">
                     {if $login->access->user->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=user&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="config">
+                        <a href="{$URI_PUBLIC}index.php?route=user&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="config">
                             <i class="fa fa-user"></i>Usuários
                         </a>
                     {/if}
                     {if $login->access->profile->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=profile&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="config">
+                        <a href="{$URI_PUBLIC}index.php?route=profile&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="config">
                             <i class="fa fa-user-circle-o"></i>Perfil de Usuário
                         </a>
                     {/if}
                     {if $login->access->company->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=company&user_id={$login->user_id}&user_session={$login->user_current_session->user_session_id}" class="config">
+                        <a href="{$URI_PUBLIC}index.php?route=company&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="config">
                             <i class="fa fa-building"></i>Empresas
                         </a>
                     {/if}

@@ -17,7 +17,7 @@
     {
         case "active":
 
-            if( !@$post->person_id || !@$post->person_category_id ){
+            if( !@$post->person_id || !@$post->category_id ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -41,7 +41,7 @@
                     [ "P.IdPessoa = PC.IdPessoa" ],
                     [ "P.IdPessoa = PCM.IdPessoa" ],
                     [ "P.IdPessoa", "s", "=", $post->person_id ],
-                    [ "PC.IdCategoria", "s", "=", $post->person_category_id ]
+                    [ "PC.IdCategoria", "s", "=", $post->category_id ]
                 ]
             ]);
 
@@ -79,7 +79,7 @@
                 "table" => "PessoaCategoria",
                 "fields" => [[ "StAtivo", "s", "S" ]],
                 "filters" => [
-                    [ "IdCategoria", "s", "=", $post->person_category_id ],
+                    [ "IdCategoria", "s", "=", $post->category_id ],
                     [ "IdPessoa", "s", "=", $post->person_id ]
                 ]
             ]);
@@ -136,7 +136,7 @@
                     "DtNascimento=FORMAT(PCM.DtNascimento,'MM-dd')"
                 ],
                 "filters" => [
-                    [ "PC.IdCategoria", "s", "=", $config->person->employ_category_id ],
+                    [ "PC.IdCategoria", "s", "in", [$config->person->employ_category_id, $config->person->seller_category_id ]],
                     [ "PC.StAtivo", "s", "=", "S" ],
                     [ "FORMAT(PCM.DtNascimento,'MM-dd')", "s", "<", date("m-d") ]
                 ],
@@ -229,7 +229,7 @@
 
         case "get":
 
-            if( (!@$post->person_id && !@$post->person_code) || !@$post->person_category_id ){
+            if( (!@$post->person_id && !@$post->person_code) || (!@$post->category_id && !@$post->categories) ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -258,7 +258,8 @@
 
                 ],
                 "filters" => [
-                    [ "PC.IdCategoria", "s", "=", $post->person_category_id ],
+                    [ "PC.IdCategoria", "s", "=", @$post->category_id ? $post->category_id : NULL ],
+                    [ "PC.IdCategoria", "s", "in", @$post->categories ? $post->categories : NULL ],
                     [ "P.IdPessoa", "s", "=", @$post->person_id ? $post->person_id : NULL ],
                     [ "P.CdChamada", "s", "=", @$post->person_code ? substr("00000{$post->person_code}", -6) : NULL ]
                 ]
@@ -277,7 +278,7 @@
 
         case "getList":
 
-            if( !@$post->categories || !@$post->person_active ){
+            if( (!@$post->category_id && !@$post->categories) || !@$post->person_active ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -349,7 +350,8 @@
                 "tables" => $tables,
                 "fields" => $fields,
                 "filters" => $filters,
-                "group" =>  implode( ", ", $group )
+                "group" =>  implode( ", ", $group ),
+                "order" => "P.NmPessoa"
             ]);
 
             foreach( $people as $person ){
@@ -611,7 +613,7 @@
 
         case "typeahead":
 
-            if( !@$post->limit || !@$post->person_name || !@$post->person_category_id ){
+            if( !@$post->limit || !@$post->person_name || !@$post->categories ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -631,7 +633,7 @@
                     "P.NmPessoa"
                 ],
                 "filters" => [
-                    [ "PC.IdCategoria", "s", "=", $post->person_category_id ],
+                    [ "PC.IdCategoria", "s", "in", $post->categories ],
                     [
                         [ "P.NmPessoa", "s", "like", "{$post->person_name}%" ],
                         [ "P.NmCurto", "s", "like", "{$post->person_name}%" ]

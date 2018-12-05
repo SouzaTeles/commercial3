@@ -20,6 +20,7 @@ DropAudit = {
         company_id: null,
         seller_id: null,
         only_diff: 'Y',
+        not_ren: 'Y',
         process_start_date: global.today(),
         process_end_date: global.today(),
         drop_start_date: moment().startOf('month').format('YYY-MM-DD'),
@@ -121,6 +122,7 @@ DropAudit = {
     getList: function(){
         DropAudit.data.companies = $('#companies').val();
         DropAudit.data.only_diff = $('#only_diff').prop('checked') ? 'Y' : null;
+        DropAudit.data.not_ren = $('#not_ren').prop('checked') ? 'Y' : null;
         DropAudit.data.drop_start_date = global.date2Us($('#drop_start_date').val());
         DropAudit.data.drop_end_date = global.date2Us($('#drop_end_date').val());
         DropAudit.data.process_start_date = global.date2Us($('#process_start_date').val());

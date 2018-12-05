@@ -122,7 +122,7 @@ Mail = {
             // pdf.addHTML($('.print-order')[0], function(){
             //     pdf.save(parseInt(Math.random().toString().replace('0.','')) + '.pdf');
             // });
-            $('.files-files').html('<i class="fa fa-file-pdf-o txt-red"></i> ' + Mail.data.pdfFileName );
+            //$('.files-files').html('<i class="fa fa-file-pdf-o txt-red"></i> ' + Mail.data.pdfFileName );
             global.unLoader();
         }
     },
@@ -234,6 +234,8 @@ Mail = {
         $('#budget-note').html(Mail.budget.budget_note||'--');
         $('#budget-note-document').html(Mail.budget.budget_note_document||'--');
 
+        $('#message').val('Segue em anexo o orçamento ' + Mail.budget.budget_code + '.');
+
         setTimeout(function(){
             Mail.events();
         },1000);
@@ -247,10 +249,32 @@ Mail = {
             });
             return false;
         }
+        var invalid = false;
+        $.each(Mail.data.to,function(key,email){
+             if( !global.validateEmail(email) ){
+                 invalid = true;
+             }
+        });
+        if( invalid ) {
+            global.validateMessage('Destinatário inválido. Verifique os e-mails informados.', function () {
+                setTimeout(function () {
+                    $('#to').focus();
+                }, 200);
+            });
+            return false;
+        }
         if( !Mail.data.subject.length ) {
             global.validateMessage('O assunto do e-mail deverá ser informado.', function () {
                 setTimeout(function () {
                     $('#to').focus();
+                }, 200);
+            });
+            return false;
+        }
+        if( !Mail.data.message.length ) {
+            global.validateMessage('A mensagem não poderá ficar em branco.', function () {
+                setTimeout(function () {
+                    $('#message').focus();
                 }, 200);
             });
             return false;

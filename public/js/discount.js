@@ -1,5 +1,6 @@
 $(document).ready(function(){
     Budget.events();
+    Budget.getUsers();
     Budget.getSellers();
     Budget.showCompanies(function(){
         if( !!Budget.data.company_id ){
@@ -16,10 +17,12 @@ Budget = {
     chartShowed: false,
     chart: {},
     budgets: [],
+    users: [],
     sellers: [],
     data: {
         company_id: null,
         seller_id: null,
+        user_id: null,
         only_discount: 'Y',
         start_date: global.today(),
         end_date: global.today()
@@ -192,10 +195,17 @@ Budget = {
         $('#button-excel').click(function(){
             Budget.table.button('0-0').trigger();
         });
+        $('#button-seller-remove').click(function(){
+            $('#seller_id').selectpicker('val','default');
+        });
+        $('#button-user-remove').click(function(){
+            $('#user_id').selectpicker('val','default');
+        });
     },
     getList: function(){
         Budget.data.company_id = $('#company_id').val();
         Budget.data.seller_id = $('#seller_id').val();
+        Budget.data.user_id = $('#user_id').val();
         Budget.data.only_billed = $('#only_billed').prop('checked') ? 'Y' : 'N';
         Budget.data.only_discount = $('#only_discount').prop('checked') ? 'Y' : 'N';
         Budget.data.start_date = global.date2Us($('#start_date').val());
@@ -228,12 +238,21 @@ Budget = {
             data: {
                 limit: 500,
                 person_active: 'Y',
-                person_category_id: global.config.person.seller_category_id
+                categories: [global.config.person.seller_category_id]
             },
             dataType: 'json'
         },function(data){
             Budget.sellers = data;
             Budget.showSellers();
+        });
+    },
+    getUsers: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'user.php?action=getList',
+            dataType: 'json'
+        },function(data){
+            Budget.users = data;
+            Budget.showUsers();
         });
     },
     showCompanies: function(success){
@@ -309,5 +328,14 @@ Budget = {
             }));
         });
         $('#seller_id').selectpicker('refresh');
+    },
+    showUsers: function(){
+        $.each( Budget.users, function(key,user){
+            $('#user_id').append($('<option>',{
+                'value': user.user_id,
+                'text': user.user_name
+            }));
+        });
+        $('#user_id').selectpicker('refresh');
     }
 };

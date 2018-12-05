@@ -1,0 +1,153 @@
+<header class="box-shadow {if empty($smarty.get.company_id)}new{else}edit{/if}">
+    {if empty($smarty.get.company_id)}
+        <div class="title"><i class="fa fa-plus"></i> Nova Empresa</div>
+    {else}
+        <div class="title"><i class="fa fa-edit"></i> Editar Empresa</div>
+    {/if}
+    <div class="company-image"></div>
+    <div class="company-name"></div>
+</header>
+<div class="panel-group">
+    <div class="panel panel-company">
+        <div class="panel-heading ph-blue" data-toggle="collapse" href="#collapse1">
+            <i class="fa fa-id-badge"></i> Dados da Empresa
+            <i class="fa fa-chevron-up"></i>
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group form-group-file">
+                        <label for="file">Foto</label>
+                        <div id="company-image-cover" class="cover">
+                            <input type="file" id="file" accept=".jpg, .jpeg, .png|images/*" class="filestyle" data-buttonText="Procurar" data-buttonName="btn-block btn-green" data-iconName="fa fa-file-image-o" data-input="false">
+                            <button disabled type="button" id="button-image-remove" class="btn btn-red"><i class="fa fa-times"></i> Remover</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="company_id">Empresa ERP</label>
+                            <select data-size="6" data-live-search="false" class="selectpicker show-tick" id="company_id" name="erp_company_id" title="-- Selecione a Empresa --"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="parent_id">Empresa Pai</label>
+                            <div class="input-group">
+                                <select data-size="6" data-live-search="false" class="selectpicker show-tick" id="parent_id" name="parent_id" title="-- Selecione a Empresa --"></select>
+                                <span id="button-parent-remove" class="btn input-group-addon"><i class="fa fa-trash-o"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12"><hr></div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="company_active">Ativo</label>
+                            <input type="checkbox" class="form-control" id="company_active" name="company_active" checked />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="company_target">Metas</label>
+                            <input type="checkbox" class="form-control" id="company_target" name="company_target" checked />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="company_st">ICMS ST</label>
+                            <input type="checkbox" class="form-control" id="company_st" name="company_st" checked />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="company_credit">Carta de crédito</label>
+                            <input type="checkbox" class="form-control" id="company_credit" name="company_credit" checked />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-xs-3">
+                        <div class="form-group">
+                            <label for="company_color">Cor</label>
+                            <input spectrum="spectrum" type="text" id="company_color" name="company_color" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="company_name">Nome</label>
+                            <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Nome"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="company_short_name">Nome Curto</label>
+                            <input type="text" class="form-control" id="company_short_name" name="company_short_name" placeholder="Nome Curto"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-map">
+        <div class="panel-heading ph-orange" data-toggle="collapse" href="#collapse2">
+            <i class="fa fa-file-text-o"></i> Orçamentos
+            <i class="fa fa-chevron-up"></i>
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="col-xs-12 col-sm-2">
+                    <div class="form-group">
+                        <label for="delivery_days">Prazo de entrega</label>
+                        <input type="text" class="form-control" id="delivery_days" name="delivery_days" placeholder="Prazo de entrega" data-to-mask="integer"/>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-2">
+                    <div class="form-group">
+                        <label for="person_code">Código</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="person_code" name="person_code" placeholder="Código" data-to-mask="integer"/>
+                            <span id="button-consumer-search" class="btn input-group-addon"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-8">
+                    <div class="form-group">
+                        <label for="person_name">Consumidor Padrão</label>
+                        <input readonly type="text" class="form-control" id="person_name" name="person_name" placeholder="Consumidor padrão"/>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="company_budget_message">Mensagem do orçamento</label>
+                        <textarea rows="6" class="form-control" id="company_budget_message" name="company_budget_message" placeholder="Mensagem do orçamento"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-map">
+        <div class="panel-heading ph-orange" data-toggle="collapse" href="#collapse3">
+            <i class="fa fa-map-marker"></i> Geolocalização
+            <i class="fa fa-chevron-up"></i>
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse in">
+            <div class="panel-body" id="map"></div>
+        </div>
+    </div>
+</div>
+<footer class="panel-footer">
+    <button type="button" id="button-cancel" class="btn btn-lg btn-red">
+        <i class="fa fa-angle-double-left"></i> Cancelar
+    </button>
+    {if !empty($smarty.get.company_id)}
+        <button type="submit" id="button-edit" class="btn btn-lg btn-blue pull-right">
+            <i class="fa fa-floppy-o"></i> Atualizar
+        </button>
+    {else}
+        <button type="submit" id="button-add" class="btn btn-lg btn-green pull-right">
+            <i class="fa fa-plus"></i> Cadastrar
+        </button>
+    {/if}
+</footer>

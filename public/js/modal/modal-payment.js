@@ -71,7 +71,7 @@ ModalPayment = {
         $('#modal_payment_deadline').datepicker({
             zIndex: 1091,
             format: 'dd/mm/yyyy',
-            minDate: -3
+            minDate: new Date(1999, 10 - 1, 25)
         }).val(global.date2Br(global.today())).blur(function () {
             if ($(this).val().length != 10) {
                 $(this).val(global.date2Br(ModalPayment.payment.payment_deadline));
@@ -91,8 +91,6 @@ ModalPayment = {
             ModalPayment.payment.nature_id = modality.nature_id;
             ModalPayment.payment.modality_type = modality.modality_type;
             ModalPayment.payment.modality_installment = modality.modality_installment;
-            //$('#modal_payment_entry').bootstrapToggle(modality.modality_entry == 'Y' ? 'on' : 'off');
-            //$('#modal_payment_entry').prop('disabled',modality.modality_type == 'D' || modality.modality_type == 'A');
             if( modality.modality_entry == 'N' ){
                 var deadline = global.dateAddDays(global.today(),modality.modality_delay);
                 $('#modal_payment_deadline').val(global.date2Br(deadline));

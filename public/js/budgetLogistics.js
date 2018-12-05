@@ -81,6 +81,7 @@ Budget = {
     },
     data: {
         company_id: null,
+        no_map: 'Y',
         start_date: global.today(),
         end_date: global.today()
     },
@@ -203,6 +204,7 @@ Budget = {
             });
             Budget.selected = selected;
             Budget.selectedIndex = selectedIndex;
+            Budget.distanceMatrix();
         }}).disableSelection();
         global.mask();
     },
@@ -213,6 +215,7 @@ Budget = {
         }
         Budget.data.start_date = global.date2Us($('#budget_start_date').val());
         Budget.data.end_date = global.date2Us($('#budget_end_date').val());
+        Budget.data.no_map = $('#no_map').prop('checked') ? 'Y' : null;
         if( Budget.data.start_date.length != 10 || Budget.data.end_date.length != 10 ){
             global.validateMessage('<p>Verifique as datas informadas.</p>');
             return;
@@ -325,7 +328,7 @@ Budget = {
                 ( budget.external_code|| '--' ),
                 ( budget.document_code || '--' ),
                 ( budget.map_code || '--' ),
-                budget.city_name + '-' + budget.uf_id + ',' + budget.address_public_place + ',' + budget.district_name,
+                budget.district_name,
                 '<span>' + budget.gross_weight_order + '</span>' + global.float2Br(budget.gross_weight,0,3) + 'Kg',
             ]).node();
             if( !budget.map_code ){

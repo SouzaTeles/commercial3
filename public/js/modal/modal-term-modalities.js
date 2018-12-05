@@ -7,6 +7,7 @@ $(document).ready(function(){
 });
 
 ModalTermModalities = {
+    key: -1,
     entries: [],
     parcels: [],
     options: [],
@@ -15,6 +16,7 @@ ModalTermModalities = {
         selector: '#table-term-modalities',
         scrollY: 186,
         scrollCollapse: 1,
+        noControls: [0,1],
         order: [[2,'asc']]
     }),
     get: function(key){
@@ -111,14 +113,16 @@ ModalTermModalities = {
     showModalities: function(){
         $.each( ModalTermModalities.options, function( key, option ){
             var row = ModalTermModalities.table.row.add([
+                '<i class="fa fa-check"></i>',
                 ( option.image ? '<img src="' + option.image + '" />' : '<i class="fa fa-credit-card"></i>' ),
-                option.modality_code,
                 option.modality_description,
                 Term.term.term_installment + 'x (R$ ' + global.float2Br(Budget.budget.budget_value_total / Term.term.term_installment) + ')'
             ]).node();
-            $(row).click(function(){
-                ModalTermModalities.get(key);
-            })
+            $(row).attr('data-key',key).click(function(){
+                $('#table-term-modalities tr').removeClass('selected');
+                $(this).toggleClass('selected');
+                ModalTermModalities.key = parseInt($(this).attr('data-key'));
+            });
         });
         ModalTermModalities.table.draw();
     }

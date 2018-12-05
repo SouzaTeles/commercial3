@@ -60,7 +60,7 @@ table tr.selected
     top: 120px;
     width: 480px;
     height: 420px;
-    right: -466px;
+    right: -480px;
     z-index: 1001;
     position: fixed;
     transition: all .3s ease;

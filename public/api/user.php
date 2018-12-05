@@ -121,7 +121,7 @@
                     [ "external_id", "s", $post->external_id ],
                     [ "person_id", "s", $post->person_id ],
                     [ "user_profile_id", "i", $post->user_profile_id ],
-                    [ "user_name", "s", utf8_decode($post->user_name) ],
+                    [ "user_name", "s", $post->user_name ],
                     [ "user_email", "s", $post->user_email ],
                     [ "user_active", "s", $post->user_active ],
                     [ "user_update", "s", date("Y-m-d H:i:s") ]

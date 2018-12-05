@@ -262,8 +262,8 @@
                     ["budget_value_icms", "d", $budget->budget_value_icms == "NaN" ? 0 : $budget->budget_value_icms],
                     ["budget_value_st", "d", $budget->budget_value_st == "NaN" ? 0 : $budget->budget_value_st],
                     ["budget_value_total", "d", $budget->budget_value_total],
-                    ["budget_note", "s", @$budget->budget_note ? utf8_decode($budget->budget_note) : NULL],
-                    ["budget_note_document", "s", @$budget->budget_note_document ? utf8_decode($budget->budget_note_document) : NULL],
+                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
+                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
                     ["budget_payment_icon","s", $payment_icon],
                     ["budget_credit", "s", $budget->budget_credit],
                     ["budget_delivery", "s", $budget->budget_delivery],
@@ -565,8 +565,8 @@
                     ["budget_value_icms", "d", $budget->budget_value_icms == "NaN" ? 0 : $budget->budget_value_icms],
                     ["budget_value_st", "d", $budget->budget_value_st == "NaN" ? 0 : $budget->budget_value_st],
                     ["budget_value_total", "d", $budget->budget_value_total],
-                    ["budget_note", "s", @$budget->budget_note ? utf8_decode($budget->budget_note) : NULL],
-                    ["budget_note_document", "s", @$budget->budget_note_document ? utf8_decode($budget->budget_note_document) : NULL],
+                    ["budget_note", "s", @$budget->budget_note ? $budget->budget_note : NULL],
+                    ["budget_note_document", "s", @$budget->budget_note_document ? $budget->budget_note_document : NULL],
                     ["budget_payment_icon","s",$payment_icon],
                     ["budget_credit", "s", $budget->budget_credit],
                     ["budget_delivery", "s", @$budget->budget_delivery ? $budget->budget_delivery : "N"],
@@ -783,6 +783,7 @@
                 ],
                 "filters" => [
                     [ "B.company_id", "i", "=", $post->company_id ],
+                    @$post->no_map ? [ "MC.CdChamada IS NULL" ] : NULL,
                     [ "B.external_type", "s", "=", "P" ],
                     [ "B.budget_status", "s", "=", "B" ],
                     [
@@ -836,14 +837,20 @@
                 ]);
             }
 
+            $tables = [
+                "COMMERCIAL.dbo.Budget B(NoLock)",
+                "INNER JOIN COMMERCIAL.dbo.BudgetItem BI (NoLock) ON(BI.budget_id = B.budget_id)",
+                "INNER JOIN DAFEL.dbo.Pessoa P (NoLock) ON(P.IdPessoa = B.seller_id)",
+                "INNER JOIN DAFEL.dbo.Pessoa PC (NoLock) ON(PC.IdPessoa = B.client_id)"
+            ];
+
+            if( @$post->user_id ){
+                $tables[] = "INNER JOIN COMMERCIAL.dbo.Log L (NoLock) ON(L.log_parent_id = B.budget_id AND L.log_script = 'budget' AND L.log_action in('itemDiscountAuthorization','generalDiscountAuthorization'))";
+            }
+
             $budgets = Model::getList($commercial,(Object)[
                 "join" => 1,
-                "tables" => [
-                    "COMMERCIAL.dbo.Budget B(NoLock) ",
-                    "INNER JOIN COMMERCIAL.dbo.BudgetItem BI (NoLock) ON(BI.budget_id = B.budget_id)",
-                    "INNER JOIN  DAFEL.dbo.Pessoa P (NoLock) ON(P.IdPessoa = B.seller_id)",
-                    "INNER JOIN DAFEL.dbo.Pessoa PC (NoLock) ON(PC.IdPessoa = B.client_id)"
-                ],
+                "tables" => $tables,
                 "fields" => [
                     "B.budget_id",
                     "B.company_id",
@@ -868,7 +875,8 @@
                     [
                         ["B.budget_update", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]],
                         ["B.budget_date", "s", "between", ["{$post->start_date} 00:00:00", "{$post->end_date} 23:59:59"]]
-                    ]
+                    ],
+                    ["L.user_id", "i", "=", @$post->user_id ? $post->user_id : NULL]
                 ],
                 "group" => "B.budget_id, B.company_id, B.budget_status, B.external_code, B.external_type, B.document_code, PC.NmPessoa, P.IdPessoa, P.NmPessoa, B.budget_date"
             ]);

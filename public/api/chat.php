@@ -33,7 +33,7 @@
                     ["from_id", "s", $login->user_id],
                     ["message_status", "s", "O"],
                     ["message_type", "s", $post->message_type],
-                    ["message_text", "s", utf8_decode($post->message_text)],
+                    ["message_text", "s", $post->message_text],
                     ["message_date", "s", $date],
                 ]
             ]);

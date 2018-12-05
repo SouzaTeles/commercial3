@@ -25,7 +25,7 @@ ModalSeller = {
                 e.stopPropagation();
                 ModalSeller.get({
                     person_code: $(this).val(),
-                    person_category_id: global.config.person.seller_category_id
+                    category_id: global.config.person.seller_category_id
                 });
             }
         }).on('blur',function(){
@@ -44,7 +44,7 @@ ModalSeller = {
                         data: {
                             limit: ModalSeller.typeahead.items,
                             person_name: $('#modal_seller_name').val(),
-                            person_category_id: global.config.person.seller_category_id
+                            categories: [global.config.person.seller_category_id]
                         },
                         url: global.uri.uri_public_api + 'person.php?action=typeahead',
                         callBack: function(item){

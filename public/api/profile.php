@@ -120,8 +120,7 @@
                 foreach( $access as $name => $data ){
                     if( is_array($data) ){
                         $data = (Object)$data;
-                        if( !@$data->data_type ) var_dump($module);
-                        if( $data->data_type != "bool" || ( $data->data_type == "bool" && $data->value == "Y" )) {
+                        if( @$data->data_type && ($data->data_type != "bool" || ( $data->data_type == "bool" && $data->value == "Y" ))){
                             Model::insert( $commercial, (Object)[
                                 "table" => "[UserProfileAccess]",
                                 "fields" => [

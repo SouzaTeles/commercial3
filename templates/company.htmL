@@ -1,0 +1,45 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8">
+                <div class="form-group">
+                    <label for="company_search">Pesquisa Rápida</label>
+                    <input type="text" class="form-control" id="company_search" placeholder="Pesquisar"/>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;</label>
+                    <button id="button-refresh" class="btn btn-block btn-blue">
+                        <i class="fa fa-refresh"></i> Atualizar
+                    </button>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;</label>
+                    <button id="button-new" type="button" class="btn btn-block btn-green"{if $login->access->company->add->value == 'N'} disabled{/if}>
+                        <i class="fa fa-plus"></i> Novo Cadastro
+                    </button>
+                </div>
+            </div>
+        </div>
+        <table id="table-companies" class="table-custom no-select">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Ativo</th>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <footer>
+        <div><i class="fa fa-building-o"></i> 0 Empresas</div>
+        <span class="pull-right">{$config->system->system_name} v{$config->system->system_version}</span>
+    </footer>
+</div>

@@ -555,7 +555,7 @@ Budget = {
             $('button[data-action="budget-delivery"]').removeClass('selected');
             $(this).addClass('selected');
             if( Budget.budget.budget_delivery == 'Y' ){
-                $(this).prev().find('.spin').css({'left':'38px'});
+                $(this).prev().find('.spin').css({'left':'18px'});
             } else {
                 $(this).next().find('.spin').css({'left':'0'});
             }
@@ -714,12 +714,11 @@ Budget = {
         });
     },
     print: function(params){
-        location.href = global.uri.uri_public + 'window.php?module=budget&action=' + params.action + '&budget_id=' + params.budget_id;
-        // global.window({
-        //     url: global.uri.uri_public + 'window.php?module=budget&action=' + params.action + '&budget_id=' + params.budget_id,
-        //     width: params.width || 860,
-        //     height: params.height || 620
-        // });
+        global.window({
+            url: global.uri.uri_public + 'window.php?module=budget&action=' + params.action + '&budget_id=' + params.budget_id,
+            width: params.width || 860,
+            height: params.height || 620
+        });
     },
     recover: function(){
         global.post({
@@ -1905,7 +1904,7 @@ Person = {
         $('#button-budget-payment-credit').prop('disabled',!Person.person.person_id);
         if( !!budget_id ){
             if( Budget.budget.budget_delivery == 'Y' ){
-                $('.spin').css({'left':'38px'});
+                $('.spin').css({'left':'18px'});
                 $('button[data-action="budget-delivery"]').eq(1).addClass('selected');
             } else {
                 $('.spin').css({'left':'0'});
@@ -2012,7 +2011,7 @@ Person = {
                 get_person_credit_limit: 1,
                 person_id: data.person_id,
                 person_code: data.person_code,
-                person_category_id: global.config.person.client_category_id
+                category_id: global.config.person.client_category_id
             },
             dataType: 'json'
         }, function(person){
@@ -2596,6 +2595,7 @@ Term = {
                 class: 'modal-term-modalities',
                 title: 'Selecione a Modalidade',
                 html: html,
+                hideClose: 1,
                 buttons: [{
                     icon: 'fa-times',
                     title: 'Cancelar',
@@ -2604,6 +2604,17 @@ Term = {
                         Term.init();
                         Term.data2form();
                         $('#term_code').focus();
+                    }
+                },{
+                    icon: 'fa-check',
+                    title: 'Selecionar',
+                    unclose: true,
+                    action: function(){
+                        if( ModalTermModalities.key >= 0 ) {
+                            ModalTermModalities.get(ModalTermModalities.key);
+                        } else {
+                            global.validateMessage('A modalidade não foi selecionada!');
+                        }
                     }
                 }]
             });

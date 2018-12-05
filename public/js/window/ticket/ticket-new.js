@@ -64,7 +64,10 @@ Ticket = {
             data: {
                 limit: 500,
                 person_active: 'Y',
-                person_category_id: global.config.person.employ_category_id
+                categories: [
+                    global.config.person.employ_category_id,
+                    global.config.person.seller_category_id
+                ]
             },
             dataType: 'json'
         },function(data){

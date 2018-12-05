@@ -387,6 +387,15 @@ ModalPersonNew = {
             });
             return false;
         }
+        if( ModalPersonNew.person.person_birth.length ) {
+            var date = moment(ModalPersonNew.person.person_birth, 'YYYY-MM-DD');
+            if( !date.isValid() || parseInt(date.format('YYYY')) <= 1900 || parseInt(date.format('YYYY')) >= 2020 ){
+                global.validateMessage('A data de nascimento não é válida. Verifique.',function(){
+                    $('#modal_person_birth').focus().select();
+                });
+                return false;
+            }
+        }
         if( !ModalPersonNew.person.address.address_cep.length ){
             global.validateMessage('O CEP deverá ser informado.',function(){
                 $('#modal_address_cep').focus();

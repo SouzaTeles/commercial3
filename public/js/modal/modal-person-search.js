@@ -26,10 +26,11 @@ ModalPersonSearch = {
             url: global.uri.uri_public_api + 'person.php?action=active',
             data: {
                 person_id: ModalPersonSearch.person.person_id,
-                person_category_id: ModalPersonSearch.data.categories[0]
+                category_id: ModalPersonSearch.data.categories[0]
             },
             dataType: 'json'
         },function(){
+            $('#modal-person-search').modal('hide');
             ModalPersonSearch.success(ModalPersonSearch.person);
         });
     },
@@ -125,6 +126,7 @@ ModalPersonSearch = {
                 if( person.person_active == 'N' ){
                     ModalPersonSearch.beforeActive();
                 } else {
+                    $('#modal-person-search').modal('hide');
                     ModalPersonSearch.success(ModalPersonSearch.person);
                 }
             });

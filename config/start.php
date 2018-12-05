@@ -27,20 +27,20 @@
     $get = (Object)$_GET;
     $post = (Object)$_POST;
     $headers = getallheaders();
-    if( !Session::isUser() && @$get->user_id && @$get->user_session ){
+    if( !Session::isUser() && @$get->session_user_id && @$get->session_value ){
         $session = Model::get($commercial,(Object)[
             "top" => 1,
             "tables" => [ "UserSession" ],
             "fields" => [ "user_id" ],
             "filters" => [
-                [ "user_id", "i", "=", $get->user_id ],
-                [ "user_session_value", "s", "=", $get->user_session ],
+                [ "user_id", "i", "=", $get->session_user_id ],
+                [ "user_session_value", "s", "=", $get->session_value ],
                 [ "CONVERT(VARCHAR(10),user_session_date,126)", "s", "=", date("Y-m-d") ]
             ]
         ]);
         if( @$session ){
-            $_SESSION["user_id"] = $get->user_id;
-            $_SESSION["user_session_id"] = $get->user_session;
+            $_SESSION["user_id"] = $get->session_user_id;
+            $_SESSION["user_session_id"] = $get->session_value;
         }
     }
 

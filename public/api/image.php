@@ -17,7 +17,7 @@
     $maxWidthThumb = WIDTH_THUMB_MAX;
     $maxHeightThumb = HEIGHT_THUMB_MAX;
 
-    switch( $get->action ) {
+    switch( $get->action ){
 
         case "up":
 
@@ -51,6 +51,12 @@
 
                 $name = explode(".", $_FILES['file']['name'][$key]);
                 $file = "{$post->image_id}." . end($name);
+
+                $path = PATH_FILES . "{$post->image_dir}/{$post->image_id}";
+                if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
+                if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
+                if (file_exists("{$path}.png")) unlink("{$path}.png");
+
                 if( File::upload( $tmp, PATH_FILES . "{$post->image_dir}/{$file}")) {
                     $success++;
                     $images[] = (Object)[
@@ -205,8 +211,8 @@
                     [ "image_start_date", "s", @$post->image_start_date ? $post->image_start_date : NULL ],
                     [ "image_end_date", "s", @$post->image_end_date ? $post->image_end_date : NULL ],
                     [ "image_link", "s", @$post->image_link ? $post->image_link : NULL ],
-                    [ "image_name", "s", @$post->image_name ? utf8_decode($post->image_name) : NULL ],
-                    [ "image_description", "s", @$post->image_description ? utf8_decode($post->image_description) : NULL ],
+                    [ "image_name", "s", @$post->image_name ? $post->image_name : NULL ],
+                    [ "image_description", "s", @$post->image_description ? $post->image_description : NULL ],
                     [ "image_update", "s", date("Y-m-d H:i:s") ]
                 ],
                 "filters" => [[ "image_id", "i", "=", $post->image_id ]]

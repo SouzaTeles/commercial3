@@ -1,6 +1,26 @@
+.modal-term-modalities
+{
+    top: 20px;
+}
+
 .modal-term-modalities table tr
 {
     cursor: pointer;
+}
+
+.modal-term-modalities table tr i.fa-check
+{
+    display: none;
+}
+
+.modal-term-modalities table tr.selected
+{
+    background-color: #b2e3b3;
+}
+
+.modal-term-modalities table tr.selected i.fa-check
+{
+    display: block;
 }
 
 .modal-term-modalities table tr td img

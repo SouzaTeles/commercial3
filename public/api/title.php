@@ -19,13 +19,13 @@
             $drops = Model::getList($dafel,(Object)[
                 "join" => 1,
                 "tables" => [
-                    "AReceberItemBaixa ARIB1",
-                    "INNER JOIN Usuario U (NoLock) ON(U.IdUsuario = ARIB1.IdUsuario)",
-                    "INNER JOIN AReceberItem ARI1 (NoLock) ON(ARIB1.IdAreceberItem = ARI1.IdAreceberItem)",
-                    "INNER JOIN AReceber AR (NoLock) ON(AR.IdAreceber = ARI1.IdAreceber)",
-                    "INNER JOIN FormaPagamento FP (NoLock) ON(FP.IdFormaPagamento = AR.IdFormaPagamento)",
-                    "INNER JOIN AReceberItem ARI2 (NoLock) ON(ARI2.IdAreceber = AR.IdAreceber)",
-                    "INNER JOIN AReceberItemBaixa ARIB2 (NoLock) ON(ARIB2.IdAReceberItem = ARI2.IdAReceberItem)",
+                    "DAFEL.dbo.AReceberItemBaixa ARIB1",
+                    "INNER JOIN DAFEL.dbo.Usuario U (NoLock) ON(U.IdUsuario = ARIB1.IdUsuario)",
+                    "INNER JOIN DAFEL.dbo.AReceberItem ARI1 (NoLock) ON(ARIB1.IdAreceberItem = ARI1.IdAreceberItem)",
+                    "INNER JOIN DAFEL.dbo.AReceber AR (NoLock) ON(AR.IdAreceber = ARI1.IdAreceber)",
+                    "INNER JOIN DAFEL.dbo.FormaPagamento FP (NoLock) ON(FP.IdFormaPagamento = AR.IdFormaPagamento)",
+                    "INNER JOIN DAFEL.dbo.AReceberItem ARI2 (NoLock) ON(ARI2.IdAreceber = AR.IdAreceber)",
+                    "INNER JOIN DAFEL.dbo.AReceberItemBaixa ARIB2 (NoLock) ON(ARIB2.IdAReceberItem = ARI2.IdAReceberItem)",
                 ],
                 "fields" => [
                     "title_id=AR.IdAreceber",
@@ -48,6 +48,7 @@
                         ["ARI1.IdTipoMovCobranca IS NULL"],
                         ["ARI1.IdTipoMovCobranca", "s", "!=", "00A0000004"]
                     ],
+                    [ "AR.NrTitulo", "s", "NOT LIKE", @$post->not_ren ? "%REN%" : NULL],
                     [ "AR.CdEmpresa", "s", "in", @$post->companies ? $post->companies : NULL],
                     [ "AR.NmTitulo", "s", "not in", ["VISA","CREDICARD","CIELO"]],
                     [ "ARIB1.IdTipoBaixa", "s", "in", ["00A0000001","00A0000002","00A0000005"]],

@@ -61,25 +61,29 @@ Shipment = {
             '</div>'
         );
     },
-    showCompanies: function(success){
-        if( !global.login.companies.length ){
-            global.validateMessage('Você não possui acesso as empresas. Contacte o administrador do sistema.');
-        }
-        $.each( global.login.companies, function(key,company){
-            if( !company.parent_id ){
-                $('#company_id').append($('<option>',{
-                    'value': company.company_id,
-                    'selected': company.user_company_main == 'Y',
-                    'data-content': '<i class="fa fa-stop" style="color:' + company.company_color + ';"></i> ' + ('0'+company.company_id).slice(-2) + ' - ' + company.company_name
-                }));
-                if( company.user_company_main == 'Y' ){
-                    Shipment.data.company_id = company.company_id;
-                }
+    events: function(){
+        $('#start_date, #end_date').datepicker({
+            format: 'dd/mm/yyyy'
+        }).blur(function(){
+            if( $(this).val().length != 10 ){
+                $(this).val(global.date2Br(global.today()));
             }
+        }).val(global.date2Br(global.today()));
+        $('#btn-filter').click(function(e){
+            Shipment.getList();
+            e.preventDefault();
+            e.stopPropagation();
         });
-        $('#company_id').selectpicker('refresh');
-        if( success ) success();
+        $('#button-shipment-new').click(function(){
+            global.window({url: "http://www.commercial3.net/commercial3/window.php?module=shipment&action=new"});
+        });
+        $('#shipment_code').on('keyup', function(event){
+            var key = event.keyCode || event.wich;
+            if(key == 13)
+                Shipment.get();
+        });
     },
+
     getDrivers: function(){
         global.post({
             url: global.uri.uri_public_api + 'person.php?action=getInternalList',
@@ -180,26 +184,24 @@ Shipment = {
         });
         $table.find('[data-toggle="tooltip"]').tooltip({container:'body'});
     },
-    events: function(){
-        $('#start_date, #end_date').datepicker({
-            format: 'dd/mm/yyyy'
-        }).blur(function(){
-            if( $(this).val().length != 10 ){
-                $(this).val(global.date2Br(global.today()));
+    showCompanies: function(success){
+        if( !global.login.companies.length ){
+            global.validateMessage('Você não possui acesso as empresas. Contacte o administrador do sistema.');
+        }
+        $.each( global.login.companies, function(key,company){
+            if( !company.parent_id ){
+                $('#company_id').append($('<option>',{
+                    'value': company.company_id,
+                    'selected': company.user_company_main == 'Y',
+                    'data-content': '<i class="fa fa-stop" style="color:' + company.company_color + ';"></i> ' + ('0'+company.company_id).slice(-2) + ' - ' + company.company_name
+                }));
+                if( company.user_company_main == 'Y' ){
+                    Shipment.data.company_id = company.company_id;
+                }
             }
-        }).val(global.date2Br(global.today()));
-        $('#btn-filter').click(function(e){
-            Shipment.getList();
-            e.preventDefault();
-            e.stopPropagation();
         });
-        $('#button-shipment-new').click(function(){
-            global.window({url: "http://www.commercial3.net/commercial3/window.php?module=shipment&action=new"});
-        });
-        $('#shipment_code').on('keyup', function(event){
-            var key = event.keyCode || event.wich;
-            if(key == 13)
-                Shipment.get();
-        });
-    }
+        $('#company_id').selectpicker('refresh');
+        if( success ) success();
+    },
+
 };

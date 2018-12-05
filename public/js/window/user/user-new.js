@@ -160,12 +160,12 @@ User = {
         Image.show();
     },
     edit: function(){
-        if( !!window.opener ) window.opener.User.getList();
         global.post({
             url: global.uri.uri_public_api + 'user.php?action=edit',
             data: User.user,
             dataType: 'json'
         }, function(data){
+            if( !!window.opener ) window.opener.User.getList();
             global.modal({
                 icon: 'fa-info',
                 title: 'Informação',
@@ -263,7 +263,10 @@ User = {
             data: {
                 limit: 500,
                 person_active: 'Y',
-                person_category_id: global.config.person.employ_category_id
+                categories: [
+                    global.config.person.employ_category_id,
+                    global.config.person.seller_category_id
+                ]
             },
             dataType: 'json'
         },function(data){
@@ -479,8 +482,7 @@ Price = {
             price_code: price.price_code,
             price_name: price.price_name
         });
-        $('#user_price_id').selectpicker('val','default');
-        $('#user_price_id').selectpicker('refresh');
+        $('#prices').selectpicker('val','default');
         Price.showSelected();
     },
     del: function(key){

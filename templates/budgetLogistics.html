@@ -3,7 +3,7 @@
         <div class="filter">
             <form id="form-budget-filter">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="form-group">
                             <label for="budget_company_id">Empresa</label>
                             <select class="selectpicker show-tick" id="budget_company_id" title="-- Selecione a Empresa --"></select>
@@ -25,6 +25,12 @@
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 <input type="text" class="form-control" id="budget_end_date" data-to-mask="date"/>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="form-group">
+                            <label for="no_map">Documentos sem Mapa</label>
+                            <input checked type="checkbox" class="form-control" id="no_map" />
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-2">
@@ -92,8 +98,9 @@
                     <i class="fa fa-plus"></i> Gerar mapa
                 </button>
                 <button id="button-show-selected" class="btn btn-orange">
-                    <i class="fa fa-chevron-left"></i>
-                    <i class="fa fa-chevron-right"></i>
+                    <!--<i class="fa fa-chevron-left"></i>-->
+                    <!--<i class="fa fa-chevron-right"></i>-->
+                    <i class="fa fa-truck"></i>
                 </button>
             </div>
         </div>

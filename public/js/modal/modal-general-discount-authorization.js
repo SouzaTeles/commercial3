@@ -12,7 +12,8 @@ ModalGeneralDiscountAuthorization = {
             data: {
                 user_user: $('#modal_user_user').val(),
                 user_pass: $('#modal_user_pass').val(),
-                data: ModalGeneralDiscountAuthorization.data
+                data: ModalGeneralDiscountAuthorization.data,
+                items: Budget.budget.items
             },
             dataType: 'json'
         },function(data){

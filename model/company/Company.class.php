@@ -11,6 +11,12 @@
         public $company_target;
         public $company_update;
         public $company_date;
+        public $company_budget_message;
+        public $company_st;
+        public $company_credit;
+        public $delivery_days;
+        public $company_latitude;
+        public $company_longitude;
 
         public function __construct( $data, $gets=[] )
         {
@@ -20,15 +26,32 @@
             $this->company_code = substr("0{$data->company_id}",-2);
             $this->company_name = $data->company_name;
             $this->company_short_name = @$data->company_short_name ? $data->company_short_name : NULL;
-            $this->company_target = $data->company_target;
             $this->company_color = $data->company_color;
+            $this->company_target = $data->company_target;
+            $this->company_consumer_id = $data->company_consumer_id;
             $this->company_update = @$data->company_update ? $data->company_update : NULL;
             $this->company_date = $data->company_date;
+            $this->company_budget_message = $data->company_budget_message;
+            $this->company_st = $data->company_st;
+            $this->company_credit = $data->company_credit;
+            $this->delivery_days = (int)$data->delivery_days;
+            $this->company_latitude = (float)$data->company_latitude;
+            $this->company_longitude = (float)$data->company_longitude;
 
             $this->image = getImage((Object)[
                 "image_id" => $data->company_id,
                 "image_dir" => "company"
             ]);
+
+            GLOBAL $dafel;
+
+            if( @$_POST["get_company_person"] ){
+                $this->person = Model::get($dafel,(Object)[
+                    "tables" => [ "Pessoa" ],
+                    "fields" => [ "person_code=CdChamada", "person_name=NmPessoa" ],
+                    "filters" => [[ "IdPessoa", "s", "=", $data->company_consumer_id ]]
+                ]);
+            }
         }
 
         public static function Dashboard($params)

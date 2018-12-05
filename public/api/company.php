@@ -13,57 +13,25 @@
         ]);
     }
 
-    if( in_array($get->action,["del","edit","insert"]) ){
-        checkAccess();
-    }
-
-    if( in_array($get->action,["del","edit","insert"]) ){
-        postLog();
-    }
-
     switch( $get->action ) {
-
-        case "del":
-
-            if (!@$post->company_id) {
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Parâmetro POST não informado."
-                ]);
-            }
-
-            $users = Model::get($commercial,(Object)[
-                "tables" => [ "user_company" ],
-                "fields" => [ "user_company_id" ],
-                "filters" => [[ "company_id", "i", "=", $post->company_id ]]
-            ]);
-
-            if( @$users ){
-                headerResponse((Object)[
-                    "code" => 417,
-                    "message" => "Existem usuários vinculados a empresa. A exclusão não será permitida."
-                ]);
-            }
-
-            Model::delete($commercial,(Object)[
-                "table" => "company",
-                "filters" => [[ "company_id", "i", "=", $post->company_id ]]
-            ]);
-
-            $path = PATH_FILES . "company/{$post->company_id}";
-            if (file_exists("{$path}.jpg")) unlink("{$path}.jpg");
-            if (file_exists("{$path}.jpeg")) unlink("{$path}.jpeg");
-            if (file_exists("{$path}.png")) unlink("{$path}.png");
-
-            Json::get($headerStatus[200], (Object)[
-                "message" => "Empresa removida com sucesso."
-            ]);
-
-        break;
 
         case "edit":
 
-            if (!@$post->company_id || !@$post->company_active || !@$post->company_code || !@$post->company_name || !@$post->company_target) {
+            if (
+                !@$post->company_id ||
+                !@$post->company_active ||
+                !@$post->company_target ||
+                !@$post->company_st ||
+                !@$post->company_credit ||
+                !@$post->company_color ||
+                !@$post->company_name ||
+                !@$post->company_short_name ||
+                !@$post->delivery_days ||
+                !@$post->company_consumer_id ||
+                !@$post->company_budget_message ||
+                !@$post->company_latitude ||
+                !@$post->company_longitude
+            ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -75,11 +43,24 @@
                 "fields" => [
                     ["parent_id", "i", @$post->parent_id ? $post->parent_id : NULL],
                     ["company_active", "s", $post->company_active],
-                    ["company_short_name", "s", @$post->company_short_name ? $post->company_short_name : NULL],
                     ["company_target", "s", $post->company_target],
-                    ["company_color", "s", $post->company_color]
+                    ["company_st", "s", $post->company_st],
+                    ["company_credit", "s", $post->company_credit],
+                    ["company_color", "s", $post->company_color],
+                    ["company_name", "s", $post->company_name],
+                    ["company_short_name", "s", $post->company_short_name],
+                    ["delivery_days", "i", $post->delivery_days],
+                    ["company_consumer_id", "s", $post->company_consumer_id],
+                    ["company_budget_message", "s", $post->company_budget_message],
+                    ["company_latitude", "s", $post->company_latitude],
+                    ["company_longitude", "s", $post->company_longitude],
+                    ["company_update", "s", date("Y-m-d H:m:i")]
                 ],
                 "filters" => [["company_id", "i", "=", $post->company_id]]
+            ]);
+
+            postLog((Object)[
+                "parent_id" => $post->company_id
             ]);
 
             Json::get($headerStatus[200], (Object)[
@@ -97,20 +78,38 @@
                 ]);
             }
 
-            $person = Model::get($commercial, (Object)[
+            $company = Model::get($commercial, (Object)[
                 "class" => "Company",
                 "tables" => ["company"],
+                "fields" => [
+                    "company_id",
+                    "parent_id",
+                    "company_active",
+                    "company_name",
+                    "company_short_name",
+                    "company_color",
+                    "company_target",
+                    "company_consumer_id",
+                    "company_update",
+                    "company_date",
+                    "company_budget_message",
+                    "company_st",
+                    "company_credit",
+                    "delivery_days",
+                    "company_latitude",
+                    "company_longitude"
+                ],
                 "filters" => [["company_id", "i", "=", $post->company_id]]
             ]);
 
-            if (!@$person) {
+            if (!@$company) {
                 headerResponse((Object)[
                     "code" => 404,
                     "message" => "Pessoa não encontrada."
                 ]);
             }
 
-            Json::get($headerStatus[200], $person);
+            Json::get($headerStatus[200], $company);
 
         break;
 
@@ -149,11 +148,13 @@
         case "getListERP":
 
             $companies = Model::getList( $dafel, (Object)[
-                "tables" => [ "EmpresaERP" ],
+                "tables" => [
+                    "EmpresaERP ERP"
+                ],
                 "fields" => [
-                    "CdEmpresa",
-                    "NmEmpresa",
-                    "NmEmpresaCurto"
+                    "ERP.CdEmpresa",
+                    "ERP.NmEmpresa",
+                    "ERP.NmEmpresaCurto"
                 ]
             ]);
 
@@ -170,7 +171,21 @@
 
         case "insert":
 
-            if (!@$post->company_id || !@$post->company_active || !@$post->company_code || !@$post->company_name || !@$post->company_target) {
+            if(
+                !@$post->company_id ||
+                !@$post->company_active ||
+                !@$post->company_target ||
+                !@$post->company_st ||
+                !@$post->company_credit ||
+                !@$post->company_color ||
+                !@$post->company_name ||
+                !@$post->company_short_name ||
+                !@$post->delivery_days ||
+                !@$post->company_consumer_id ||
+                !@$post->company_budget_message ||
+                !@$post->company_latitude ||
+                !@$post->company_longitude
+            ){
                 headerResponse((Object)[
                     "code" => 417,
                     "message" => "Parâmetro POST não encontrado."
@@ -178,20 +193,59 @@
             }
 
             $company_id = Model::insert($commercial, (Object)[
-                "table" => "company",
+                "table" => "Company",
                 "fields" => [
-                    ["company_id", "s", $post->company_id],
+                    ["company_id", "i", $post->company_id],
+                    ["parent_id", "i", @$post->parent_id ? $post->parent_id : NULL],
                     ["company_active", "s", $post->company_active],
-                    ["company_name", "s", $post->company_name],
-                    ["company_short_name", "s", @$post->company_short_name ? $post->company_short_name : NULL],
                     ["company_target", "s", $post->company_target],
-                    ["company_color", "s", $post->company_color]
+                    ["company_st", "s", $post->company_st],
+                    ["company_credit", "s", $post->company_credit],
+                    ["company_color", "s", $post->company_color],
+                    ["company_name", "s", $post->company_name],
+                    ["company_short_name", "s", $post->company_short_name],
+                    ["delivery_days", "i", $post->delivery_days],
+                    ["company_consumer_id", "s", $post->company_consumer_id],
+                    ["company_budget_message", "s", $post->company_budget_message],
+                    ["company_latitude", "s", $post->company_latitude],
+                    ["company_longitude", "s", $post->company_longitude],
+                    ["company_date", "s", date("Y-m-d H:m:i")]
                 ]
             ]);
 
-            Json::get($headerStatus[200], (Object)[
-                "message" => "Empresa cadastrado com sucesso."
+            if( @$post->image ){
+                base64toFile( PATH_FILES . "company/", $post->company_id, $post->image);
+            }
+
+            postLog((Object)[
+                "parent_id" => $post->company_id
             ]);
+
+            Json::get($headerStatus[200], (Object)[
+                "message" => "Empresa cadastrada com sucesso."
+            ]);
+
+        break;
+
+        case "external":
+
+            $companies = Model::getList( $dafel, (Object)[
+                "tables" => [ "EmpresaERP" ],
+                "fields" => [
+                    "CdEmpresa",
+                    "NmEmpresa",
+                    "NmEmpresaCurto"
+                ]
+            ]);
+
+            if( !sizeof($companies) ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Nenhuma empresa encontrada."
+                ]);
+            }
+
+            Json::get( $headerStatus[200], $companies );
 
         break;
 
