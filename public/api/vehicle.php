@@ -28,6 +28,13 @@
                 ]
             ]);
 
+            foreach( $vehicles as $vehicle ){
+                $vehicle->image = getImage((Object)[
+                    "image_dir" => "vehicle",
+                    "image_id" => $vehicle->vehicle_id
+                ]);
+            }
+
             Json::get($headerStatus[200], $vehicles);
 
         break;

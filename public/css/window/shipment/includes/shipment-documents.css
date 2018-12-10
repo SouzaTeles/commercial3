@@ -1,0 +1,42 @@
+#button-document-add
+{
+    height: 32px;
+}
+
+.table-documents
+{
+    min-height: 240px;
+    background-color: #c0c0c0;
+}
+
+.table-documents td,
+.table-documents th
+{
+    background-color: #fff;
+}
+
+.panel-documents .footer-documents div
+{
+    float: left;
+    color: #666;
+    font-size: 16px;
+    padding: 10px 10px 0;
+}
+
+.panel-documents .footer-documents .documents
+{
+    padding: 10px 10px 0 0;
+}
+
+.panel-documents .footer-documents .total
+{
+    float: right;
+    padding: 10px 0 0 10px;
+}
+
+.panel-documents #button-budget-item-add,
+.panel-documents #button-budget-item-remove
+{
+    width: 47px;
+    height: 34px;
+}

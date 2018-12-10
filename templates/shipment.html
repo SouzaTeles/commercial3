@@ -63,19 +63,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Botão Atualizar -->
                             <div class="col-xs-12 col-sm-2">
-                                <label>&nbsp;&nbsp;</label>
-                                <button type="button" id="btn-filter" class="btn btn-block btn-blue">
-                                    <i class="fa fa-refresh"></i> Atualizar
-                                </button>
+                                <div class="form-group">
+                                    <label>&nbsp;&nbsp;</label>
+                                    <button type="submit" class="btn btn-block btn-blue">
+                                        <i class="fa fa-refresh"></i> Atualizar
+                                    </button>
+                                </div>
                             </div>
-                            <!-- Botão novo Mapa -->
                             <div class="col-xs-12 col-sm-2">
-                                <label>&nbsp;&nbsp;</label>
-                                <button type="button" id="button-shipment-new" class="btn btn-block btn-green"{if $login->access->shipment->add->value == 'N'} disabled{/if}>
-                                    <i class="fa fa-plus"></i> Novo Mapa
-                                </button>
+                                <div class="form-group">
+                                    <label>&nbsp;&nbsp;</label>
+                                    <button id="button-shipment-new" type="button" class="btn btn-block btn-green"{if $login->access->shipment->add->value == 'N'} disabled{/if}>
+                                        <i class="fa fa-plus"></i> Novo Mapa
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </form>

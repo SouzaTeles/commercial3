@@ -1,0 +1,15 @@
+<link href="{$URI_PUBLIC}css/modal/modal-shipment-documents.css?{$smarty.now}" rel="stylesheet" />
+<table id="modal-table-shipment-documents" class="table-custom no-select nowrap">
+    <thead>
+        <tr>
+            <th>Espécie</th>
+            <th>Pessoa</th>
+            <th>Localidade</th>
+            <th>Distância</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<script src="{$URI_PUBLIC}js/modal/modal-shipment-documents.js?{$smarty.now}"></script>
+<script> ModalShipmentDocuments.documents = {$smarty.post.documents|@json_encode}; </script>

@@ -1,78 +1,15 @@
 <div class="panel-body">
-    <div class="panel panel-budget">
-        <div class="panel-budget">
-            {include file="{$PATH_TEMPLATES}window/shipment/includes/shipment-tools.html"}
+    <div class="panel panel-shipment">
+        {include file="{$PATH_TEMPLATES}window/shipment/includes/shipment-tools.html"}
+        {include file="{$PATH_TEMPLATES}window/shipment/includes/shipment-documents.html"}
+        {include file="{$PATH_TEMPLATES}window/shipment/includes/shipment-vehicle.html"}
+        {include file="{$PATH_TEMPLATES}window/shipment/includes/shipment-people.html"}
+        {include file="{$PATH_TEMPLATES}window/shipment/includes/shipment-route.html"}
+        {include file="{$PATH_TEMPLATES}window/shipment/includes/shipment-buttons.html"}
     </div>
 </div>
-
-<div class="col-xs-12 col-sm-6">
-    <h1>
-        Novo Mapa
-    </h1>
-
-    <div class="col-xs-12 col-sm-6">
-        <div class="form-group">
-                <label for="shipment_driver_name">Motorista</label>
-                <input type="text" class="form-control" id="shipment_driver_name" placeholder="Motorista">
-        </div>
-    </div>
-
-    <div class="col-xs-12 col-sm-6">
-        <div class="form-group">
-                <label for="shipment_driver_name">Veiculo</label>
-                <input type="text" class="form-control" id="shipment_driver_name" placeholder="Veiculo">
-        </div>
-    </div>
-
-    <div class="col-xs-12 col-sm-12">
-
-        <label for="shipment_driver_name">Rota</label>
-        <input type="text" class="form-control" id="shipment_route" placeholder="Rota">
-    </div>
-
-    <!--button id="testeAtualiza">
-        <i class="fa fa-refresh"></i> Atualizar
-    </button-->
-</div>
-
-<div class="col-xs-12 col-sm-6">
-    <div class="col-xs-12 col-sm-12">
-        <div class="form-group">
-            <label for="shipment_company_id">Empresa</label>
-            <select class="selectpicker show-tick" id="shipment_company_id" title="-- Selecione a Empresa --"></select>
-        </div>
-    </div>
-
-    <div class="col-xs-12 col-sm-12">
-        <div class="form-group">
-            <label for="shipment_company_id">Chave de Acesso</label>
-            <input type="text" class="form-control" id="document_key" placeholder="Digite a chave de acesso da NFe">
-        </div>
-    </div>
-
-    <div class="col-xs-12 col-sm-6">
-        <div class="form-group">
-            <label for="document_number">Numero do Documento</label>
-            <input type="text" class="form-control" id="document_number" placeholder="Numero do Documento">
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Código do Mapa</label>
-    </div>
-
-    <table id="table-shipment-docs" class="table table-custom table-actions">
-        <thead>
-            <tr>
-                <th><!--Status--></th>
-                <th>Numero</th>
-                <th>Pessoa</th>
-                <th>Forma de Pagamento</th>
-                <th>Pessoa</th>
-                <th>Data</th>
-                <th><!--Opções--></th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+<footer>
+    <div class="logo"></div>
+    <div class="info"></div>
+    <div class="idne"></div>
+</footer>

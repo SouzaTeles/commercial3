@@ -294,7 +294,7 @@ Budget = {
             });
             Budget.showSelected();
         },function(){
-            global.validateMessage('Não foi possível calcular a distância e tempos das entregas.');
+            global.validateMessage('Não foi possível calcular a distância e o tempo das entregas.');
             Budget.showSelected();
         });
     },

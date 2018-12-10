@@ -20,7 +20,7 @@ ModalSeller = {
     events: function(){
         $('#modal_seller_code').keypress(function (e){
             var keycode = e.keyCode || e.which;
-            if( keycode == '13' && $(this).val().length ){
+            if( keycode == '13' && $(this).val().length && global.posts == 0){
                 e.preventDefault();
                 e.stopPropagation();
                 ModalSeller.get({
@@ -70,6 +70,7 @@ ModalSeller = {
                 global.validateMessage('Nenhum vendedor foi informado.',function(){
                     $('#modal_seller_code').focus().select();
                 });
+                return;
             }
             $('#modal-seller-search').modal('hide');
             ModalSeller.success(ModalSeller.seller);

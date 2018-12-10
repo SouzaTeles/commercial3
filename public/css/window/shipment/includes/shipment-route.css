@@ -1,0 +1,33 @@
+.panel-route #grid-route
+{
+    height: 284px;
+    overflow-y: auto;
+}
+
+.panel-route #grid-route .card-route
+{
+    margin: 10px 0;
+    font-size: 16px;
+    padding: 26px 10px;
+    text-align: center;
+    position: relative;
+}
+
+.panel-route #grid-route .card-route p
+{
+    margin: 0;
+}
+
+.panel-route #grid-route .card-route button
+{
+    top: 4px;
+    right: 4px;
+    font-size: 16px;
+    position: absolute;
+}
+
+.panel-route .google-map
+{
+    height: 326px;
+    margin-top: 20px;
+}

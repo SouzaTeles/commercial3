@@ -1,0 +1,120 @@
+<div class="panel panel-documents">
+    <div class="panel-heading ph-red"><i class="fa fa-file-text-o"></i> Documentos</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12 col-sm-3">
+                <div class="form-group">
+                    <label for="document_code">Documento</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="document_code"/>
+                        <span id="button-document-search" class="btn input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <label for="budget_code">Pedido</label>
+                    <div class="input-group">
+                        <input readonly type="text" class="form-control" id="budget_code"/>
+                        <span class="input-group-addon"><i class="fa fa-file-text-o"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <div class="form-group">
+                    <label for="person_name">Pessoa</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                        <input readonly type="text" class="form-control" id="person_name"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <div class="form-group">
+                    <label for="district_name">Bairro</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-map-signs"></i></span>
+                        <input readonly type="text" class="form-control" id="district_name"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <label for="document_weight">Peso Bruto</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-balance-scale"></i></span>
+                        <input readonly type="text" class="form-control" id="document_weight"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <label for="document_distance">Distância</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-road"></i></span>
+                        <input readonly type="text" class="form-control" id="document_distance"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <label for="document_duration">Duração</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                        <input readonly type="text" class="form-control" id="document_duration"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <div class="form-group">
+                    <label for="document_date">Data do Documento</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input readonly type="text" class="form-control" id="document_date"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <label for="document_type">Espécie do Documento</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-info-circle"></i></span>
+                        <input readonly type="text" class="form-control" id="document_type"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-1">
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;</label>
+                    <button id="button-document-add" class="btn btn-block btn-green">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="table-documents">
+                    <table id="table-documents" class="table table-striped table-bordered table-hover dataTable no-select">
+                        <thead>
+                            <tr>
+                                <th>Documento</th>
+                                <th>Cliente</th>
+                                <th>Bairro</th>
+                                <th>Peso</th>
+                                <th>Distância</th>
+                                <th>Duração</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-xs-12 footer-documents">
+                <div id="total-documents"><i class="fa fa-file-text-o"></i> Documentos: <b>--</b></div>
+                <div id="total-weight"><i class="fa fa-balance-scale"></i> Peso: <b>--</b></div>
+                <div id="total-distance"><i class="fa fa-road"></i> Distância: <b>--</b></div>
+                <div id="total-duration"><i class="fa fa-clock-o"></i> Duração: <b>--</b></div>
+            </div>
+        </div>
+    </div>
+</div>

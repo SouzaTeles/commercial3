@@ -1,0 +1,56 @@
+<div class="panel panel-people">
+    <div class="panel-heading ph-red"><i class="fa fa-address-card-o"></i> Motorista e Ajudantes</div>
+    <div class="panel-body">
+        <div class="routes">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="driver_id">Motorista</label>
+                                <select class="selectpicker show-tick" id="driver_id" name="driver_id" title="-- Selecione o Motorista --"></select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="card-driver box-shadow" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Eduardo_Cunha_em_1%C2%BA_de_junho_de_2015.jpg/200px-Eduardo_Cunha_em_1%C2%BA_de_junho_de_2015.jpg')">
+                                <div class="info">
+                                    <div class="name">Eduardo Cunha</div>
+                                    <div class="cnh">CNH: 1872.26444.34-9</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-8">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="helpers">Ajudantes</label>
+                                <select multiple class="selectpicker show-tick" id="helpers" name="helpers[]" title="-- Ajudantes --"></select>
+                            </div>
+                        </div>
+                        <div id="grid-helpers" class="col-xs-12">
+                            <div class="row">
+                                {for $i=1; $i<=5; $i++}
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="card-helper box-shadow">
+                                        <div class="image" style="background-image:url(https://img.jovempan.uol.com.br/uploads/2018/06/Gilmar-Mendes.jpg)"></div>
+                                        <div class="info">
+                                            <div class="name">Gilmar Mendes</div>
+                                            <div class="item"><span>Código</span>000171</div>
+                                            <div class="item"><span>Nascimento</span>15/02/1901</div>
+                                        </div>
+                                        <button class="btn btn-empty-red-light">
+                                            <i class="fa fa-trash-o"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {/for}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

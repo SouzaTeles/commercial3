@@ -229,15 +229,20 @@
         case "distanceMatrix":
 
             $data = [];
-            for( $i=0; $i<sizeof($post->points)-1; $i++ ){
-                $origin = urlencode(removeSpecialChar($post->points[$i]));
-                $destiny = urlencode(removeSpecialChar($post->points[$i+1]));
-                $google = file_get_contents("https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&key=AIzaSyA4we-5aCbXOqPvzcbUJW49x46LXnhwdbY&model=driving&origins={$origin}&destinations={$destiny}");
-                $google = json_decode($google, TRUE);
-                //Json::get( $headerStatus[200], $google["rows"][0]["elements"][0]["distance"]["value"] );
+            $points = [];
+
+            foreach( $post->points as $point ){
+                $points[] = urlencode(removeSpecialChar($point));
+            }
+
+            $google = file_get_contents("https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&key=AIzaSyA4we-5aCbXOqPvzcbUJW49x46LXnhwdbY&model=driving&origins=" . implode("|",$points) . "&destinations=" . implode("|",$points));
+            $google = json_decode($google, TRUE);
+
+            $rows = $google["rows"];
+            for( $i=0; $i<sizeof($points)-1; $i++ ){
                 $data[] = (Object)[
-                    "distance" =>  @$google["rows"] && $google["rows"][0]["elements"][0] ? $google["rows"][0]["elements"][0]["distance"]["value"] : 0,
-                    "duration" => @$google["rows"] && $google["rows"][0]["elements"][0] ? $google["rows"][0]["elements"][0]["duration"]["value"] : 0
+                    "distance" => @$rows && @$rows[$i]["elements"][$i+1] ? $rows[$i]["elements"][$i+1]["distance"]["value"] : 0,
+                    "duration" => @$rows && @$rows[$i]["elements"][$i+1] ? $rows[$i]["elements"][$i+1]["duration"]["value"] : 0
                 ];
             }
 
@@ -366,5 +371,152 @@
             ]);
 
         break;
+
+        case "getDocument":
+
+            if(
+                !@$post->company_id ||
+                !@$post->company_latitude ||
+                !@$post->company_longitude ||
+                (!@$post->document_id && !@$post->document_code)
+            ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "Parâmetro POST não encontrado."
+                ]);
+            }
+
+            $ids = [];
+            $ids[] = $post->company_id;
+
+            $companies = Model::getList($commercial,(Object)[
+                "tables" => [ "Company" ],
+                "fields" => [ "company_id" ],
+                "filters" => [[ "parent_id", "i", "=", $post->company_id ]]
+            ]);
+
+            if( sizeof($companies) ){
+                foreach( $companies as $company ){
+                    $ids[] = $company->company_id;
+                }
+            }
+
+            $documents = Model::getList($commercial,(Object)[
+                "join" => 1,
+                "tables" => [
+                    "{$conn->dafel->table}.dbo.Documento D",
+                    "INNER JOIN {$conn->dafel->table}.dbo.DocumentoItem DI (NoLock) ON(DI.IdDocumento = D.IdDocumento)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.DocumentoItemValores DIV (NoLock) ON(DIV.IdDocumentoItem = DI.IdDocumentoItem)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.Pessoa P (NoLock) ON(P.IdPessoa = D.IdPessoa)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.PessoaEndereco PE (NoLock) ON(PE.IdPessoa = P.IdPessoa AND PE.CdEndereco = D.CdEnderecoEntrega)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.Bairro BR (NoLock) ON(BR.IdBairro = PE.IdBairro)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.Cidade C (NoLock) ON(C.IdCidade = PE.IdCidade)",
+                    "INNER JOIN {$conn->dafel->table}.dbo.LoteEstoque LE (NoLock) ON(LE.IdLoteEstoque = D.IdLoteEstoque)",
+	                "LEFT JOIN {$conn->dafel->table}.dbo.MapaCarregamento MC (NoLock) ON(MC.IdMapaCarregamento = D.IdMapaCarregamento)",
+	                "LEFT JOIN {$conn->commercial->table}.dbo.Budget B (NoLock) ON(B.document_id = D.IdDocumento)"
+                ],
+                "fields" => [
+                    "document_id=D.IdDocumento",
+                    "document_code=D.NrDocumento",
+                    "document_type=D.CdEspecie",
+                    "document_canceled=D.StDocumentoCancelado",
+                    "document_date=FORMAT(D.DtEmissao,'yyyy-MM-dd')",
+                    "document_date_br=FORMAT(D.DtEmissao,'dd/MM/yyyy')",
+                    "address_public_place=PE.NmLogradouro",
+                    "district_name=BR.NmBairro",
+                    "city_name=C.NmCidade",
+                    "uf_id=C.IdUF",
+                    "person_code=P.CdChamada",
+                    "person_name=P.NmPessoa",
+                    "shipment_id=MC.IdMapaCarregamento",
+                    "shipment_code=MC.CdChamada",
+                    "B.budget_id",
+                    "budget_code=B.external_code",
+                    "document_weight=ISNULL(sum(DIV.VlPesoBruto),0)"
+                ],
+                "filters" => [
+                    [ "LE.CdEmpresa", "s", "in", $ids ],
+                    [ "D.IdDocumento", "s", "=", @$post->document_id ? $post->document_id : NULL ],
+                    @$post->document_code ? [
+                        [ "D.CdChaveAcessoNFEletronica", "s", "=", $post->document_code ],
+                        [ "D.NrDocumento", "s", "=", $post->document_code ]
+                    ] : NULL
+                ],
+                "group" => implode(",",[
+                    "D.IdDocumento",
+                    "D.NrDocumento",
+                    "D.CdEspecie",
+                    "D.StDocumentoCancelado",
+                    "D.DtEmissao",
+                    "PE.NmLogradouro",
+                    "BR.NmBairro",
+                    "C.NmCidade",
+                    "C.IdUF",
+                    "P.CdChamada",
+                    "P.NmPessoa",
+                    "MC.IdMapaCarregamento",
+                    "MC.CdChamada",
+                    "B.budget_id",
+                    "B.external_code"
+                ])
+            ]);
+
+            if( !sizeof($documents) ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O documento não foi encontrado."
+                ]);
+            }
+
+            if( sizeof($documents) == 1 && $documents[0]->document_canceled == 'S' ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O documento está cancelado."
+                ]);
+            }
+
+            if( sizeof($documents) == 1 && @$documents[0]->shipment_code ){
+                headerResponse((Object)[
+                    "code" => 417,
+                    "message" => "O documento já foi adicionado ao mapa de carregamento {$documents[0]->shipment_code}."
+                ]);
+            }
+
+            $origin = "{$post->company_latitude},{$post->company_longitude}";
+            $destinations = [];
+            foreach( $documents as $key => $document ){
+
+                $address = urlencode(removeSpecialChar("{$document->city_name}-{$document->uf_id},{$document->address_public_place},{$document->district_name}"));
+                $destinations[] = $address;
+
+                $url = "https://maps.google.com/maps/api/geocode/json?key=AIzaSyA4we-5aCbXOqPvzcbUJW49x46LXnhwdbY&address={$address}";
+                $google = file_get_contents($url);
+                $google = json_decode($google, TRUE);
+
+                $documents[$key]->address_latitude = 0;
+                $documents[$key]->address_longitude = 0;
+                if( @$google['results'][0] ){
+                    $result = $google['results'][0];
+                    if( @$result['geometry']['location'] ){
+                        $documents[$key]->address_latitude = $result['geometry']['location']['lat'];
+                        $documents[$key]->address_longitude = $result['geometry']['location']['lng'];
+                    }
+                }
+
+            }
+
+            $google = file_get_contents("https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&key=AIzaSyA4we-5aCbXOqPvzcbUJW49x46LXnhwdbY&model=driving&origins={$origin}&destinations=" . implode("|",$destinations));
+            $google = json_decode($google, TRUE);
+
+            $rows = $google["rows"];
+            for( $i=0; $i<sizeof($documents); $i++ ){
+                $documents[$i]->document_distance = @$rows && @$rows[0]["elements"][$i] ? $rows[0]["elements"][$i]["distance"]["value"] : 0;
+                $documents[$i]->document_duration = @$rows && @$rows[0]["elements"][$i] ? $rows[0]["elements"][$i]["duration"]["value"] : 0;
+            }
+
+            Json::get( $headerStatus[200], $documents );
+
+        break;
+
     }
 ?>

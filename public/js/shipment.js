@@ -75,7 +75,7 @@ Shipment = {
             e.stopPropagation();
         });
         $('#button-shipment-new').click(function(){
-            global.window({url: "http://www.commercial3.net/commercial3/window.php?module=shipment&action=new"});
+            Shipment.new();
         });
         $('#shipment_code').on('keyup', function(event){
             var key = event.keyCode || event.wich;
@@ -83,7 +83,20 @@ Shipment = {
                 Shipment.get();
         });
     },
-
+    get: function () {
+        global.post({
+            url: global.uri.uri_public_api + 'shipment.php?action=get',
+            data:{
+                shipment_code:$("#shipment_code").val()
+            },
+            dataType: 'json'
+        },function(documents){
+            console.log("Ta entrando na função...");
+            Shipment.documents = documents;
+            console.log(documents);
+            Shipment.showList();
+        });
+    },
     getDrivers: function(){
         global.post({
             url: global.uri.uri_public_api + 'person.php?action=getInternalList',
@@ -112,20 +125,6 @@ Shipment = {
             Shipment.showList();
         });
     },
-    get: function () {
-        global.post({
-            url: global.uri.uri_public_api + 'shipment.php?action=get',
-            data:{
-                shipment_code:$("#shipment_code").val()
-            },
-            dataType: 'json'
-        },function(documents){
-            console.log("Ta entrando na função...");
-            Shipment.documents = documents;
-            console.log(documents);
-            Shipment.showList();
-        });
-    },
     map: function(key,shipment_id){
         global.post({
             url: global.uri.uri_public_api + 'modal.php?modal=modal-shipment-map',
@@ -147,6 +146,11 @@ Shipment = {
                     map.destroy();
                 }
             });
+        });
+    },
+    new: function(){
+        global.window({
+            url: global.uri.uri_public + 'window.php?module=shipment&action=new&company_id=' + $('#company_id').val()
         });
     },
     showDrivers: function(){
@@ -202,6 +206,5 @@ Shipment = {
         });
         $('#company_id').selectpicker('refresh');
         if( success ) success();
-    },
-
+    }
 };

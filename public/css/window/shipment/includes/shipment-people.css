@@ -1,0 +1,85 @@
+.panel-people .card-driver
+{
+    height: 260px;
+    margin-top: 10px;
+    position: relative;
+    background-size: cover;
+    background-image: url('../../../../images/empty-image.png');
+}
+
+.panel-people .card-driver .info
+{
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #fff;
+    padding: 10px;
+    position: absolute;
+    background: rgba(0,0,0,.2);
+    text-shadow: 1px 1px 1px #000;
+}
+.panel-people .card-driver .info .name
+{
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+
+.panel-people #grid-helpers
+{
+    height: 280px;
+
+    overflow: auto;
+}
+
+.panel-people #grid-helpers .card-helper
+{
+    height: 120px;
+    margin: 10px 0;
+    position: relative;
+}
+
+.panel-people #grid-helpers .card-helper .image
+{
+    float: left;
+    width: 134px;
+    height: 100%;
+    margin-right: 15px;
+    background-size: cover;
+    background-position: center center;
+    background-image: url('../../../../images/empty-image.png');
+}
+
+.panel-people #grid-helpers .card-helper .name
+{
+    font-size: 16px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.panel-people #grid-helpers .card-helper .info
+{
+    float: left;
+    width: 134px;
+    padding: 20px 10px 0 0;
+}
+
+.panel-people #grid-helpers .card-helper .info .item
+{
+    float: left;
+    margin-right: 10px;
+}
+
+.panel-people #grid-helpers .card-helper .info .item span
+{
+    color: gray;
+    display: block;
+    font-size: 12px;
+}
+
+.panel-people #grid-helpers .card-helper button
+{
+    top: 4px;
+    right: 4px;
+    position: absolute;
+}

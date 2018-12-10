@@ -1,0 +1,37 @@
+.image-cover
+{
+    height: 246px;
+    background-image: url('../../../../images/empty-image.png');
+}
+
+.bar-load
+{
+    height: 250px;
+    position: relative;
+    background-size: cover;
+    padding: 6px 45px 78px 155px;
+    background-position: center -28px;
+    background-image: url('../../../../images/lorry.png');
+}
+
+.bar-load .bar-load-label
+{
+    left: 155px;
+    right: 45px;
+    padding: 71px 0;
+    font-size: 28px;
+    position: absolute;
+    text-align: center;
+    text-shadow: 1px 1px 1px #fff;
+}
+
+.bar-load .bar-load-weight
+{
+    left: 155px;
+    right: 45px;
+    opacity: .8;
+    bottom: 78px;
+    position: absolute;
+    background-position: 0 bottom;
+    background-image: url('../../../../images/box.png');
+}

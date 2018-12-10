@@ -342,6 +342,11 @@
 			"name": "Ver no Mapa",
 			"value": "N",
 			"data_type": "bool"
+		},
+		"release": {
+			"name": "Liberar o Mapa",
+			"value": "N",
+			"data_type": "bool"
 		}
 	},
 	"target": {
