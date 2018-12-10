@@ -294,14 +294,7 @@ Registration = {
                     Registration.disableImageGroup();
                 }
                 // window.close();
-            }
-            // console.log("clicou...")
-            // Registration.type = 'P';
-            // $('#product-image-cover').css({
-            //     "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
-            // });
-            // (Registration.product.product_image) ? Registration.disableImage() : Registration.enableImage();
-            
+            }       
         });
 
         $('#product-group-tab').click(function(event) {
@@ -472,27 +465,7 @@ Registration = {
                               }
                           });
                       });
-/*
-                        global.modal({
-                            icon: 'fa-warning',
-                            title: 'Atenção',
-                            html: function() {
-                                var html = '';
-                                $(data).each(function(key, item) {
-                                    html += '<p>' + item.product_code + " | " + item.product_name + '</p>';
-                                });
-                                //console.log(data);
-                                return html;
-                            },
-                            buttons: [{
-                                icon: 'fa-check',
-                                title: 'Ok',
-                                action: function() {
-                                    window.close();.
-                                }
-                            }]
-                        });
-                */    }
+   }
                 });
                 break;
             case 'G':
@@ -528,18 +501,6 @@ Registration = {
         else{
             Registration.disableImage();
         }
-            // $("#image-input-area").css("border", "none");
-            // $('#product-image-cover').css({
-            // "background-image": "url(" + (Registration.product.product_image ||  global.uri.uri_public + "images/empty-image.png") + ")"
-        
-
-
-        // if (Registration.product.product_image) {
-        //     Registration.enableImage();
-        // } else {
-        //     Registration.disableImage();
-        // }
-
         if (Registration.product.product_classification){
             $('#registration_product_classification').val(Registration.product.product_classification)
         }
@@ -594,8 +555,6 @@ Registration = {
     showList: function() {
         //Limpa a tabela
         Registration.table.clear();
-        //  Registration.productList = [];
-        //  Registration.productList[1] = 1;
         //Entra no loop de exibição para cada item do array de produtos
         $.each(Registration.products, function(key, product){
             Registration.productList = {

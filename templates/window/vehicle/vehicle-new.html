@@ -1,0 +1,177 @@
+<html>
+
+<body>
+    <form id="vehicle_form">
+        <!-- Placa do Veículo -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_plate">Placa do Veículo</label>
+                <input type="text" class="form-control" id="vehicle_plate" name="vehicle_plate" placeholder="Ex: KMZ0603"
+                    required="true" data-to-mask="code" />
+            </div>
+        </div>
+        <!-- UF do Veículo -->
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="vehicle_uf">UF</label>
+                <select class="selectpicker show-tick" id="vehicle_uf" name="vehicle_uf" required="true" title="-- Selecione o Estado --">
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                </select>
+            </div>
+        </div>
+        <!-- Ano do Veículo -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_year">Ano do Veículo</label>
+                <input type="text" class="form-control" id="vehicle_year" name="vehicle_year" required="true"
+                    placeholder="Ex: 2007" data-to-mask="code" />
+            </div>
+        </div>
+        <!-- Tipo do Veículo -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_type">Tipo do Veículo</label>
+                <select class="selectpicker show-tick" id="vehicle_type" name="vehicle_type" required="true" title="-- Selecione o Tipo do Veículo --">
+                    <option value="Toco">Toco</option>
+                    <option value="Truck">Truck</option>
+                    <option value="Utilitario">Utilitario</option>
+                    <option value="Cavalo Mecanico">Cavalo Mecanico</option>
+                    <option value="Van">Van</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                <!-- <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" required="true" -->
+                    <!-- placeholder="Ex: Truck" data-to-mask="code" /> -->
+            </div>
+        </div>
+        <!-- Fabricante -->
+        <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+                <label for="maker_id">Fabricante</label>
+                <select class="selectpicker show-tick" id="maker_id" required="true" name="maker_id " title="-- Selecione o Fabricante --">
+                    <option value="1">Scania</option>
+                    <option value="2">Volkswagen</option>
+                    <option value="3">Mercedes-Benz</option>
+                    <option value="4">MAN</option>
+                    <option value="5">Volvo</option>
+                    <option value="6">Ford</option>
+                    <option value="7">Iveco</option>
+                    <option value="8">Fiat</option>
+                </select>
+            </div>
+        </div>
+        <!-- Modelo -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_model">Modelo do Veículo</label>
+                <input type="text" class="form-control" id="vehicle_model" name="vehicle_model" placeholder="Ex: Jacaré"
+                    data-to-mask="code" required="true" />
+            </div>
+        </div>
+        <!-- Capacidade em KG-->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_capacity_kg">Capacidade em KG</label>
+                <input type="text" class="form-control" id="vehicle_capacity_kg" name="vehicle_capacity_kg" placeholder="Ex: 10.000KG"
+                    data-to-mask="code" />
+            </div>
+        </div>
+        <!-- Capacidade em M3 -->
+        <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <label for="vehicle_capacity_m3">Capacidade em M<sup>3</sup></label>
+                    <input type="text" class="form-control" id="vehicle_capacity_m3" name="vehicle_capacity_m3" placeholder="Ex: 50"
+                        data-to-mask="code" />
+                </div>
+        </div>
+        <!-- Tara -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_tare">Tara do veículo</label>
+                <input type="text" class="form-control" id="vehicle_tare" name="vehicle_tare" placeholder="Ex: 5.000KG"
+                    data-to-mask="code" />
+            </div>
+        </div>
+        <!-- Numero de Eixos -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_axis">Numero de Eixos</label>
+                <input type="text" class="form-control" id="vehicle_axis" name="vehicle_axis" placeholder="Ex: 4"
+                    data-to-mask="code" />
+            </div>
+        </div>
+        <!-- Numero do Chassi -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_chassis">Numero do Chassi</label>
+                <input type="text" class="form-control" id="vehicle_chassis" name="vehicle_chassis" placeholder="Ex: 9BG116HW04C400001"
+                    data-to-mask="code" />
+            </div>
+        </div>
+        <!-- Numero do Renavam -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_renavam">Numero do Renavam</label>
+                <input type="text" class="form-control" id="vehicle_renavam" name="vehicle_renavam" placeholder="Ex: 4"
+                    data-to-mask="code" />
+            </div>
+        </div>
+        <!-- Numero do CRLV -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_crlv">Numero do CRLV</label>
+                <input type="text" class="form-control" id="vehicle_crlv" name="vehicle_crlv" placeholder="Ex: 4"
+                    data-to-mask="code" />
+            </div>
+        </div>
+        <!-- Tipo de Combustivel -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_fuel">Tipo de Combustivel</label>
+                <select class="selectpicker show-tick" id="vehicle_fuel" name="vehicle_fuel " title="-- Selecione o Combustivel --">
+                    <option value="G">Gasolina</option>
+                    <option value="A">Alcool</option>
+                    <option value="F">Flex</option>
+                    <option value="D">Diesel</option>
+                    <option value="N">GNV</option>
+                </select>
+                <!-- <input type="text" class="form-control" id="vehicle_fuel" name="vehicle_fuel" placeholder="Ex: 4" data-to-mask="code"/> -->
+            </div>
+        </div>
+        <!-- Cadastrar -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label>&nbsp;&nbsp;</label>
+                <button type="submit" id="button-vehicle-add" class="btn btn-block btn-green">
+                    <i class="fa fa-plus"></i> Cadastrar
+                </button>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
