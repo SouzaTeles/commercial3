@@ -25,13 +25,9 @@ Company = {
     afterGet: function(){
         Shipment.events();
         Document.events();
-        // Person.events();
-        // Address.events();
-        // Term.events();
-        // Payment.events();
-        // Keyboard.events();
-        // Item.table.draw();
-        // Payment.table.draw();
+        Vehicle.events();
+        People.events();
+        Route.events();
     },
     get: function(){
         var company_id = global.url.searchParams.get('company_id');
@@ -224,6 +220,9 @@ Shipment = {
 };
 
 Document = {
+    weight: 0,
+    distance: 0,
+    duration: 0,
     document: {
         document_id: null,
         document_code: '',
@@ -319,6 +318,12 @@ Document = {
             });
             Shipment.shipment.documents = documents;
             Document.distanceMatrix();
+            for(var i=map.markers.length-1; i>0; i--){
+                map.markers[i].setMap(null);
+                map.markers.splice(i,1);
+            }
+            Route.showDocuments();
+            Route.showRoute();
         }}).disableSelection();
     },
     get: function(data){
@@ -435,10 +440,11 @@ Document = {
     showList: function(){
         var table = $('#table-documents');
         $(table).find('tbody tr').remove();
-        var weight = 0;
-        var distance = 0;
-        var duration = 0;
+        Document.weight = 0;
+        Document.distance = 0;
+        Document.duration = 0;
         $.each( Shipment.shipment.documents, function(key, document){
+            document.document_weight = parseFloat(document.document_weight);
             $(table).find('tbody').append(
                 '<tr data-key="' + key + '">' +
                     '<td>' + document.document_code + '</td>' +
@@ -450,23 +456,64 @@ Document = {
                     '<td><button data-key="' + key + '" class="btn btn-empty-red-light"><i class="fa fa-trash-o"></i></button></td>' +
                 '</tr>'
             );
-            weight += document.document_weight;
-            distance += document.document_distance;
-            duration += document.document_duration;
+            Document.weight += document.document_weight;
+            Document.distance += document.document_distance;
+            Document.duration += document.document_duration;
         });
         $(table).find('button').click(function(){
             Document.beforeDel($(this).attr('data-key'));
         });
         $('#total-documents').html('<span>Documents:</span> ' + Shipment.shipment.documents.length);
-        $('#total-weight').html('<span>Peso:</span> ' + global.float2Br(weight,3,3) + 'kg');
-        $('#total-distance').html('<span>Distância:</span> ' + global.formatDistance(distance));
-        $('#total-duration').html('<span>Tempo:</span> ' + global.formatDuration(duration));
+        $('#total-weight').html('<span>Peso:</span> ' + global.float2Br(Document.weight,3,3) + 'kg');
+        $('#total-distance').html('<span>Distância:</span> ' + global.formatDistance(Document.distance));
+        $('#total-duration').html('<span>Tempo:</span> ' + global.formatDuration(Document.duration));
+        Vehicle.data2form();
     }
 };
 
 People = {
+    driver: {
+        person_id: '',
+        person_name: '',
+        person_code: ''
+    },
     drivers: [],
     helpers: [],
+    data2form: function(){
+        if( !!People.driver.person_id ){
+            $('#driver-image').css('background-image','url(' + (People.driver.image || '../../../../commercial3/images/empty-image.png') + ')');
+            $('#driver-name').text(People.driver.person_name);
+            $('#driver-code').text('Código: ' + People.driver.external_code);
+        }
+        $('#grid-helpers .row').html('');
+        $('#helpers option:selected').each(function(key,option){
+            var helper = People.helpers[$(option).index()];
+            $('#grid-helpers .row').append(
+                '<div class="col-xs-12 col-sm-6">' +
+                    '<div class="card-helper box-shadow">' +
+                        '<div class="image" style="background-image:url(' + (helper.image || '../../../../commercial3/images/empty-image.png') + ')"></div>' +
+                        '<div class="info">' +
+                            '<div class="name">' + helper.person_name + '</div>' +
+                            '<div class="item"><span>Código</span>' + helper.external_code + '</div>' +
+                            '<div class="item"><span>Nascimento</span>' + global.date2Br(helper.person_birthday) + '</div>' +
+                        '</div>' +
+                        '<button class="btn btn-empty-red-light">' +
+                            '<i class="fa fa-trash-o"></i>' +
+                        '</button>' +
+                    '</div>' +
+                '</div>'
+            )
+        });
+    },
+    events: function(){
+        $('#driver_id').on('change',function(){
+            People.driver = People.drivers[$(this).find('option:selected').index()-1];
+            People.data2form();
+        });
+        $('#helpers').on('change',function(){
+            People.data2form();
+        });
+    },
     getDrivers: function(){
         global.post({
             url: global.uri.uri_public_api + 'person.php?action=getInternalList',
@@ -514,9 +561,28 @@ People = {
 };
 
 Route = {
+    routes: [],
     labels: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
     directionsDisplay: null,
     directionsService: null,
+    events: function(){
+        $('#routes').on('change',function(){
+            $('#grid-route .row').html('');
+            $('#routes option:selected').each(function(key,option){
+                var route = Route.routes[$(option).index()];
+                $('#grid-route .row').append(
+                    '<div class="col-xs-12 col-sm-6">' +
+                        '<div class="card-route box-shadow">' +
+                            '<p>' + route.route_name + '</p>' +
+                            '<button disabled class="btn btn-empty-red-light">' +
+                                '<i class="fa fa-trash-o"></i>' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>'
+                )
+            });
+        });
+    },
     getList: function(){
         global.post({
             url: global.uri.uri_public_api + 'route.php?action=getList',
@@ -639,7 +705,32 @@ Route = {
 };
 
 Vehicle = {
+    vehicle: {
+        vehicle_id: null,
+        maker_name: '',
+        vehicle_capacity_kg: 0,
+        vehicle_model: '',
+        vehicle_plate: '',
+        vehicle_type: '',
+        vehicle_uf: '',
+        vehicle_year: ''
+    },
     vehicles: [],
+    data2form: function(){
+        $('#vehicle_code').val(Vehicle.vehicle.vehicle_id);
+        $('#vehicle_plate').val(Vehicle.vehicle.vehicle_plate);
+        $('#vehicle_year').val(Vehicle.vehicle.vehicle_year);
+        $('#vehicle_uf').val(Vehicle.vehicle.vehicle_uf);
+        $('#vehicle_image').css('background-image','url(' + (Vehicle.vehicle.image || '../../../../commercial3/images/empty-image.png') + ')');
+        $('#bar-load-weight').css('height',parseInt(Document.weight/parseInt(Vehicle.vehicle.vehicle_capacity_kg)*164));
+        $('#bar-load-label').text(parseInt(Document.weight) + 'Kg de ' + global.float2Br(Vehicle.vehicle.vehicle_capacity_kg).split(',')[0] + 'Kg');
+    },
+    events: function(){
+        $('#vehicle_id').on('change',function(){
+            Vehicle.vehicle = Vehicle.vehicles[$(this).find('option:selected').index()-1];
+            Vehicle.data2form();
+        });
+    },
     getList: function(){
         global.post({
             url: global.uri.uri_public_api + 'vehicle.php?action=getList',

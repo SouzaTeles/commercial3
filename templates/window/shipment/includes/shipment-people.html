@@ -12,10 +12,10 @@
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <div class="card-driver box-shadow" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Eduardo_Cunha_em_1%C2%BA_de_junho_de_2015.jpg/200px-Eduardo_Cunha_em_1%C2%BA_de_junho_de_2015.jpg')">
+                            <div id="driver-image" class="card-driver box-shadow">
                                 <div class="info">
-                                    <div class="name">Eduardo Cunha</div>
-                                    <div class="cnh">CNH: 1872.26444.34-9</div>
+                                    <div id="driver-name" class="name">--</div>
+                                    <div id="driver-code" class="cnh">Código: --</div>
                                 </div>
                             </div>
                         </div>
@@ -31,20 +31,20 @@
                         </div>
                         <div id="grid-helpers" class="col-xs-12">
                             <div class="row">
-                                {for $i=1; $i<=5; $i++}
-                                <div class="col-xs-12 col-sm-6">
-                                    <div class="card-helper box-shadow">
-                                        <div class="image" style="background-image:url(https://img.jovempan.uol.com.br/uploads/2018/06/Gilmar-Mendes.jpg)"></div>
-                                        <div class="info">
-                                            <div class="name">Gilmar Mendes</div>
-                                            <div class="item"><span>Código</span>000171</div>
-                                            <div class="item"><span>Nascimento</span>15/02/1901</div>
+                                {for $i=1; $i<=4; $i++}
+                                    <div class="col-xs-12 col-sm-6">
+                                        <div class="card-helper box-shadow">
+                                            <div class="image"></div>
+                                            <div class="info">
+                                                <div class="name">--</div>
+                                                <div class="item"><span>Código</span>--</div>
+                                                <div class="item"><span>Nascimento</span>--</div>
+                                            </div>
+                                            <button disabled class="btn btn-empty-red-light">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
                                         </div>
-                                        <button class="btn btn-empty-red-light">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
                                     </div>
-                                </div>
                                 {/for}
                             </div>
                         </div>

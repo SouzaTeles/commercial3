@@ -379,13 +379,21 @@
                     "P.person_id",
                     "P.external_id",
                     "P.external_code",
-                    "P.person_name"
+                    "P.person_name",
+                    "P.person_birthday",
                 ],
                 "filters" => [
                     [ "PC.category_id", "s", "in", $post->categories ],
                     [ "PF.function_id", "s", "in", $post->functions ]
                 ]
             ]);
+
+            foreach( $data as $person ){
+                $person->image = getImage((Object)[
+                    "image_id" => $person->external_id,
+                    "image_dir" => "person"
+                ]);
+            }
 
             Json::get( $headerStatus[200], $data );
 
