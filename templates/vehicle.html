@@ -1,0 +1,110 @@
+<!-- Cadastro de Veiculos -->
+<div class="tab-content tab-content-clean">
+    <div id="tab-1-1" class="tab-pane fade in active">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="filter">
+                    <form id="form-vehicle-filter">
+                        <div class="row">
+                            <!-- Codigo do Veículo -->
+                            <div class="col-xs-12 col-sm-2">
+                                <!-- <div class="form-group"> -->
+                                    <label for="vehicle_code">Código do Veículo</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="vehicle_code" placeholder="Código do Veículo" data-to-mask="code"/>
+                                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                    </div>
+                                <!-- </div> -->
+                            </div>
+                            <!-- Campo Placa -->
+                            <div class="col-xs-12 col-sm-4">
+                                <!-- <div class="form-group"> -->
+                                    <label for="vehicle_plate">Placa do Veículo</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="vehicle_plate" placeholder="Ex: KMZ-0307" data-to-mask="code"/>
+                                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                    </div>
+                                <!-- </div> -->
+                            </div>
+                            <!-- Campo Ano -->
+                            <div class="col-xs-12 col-sm-2">
+                                    <label for="vehicle_year">Ano</label>
+                                    <input type="text" class="form-control" id="vehicle_year" placeholder="Ex: 2006" data-to-mask="code"/>
+                            </div>
+                            <!-- Tipo do Veículo -->
+                            <div class="col-xs-12 col-sm-4">
+                                <label for="vehicle_type">Tipo do Veículo</label>
+                                    <div class="form-group">
+                                            <select class="selectpicker show-tick" id="vehicle_type" name="vehicle_type" required="true" title="-- Selecione o Tipo do Veículo --">
+                                                <option value="Toco">Toco</option>
+                                                <option value="Truck">Truck</option>
+                                                <option value="Utilitario">Utilitario</option>
+                                                <option value="Cavalo Mecanico">Cavalo Mecanico</option>
+                                                <option value="Van">Van</option>
+                                                <option value="Outros">Outros</option>
+                                            </select>
+                                    </div>
+                            </div>
+                            <!-- Campo Capacidade -->
+                            <div class="col-xs-12 col-sm-4">
+                                    <label for="maker_id">Fabricante</label>
+                                    <div class="form-group">
+                                            <select class="selectpicker show-tick" id="maker_id" required="true" name="maker_id " title="-- Selecione o Fabricante --">
+                                                <option value="1">Scania</option>
+                                                <option value="2">Volkswagen</option>
+                                                <option value="3">Mercedes-Benz</option>
+                                                <option value="4">MAN</option>
+                                                <option value="5">Volvo</option>
+                                                <option value="6">Ford</option>
+                                                <option value="7">Iveco</option>
+                                                <option value="8">Fiat</option>
+                                            </select>
+                                    </div>
+                            </div>
+                            <!-- Pesquisa Rapida -->
+                            <div class="col-xs-12 col-sm-4">
+                                <!-- <div class="form-group"> -->
+                                    <label for="shipment_search">Pesquisa Rápida</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="shipment_search" />
+                                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                    </div>
+                                <!-- </div> -->
+                            </div>
+                            <!-- Botão Atualizar -->
+                            <div class="col-xs-12 col-sm-2">
+                                <label>&nbsp;&nbsp;</label>
+                                <button type="button" id="btn-filter" class="btn btn-block btn-blue">
+                                    <i class="fa fa-refresh"></i> Atualizar
+                                </button>
+                            </div>
+                            <!-- Botão novo Veículo -->
+                            <div class="col-xs-12 col-sm-2">
+                                <label>&nbsp;&nbsp;</label>
+                                <button type="button" id="button-vehicle-new" class="btn btn-block btn-green"{if $login->access->shipment->add->value == 'N'} disabled{/if}>
+                                    <i class="fa fa-plus"></i> Novo Veículo
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <br>
+                <table id="table-vehicles" class="table table-custom no-select">
+                    <thead>
+                        <tr>
+                            <!-- <th>Status</th> -->
+                            <th>Código</th>
+                            <th>Placa</th>
+                            <th>Fabricante</th>
+                            <th>Modelo</th>
+                            <th>Ano</th>
+                            <th>Capacidade Maxima</th>
+                            <!-- <th>Opções</th> -->
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

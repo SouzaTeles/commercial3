@@ -249,6 +249,12 @@
 		"title": "Usuários",
 		"parent": "config"
 	},
+	"vehicle": {
+		"key": "vehicle",
+		"icon": "fa-plus-square-o",
+		"title": "Cadastro de Veículos",
+		"parent": "config"
+	},
 	"whatsapp": {
 		"key": "whatsapp",
 		"icon": "fa-whatsapp",

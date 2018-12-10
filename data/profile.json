@@ -415,6 +415,14 @@
 			"data_type": "bool"
 		}
 	},
+	"vehicle": {
+		"name": "Cadastro de Veículos",
+		"access": {
+			"name": "Visualiza",
+			"value": "Y",
+			"data_type": "bool"
+		}
+	},
 	"user": {
 		"name": "Usuários",
 		"access": {
