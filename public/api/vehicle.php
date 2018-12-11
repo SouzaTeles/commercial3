@@ -41,13 +41,15 @@
                     ["M.maker_id", "s", "=", @$post->maker_id ? $post->maker_id : NULL ]
                 ]
             ]);
-            if (!$vehicles)
-                Json::get($headerStatus[417], "Nenhum veículo foi localizado, verifique os filtros.");
-            else
-                Json::get($headerStatus[200], $vehicles);
-                
 
-                       
+            foreach( $vehicles as $vehicle ){
+                $vehicle->image = getImage((Object)[
+                    "image_dir" => "vehicle",
+                    "image_id" => $vehicle->vehicle_id
+                ]);
+            }
+
+            Json::get($headerStatus[200], $vehicles);
         break;
 
         case "add":

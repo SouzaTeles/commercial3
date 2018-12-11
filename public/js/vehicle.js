@@ -27,11 +27,12 @@ Vehicle = {
                 data: $('#form-vehicle-filter').serialize(),
                 dataType: "json"
             }, function(data){
-                if(!data[0].vehicle_id){
+                console.log(data);
+                if(data.length == 0){
                     global.modal({
                         icon: 'fa-warning',
                         title: 'Atenção',
-                        html: '<p>' + data + '</p>',
+                        html: '<p>' + 'Nenhum veículo localizado, verifique os filtros.' + '</p>',
                         buttons: [{
                             icon: 'fa-check',
                             title: 'Ok',
@@ -40,6 +41,7 @@ Vehicle = {
                         }],
                     })
                     Vehicle.table.clear();
+                    Vehicle.table.draw();
                 }
                 else {
                     Vehicle.showList(data);
