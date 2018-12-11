@@ -17,11 +17,13 @@
     {
         
         case "getList":
+        //  var_dump($post);
             $vehicles = Model::getList($commercial,(Object)[
-                "join" => 1,
+                "join" => 2,
                 "tables" => [ 
                     "Vehicle V",
-                    "INNER JOIN Maker M ON (V.maker_id = M.maker_id)"
+                    "INNER JOIN Maker M ON (V.maker_id = M.maker_id)",
+                    "INNER JOIN VehicleType VT ON (V.vehicle_type_id = VT.vehicle_type_id)"
                 ],
                 "fields" => [
                     "V.vehicle_id",
@@ -30,11 +32,22 @@
                     "V.vehicle_model",
                     "M.maker_name",
                     "V.vehicle_year",
-                    "V.vehicle_type",
+                    "VT.vehicle_type_name",
                     "V.vehicle_capacity_kg"
+                ],
+                "filters" => [
+                    ["V.vehicle_year", "s", "=", @$post->vehicle_year ? $post->vehicle_year : NULL ],
+                    ["V.vehicle_type_id", "s", "=", @$post->vehicle_type ? $post->vehicle_type : NULL ],
+                    ["M.maker_id", "s", "=", @$post->maker_id ? $post->maker_id : NULL ]
                 ]
             ]);
-            Json::get($headerStatus[200], $vehicles);
+            if (!$vehicles)
+                Json::get($headerStatus[417], "Nenhum veículo foi localizado, verifique os filtros.");
+            else
+                Json::get($headerStatus[200], $vehicles);
+                
+
+                       
         break;
 
         case "add":
@@ -47,7 +60,7 @@
                 ["vehicle_uf", "s", $post->vehicle_uf],
                 ["vehicle_model", "s", $post->vehicle_model],
                 ["vehicle_year", "s", $post->vehicle_year],
-                ["vehicle_type", "s", $post->vehicle_type],
+                ["vehicle_type_id", "s", $post->vehicle_type],
                 ["maker_id", "s", $post->maker_id_],
                 ["vehicle_capacity_kg", "s", $post->vehicle_capacity_kg],
                 ["vehicle_capacity_m3", "s", $post->vehicle_capacity_m3],
@@ -67,10 +80,12 @@
 
         case "getPlate":
             $vehicle = Model::get($commercial,(Object)[
-                "join" => 1,
+                "join" => 2,
                 "tables" => [
                     "Vehicle V",
-                    "inner join maker M on (v.maker_id = m.maker_id)"
+                    "inner join maker M on (v.maker_id = m.maker_id)",
+                    "inner join vehicletype VT on (vt.vehicle_type_id = v.vehicle_type_id)",
+
                 ],
                 "fields" => [
                     "V.vehicle_id",
@@ -78,7 +93,7 @@
                     "V.vehicle_model",
                     "M.maker_name",
                     "V.vehicle_year",
-                    "V.vehicle_type",
+                    "VT.vehicle_type_name",
                     "V.vehicle_capacity_kg"
 
                 ],
@@ -108,8 +123,59 @@
             
         break;
 
-        // case "get":
+        case "getOptions":
+        $maker = Model::getList($commercial,(Object)[
+            "tables" => [ 
+                "Maker M",
+            ],
+            "fields" => [
+                "M.maker_name",
+                "M.maker_id"
+            ],
+        ]);
+        $vehicle_type = Model::getList($commercial,(Object)[
+            "tables" => [ 
+                "VehicleType VT",
+            ],
+            "fields" => [
+                "VT.vehicle_type_name",
+                "VT.vehicle_type_id"
+            ],
+        ]);
+        $options['vehicle_type'] = $vehicle_type;
+        $options['maker'] = $maker;
+        Json::get($headerStatus[200], $options);
         
-        // break;
+        break;
+
+        case "get":
+        $vehicle = Model::get($commercial,(Object)[
+            "join" => 2,
+            "tables" => [
+                "Vehicle V",
+                "inner join maker M on (v.maker_id = m.maker_id)",
+                "inner join vehicleType vt on (vt.vehicle_type_id = v.vehicle_type_id)"
+            ],
+            "fields" => [
+                "V.vehicle_id",
+                "V.vehicle_plate",
+                "V.vehicle_model",
+                "M.maker_name",
+                "V.vehicle_year",
+                "VT.vehicle_type_name",
+                "V.vehicle_capacity_kg"
+
+            ],
+            "filters" => [
+                ["v.vehicle_id", "s", "=", $post->vehicle_id],
+            ]
+        ]);
+
+        if($vehicle){
+            Json::get($headerStatus[200], $vehicle);
+        } else {
+            Json::get($headerStatus[417], "Veículo não localizado.");
+        }
+        break;
     }
 ?>

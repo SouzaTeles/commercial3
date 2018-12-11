@@ -9,9 +9,9 @@
                             <!-- Codigo do Veículo -->
                             <div class="col-xs-12 col-sm-2">
                                 <!-- <div class="form-group"> -->
-                                    <label for="vehicle_code">Código do Veículo</label>
+                                    <label for="vehicle_id">Código do Veículo</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="vehicle_code" placeholder="Código do Veículo" data-to-mask="code"/>
+                                        <input type="text" class="form-control" id="vehicle_id" name="vehicle_id"placeholder="Código do Veículo" data-to-mask="code"/>
                                         <span class="input-group-addon"><i class="fa fa-search"></i></span>
                                     </div>
                                 <!-- </div> -->
@@ -29,7 +29,7 @@
                             <!-- Campo Ano -->
                             <div class="col-xs-12 col-sm-2">
                                     <label for="vehicle_year">Ano</label>
-                                    <input type="text" class="form-control" id="vehicle_year" placeholder="Ex: 2006" data-to-mask="code"/>
+                                    <input type="text" class="form-control" id="vehicle_year" name="vehicle_year" placeholder="Ex: 2006" data-to-mask="code"/>
                             </div>
                             <!-- Tipo do Veículo -->
                             <div class="col-xs-12 col-sm-4">
@@ -92,14 +92,12 @@
                 <table id="table-vehicles" class="table table-custom no-select">
                     <thead>
                         <tr>
-                            <!-- <th>Status</th> -->
                             <th>Código</th>
                             <th>Placa</th>
                             <th>Fabricante</th>
                             <th>Modelo</th>
                             <th>Ano</th>
                             <th>Capacidade Maxima</th>
-                            <!-- <th>Opções</th> -->
                         </tr>
                     </thead>
                     <tbody></tbody>

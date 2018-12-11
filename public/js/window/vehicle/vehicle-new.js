@@ -1,9 +1,15 @@
 $(document).ready(function() {
-    global.unLoader();
+    Vehicle_new.getOptions();
     Vehicle_new.events();
+    global.unLoader();
+
 });
 
 Vehicle_new = {
+    options: {
+        vehicle_type: null,
+        maker: null
+    },
     events: function(){
         $('#vehicle_year').mask('9999');
         $('#vehicle_capacity_kg').mask('999999');
@@ -74,5 +80,29 @@ Vehicle_new = {
                 });
             });
         })
+    },
+    getOptions: function(){
+        global.post({
+            url: global.uri.uri_public_api + 'vehicle.php?action=getOptions',
+            dataType: "json",
+        }, function(data){
+            console.log(data);
+            Vehicle_new.options.vehicle_type = data.vehicle_type;
+            Vehicle_new.options.maker = data.maker;
+            Vehicle_new.showOptions();
+        });
+    },
+    showOptions: function(){
+        $.each(Vehicle_new.options.vehicle_type, function(key, option){
+            $("#vehicle_type").append(new Option(option.vehicle_type_name, option.vehicle_type_id));
+            $('#vehicle_type').selectpicker('refresh'); 
+            
+        })
+        $.each(Vehicle_new.options.maker, function(key, option){
+            $("#maker_id").append(new Option(option.maker_name, option.maker_id));
+            $('#maker_id').selectpicker('refresh'); 
+        })
+
     }
 }
+
