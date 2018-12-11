@@ -85,11 +85,8 @@ ProductImage = {
                               }
                           }],
                           shown: function(){
-                            console.log($('#modal-1-button-1').length);
-                           // $('#modal-1-button-1').focus();
                         }
                       });
-
                       data.code == 200 ? Registration.beforePost($('#registration_product_group_code').val()) : null;
                     });
                     break;
@@ -110,7 +107,6 @@ Registration = {
     product: {},
     table: global.table({
         selector: '#table-products',
-        //searching: 1,
         scrollY: $(window).innerHeight() - 372,
         scrollCollapse: 1,
         noControls: [0, 3],
@@ -231,14 +227,11 @@ Registration = {
                         data: {
                             type: 'P',
                             limit: Item.typeahead.items,
-                            //  company_id: Budget.budget.company_id,
                             item_name: $('#registration_product_name').val()
                         },
                         url: global.uri.uri_public_api + 'product_group.php?action=typeahead',
                         callBack: function(item) {
-                            //console.log(item);
                             Product = item;
-                            //console.log(item);
                             Registration.product = item;
                             Registration.showInfo();
                         }
@@ -252,7 +245,7 @@ Registration = {
             Registration.img_act = 'I';
             Registration.imagePreview();
         });
-
+        //Aba: Produto
         $('#product-tab').click(function(event) {
             if(Registration.modGroup){
                 console.log("Registration.modGroup");
@@ -296,7 +289,7 @@ Registration = {
                 // window.close();
             }       
         });
-
+        //Aba: Grupo de Produto
         $('#product-group-tab').click(function(event) {
             event.preventDefault();
             if (Registration.modification) {
@@ -333,13 +326,11 @@ Registration = {
                 });
             } else {
                 Registration.type = 'G';
-                // Registration.modification = false;
                 $('#registration_product_group_code').trigger("focus");
                 $('#product-image-cover').css({
                     "background-image": "url(" + ( global.uri.uri_public + "images/empty-image.png") + ")"
                 });
                 Registration.disableImageGroup();
-                // window.close();
             }
         });
         $('#button-image-product-remove').prop("disabled", true);
@@ -427,7 +418,6 @@ Registration = {
                     dataType: "json"
                 }, function(data) {
                     Product = data;
-                    // Registration.product = null;
                     Registration.product = data;
                     Registration.modification = false;
                     console.log(Registration.product);
@@ -493,6 +483,8 @@ Registration = {
     showInfo: function() {
         $('#registration_product_name').val(Registration.product.product_name);
         $('#registration_product_code').val(Registration.product.product_code);
+        $('#registration_product_net_weight').val(Registration.product.product_net_weight ? Registration.product.product_net_weight : '-');
+        $('#registration_product_grass_weight').val(Registration.product.product_grass_wright ? Registration.product.product_grass_wright : '-');
         $('#registration_product_EAN').prop("disabled", false);
         $("#image-input-area").prop("contenteditable", true);
         $('#registration_product_EAN').val(Registration.product.product_EAN);
@@ -523,8 +515,7 @@ Registration = {
                         EAN[i] = parseInt(EAN[i]);
                     soma += EAN[i];
                 }
-                calc = soma / 10;
-                calc = Math.floor(calc);
+                calc = Math.floor(soma / 10);
                 calc += 1;
                 calc *= 10;
                 calc = calc - soma;
@@ -720,8 +711,6 @@ Registration = {
             });
         });
     }
-
-    
 },
 
 ImagePush = {}

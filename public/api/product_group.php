@@ -40,7 +40,9 @@
                         "P.NmProduto",
                         "P.IdProduto",
                         "P.CdClassificacao",
-                        "CP.CdChamada"
+                        "CP.CdChamada",
+                        "P.VlPesoLiquido",
+                        "P.VlPesoBruto"
 
                     ],
                     "filters" => [
@@ -64,7 +66,8 @@
                       "product_name = P.NmProduto",
                       "product_id = P.IdProduto",
                       "product_classification = P.CdClassificacao",
-                      "product_EAN = MIN(cp2.cdchamada)"
+                      "product_EAN = MIN(cp2.cdchamada)",
+                      
                     ],
                     "filters" => [
                       ["CP.CdChamada", "s",  "like", "{$post->product_code}%"]
@@ -74,18 +77,10 @@
                                 Cp.CdChamada,
                                 P.CdClassificacao"
                   ]);
-                    
 
-                  // var_dump($productList);
                   Json::get($httpStatus[200], $productList);
-                  // foreach($productList as $product){
-                  // }
                   return;
                 }
-
-
-                //   });
-                // }
 
                 if($product){
                   $EanCode = Model::get($dafel,(Object)[
@@ -122,7 +117,9 @@
                     "product_name" => $product->NmProduto,
                     "product_EAN" => $EanCode,
                     "product_classification" => $product->CdClassificacao,
-                    "product_image" => $productImage
+                    "product_image" => $productImage,
+                    "product_net_weight" => $product->VlPesoLiquido,
+                    "product_gross_weight" => $product->VlPesoBruto
                 ]);
               break;
               //Get pelo codigo do grupo
