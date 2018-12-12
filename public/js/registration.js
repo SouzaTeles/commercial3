@@ -23,9 +23,6 @@ ProductImage = {
         up: function(image) {
             switch (Registration.type) {
                 case 'P':
-                    console.log(Product);
-                    console.log(Registration.product);
-                    console.log("LOG 2");
                     global.post({
                         url: global.uri.uri_public_api + 'product_group.php?action=up',
                         data: {
@@ -41,7 +38,6 @@ ProductImage = {
                             Registration.modification = false;
                             Registration.img_act = 'N';
                         }
-                        console.log(data);
                         global.modal({
                             icon: 'fa-warning',
                             title: 'Atenção',
@@ -60,7 +56,6 @@ ProductImage = {
                     });
                     $('#file-image-product').filestyle('clear');
                     break;
-
                 case 'G':
                     product_image64 = image;
                     global.post({
@@ -73,7 +68,6 @@ ProductImage = {
                         },
                         dataType: 'json'
                     }, function(data) {
-                        console.log(data);
                       global.modal({
                           icon: 'fa-warning',
                           title: 'Atenção',
@@ -149,8 +143,7 @@ Registration = {
         //Campo: Codigo do Produto
         $('#registration_product_code').on('keyup', function() {
             var key = event.keyCode || event.wich;
-            //console.log(key);
-            if (key == 13 && $('#registration_product_code').val()) {
+              if (key == 13 && $('#registration_product_code').val()) {
                 if (Registration.modification) {
                     global.modal({
                         icon: 'fa-warning',
@@ -206,7 +199,6 @@ Registration = {
                         },
                         url: global.uri.uri_public_api + 'product_group.php?action=typeahead',
                         callBack: function(item) {
-                            console.log(item);
                             $('#registration_product_group').val(item.item_name);
                             $('#registration_product_group_code').val(item.item_code);
                             Registration.beforePost(item.item_code);
@@ -248,7 +240,6 @@ Registration = {
         //Aba: Produto
         $('#product-tab').click(function(event) {
             if(Registration.modGroup){
-                console.log("Registration.modGroup");
                 event.preventDefault();
                 event.stopPropagation();
                 global.modal({
@@ -275,7 +266,6 @@ Registration = {
                     }
                 });
             } else {
-                console.log("Else");
                 Registration.type = 'P';
                 Registration.modGroup = false;
                 $('#registration_product_code').trigger("focus");
@@ -420,7 +410,6 @@ Registration = {
                     Product = data;
                     Registration.product = data;
                     Registration.modification = false;
-                    console.log(Registration.product);
                     Registration.showInfo();
                     if (data.length) {
                       global.post({
@@ -448,7 +437,6 @@ Registration = {
                               shown: function(){
                                 ModalRegistrationProduct.success = function(product){
                                     $('#modal-registration-product').modal("hide");
-                                    console.log(product);
                                     Registration.product = product;
                                     Registration.showInfo();                        
                                 }
@@ -565,16 +553,12 @@ Registration = {
         $('.product-check').click(function(){
             if($('#' + $(this).closest(".product-check").attr("data-id")).prop("checked")){
                 Registration.numChecked++;
-                console.log(Registration.numChecked);
             } else {
                 Registration.numChecked--;
-                console.log(Registration.numChecked);
             }
-            console.log("Ta chegando no pre-if...");
             if(Registration.numChecked > 0){
                     $('#file-image-product').filestyle("disabled", false);
                     $('#image-input-area').css("border","2px #cccccc dashed");
-
             }
             else{
                 $('#file-image-product').filestyle("disabled", true)
@@ -673,7 +657,6 @@ Registration = {
         } else {
             // É Base 64
             Registration.imagem = (ImagePush.mime +',' + ImagePush.data);
-            // console.log(Registration.imagem);
             Registration.img_act = 'I';
     
         }
@@ -712,5 +695,4 @@ Registration = {
         });
     }
 },
-
 ImagePush = {}

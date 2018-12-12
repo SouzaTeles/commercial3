@@ -110,6 +110,11 @@
                             <i class="fa fa-magic"></i>Gestão
                         </a>
                     {/if}
+                    {if $login->access->vehicle->access->value == 'Y'}
+                         <a href="{$URI_PUBLIC}index.php?route=vehicle&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="config">
+                            <i class="fa fa-plus-square-o"></i>Cadastro de Veículos
+                        </a>
+                     {/if}
                 </div>
             </li>
         {/if}
@@ -212,11 +217,6 @@
                     {if $login->access->company->access->value == 'Y'}
                         <a href="{$URI_PUBLIC}index.php?route=company&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="config">
                             <i class="fa fa-building"></i>Empresas
-                        </a>
-                    {/if}
-                    {if $login->access->vehicle->access->value == 'Y'}
-                        <a href="{$URI_PUBLIC}index.php?route=vehicle&session_user_id={$login->user_id}&session_value={$login->user_current_session->user_session_id}" class="config">
-                            <i class="fa fa-plus-square-o"></i>Cadastro de Veículos
                         </a>
                     {/if}
                 </div>
