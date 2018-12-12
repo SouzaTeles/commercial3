@@ -33,7 +33,8 @@
                     "M.maker_name",
                     "V.vehicle_year",
                     "VT.vehicle_type_name",
-                    "V.vehicle_capacity_kg"
+                    "V.vehicle_capacity_kg",
+                    "V.vehicle_mileage_cost"
                 ],
                 "filters" => [
                     ["V.vehicle_year", "s", "=", @$post->vehicle_year ? $post->vehicle_year : NULL ],
@@ -72,6 +73,7 @@
                 ["vehicle_renavam", "s", $post->vehicle_renavam],
                 ["vehicle_crlv", "s", $post->vehicle_crlv],
                 ["vehicle_fuel", "s", $post->vehicle_fuel_],
+                ["vehicle_mileage_cost", "s", $post->vehicle_mileage_cost],
                 ["vehicle_date", "s", date("Y-m-d H:i:s")]      
             ],
           ]);
@@ -96,7 +98,8 @@
                     "M.maker_name",
                     "V.vehicle_year",
                     "VT.vehicle_type_name",
-                    "V.vehicle_capacity_kg"
+                    "V.vehicle_capacity_kg",
+                    "V.vehicle_mileage_cost"
 
                 ],
                 "filters" => [
@@ -165,7 +168,8 @@
                 "M.maker_name",
                 "V.vehicle_year",
                 "VT.vehicle_type_name",
-                "V.vehicle_capacity_kg"
+                "V.vehicle_capacity_kg",
+                "V.vehicle_mileage_cost"
 
             ],
             "filters" => [

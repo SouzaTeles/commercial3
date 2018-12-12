@@ -59,15 +59,7 @@
             <div class="form-group">
                 <label for="vehicle_type">Tipo do Veículo</label>
                 <select class="selectpicker show-tick" id="vehicle_type" name="vehicle_type" required="true" title="-- Selecione o Tipo do Veículo --">
-                    <!-- <option value="1">Toco</option>
-                    <option value="2">Truck</option>
-                    <option value="3">Utilitario</option>
-                    <option value="4">Cavalo Mecanico</option>
-                    <option value="5">Van</option>
-                    <option value="6">Outros</option> -->
                 </select>
-                <!-- <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" required="true" -->
-                    <!-- placeholder="Ex: Truck" data-to-mask="code" /> -->
             </div>
         </div>
         <!-- Fabricante -->
@@ -142,6 +134,14 @@
                     data-to-mask="code" />
             </div>
         </div>
+        <!-- Quilometragem x Custo -->
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label for="vehicle_mileage_cost">Custo por Quilometragem</label>
+                <input type="text" class="form-control" id="vehicle_mileage_cost" name="vehicle_mileage_cost" placeholder="Ex: 4"
+                    data-to-mask="code" />
+            </div>
+        </div>
         <!-- Tipo de Combustivel -->
         <div class="col-xs-12 col-sm-2">
             <div class="form-group">
@@ -153,7 +153,7 @@
                     <option value="D">Diesel</option>
                     <option value="N">GNV</option>
                 </select>
-                <!-- <input type="text" class="form-control" id="vehicle_fuel" name="vehicle_fuel" placeholder="Ex: 4" data-to-mask="code"/> -->
+                <!-- <input type="text" class="form-control id="vehicle_fuel" name="vehicle_fuel" placeholder="Ex: 4" data-to-mask="code"/> -->
             </div>
         </div>
         <!-- Cadastrar -->
